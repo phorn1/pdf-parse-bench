@@ -88,25 +88,14 @@ class PDFService:
     
     @staticmethod
     async def _wait_for_mathjax(page) -> None:
-        """Wait for MathJax to complete rendering and formula scaling."""
-        # First wait for MathJax to render
+        """Wait for MathJax to complete rendering."""
         await page.wait_for_function(
             "document.querySelector('mjx-container') !== null || "
             "document.querySelector('.MathJax') !== null || "
             "document.documentElement.classList.contains('mjx-processed') || "
             "!document.body.innerHTML.includes('$')",
-            timeout=2000
+            timeout=1000
         )
-        
-        # Then wait for formula scaling to complete
-        try:
-            await page.wait_for_function(
-                "document.body.getAttribute('data-formulas-scaled') === 'true'",
-                timeout=3000
-            )
-        except:
-            # If scaling doesn't complete, continue anyway
-            print("Warning: Formula scaling timeout, continuing...")
 
     @staticmethod
     def _check_pdf_page_count(pdf_path: str) -> bool:

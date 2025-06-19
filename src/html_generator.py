@@ -54,75 +54,6 @@ class HTMLTemplate:
         }};
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script>
-        function scaleOverflowingFormulas() {{
-            console.log('Checking formula scaling...');
-            const containers = document.querySelectorAll('mjx-container[display="true"]');
-            console.log(`Found ${{containers.length}} formula containers`);
-            
-            containers.forEach((container, index) => {{
-                const parent = container.closest('.content-block');
-                if (!parent) {{
-                    console.log(`Container ${{index}}: No parent found`);
-                    return;
-                }}
-                
-                const parentWidth = parent.offsetWidth;
-                const containerWidth = container.scrollWidth;
-                console.log(`Container ${{index}}: parent=${{parentWidth}}px, formula=${{containerWidth}}px`);
-                
-                if (containerWidth > parentWidth) {{
-                    const scale = (parentWidth / containerWidth) * 0.95; // 5% safety margin
-                    container.style.transform = `scale(${{scale}})`;
-                    container.style.transformOrigin = 'left top';
-                    console.log(`Container ${{index}}: Scaled to ${{scale}}`);
-                }} else {{
-                    console.log(`Container ${{index}}: No scaling needed`);
-                }}
-            }});
-            
-            // Mark as processed for external detection
-            document.body.setAttribute('data-formulas-scaled', 'true');
-        }}
-        
-        // Multiple fallback strategies
-        function initScaling() {{
-            if (window.MathJax && window.MathJax.startup) {{
-                MathJax.startup.promise.then(() => {{
-                    console.log('MathJax ready via startup promise');
-                    setTimeout(scaleOverflowingFormulas, 200);
-                }});
-            }}
-            
-            // Fallback: watch for MathJax containers
-            const observer = new MutationObserver((mutations) => {{
-                const hasFormulas = document.querySelector('mjx-container[display="true"]');
-                if (hasFormulas && !document.body.getAttribute('data-formulas-scaled')) {{
-                    console.log('MathJax containers detected via observer');
-                    setTimeout(scaleOverflowingFormulas, 100);
-                    observer.disconnect();
-                }}
-            }});
-            
-            observer.observe(document.body, {{ childList: true, subtree: true }});
-            
-            // Final fallback
-            setTimeout(() => {{
-                if (!document.body.getAttribute('data-formulas-scaled')) {{
-                    console.log('Final fallback scaling');
-                    scaleOverflowingFormulas();
-                }}
-                observer.disconnect();
-            }}, 2000);
-        }}
-        
-        if (document.readyState === 'loading') {{
-            document.addEventListener('DOMContentLoaded', initScaling);
-        }} else {{
-            initScaling();
-        }}
-    </script>
 
     <style>
         @page {{
@@ -138,17 +69,6 @@ class HTMLTemplate:
 
         mjx-container[display="true"] {{
             font-size: {self.styles_config.mathjax_display_font_size} !important;
-            transform: scale(0.8) !important;
-            transform-origin: left top !important;
-            overflow: visible;
-            display: inline-block;
-            max-width: 125% !important;
-            box-sizing: border-box;
-        }}
-        
-        mjx-container[display="true"] mjx-math {{
-            max-width: 100% !important;
-            overflow: visible;
         }}
 
         .content-block {{
