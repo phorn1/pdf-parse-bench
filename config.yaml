@@ -1,0 +1,31 @@
+# Flattened Style Configuration
+style:
+  # PDF Layout Settings
+  pdf_size: "A4"
+  pdf_margin_top: "20mm"
+  pdf_margin_bottom: "20mm"
+  pdf_margin_left: "20mm"
+  pdf_margin_right: "20mm"
+  
+  # Column Layout Settings
+  column_count: 2
+  column_gap: "5mm"
+  
+  # Typography Settings
+  font_family: "'Times New Roman', Times, serif"
+  font_size: "10pt"
+  font_weight: "normal"
+  text_align: "justify"
+  
+  # Color Settings
+  text_color: "hsl(0, 100%, 50%)"
+  document_background_color: "hsl(0, 30%, 50%)"
+  content_block_background_color: "hsl(0, 0%, 98%)"
+  
+  # Spacing Settings
+  content_padding: "4mm"
+  content_margin: "4mm"
+  
+  # Formula Settings
+  formula_font_size: "12pt"
+  formula_color: "black"

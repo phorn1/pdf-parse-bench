@@ -6,5 +6,7 @@
     </content>
     <orderEntry type="jdk" jdkName="uv (synthetic_pdf)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="formel_benchmark" />
+    <orderEntry type="module" module-name="excel_inventar" />
   </component>
 </module>
