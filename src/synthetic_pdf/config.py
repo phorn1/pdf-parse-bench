@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 def get_project_root() -> Path:
     """Get the project root directory based on this file's location."""
-    return Path(__file__).parent.parent
+    return Path(__file__).parent.parent.parent
 
 
 class PathConfig(BaseModel):

@@ -6,9 +6,11 @@ from pathlib import Path
 from faker import Faker
 
 
-def generate_text_paragraphs():
+def generate_text_paragraphs(seed=None):
     """Generate random text paragraphs using Faker."""
     fake = Faker()
+    if seed is not None:
+        fake.seed_instance(seed)
     while True:
         text_paragraph = fake.text(max_nb_chars=345).replace('\n', ' ')
         yield text_paragraph
