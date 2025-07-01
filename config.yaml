@@ -1,4 +1,5 @@
-# Flattened Style Configuration
+seed: 10
+
 style:
   # PDF Layout Settings
   pdf_size: "A4"
@@ -9,11 +10,11 @@ style:
   
   # Column Layout Settings
   column_count: 2
-  column_gap: "5mm"
+  column_gap: ["5mm", "10mm"]
   
   # Typography Settings
   font_family: "'Times New Roman', Times, serif"
-  font_size: "10pt"
+  font_size: ["10pt", "12pt"]
   font_weight: "normal"
   text_align: "justify"
   

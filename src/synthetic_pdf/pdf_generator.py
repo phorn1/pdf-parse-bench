@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Tuple
 from playwright.async_api import async_playwright
 from pypdf import PdfReader
 
-from config import config
+from config import load_all_configs
 from html_builder import HTMLBuilder
 
 
@@ -111,8 +111,9 @@ class PDFService:
 class SinglePageGenerator:
     """Generates single-page PDFs by iteratively fitting content blocks."""
     
-    def __init__(self, default_formula_file):
+    def __init__(self, default_formula_file, config):
         self.default_formula_file = default_formula_file
+        self.config = config
         self.data = []
         # Data will be loaded later when needed
     
@@ -150,9 +151,9 @@ class SinglePageGenerator:
         from validation import FormulaValidator
         
         # Initialize generators and validator
-        text_gen = generate_text_paragraphs()
-        formula_gen = load_formula_generator(Path(self.default_formula_file))
-        validator = FormulaValidator(pdf_service, html_builder)
+        text_gen = generate_text_paragraphs(seed=self.config.seed)
+        formula_gen = load_formula_generator(Path(self.default_formula_file), seed=self.config.seed)
+        validator = FormulaValidator(pdf_service, html_builder, self.config)
         
         content_blocks = []
         stats = {'valid_formula_count': 0, 'skipped_formula_count': 0}
@@ -181,7 +182,7 @@ class SinglePageGenerator:
         """Generates a single-page PDF with optimal content fitting using alternating generation."""
         async with PDFService() as pdf_service:
             # Create HTML generator with configured styling
-            html_builder = HTMLBuilder()
+            html_builder = HTMLBuilder(self.config)
             
             # Generate content blocks with immediate fitting validation
             optimal_data = await self._generate_content_with_fitting(pdf_service, html_builder)
@@ -189,7 +190,7 @@ class SinglePageGenerator:
             print(f"Generated optimal content: {num_blocks} blocks")
             
             # Ensure artifacts directory exists
-            config.paths.artifacts_dir.mkdir(exist_ok=True)
+            self.config.paths.artifacts_dir.mkdir(exist_ok=True)
             
             # Generate final HTML using the configured styling
             html_content = html_builder.build_document(optimal_data)
@@ -207,23 +208,85 @@ class SinglePageGenerator:
             return optimal_data, num_blocks
 
 
-async def main():
-    """Main function for single-page PDF generation."""
+async def generate_single_config(config_instance, config_name: str) -> Tuple[List[Dict[str, Any]], int]:
+    """Generate PDF for a single configuration."""
+    generator = SinglePageGenerator(config_instance.paths.formulas_file, config_instance)
+    
+    # Generate paths using the configuration name
+    html_path, pdf_path = config_instance.paths.get_output_paths(config_name)
+    
+    used_data, num_blocks = await generator.generate_single_page_pdf(
+        output_html_path=html_path, 
+        output_pdf_path=pdf_path
+    )
+    
+    print(f"\n=== Configuration: {config_name} ===")
+    print(f"- Used {num_blocks} content blocks")
+    print(f"- Generated: {html_path}")
+    print(f"- Generated: {pdf_path}")
+    
+    return used_data, num_blocks
 
-    generator = SinglePageGenerator(config.paths.default_formula_file)
+
+async def generate_single_config_with_timestamp(config_instance, config_name: str, timestamp: str) -> Tuple[List[Dict[str, Any]], int]:
+    """Generate PDF for a single configuration with shared timestamp."""
+    generator = SinglePageGenerator(config_instance.paths.formulas_file, config_instance)
+    
+    # Generate paths using the configuration name and shared timestamp
+    run_dir = config_instance.paths.get_run_directory(config_name, timestamp)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    
+    html_path = str(run_dir / "benchmark.html")
+    pdf_path = str(run_dir / "benchmark.pdf")
+    
+    # Create/update symlink to latest run
+    latest_link = config_instance.paths.artifacts_dir / "latest"
+    if latest_link.exists() or latest_link.is_symlink():
+        latest_link.unlink()
+    latest_link.symlink_to(run_dir.parent, target_is_directory=True)
+    
+    used_data, num_blocks = await generator.generate_single_page_pdf(
+        output_html_path=html_path, 
+        output_pdf_path=pdf_path
+    )
+    
+    print(f"\n=== Configuration: {config_name} ===")
+    print(f"- Used {num_blocks} content blocks")
+    print(f"- Generated: {html_path}")
+    print(f"- Generated: {pdf_path}")
+    
+    return used_data, num_blocks
+
+
+async def main():
+    """Main function for single-page PDF generation with multiple configurations."""
     try:
-        # Generate paths using the current configuration name
-        config_name = config.get_config_name()
-        html_path, pdf_path = config.paths.get_output_paths(config_name)
+        # Load all configuration combinations
+        all_configs = load_all_configs()
         
-        used_data, num_blocks = await generator.generate_single_page_pdf(output_html_path=html_path, output_pdf_path=pdf_path)
-        
-        print(f"\nSummary:")
-        print(f"- Used {num_blocks} content blocks")
-        print(f"- Content blocks used:")
-        for i, block in enumerate(used_data):
-            content_preview = block['data'][:50] + "..." if len(block['data']) > 50 else block['data']
-            print(f"  {i+1}. {block['type']}: {content_preview}")
+        if len(all_configs) == 1:
+            # Single configuration
+            config_instance, config_name = all_configs[0]
+            print(f"Generating single PDF with configuration: {config_name}")
+            used_data, num_blocks = await generate_single_config(config_instance, config_name)
+            
+            print(f"\nSummary:")
+            for i, block in enumerate(used_data[:5]):  # Show first 5 blocks
+                content_preview = block['data'][:50] + "..." if len(block['data']) > 50 else block['data']
+                print(f"  {i+1}. {block['type']}: {content_preview}")
+        else:
+            # Multiple configurations - use shared timestamp
+            from datetime import datetime
+            shared_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            
+            print(f"Generating {len(all_configs)} PDFs with different configurations...")
+            
+            for i, (config_instance, config_name) in enumerate(all_configs, 1):
+                print(f"\n[{i}/{len(all_configs)}] Processing: {config_name}")
+                await generate_single_config_with_timestamp(config_instance, config_name, shared_timestamp)
+            
+            print(f"\nSuccessfully generated {len(all_configs)} PDFs!")
+            print(f"Output directory: {all_configs[0][0].paths.artifacts_dir / 'latest'}")
             
     except Exception as e:
         print(f"Error: {e}")

@@ -1,11 +1,13 @@
 """HTML generation utilities for synthetic PDF content."""
 from typing import List, Dict, Any
 
-from config import config
 
 
 class HTMLBuilder:
     """Simplified HTML builder for synthetic PDF content."""
+    
+    def __init__(self, config):
+        self.config = config
     
     def build_document(self, data_blocks: List[Dict[str, Any]]) -> str:
         """Build complete HTML document from data blocks."""
@@ -16,8 +18,8 @@ class HTMLBuilder:
         
         formula_color_css = f"""
         .content-block.formula {{
-            color: {config.style.formula_color} !important;
-        }}""" if config.style.formula_color else ""
+            color: {self.config.style.formula_color} !important;
+        }}""" if self.config.style.formula_color else ""
         
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -42,24 +44,24 @@ class HTMLBuilder:
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <style>
         @page {{
-            size: {config.style.pdf_size};
-            margin: {config.style.pdf_margin_top} {config.style.pdf_margin_right} {config.style.pdf_margin_bottom} {config.style.pdf_margin_left};
+            size: {self.config.style.pdf_size};
+            margin: {self.config.style.pdf_margin_top} {self.config.style.pdf_margin_right} {self.config.style.pdf_margin_bottom} {self.config.style.pdf_margin_left};
         }}
 
         body {{
             font-family: sans-serif;
             margin: 0;
             padding: 0;
-            {config.style.to_container_css()}
-            {f'background-color: {config.style.document_background_color};' if config.style.document_background_color else ''}
+            {self.config.style.to_container_css()}
+            {f'background-color: {self.config.style.document_background_color};' if self.config.style.document_background_color else ''}
         }}
 
         mjx-container[display="true"] {{
-            font-size: {config.style.formula_font_size} !important;
+            font-size: {self.config.style.formula_font_size} !important;
         }}
 
         .content-block {{
-            {config.style.to_css_string()}
+            {self.config.style.to_css_string()}
         }}{formula_color_css}
     </style>
 </head>

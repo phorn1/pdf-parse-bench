@@ -3,7 +3,8 @@
 import yaml
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
+from itertools import product
+from typing import Dict, Optional, Union, List, Any, Tuple
 from pydantic import BaseModel, Field
 
 
@@ -17,11 +18,12 @@ class PathConfig(BaseModel):
     
     root: Path = Field(default_factory=get_project_root)
     artifacts_dir: Path = Field(default_factory=lambda: get_project_root() / "artifacts")
-    default_formula_file: str = Field(default_factory=lambda: str(get_project_root() / "data" / "formulas.json"))
+    formulas_file: str = Field(default_factory=lambda: str(get_project_root() / "data" / "formulas.json"))
     
-    def get_run_directory(self, config_name: str = "default") -> Path:
+    def get_run_directory(self, config_name: str = "default", timestamp: str = None) -> Path:
         """Get the directory for the current run with timestamp and config name."""
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        if timestamp is None:
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         run_dir = self.artifacts_dir / "runs" / timestamp / config_name
         return run_dir
     
@@ -46,34 +48,34 @@ class StyleConfig(BaseModel):
     """Styling configuration for content generation."""
     
     # PDF Layout Settings
-    pdf_size: str
-    pdf_margin_top: str
-    pdf_margin_bottom: str
-    pdf_margin_left: str
-    pdf_margin_right: str
+    pdf_size: Union[str, List[str]]
+    pdf_margin_top: Union[str, List[str]]
+    pdf_margin_bottom: Union[str, List[str]]
+    pdf_margin_left: Union[str, List[str]]
+    pdf_margin_right: Union[str, List[str]]
     
     # Column Layout Settings
-    column_count: int
-    column_gap: str
+    column_count: Union[int, List[int]]
+    column_gap: Union[str, List[str]]
     
     # Typography Settings
-    font_family: str
-    font_size: str
-    font_weight: str
-    text_align: str
+    font_family: Union[str, List[str]]
+    font_size: Union[str, List[str]]
+    font_weight: Union[str, List[str]]
+    text_align: Union[str, List[str]]
     
     # Color Settings
-    text_color: str
-    document_background_color: Optional[str] = None
-    content_block_background_color: Optional[str] = None
+    text_color: Union[str, List[str]]
+    document_background_color: Union[str, List[str], None] = None
+    content_block_background_color: Union[str, List[str], None] = None
     
     # Spacing Settings
-    content_padding: str
-    content_margin: str
+    content_padding: Union[str, List[str]]
+    content_margin: Union[str, List[str]]
     
     # Formula Settings
-    formula_font_size: str
-    formula_color: Optional[str] = None
+    formula_font_size: Union[str, List[str]]
+    formula_color: Union[str, List[str], None] = None
     
     def to_css_string(self) -> str:
         """Convert style config to CSS string."""
@@ -107,28 +109,77 @@ class StyleConfig(BaseModel):
 class Config(BaseModel):
     """Main configuration container."""
     
+    seed: Optional[int] = None
     paths: PathConfig = Field(default_factory=PathConfig)
     style: StyleConfig
     
-    def get_config_name(self) -> str:
-        """Generate a descriptive name for the current configuration."""
-        font_family = self.style.font_family.split(',')[0].strip().strip("'\"")
-        font_size = self.style.font_size.replace('pt', '').replace('px', '')
-        return f"config_{font_family.replace(' ', '').lower()}_{font_size}pt"
+
+def _normalize_config_value(value: Union[Any, List[Any]]) -> List[Any]:
+    """Normalize a config value to always be a list."""
+    if isinstance(value, list):
+        return value
+    return [value]
 
 
-def load_config() -> Config:
-    """Load configuration from YAML file."""
+def _generate_config_combinations(style_data: Dict[str, Any]) -> List[Tuple[Dict[str, Any], str]]:
+    """Generate all possible combinations from style configuration with list values."""
+    # Extract all fields that have list values
+    list_fields = {}
+    single_fields = {}
+    
+    for key, value in style_data.items():
+        if isinstance(value, list):
+            list_fields[key] = value
+        else:
+            single_fields[key] = value
+    
+    if not list_fields:
+        # No list fields, return single configuration
+        return [(style_data, "default")]
+    
+    # Generate all combinations of list fields
+    field_names = list(list_fields.keys())
+    field_values = list(list_fields.values())
+    
+    combinations = []
+    for combination in product(*field_values):
+        # Create configuration for this combination
+        config_dict = single_fields.copy()
+        config_name_parts = []
+        
+        for field_name, field_value in zip(field_names, combination):
+            config_dict[field_name] = field_value
+            # Create readable name part
+            if isinstance(field_value, str):
+                clean_value = field_value.replace('mm', '').replace('pt', '').replace('px', '')
+                config_name_parts.append(f"{field_name}_{clean_value}")
+            else:
+                config_name_parts.append(f"{field_name}_{field_value}")
+        
+        config_name = "__".join(config_name_parts)
+        combinations.append((config_dict, config_name))
+    
+    return combinations
+
+
+
+def load_all_configs() -> List[Tuple[Config, str]]:
+    """Load all configuration combinations from YAML file."""
     project_root = get_project_root()
     config_path = project_root / "config.yaml"
     
     with open(config_path, 'r', encoding='utf-8') as f:
         yaml_data = yaml.safe_load(f)
     
-    return Config(
-        style=StyleConfig(**yaml_data['style'])
-    )
+    combinations = _generate_config_combinations(yaml_data['style'])
+    
+    configs = []
+    for style_dict, config_name in combinations:
+        config = Config(
+            seed=yaml_data.get('seed'),
+            style=StyleConfig(**style_dict)
+        )
+        configs.append((config, config_name))
+    
+    return configs
 
-
-# Global configuration instance
-config = load_config()
