@@ -8,11 +8,20 @@ from tqdm import tqdm
 from dotenv import load_dotenv
 
 from openai import OpenAI
-from openai.types.chat import ChatCompletionUserMessageParam
+from pydantic import BaseModel, field_validator
 import Levenshtein
 
 load_dotenv()
 
+
+# ========== PYDANTIC MODELS ==========
+
+class FormulaEvaluationResponse(BaseModel):
+    explanation: str
+    is_correct: bool | None
+    score: float | None
+    errors: list[str]
+    
 
 # ========== DATA CLASSES ==========
 
@@ -130,27 +139,21 @@ def evaluate_formula_pair(
         FormulaEvaluationResult with evaluation metrics
     """
     prompt = _get_formula_evaluation_prompt(gt_formula, extracted_formula)
-    user_message: ChatCompletionUserMessageParam = {"role": "user", "content": prompt}
 
-    response = client.chat.completions.create(
+    response = client.responses.parse(
         model=model,
-        messages=[user_message],
-        temperature=0,
-        response_format={"type": "json_object"}
+        input=prompt,
+        text_format=FormulaEvaluationResponse
     )
 
-    response_content = response.choices[0].message.content
-    if not response_content:
-        raise ValueError("Received empty response content from API")
-
-    cleaned_content = response_content.strip().strip('```json').strip('```').strip()
-    llm_data = json.loads(cleaned_content)
+    # Extract the parsed data from the structured response
+    parsed_data = response.output_parsed
 
     return FormulaEvaluationResult(
-        explanation=llm_data["explanation"],
-        is_correct=llm_data["is_correct"],
-        score=llm_data["score"],
-        errors=llm_data["errors"],
+        explanation=parsed_data.explanation,
+        is_correct=parsed_data.is_correct,
+        score=parsed_data.score,
+        errors=parsed_data.errors,
         ground_truth_formula=gt_formula,
         extracted_formula=extracted_formula,
         formula_number=None

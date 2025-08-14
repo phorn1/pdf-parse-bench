@@ -3,8 +3,48 @@ import json
 import logging
 from pathlib import Path
 from openai import OpenAI
+from pydantic import BaseModel, field_validator, model_validator
+from typing import ClassVar
 
 logger = logging.getLogger(__name__)
+
+
+class Segment(BaseModel):
+    type: str
+    data: str
+    
+    @field_validator('type')
+    @classmethod
+    def validate_type(cls, v: str) -> str:
+        if v not in ['text', 'formula']:
+            raise ValueError(f"Invalid segment type: {v}. Must be 'text' or 'formula'")
+        return v
+
+
+class SegmentMapping(BaseModel):
+    segments: list[Segment]
+    _expected_segments: ClassVar[list[dict[str, str]]] = []
+    
+    @classmethod
+    def set_expected_structure(cls, gt_segments: list[dict[str, str]]) -> None:
+        cls._expected_segments = gt_segments
+    
+    @model_validator(mode='after')
+    def validate_structure(self):
+        if not self._expected_segments:
+            return self
+            
+        expected_count = len(self._expected_segments)
+        actual_count = len(self.segments)
+        
+        if actual_count != expected_count:
+            raise ValueError(f"Segment count mismatch: expected {expected_count}, got {actual_count}")
+            
+        for i, (expected, actual) in enumerate(zip(self._expected_segments, self.segments)):
+            if expected['type'] != actual.type:
+                raise ValueError(f"Type mismatch at index {i}: expected '{expected['type']}', got '{actual.type}'")
+        
+        return self
 
 def create_llm_mapping_prompt(gt_segments: list[dict[str, str]], markdown_content: str) -> str:
     """Create a detailed prompt for the LLM to map segments."""
@@ -61,107 +101,37 @@ def extract_segments_using_llm(
     else:
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+    # Set expected structure in the Pydantic model
+    SegmentMapping.set_expected_structure(gt_segments)
+    
     prompt = create_llm_mapping_prompt(gt_segments, markdown_content)
 
     try:
-        response = client.responses.create(
+        response = client.responses.parse(
             model=model,
             input=prompt,
-            text={
-                "verbosity": "low"
-            },
-            reasoning={
-                "effort": "minimal"
-            }
-
+            text_format=SegmentMapping
         )
         
-        result_text = response.text.strip()
-        
-        # Try to parse JSON from the response
-        try:
-            # Remove potential markdown code blocks
-            if result_text.startswith("```json"):
-                logger.warning("LLM response contained '```json' markdown formatting, stripping it")
-                result_text = result_text[7:]
-            if result_text.endswith("```"):
-                logger.warning("LLM response contained closing '```' markdown formatting, stripping it")
-                result_text = result_text[:-3]
-            if result_text.startswith("```"):
-                logger.warning("LLM response contained opening '```' markdown formatting, stripping it")
-                result_text = result_text[3:]
-            result_text = result_text.strip()
-            
-            # Try direct parsing first
-            try:
-                result = json.loads(result_text)
-            except json.JSONDecodeError as e:
-                # If parsing fails due to escape sequences, try fixing common LaTeX escapes
-                logger.info("Direct JSON parsing failed, attempting to fix LaTeX escapes")
-                
-                # Replace problematic single backslashes with double backslashes in LaTeX contexts
-                import re
-                
-                # Fix backslashes within formula data fields
-                def fix_latex_escapes(match):
-                    content = match.group(1)
-                    # Replace single backslashes with double backslashes, but avoid already escaped ones
-                    content = re.sub(r'(?<!\\)\\(?!\\)', r'\\\\', content)
-                    return f'"data": "{content}"'
-                
-                fixed_text = re.sub(r'"data":\s*"([^"]*(?:\\.[^"]*)*)"', fix_latex_escapes, result_text)
-                result = json.loads(fixed_text)
-            
-            # Validate result structure
-            if not isinstance(result, list) or len(result) != len(gt_segments):
-                raise ValueError(f"Result length {len(result)} doesn't match ground truth length {len(gt_segments)}")
-            
-            # Ensure all elements have required fields and correct types
-            for i, item in enumerate(result):
-                if not isinstance(item, dict) or "type" not in item or "data" not in item:
-                    raise ValueError(f"Invalid structure at index {i}")
-                    
-                # Ensure type matches ground truth
-                if item["type"] != gt_segments[i]["type"]:
-                    logger.warning(f"Type mismatch at index {i}: expected {gt_segments[i]['type']}, got {item['type']}")
-                    item["type"] = gt_segments[i]["type"]  # Force correct type
-            
-            return result
-            
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse LLM response as JSON: {e}")
-            logger.error(f"LLM response: {result_text}")
-            raise ValueError("LLM returned invalid JSON")
+        # With structured output, access the parsed object directly
+        return [{"type": seg.type, "data": seg.data} for seg in response.output_parsed.segments]
             
     except Exception as e:
         logger.error(f"LLM API call failed: {e}")
         raise
 
-def verify_mapping_completeness(gt_segments: list[dict[str, str]], 
-                               result_segments: list[dict[str, str]], 
+def verify_content_completeness(result_segments: list[dict[str, str]], 
                                markdown_content: str) -> bool:
     """
-    Verify that the mapping between ground truth and result segments is complete.
+    Verify that all content from markdown is captured in result segments.
     
     Args:
-        gt_segments: Original ground truth segments
         result_segments: Mapped result segments  
         markdown_content: Original markdown content
         
     Returns:
-        True if verification passes, False otherwise
+        True if content completeness check passes, False otherwise
     """
-    issues = []
-    
-    # Check segment count
-    if len(gt_segments) != len(result_segments):
-        issues.append(f"Segment count mismatch: GT={len(gt_segments)}, Result={len(result_segments)}")
-        
-    # Check types match
-    for i, (gt_seg, res_seg) in enumerate(zip(gt_segments, result_segments)):
-        if gt_seg["type"] != res_seg["type"]:
-            issues.append(f"Type mismatch at index {i}: GT={gt_seg['type']}, Result={res_seg['type']}")
-    
     # Collect all text from result segments
     result_text = "".join(seg["data"] for seg in result_segments if seg["data"])
     
@@ -171,13 +141,7 @@ def verify_mapping_completeness(gt_segments: list[dict[str, str]],
     
     if len(md_clean) != len(result_clean):
         diff = len(md_clean) - len(result_clean)
-        issues.append(f"Character count mismatch: Markdown={len(md_clean)}, Result={len(result_clean)}, Diff={diff}")
-        
-
-    if issues:
-        logger.warning("Verification issues found:")
-        for issue in issues:
-            logger.warning(f"  - {issue}")
+        logger.warning(f"Character count mismatch: Markdown={len(md_clean)}, Result={len(result_clean)}, Diff={diff}")
         return False
 
     return True
@@ -213,8 +177,8 @@ def extract_segments_from_md_llm(
         model
     )
 
-    # Verify mapping completeness
-    verification_passed = verify_mapping_completeness(gt_segments, result_segments, markdown_content)
+    # Verify content completeness
+    verification_passed = verify_content_completeness(result_segments, markdown_content)
 
     # Save result
     with open(output_json_path, 'w', encoding='utf-8') as f:
