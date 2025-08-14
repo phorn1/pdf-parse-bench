@@ -188,6 +188,33 @@ def create_formula_viewer():
     """Create the Gradio interface for formula comparison."""
     paths = PipelinePaths()
     
+    # MathJax configuration for proper formula rendering
+    mathjax_js = """
+function() {
+    if (typeof window.MathJax === 'undefined') {
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']],
+                packages: {'[+]': ['mhchem']}
+            },
+            loader: {load: ['[tex]/mhchem']}
+        };
+        
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+        script.async = true;
+        document.head.appendChild(script);
+    }
+    
+    setInterval(() => {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise();
+        }
+    }, 500);
+}
+"""
+    
     # Custom CSS for better styling
     custom_css = """
     .summary-stats {
@@ -258,7 +285,7 @@ def create_formula_viewer():
     initial_parser = initial_parsers[0] if initial_parsers else None
 
     # Create the interface
-    with gr.Blocks(title="Formula Comparison Viewer", theme=gr.themes.Soft(), css=custom_css) as interface:
+    with gr.Blocks(title="Formula Comparison Viewer", theme=gr.themes.Soft(), css=custom_css, js=mathjax_js) as interface:
         gr.Markdown("# Formula Comparison Viewer")
 
         # Hierarchical file selection
@@ -305,7 +332,7 @@ def create_formula_viewer():
         with gr.Row(elem_classes="formula-display-container", elem_id="formula-comparison-row"):
             with gr.Column(elem_classes="formula-box"):
                 gr.Markdown("### Ground Truth Formula")
-                ground_truth_formula = gr.Markdown()
+                ground_truth_formula = gr.HTML()
 
             # Comparison box with fixed width
             with gr.Column(elem_classes="comparison-box", elem_id="status-comparison-box", scale=0):
@@ -313,7 +340,7 @@ def create_formula_viewer():
 
             with gr.Column(elem_classes="formula-box"):
                 gr.Markdown("### Extracted Formula")
-                extracted_formula = gr.Markdown()
+                extracted_formula = gr.HTML()
 
         # Explanation and Errors
         gr.Markdown("### Explanation")
