@@ -1,7 +1,8 @@
-from .pdf_generator import SinglePagePDFGenerator
-from .style_config import generate_style_combinations, StyleConfig
+from .html.pdf_generator import HtmlSinglePagePDFGenerator
+from .html.style_config import HTMLConfig
+from .latex.pdf_generator import ParallelLaTeXPDFGenerator, LaTeXConfig, LaTeXPDFJob
 
 __all__ = [
-    'SinglePagePDFGenerator', 'generate_style_combinations', 'StyleConfig',
+    'HtmlSinglePagePDFGenerator', 'HTMLConfig', 'ParallelLaTeXPDFGenerator', 'LaTeXConfig', 'LaTeXPDFJob',
 ]
 

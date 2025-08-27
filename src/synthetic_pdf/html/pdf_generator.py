@@ -3,18 +3,18 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from .style_config import StyleConfig
-from .generators import generate_text_paragraphs, load_formula_generator
+from .style_config import HTMLConfig
+from ..generators import generate_text_paragraphs, load_formula_generator
 from .pdf_service import PDFService
 from .validation import FormulaSizeValidator
 
 logger = logging.getLogger(__name__)
 
 
-class SinglePagePDFGenerator:
+class HtmlSinglePagePDFGenerator:
     """Generates single-page PDFs by iteratively fitting content blocks."""
     
-    def __init__(self, default_formula_file: Path, seed: int | None, style: StyleConfig):
+    def __init__(self, default_formula_file: Path, seed: int | None, style: HTMLConfig):
         self.style = style
         self.text_gen = generate_text_paragraphs(seed=seed)
         self.formula_gen = load_formula_generator(default_formula_file, seed=seed)

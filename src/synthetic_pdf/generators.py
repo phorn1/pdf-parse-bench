@@ -5,27 +5,40 @@ from pathlib import Path
 from typing import Generator
 
 from faker import Faker
-from .style_config import StyleConfig
 
 
 
-def generate_text_paragraphs(seed: int | None = None) -> Generator[str, None, None]:
-    """Generate random text paragraphs using Faker."""
-    fake = Faker()
+def generate_text_paragraphs(language: str = "en_US", default_max_chars: int = 345, seed: int | None = None) -> Generator[str, int, None]:
+    """Generate random text paragraphs using Faker with dynamic max_chars.
+    
+    Args:
+        language: Language locale (e.g., 'en_US', 'de_DE', 'fr_FR', 'es_ES', etc.)
+        default_max_chars: Default maximum number of characters for text generation
+        seed: Random seed for reproducible text generation
+        
+    Usage:
+        gen = generate_text_paragraphs()
+        text = next(gen)  # Uses default_max_chars
+        text = gen.send(150)  # Uses 150 as max_chars
+    """
+    fake = Faker(locale=language)
     if seed is not None:
         fake.seed_instance(seed)
+    
+    max_chars = default_max_chars
     while True:
-        text_paragraph = fake.text(max_nb_chars=345).replace('\n', ' ')
-        yield text_paragraph
+        text = fake.text(max_nb_chars=max_chars).replace('\n', ' ')
+        # yield returns None when next() is called, or the sent value when send() is used
+        max_chars = (yield text) or default_max_chars
 
 
-def load_formula_generator(input_json_path: Path, seed: int | None =None) -> Generator[str, None, None]:
+def load_formula_generator(input_json_path: Path, seed: int | None = None) -> Generator[str, None, None]:
     """
     Load formulas from a JSON file as a generator
 
     Args:
         input_json_path (Path): Path to JSON file containing formulas
-        seed (int): Random seed for reproducible results
+        seed (int | None): Random seed for reproducible formula order
 
     Yields:
         str: Individual formulas from the JSON file
@@ -38,25 +51,10 @@ def load_formula_generator(input_json_path: Path, seed: int | None =None) -> Gen
     for url, formulas_list in data.items():
         all_formulas.extend(formulas_list)
 
-    random.seed(seed)
+    # Use seed for reproducible shuffling
+    if seed is not None:
+        random.seed(seed)
     random.shuffle(all_formulas)
     
     for formula in all_formulas:
         yield formula
-
-
-# def _calculate_available_content_width(style: StyleConfig) -> float:
-#     """Calculate available content width in mm based on page layout."""
-#     page_width_mm = 210  # A4 width
-#     margin_left_mm = float(style.margin_left.replace('mm', ''))
-#     margin_right_mm = float(style.margin_right.replace('mm', ''))
-#     content_width_mm = page_width_mm - margin_left_mm - margin_right_mm
-#
-#     # Account for column layout
-#     if style.column_count > 1:
-#         column_gap_mm = float(style.column_gap.replace('mm', ''))
-#         content_width_mm = (content_width_mm - (style.column_count - 1) * column_gap_mm) / style.column_count
-#
-#     return content_width_mm
-
-

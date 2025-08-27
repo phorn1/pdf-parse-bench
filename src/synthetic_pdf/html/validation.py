@@ -1,7 +1,7 @@
 """Formula validation utilities for synthetic PDF content."""
 import logging
 from .pdf_service import PDFService
-from .style_config import StyleConfig
+from .style_config import HTMLConfig
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class FormulaSizeValidator:
     """Validates formula size and layout constraints."""
     
-    def __init__(self, pdf_service: PDFService, style: StyleConfig):
+    def __init__(self, pdf_service: PDFService, style: HTMLConfig):
         self.pdf_service = pdf_service
         self.style = style
     
