@@ -50,6 +50,8 @@ class FormulaStatistics:
     correct_formulas: int
     accuracy_percentage: float
     average_score: float
+    average_inline_score: float
+    average_display_score: float
 
 
 @dataclass
@@ -237,7 +239,12 @@ def _evaluate_texts(text_pairs: list[tuple[str, str]]) -> list[TextSimilarityRes
 
 # ========== STATISTICS FUNCTIONS ==========
 
-def calculate_statistics(results: list[FormulaEvaluationResult], text_results: list[TextSimilarityResult]) -> SummaryStatistics:
+def calculate_statistics(
+    results: list[FormulaEvaluationResult], 
+    text_results: list[TextSimilarityResult],
+    gt_formulas: list[dict[str, str]],
+    extracted_formulas: list[dict[str, str]]
+) -> SummaryStatistics:
     """
     Calculate summary statistics from evaluation results.
 
@@ -257,6 +264,20 @@ def calculate_statistics(results: list[FormulaEvaluationResult], text_results: l
     total_formulas_evaluated = sum(1 for result in results if result.is_correct is not None)
     formula_accuracy_percentage = (
         correct_formula_count / total_formulas_evaluated * 100) if total_formulas_evaluated else 0
+    
+    # ========== SEPARATE INLINE/DISPLAY STATISTICS ==========
+    inline_scores = []
+    display_scores = []
+    
+    for i, result in enumerate(results):
+        if result.score is not None and i < len(gt_formulas):
+            if gt_formulas[i]['type'] == 'inline-formula':
+                inline_scores.append(result.score)
+            elif gt_formulas[i]['type'] == 'display-formula':
+                display_scores.append(result.score)
+    
+    average_inline_score = sum(inline_scores) / len(inline_scores) if inline_scores else 0
+    average_display_score = sum(display_scores) / len(display_scores) if display_scores else 0
 
     # ========== TEXT STATISTICS ==========
     text_similarities = [result.normalized_levenshtein_similarity for result in text_results]
@@ -267,7 +288,9 @@ def calculate_statistics(results: list[FormulaEvaluationResult], text_results: l
         total_formulas=len(results),
         correct_formulas=correct_formula_count,
         accuracy_percentage=formula_accuracy_percentage,
-        average_score=average_formula_score
+        average_score=average_formula_score,
+        average_inline_score=average_inline_score,
+        average_display_score=average_display_score
     )
     
     text_stats = TextStatistics(
@@ -313,13 +336,13 @@ def run_evaluation(
     # Load ground truth data
     with open(gt_json_path, 'r', encoding='utf-8') as f:
         gt_data = json.load(f)
-    gt_formulas = [item['data'] for item in gt_data if item.get('type') == 'formula']
+    gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
     gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
 
     # Load extracted data
     with open(parsed_json_path, 'r', encoding='utf-8') as f:
         parsed_data = json.load(f)
-    extracted_formulas = [item['data'] for item in parsed_data if item.get('type') == 'formula']
+    extracted_formulas = [item for item in parsed_data if item.get('type') in ['inline-formula', 'display-formula']]
     extracted_texts = [item['data'] for item in parsed_data if item.get('type') == 'text']
 
     # ========== VALIDATE DATA COUNTS ==========
@@ -338,7 +361,7 @@ def run_evaluation(
     # ========== RUN EVALUATIONS ==========
     # Evaluate formulas
     print(f"Starting formula evaluation for {len(gt_formulas)} formulas...")
-    formula_pairs = list(zip(gt_formulas, extracted_formulas))
+    formula_pairs = list(zip([f['data'] for f in gt_formulas], [f['data'] for f in extracted_formulas]))
     formula_results = _evaluate_formulas(formula_pairs, llm_judge_model)
     
     # Evaluate texts
@@ -347,7 +370,7 @@ def run_evaluation(
     text_results = _evaluate_texts(text_pairs)
 
     # ========== CALCULATE STATISTICS ==========
-    summary_stats = calculate_statistics(formula_results, text_results)
+    summary_stats = calculate_statistics(formula_results, text_results, gt_formulas, extracted_formulas)
 
     # ========== WRITE RESULTS ==========
     with open(result_stats_path, 'w', encoding='utf-8') as f:
