@@ -1,29 +1,20 @@
-import os
 import json
-from pathlib import Path
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
 from functools import wraps
-from dataclasses import dataclass, asdict
-from tqdm import tqdm
-from dotenv import load_dotenv
+from pathlib import Path
 
-from openai import OpenAI
-from pydantic import BaseModel, field_validator
 import Levenshtein
+from dotenv import load_dotenv
+from openai import OpenAI
+from pydantic import BaseModel
+from tqdm import tqdm
 
 load_dotenv()
 
 
-# ========== PYDANTIC MODELS ==========
-
-class FormulaEvaluationResponse(BaseModel):
-    explanation: str
-    is_correct: bool | None
-    score: float | None
-    errors: list[str]
-    
-
-# ========== DATA CLASSES ==========
+# ========== DATA MODELS ==========
 
 @dataclass
 class TextSimilarityResult:
@@ -66,7 +57,15 @@ class SummaryStatistics:
     text_statistics: TextStatistics
 
 
-# ========== DECORATORS ==========
+class FormulaEvaluationResponse(BaseModel):
+    """Structured response model for LLM formula evaluation."""
+    explanation: str
+    is_correct: bool | None
+    score: float | None
+    errors: list[str]
+
+
+# ========== CORE EVALUATION FUNCTIONS ==========
 
 def retry_formula_evaluation(max_retries: int = 10):
     def decorator(func) -> object:
@@ -94,9 +93,6 @@ def retry_formula_evaluation(max_retries: int = 10):
             )
         return wrapper
     return decorator
-
-
-# ========== EVALUATION FUNCTIONS ==========
 
 def evaluate_text_similarity(gt_text: str, extracted_text: str) -> TextSimilarityResult:
     """
@@ -162,9 +158,10 @@ def evaluate_formula_pair(
     )
 
 
-# ========== HELPER FUNCTIONS ==========
+
 
 def _get_formula_evaluation_prompt(gt_formula: str, extracted_formula: str) -> str:
+    """Generate evaluation prompt for formula comparison."""
     return f"""
 You are a mathematical formula evaluator. Your task is to determine if the extracted formula correctly represents the ground truth formula, focusing on both semantic meaning AND proper mathematical notation.
 
@@ -237,7 +234,7 @@ def _evaluate_texts(text_pairs: list[tuple[str, str]]) -> list[TextSimilarityRes
     return results
 
 
-# ========== STATISTICS FUNCTIONS ==========
+# ========== STATISTICS CALCULATION ==========
 
 def calculate_statistics(
     results: list[FormulaEvaluationResult], 
@@ -304,7 +301,7 @@ def calculate_statistics(
     )
 
 
-# ========== MAIN EVALUATION FUNCTION ==========
+# ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
         llm_judge_model: str,
@@ -313,35 +310,31 @@ def run_evaluation(
         result_stats_path: Path,
         result_formula_evals_path: Path,
         result_text_evals_path: Path,
-        use_hso_llm_proxy: bool = True,
 ) -> None:
     """
-    Evaluate the parsed formulas and texts against ground truth.
+    Complete evaluation pipeline: load data, validate, evaluate, calculate stats, and save results.
 
     Args:
-        llm_judge_model: The name of the model to use
-        gt_json_path: Path to the ground truth json file
-        parsed_json_path: Path to the parsed json file containing formulas and texts to evaluate
-        result_stats_path: Path to write summary statistics JSON file
-        result_formula_evals_path: Path to write formula evaluation results JSON file
-        result_text_evals_path: Path to write text evaluation results JSON file
+        llm_judge_model: Model name for formula evaluation
+        gt_json_path: Ground truth JSON file path
+        parsed_json_path: Parsed results JSON file path
+        result_stats_path: Output path for summary statistics
+        result_formula_evals_path: Output path for detailed formula evaluations
+        result_text_evals_path: Output path for detailed text evaluations
 
     Raises:
         FileNotFoundError: If input files don't exist
-        ValueError: If no formulas found in either file or if formula count mismatch
+        ValueError: If data counts don't match between ground truth and extracted
         json.JSONDecodeError: If files contain invalid JSON
     """
-
     # ========== LOAD DATA ==========
-    # Load ground truth data
     with open(gt_json_path, 'r', encoding='utf-8') as f:
         gt_data = json.load(f)
-    gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
-    gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
-
-    # Load extracted data
     with open(parsed_json_path, 'r', encoding='utf-8') as f:
         parsed_data = json.load(f)
+    
+    gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
+    gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
     extracted_formulas = [item for item in parsed_data if item.get('type') in ['inline-formula', 'display-formula']]
     extracted_texts = [item['data'] for item in parsed_data if item.get('type') == 'text']
 
@@ -351,7 +344,6 @@ def run_evaluation(
             f"Formula count mismatch: gt_formulas={len(gt_formulas)}, "
             f"extracted_formulas={len(extracted_formulas)}"
         )
-
     if len(gt_texts) != len(extracted_texts):
         raise ValueError(
             f"Text count mismatch: gt_texts={len(gt_texts)}, "
@@ -375,9 +367,7 @@ def run_evaluation(
     # ========== WRITE RESULTS ==========
     with open(result_stats_path, 'w', encoding='utf-8') as f:
         json.dump(asdict(summary_stats), f, indent=2, ensure_ascii=False)
-    
     with open(result_formula_evals_path, 'w', encoding='utf-8') as f:
         json.dump([asdict(result) for result in formula_results], f, indent=2, ensure_ascii=False)
-    
     with open(result_text_evals_path, 'w', encoding='utf-8') as f:
         json.dump([asdict(result) for result in text_results], f, indent=2, ensure_ascii=False)
