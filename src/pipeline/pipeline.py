@@ -40,7 +40,7 @@ class PipelineConfig(BaseModel):
     extract_segments: bool = False
     evaluate_results: bool = False
     reuse_timestamp: str | None = None
-    formula_llm_judge_model: str
+    formula_llm_judge_models: list[str]
 
     @model_validator(mode='after')
     def validate_config(self):
@@ -342,7 +342,7 @@ class BenchmarkOrchestrator:
                     logger.info(f"  Evaluating parser: {parser_name}")
                     
                     run_evaluation(
-                        llm_judge_model=self.config.pipeline.formula_llm_judge_model,
+                        llm_judge_models=self.config.pipeline.formula_llm_judge_models,
                         gt_json_path=run_config.gt_segments_path,
                         parsed_json_path=segments_path,
                         result_stats_path=run_config.eval_stats_path(parser_name),

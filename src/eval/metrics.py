@@ -32,11 +32,13 @@ class FormulaEvaluationResult:
     errors: list[str]
     ground_truth_formula: str
     extracted_formula: str
+    judge_model: str
     formula_number: int | None = None
 
 
 @dataclass
 class FormulaStatistics:
+    judge_model: str
     total_formulas: int
     correct_formulas: int
     accuracy_percentage: float
@@ -53,7 +55,7 @@ class TextStatistics:
 
 @dataclass
 class SummaryStatistics:
-    formula_statistics: FormulaStatistics
+    formula_statistics: dict[str, FormulaStatistics]
     text_statistics: TextStatistics
 
 
@@ -89,6 +91,7 @@ def retry_formula_evaluation(max_retries: int = 10):
                 errors=[f"Evaluation failed: {last_error}"],
                 ground_truth_formula=gt_formula,
                 extracted_formula=extracted_formula,
+                judge_model=model,
                 formula_number=None
             )
         return wrapper
@@ -154,6 +157,7 @@ def evaluate_formula_pair(
         errors=parsed_data.errors,
         ground_truth_formula=gt_formula,
         extracted_formula=extracted_formula,
+        judge_model=model,
         formula_number=None
     )
 
@@ -191,33 +195,41 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 
 def _evaluate_formulas(
     formula_pairs: list[tuple[str, str]], 
-    model: str,
-) -> list[FormulaEvaluationResult]:
-    """Evaluate all formula pairs concurrently using ThreadPoolExecutor."""
+    models: list[str],
+) -> dict[str, list[FormulaEvaluationResult]]:
+    """Evaluate all formula pairs concurrently using ThreadPoolExecutor for multiple models."""
     if os.getenv("LLM_PROXY_URL"):
         client = OpenAI(base_url=os.getenv("LLM_PROXY_URL"),
                         api_key=os.getenv("LLM_PROXY_API_KEY"))
     else:
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    results = []
+    all_results = {model: [] for model in models}
     
     with ThreadPoolExecutor() as executor:
-        future_to_index = {
-            executor.submit(evaluate_formula_pair, client, model, gt_formula, extracted_formula): i
-            for i, (gt_formula, extracted_formula) in enumerate(formula_pairs)
-        }
+        future_to_info = {}
         
-        for future in tqdm(as_completed(future_to_index), total=len(formula_pairs), desc="Evaluating Formulas"):
-            formula_index = future_to_index[future]
+        # Submit tasks for all model-formula combinations
+        for model in models:
+            for i, (gt_formula, extracted_formula) in enumerate(formula_pairs):
+                future = executor.submit(evaluate_formula_pair, client, model, gt_formula, extracted_formula)
+                future_to_info[future] = (model, i)
+        
+        total_tasks = len(models) * len(formula_pairs)
+        for future in tqdm(as_completed(future_to_info), total=total_tasks, desc="Evaluating Formulas"):
+            model, formula_index = future_to_info[future]
             try:
                 result = future.result()
                 result.formula_number = formula_index
-                results.append(result)
+                all_results[model].append(result)
             except Exception as exc:
-                print(f"Formula {formula_index} generated an exception: {exc}")
+                print(f"Formula {formula_index} with model {model} generated an exception: {exc}")
     
-    return sorted(results, key=lambda x: x.formula_number or 0)
+    # Sort results by formula number for each model
+    for model in models:
+        all_results[model] = sorted(all_results[model], key=lambda x: x.formula_number or 0)
+    
+    return all_results
 
 
 def _evaluate_texts(text_pairs: list[tuple[str, str]]) -> list[TextSimilarityResult]:
@@ -237,58 +249,62 @@ def _evaluate_texts(text_pairs: list[tuple[str, str]]) -> list[TextSimilarityRes
 # ========== STATISTICS CALCULATION ==========
 
 def calculate_statistics(
-    results: list[FormulaEvaluationResult], 
+    results: dict[str, list[FormulaEvaluationResult]], 
     text_results: list[TextSimilarityResult],
     gt_formulas: list[dict[str, str]],
-    extracted_formulas: list[dict[str, str]]
 ) -> SummaryStatistics:
     """
     Calculate summary statistics from evaluation results.
 
     Args:
-        results: List of formula evaluation results
+        results: Dictionary mapping model names to lists of formula evaluation results
         text_results: List of text evaluation results
+        gt_formulas: List of ground truth formulas with metadata
 
     Returns:
-        SummaryStatistics with aggregated metrics
+        SummaryStatistics with aggregated metrics per model
     """
-    # ========== FORMULA STATISTICS ==========
-    valid_formula_scores = [result.score for result in results if result.score is not None]
-    total_formula_score = sum(valid_formula_scores) if valid_formula_scores else 0
-    average_formula_score = total_formula_score / len(valid_formula_scores) if valid_formula_scores else 0
+    # ========== FORMULA STATISTICS PER MODEL ==========
+    formula_statistics = {}
+    
+    for model_name, model_results in results.items():
+        valid_formula_scores = [result.score for result in model_results if result.score is not None]
+        total_formula_score = sum(valid_formula_scores) if valid_formula_scores else 0
+        average_formula_score = total_formula_score / len(valid_formula_scores) if valid_formula_scores else 0
 
-    correct_formula_count = sum(1 for result in results if result.is_correct is True)
-    total_formulas_evaluated = sum(1 for result in results if result.is_correct is not None)
-    formula_accuracy_percentage = (
-        correct_formula_count / total_formulas_evaluated * 100) if total_formulas_evaluated else 0
-    
-    # ========== SEPARATE INLINE/DISPLAY STATISTICS ==========
-    inline_scores = []
-    display_scores = []
-    
-    for i, result in enumerate(results):
-        if result.score is not None and i < len(gt_formulas):
-            if gt_formulas[i]['type'] == 'inline-formula':
-                inline_scores.append(result.score)
-            elif gt_formulas[i]['type'] == 'display-formula':
-                display_scores.append(result.score)
-    
-    average_inline_score = sum(inline_scores) / len(inline_scores) if inline_scores else 0
-    average_display_score = sum(display_scores) / len(display_scores) if display_scores else 0
+        correct_formula_count = sum(1 for result in model_results if result.is_correct is True)
+        total_formulas_evaluated = sum(1 for result in model_results if result.is_correct is not None)
+        formula_accuracy_percentage = (
+            correct_formula_count / total_formulas_evaluated * 100) if total_formulas_evaluated else 0
+        
+        # ========== SEPARATE INLINE/DISPLAY STATISTICS ==========
+        inline_scores = []
+        display_scores = []
+        
+        for i, result in enumerate(model_results):
+            if result.score is not None and i < len(gt_formulas):
+                if gt_formulas[i]['type'] == 'inline-formula':
+                    inline_scores.append(result.score)
+                elif gt_formulas[i]['type'] == 'display-formula':
+                    display_scores.append(result.score)
+        
+        average_inline_score = sum(inline_scores) / len(inline_scores) if inline_scores else 0
+        average_display_score = sum(display_scores) / len(display_scores) if display_scores else 0
 
+        # ========== BUILD RESULT OBJECTS ==========
+        formula_statistics[model_name] = FormulaStatistics(
+            judge_model=model_name,
+            total_formulas=len(model_results),
+            correct_formulas=correct_formula_count,
+            accuracy_percentage=formula_accuracy_percentage,
+            average_score=average_formula_score,
+            average_inline_score=average_inline_score,
+            average_display_score=average_display_score
+        )
+    
     # ========== TEXT STATISTICS ==========
     text_similarities = [result.normalized_levenshtein_similarity for result in text_results]
     average_text_similarity = sum(text_similarities) / len(text_similarities) if text_similarities else 0
-
-    # ========== BUILD RESULT OBJECTS ==========
-    formula_stats = FormulaStatistics(
-        total_formulas=len(results),
-        correct_formulas=correct_formula_count,
-        accuracy_percentage=formula_accuracy_percentage,
-        average_score=average_formula_score,
-        average_inline_score=average_inline_score,
-        average_display_score=average_display_score
-    )
     
     text_stats = TextStatistics(
         total_texts=len(text_results),
@@ -296,7 +312,7 @@ def calculate_statistics(
     )
     
     return SummaryStatistics(
-        formula_statistics=formula_stats,
+        formula_statistics=formula_statistics,
         text_statistics=text_stats
     )
 
@@ -304,7 +320,7 @@ def calculate_statistics(
 # ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
-        llm_judge_model: str,
+        llm_judge_models: list[str],
         gt_json_path: Path,
         parsed_json_path: Path,
         result_stats_path: Path,
@@ -315,7 +331,7 @@ def run_evaluation(
     Complete evaluation pipeline: load data, validate, evaluate, calculate stats, and save results.
 
     Args:
-        llm_judge_model: Model name for formula evaluation
+        llm_judge_models: List of model names for formula evaluation
         gt_json_path: Ground truth JSON file path
         parsed_json_path: Parsed results JSON file path
         result_stats_path: Output path for summary statistics
@@ -351,23 +367,28 @@ def run_evaluation(
         )
 
     # ========== RUN EVALUATIONS ==========
-    # Evaluate formulas
-    print(f"Starting formula evaluation for {len(gt_formulas)} formulas...")
+    # Evaluate formulas with multiple models
     formula_pairs = list(zip([f['data'] for f in gt_formulas], [f['data'] for f in extracted_formulas]))
-    formula_results = _evaluate_formulas(formula_pairs, llm_judge_model)
+    formula_results = _evaluate_formulas(formula_pairs, llm_judge_models)
     
     # Evaluate texts
-    print(f"Starting text evaluation for {len(gt_texts)} texts...")
     text_pairs = list(zip(gt_texts, extracted_texts))
     text_results = _evaluate_texts(text_pairs)
 
     # ========== CALCULATE STATISTICS ==========
-    summary_stats = calculate_statistics(formula_results, text_results, gt_formulas, extracted_formulas)
+    summary_stats = calculate_statistics(formula_results, text_results, gt_formulas)
 
     # ========== WRITE RESULTS ==========
     with open(result_stats_path, 'w', encoding='utf-8') as f:
         json.dump(asdict(summary_stats), f, indent=2, ensure_ascii=False)
+    
+    # Write formula results with all models
+    formula_results_flattened = []
+    for model_name, model_results in formula_results.items():
+        formula_results_flattened.extend([asdict(result) for result in model_results])
+    
     with open(result_formula_evals_path, 'w', encoding='utf-8') as f:
-        json.dump([asdict(result) for result in formula_results], f, indent=2, ensure_ascii=False)
+        json.dump(formula_results_flattened, f, indent=2, ensure_ascii=False)
+    
     with open(result_text_evals_path, 'w', encoding='utf-8') as f:
         json.dump([asdict(result) for result in text_results], f, indent=2, ensure_ascii=False)
