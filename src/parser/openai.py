@@ -1,4 +1,5 @@
 import os
+import base64
 from pathlib import Path
 from dotenv import load_dotenv
 from .core import PDFParser, parser_registry, PDF_TO_MARKDOWN_PROMPT
@@ -55,7 +56,7 @@ class OpenAIGPT4oParser(BaseOpenAIParser):
 
     @classmethod
     def parser_name(cls) -> str:
-        return "openai_gpt-4o"
+        return "gpt-4o"
 
 
 @parser_registry()
@@ -65,4 +66,34 @@ class OpenAIGPT4oMiniParser(BaseOpenAIParser):
 
     @classmethod
     def parser_name(cls) -> str:
-        return "openai_gpt-4o-mini"
+        return "gpt-4o-mini"
+
+
+@parser_registry()
+class OpenAIGPT5Parser(BaseOpenAIParser):
+    def __init__(self):
+        super().__init__(model="gpt-5")
+
+    @classmethod
+    def parser_name(cls) -> str:
+        return "gpt-5"
+
+
+@parser_registry()
+class OpenAIGPT5MiniParser(BaseOpenAIParser):
+    def __init__(self):
+        super().__init__(model="gpt-5-mini")
+
+    @classmethod
+    def parser_name(cls) -> str:
+        return "gpt-5-mini"
+
+
+@parser_registry()
+class OpenAIGPT5NanoParser(BaseOpenAIParser):
+    def __init__(self):
+        super().__init__(model="gpt-5-nano")
+
+    @classmethod
+    def parser_name(cls) -> str:
+        return "gpt-5-nano"
