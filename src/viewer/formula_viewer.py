@@ -5,20 +5,30 @@ from pathlib import Path
 from ..pipeline import PipelinePaths, BenchmarkRunConfig
 
 
-def load_formula_data(formula_results_path: Path) -> list[dict] | None:
-    """Load formula evaluation results from JSON file."""
+def load_formula_data(formula_results_path: Path) -> dict[int, dict[str, dict]] | None:
+    """Load formula evaluation results from JSON file and group by formula_number and judge_model."""
     if not formula_results_path.exists():
         return None
     
     with open(formula_results_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+        raw_data = json.load(f)
     
-    # Process formulas to ensure consistent MathJax formatting
-    for entry in data:
+    # Group evaluations by formula_number, then by judge_model
+    grouped_data = {}
+    for entry in raw_data:
+        formula_num = entry['formula_number']
+        judge_model = entry['judge_model']
+        
+        if formula_num not in grouped_data:
+            grouped_data[formula_num] = {}
+        
+        # Process formulas to ensure consistent MathJax formatting
         entry['ground_truth_formula'] = standardize_formula_notation(entry['ground_truth_formula'])
         entry['extracted_formula'] = standardize_formula_notation(entry['extracted_formula'])
+        
+        grouped_data[formula_num][judge_model] = entry
     
-    return data
+    return grouped_data
 
 
 def load_stats_data(stats_path: Path) -> dict | None:
@@ -51,13 +61,37 @@ def standardize_formula_notation(formula_text: str) -> str:
     return formula_text
 
 
-def create_summary_html(stats: dict) -> str:
-    """Create HTML for summary statistics."""
-    formula_stats = stats.get('formula_statistics', {})
+def create_summary_html(stats: dict, judge_model: str = None) -> str:
+    """Create HTML for summary statistics for a specific judge model."""
+    formula_stats_all = stats.get('formula_statistics', {})
     text_stats = stats.get('text_statistics', {})
+    
+    # Get stats for the specific judge model, or use first available if not specified
+    if judge_model and judge_model in formula_stats_all:
+        formula_stats = formula_stats_all[judge_model]
+    else:
+        # Fallback to first available judge model
+        available_judges = list(formula_stats_all.keys())
+        formula_stats = formula_stats_all[available_judges[0]] if available_judges else {}
+    
+    # Format accuracy percentage
+    accuracy = formula_stats.get('accuracy_percentage', 0)
+    accuracy_str = f"{accuracy:.1f}" if accuracy != int(accuracy) else str(int(accuracy))
+    
+    # Format average score
+    avg_score = formula_stats.get('average_score', 0)
+    score_str = f"{avg_score:.1f}" if avg_score != int(avg_score) else str(int(avg_score))
+    
+    # Format levenshtein similarity
+    lev_sim = text_stats.get('average_levenshtein_similarity', 0)
+    lev_sim_str = f"{lev_sim:.3f}"
     
     return f"""
     <div class="summary-stats">
+        <div style="display: inline-block; margin: 0 15px;">
+            <div>Judge Model</div>
+            <div class="summary-value">{judge_model or 'Unknown'}</div>
+        </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Total Formulas</div>
             <div class="summary-value">{formula_stats.get('total_formulas', 0)}</div>
@@ -68,15 +102,15 @@ def create_summary_html(stats: dict) -> str:
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Accuracy</div>
-            <div class="summary-value">{formula_stats.get('accuracy_percentage', 0)}%</div>
+            <div class="summary-value">{accuracy_str}%</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Average Score</div>
-            <div class="summary-value">{formula_stats.get('average_score', 0)}</div>
+            <div class="summary-value">{score_str}</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
-            <div>Average Levenshtein Similarity</div>
-            <div class="summary-value">{text_stats.get('average_levenshtein_similarity', 0)}</div>
+            <div>Avg Levenshtein Sim</div>
+            <div class="summary-value">{lev_sim_str}</div>
         </div>
     </div>
     """
@@ -183,6 +217,18 @@ def get_parsers_for_pdf(data: dict, timestamp: str, pdf_name: str) -> list[str]:
     if timestamp not in data or pdf_name not in data[timestamp]:
         return []
     return sorted(data[timestamp][pdf_name])
+
+
+def get_judge_models_for_combination(formula_data: dict[int, dict[str, dict]] | None) -> list[str]:
+    """Get sorted list of available judge models from the formula data."""
+    if not formula_data:
+        return []
+    
+    judge_models = set()
+    for formula_evaluations in formula_data.values():
+        judge_models.update(formula_evaluations.keys())
+    
+    return sorted(judge_models)
 
 
 def create_formula_viewer():
@@ -309,6 +355,12 @@ function() {
                     label="Select Parser",
                     value=initial_parser
                 )
+            with gr.Column():
+                judge_model_dropdown = gr.Dropdown(
+                    choices=[],
+                    label="Select Judge Model",
+                    value=None
+                )
 
         # Summary statistics
         summary_html_component = gr.HTML()
@@ -354,14 +406,30 @@ function() {
         formula_index = gr.State(0)  # 0-based index for internal use
         current_data = gr.State(None)  # Will hold the current formula data
         hierarchical_data = gr.State(data)  # Store the hierarchical data
+        current_judge_model = gr.State(None)  # Current selected judge model
+        current_stats_data = gr.State(None)  # Store the current stats data
 
-        # Function to update display based on index
-        def update_display(idx: int, formula_data: list[dict] | None):
-            if not formula_data or idx < 0 or idx >= len(formula_data):
+        # Function to update display based on index and judge model
+        def update_display(idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None):
+            if not formula_data or not judge_model or idx < 0:
                 # Handle edge cases
                 return ("", "", "", "", "", "", idx, 1)
 
-            formula = formula_data[idx]
+            formula_numbers = sorted(formula_data.keys())
+            if idx >= len(formula_numbers):
+                return ("", "", "", "", "", "", idx, 1)
+
+            formula_num = formula_numbers[idx]
+            judge_evaluations = formula_data[formula_num]
+            
+            if judge_model not in judge_evaluations:
+                # If selected judge model doesn't exist for this formula, use first available
+                available_judges = list(judge_evaluations.keys())
+                if not available_judges:
+                    return ("", "", "", "", "", "", idx, 1)
+                judge_model = available_judges[0]
+
+            formula = judge_evaluations[judge_model]
 
             # Extract formula details
             ground_truth = formula.get('ground_truth_formula', 'No ground truth formula available')
@@ -373,7 +441,7 @@ function() {
 
             # Calculate formula number (1-based) and total
             formula_number = idx + 1
-            total_formulas = len(formula_data)
+            total_formulas = len(formula_numbers)
 
             # Create HTML components
             progress_html = create_progress_html(formula_number, total_formulas)
@@ -411,7 +479,7 @@ function() {
         # Function to load a combination and update the interface
         def load_combination(timestamp: str, pdf_name: str, parser: str, current_idx: int):
             if not all([timestamp, pdf_name, parser]):
-                return None, "", "", "", "", "", "", 0, 1, None, 1
+                return ("", "", "", "", "", "", "", 0, 1, None, 1, gr.update(choices=[], value=None))
 
             try:
                 # Create BenchmarkRunConfig to get file paths
@@ -429,20 +497,32 @@ function() {
                     return (
                         "No evaluation data found",
                         "", "", "", "", "", "",
-                        0, 1, None, 1
+                        0, 1, None, 1, gr.update(choices=[], value=None)
+                    )
+
+                # Get available judge models and select first one
+                judge_models = get_judge_models_for_combination(formula_data)
+                first_judge = judge_models[0] if judge_models else None
+
+                if not first_judge:
+                    return (
+                        "No judge models found",
+                        "", "", "", "", "", "",
+                        0, 1, None, 1, gr.update(choices=[], value=None)
                     )
 
                 # Create summary HTML
-                summary_html = create_summary_html(stats_data)
+                summary_html = create_summary_html(stats_data, first_judge)
 
                 # Validate index
-                if current_idx >= len(formula_data):
-                    current_idx = len(formula_data) - 1
+                formula_numbers = sorted(formula_data.keys())
+                if current_idx >= len(formula_numbers):
+                    current_idx = len(formula_numbers) - 1
                 if current_idx < 0:
                     current_idx = 0
 
                 # Update the display
-                display_result = update_display(current_idx, formula_data)
+                display_result = update_display(current_idx, first_judge, formula_data)
 
                 # Return everything needed to update the UI
                 return (
@@ -456,7 +536,8 @@ function() {
                     current_idx,  # index state
                     display_result[7],  # formula_number (1-based)
                     formula_data,  # formula_data state
-                    display_result[7]  # formula_number for input
+                    display_result[7],  # formula_number for input
+                    gr.update(choices=judge_models, value=first_judge)  # judge model dropdown
                 )
                 
             except Exception as e:
@@ -464,31 +545,42 @@ function() {
                 return (
                     "Error loading data",
                     "", "", "", "", "", "",
-                    0, 1, None, 1
+                    0, 1, None, 1, gr.update(choices=[], value=None)
                 )
 
         # Navigation functions
-        def go_to_prev(current_idx: int, formula_data: list[dict] | None):
+        def go_to_prev(current_idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None):
             if formula_data and current_idx > 0:
                 current_idx -= 1
-            return update_display(current_idx, formula_data)
+            return update_display(current_idx, judge_model, formula_data)
 
-        def go_to_next(current_idx: int, formula_data: list[dict] | None):
-            if formula_data and current_idx < len(formula_data) - 1:
-                current_idx += 1
-            return update_display(current_idx, formula_data)
+        def go_to_next(current_idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None):
+            if formula_data:
+                formula_numbers = sorted(formula_data.keys())
+                if current_idx < len(formula_numbers) - 1:
+                    current_idx += 1
+            return update_display(current_idx, judge_model, formula_data)
 
-        def go_to_number(formula_num: int, formula_data: list[dict] | None):
+        def go_to_number(formula_num: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None):
             # Convert 1-based formula number to 0-based index
             idx = formula_num - 1
             if formula_data:
+                formula_numbers = sorted(formula_data.keys())
                 if idx < 0:
                     idx = 0
-                if idx >= len(formula_data):
-                    idx = len(formula_data) - 1
+                if idx >= len(formula_numbers):
+                    idx = len(formula_numbers) - 1
             else:
                 idx = 0
-            return update_display(idx, formula_data)
+            return update_display(idx, judge_model, formula_data)
+
+        def judge_model_changed(new_judge_model: str, current_idx: int, formula_data: dict[int, dict[str, dict]] | None):
+            # Update display when judge model changes
+            return update_display(current_idx, new_judge_model, formula_data)
+
+        def update_stats_for_judge(new_judge_model: str, stats_data: dict):
+            # Update summary statistics when judge model changes
+            return create_summary_html(stats_data, new_judge_model)
 
         # Connect event handlers for dropdown changes
         timestamp_dropdown.change(
@@ -522,13 +614,29 @@ function() {
                     formula_index,
                     formula_number_input,
                     current_data,
-                    formula_number_input
+                    formula_number_input,
+                    judge_model_dropdown
                 ]
             )
 
+        judge_model_dropdown.change(
+            judge_model_changed,
+            inputs=[judge_model_dropdown, formula_index, current_data],
+            outputs=[
+                formula_progress,
+                ground_truth_formula,
+                extracted_formula,
+                combined_status,
+                explanation,
+                errors,
+                formula_index,
+                formula_number_input
+            ]
+        )
+
         prev_btn.click(
             go_to_prev,
-            inputs=[formula_index, current_data],
+            inputs=[formula_index, judge_model_dropdown, current_data],
             outputs=[
                 formula_progress,
                 ground_truth_formula,
@@ -543,7 +651,7 @@ function() {
 
         next_btn.click(
             go_to_next,
-            inputs=[formula_index, current_data],
+            inputs=[formula_index, judge_model_dropdown, current_data],
             outputs=[
                 formula_progress,
                 ground_truth_formula,
@@ -558,7 +666,7 @@ function() {
 
         formula_number_input.change(
             go_to_number,
-            inputs=[formula_number_input, current_data],
+            inputs=[formula_number_input, judge_model_dropdown, current_data],
             outputs=[
                 formula_progress,
                 ground_truth_formula,
@@ -586,7 +694,8 @@ function() {
                 formula_index,
                 formula_number_input,
                 current_data,
-                formula_number_input
+                formula_number_input,
+                judge_model_dropdown
             ]
         )
 
