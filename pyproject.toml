@@ -1,5 +1,5 @@
 [project]
-name = "synthetic-pdf"
+name = "pdf-to-text-benchmark"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.12"
@@ -7,11 +7,34 @@ dependencies = [
     "faker>=37.4.0",
     "playwright==1.52.0",
     "pydantic>=2.11.7",
+    "pydantic-settings>=2.0.0",
     "pypdf>=5.6.0",
     "pyyaml>=6.0.0",
+    # PDF parsing libraries
+    "pymupdf4llm>=0.0.17",
+    "pymupdf>=1.24.0",
+    "unstructured[pdf]==0.18.11",
+    "pdfminer-six==20250506",
+    "marker-pdf>=0.2.0",
+    "megaparse>=0.0.30",
+    "llama-cloud>=0.0.15",
+    "pdfservices-sdk>=4.1.0",
+    "pdf2image>=1.17.0",
+    # AI/ML libraries
+    "openai==1.99.3",
+    "google-generativeai>=0.8.0",
+    "mistralai>=1.2.0",
+    "langchain-openai>=0.2.0",
+    # Utility libraries
+    "python-dotenv>=1.0.0",
+    "matplotlib>=3.9.0",
+    "requests>=2.32.0",
+    "typing-extensions>=4.12.0",
+    "levenshtein>=0.27.1",
+    "gradio>=5.41.0",
+    "mpxpy==0.0.17",
+    "docling==2.43.0",
+    "mlx-vlm==0.3.2",
+    "llama-cloud-services==0.6.60",
 ]
 
-[project.optional-dependencies]
-test = [
-    "pytest>=8.0.0",
-]

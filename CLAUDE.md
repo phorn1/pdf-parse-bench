@@ -5,11 +5,15 @@ This is a multi-module project for document processing and benchmark dataset gen
 ## Project Structure
 
 - `src/synthetic_pdf/` - Synthetic PDF generator module for creating benchmark datasets
+- `src/parser/` - Implementation of different Parsers
 - `config.yaml` - Configuration files
 - `data/` - Data files and databases
 - `artifacts/` - Output directory for generated files
 
 ## Usage
-
 This is a uv project. Use `uv run` for executing Python scripts.
 
+## Development Strategy
+* Use Python 3.12 features and syntax, including the new built-in types (e.g., `list[str]`, `dict[str, int]`).
+* When using visual separators in code, prefer this format: `# ========== SECTION NAME ==========`
+* KISS (Keep It Simple, Stupid): Simplicity should be a key goal in design. Choose straightforward solutions over complex ones whenever possible. Simple solutions are easier to understand, maintain, and debug.

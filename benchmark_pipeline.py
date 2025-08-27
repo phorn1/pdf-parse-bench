@@ -2,11 +2,13 @@
 
 import asyncio
 import logging
-
 from src.pipeline import BenchmarkOrchestrator
 
-logging.basicConfig(level=logging.INFO)
-# logging.getLogger('src.synthetic_pdf').setLevel(logging.DEBUG)
+# Configure logging once at startup
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
 
 
 async def main():

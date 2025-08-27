@@ -1,32 +1,40 @@
-seed: 10
+synthetic_pdf:
+#  seed: 2
+  amount: 4
+  generator_type: "latex"
 
-style:
-  # PDF Layout Settings
-  pdf_size: "A4"
-  pdf_margin_top: "20mm"
-  pdf_margin_bottom: "20mm"
-  pdf_margin_left: "20mm"
-  pdf_margin_right: "20mm"
-  
-  # Column Layout Settings
-  column_count: 2
-  column_gap: ["5mm", "10mm"]
-  
-  # Typography Settings
-  font_family: "'Times New Roman', Times, serif"
-  font_size: ["10pt", "12pt"]
-  font_weight: "normal"
-  text_align: "justify"
-  
-  # Color Settings
-  text_color: "hsl(0, 100%, 50%)"
-  document_background_color: "hsl(0, 30%, 50%)"
-  content_block_background_color: "hsl(0, 0%, 98%)"
-  
-  # Spacing Settings
-  content_padding: "4mm"
-  content_margin: "4mm"
-  
-  # Formula Settings
-  formula_font_size: "12pt"
-  formula_color: "black"
+pipeline:
+#  generate_pdfs: true
+#  parse_pdfs: true
+  extract_segments: true
+#  evaluate_results: true
+  reuse_timestamp: "2025-08-26_12-54-12"  # Set to existing timestamp when generate_pdfs is false
+  formula_llm_judge_model: "gpt-5-nano"
+
+
+# Parser Configuration - List of enabled parsers
+parsers:
+#  - nanonets_ocr_s
+#  - ocrflux
+#  - got_ocr
+  - mistral
+  - llamaparse
+  - marker-openai
+  - marker-gemini
+  - megaparse
+  - openai_gpt-4o
+  - openai_gpt-4o-mini
+  - gemini-2.5-pro
+  - gemini-2.5-flash
+  - mineru
+  - mathpix
+#  - docling
+
+
+#Deprecated:
+#  - unstructured
+#  - pymupdf
+#  - pypdf
+#  - adobe
+
+
