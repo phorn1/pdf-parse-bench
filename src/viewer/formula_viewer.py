@@ -1,11 +1,8 @@
 import json
-import os
 import re
 import gradio as gr
-import pandas as pd
 from pathlib import Path
-from ..pipeline.pipeline import PipelinePaths, BenchmarkRunConfig
-from ..synthetic_pdf.style_config import StyleConfig
+from ..pipeline import PipelinePaths, BenchmarkRunConfig
 
 
 def load_formula_data(formula_results_path: Path) -> list[dict] | None:
@@ -36,6 +33,10 @@ def load_stats_data(stats_path: Path) -> dict | None:
 def standardize_formula_notation(formula_text: str) -> str:
     """Standardize formula notation for MathJax."""
     if not formula_text:
+        return formula_text
+
+    # If formula already has $$ delimiters, return as is
+    if formula_text.strip().startswith('$$') and formula_text.strip().endswith('$$'):
         return formula_text
 
     # Temporarily replace existing $$ to avoid processing them
@@ -332,7 +333,7 @@ function() {
         with gr.Row(elem_classes="formula-display-container", elem_id="formula-comparison-row"):
             with gr.Column(elem_classes="formula-box"):
                 gr.Markdown("### Ground Truth Formula")
-                ground_truth_formula = gr.HTML()
+                ground_truth_formula = gr.Markdown()
 
             # Comparison box with fixed width
             with gr.Column(elem_classes="comparison-box", elem_id="status-comparison-box", scale=0):
@@ -340,7 +341,7 @@ function() {
 
             with gr.Column(elem_classes="formula-box"):
                 gr.Markdown("### Extracted Formula")
-                extracted_formula = gr.HTML()
+                extracted_formula = gr.Markdown()
 
         # Explanation and Errors
         gr.Markdown("### Explanation")

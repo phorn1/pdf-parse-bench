@@ -1,3 +1,3 @@
-from .pipeline import BenchmarkOrchestrator
+from .pipeline import BenchmarkOrchestrator, PipelinePaths, BenchmarkRunConfig
 
-__all__ = ['BenchmarkOrchestrator']
+__all__ = ['BenchmarkOrchestrator', 'PipelinePaths', 'BenchmarkRunConfig']
