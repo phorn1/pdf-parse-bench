@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 from .core import PDFParser, parser_registry
@@ -22,9 +23,9 @@ class UnstructuredParser(PDFParser):
         Returns:
             str: Generated markdown content
         """
-        
+
         from unstructured.partition.auto import partition
-        
+
         elements = partition(
             filename=str(pdf_path),
             strategy="hi_res",

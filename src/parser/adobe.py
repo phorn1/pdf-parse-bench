@@ -10,8 +10,6 @@ from .core import PDFParser, parser_registry
 # Load environment variables
 load_dotenv()
 
-logging.basicConfig(level=logging.INFO)
-
 
 @parser_registry()
 class AdobeParser(PDFParser):

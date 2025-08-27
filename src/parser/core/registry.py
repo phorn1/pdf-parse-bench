@@ -9,7 +9,7 @@ T = TypeVar('T', bound=PDFParser)
 
 
 class ParserRegistry:
-    """Simplified registry for parsers."""
+    """Registry for parsers."""
     
     _registry: Dict[str, Type[PDFParser]] = {}
     

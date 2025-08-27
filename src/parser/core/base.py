@@ -37,4 +37,3 @@ class PDFParser(ABC):
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(content)
-        self.logger.info(f"Output written to {output_path}")
