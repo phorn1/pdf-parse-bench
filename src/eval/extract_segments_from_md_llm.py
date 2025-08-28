@@ -46,17 +46,17 @@ class ParallelSegmentExtractor:
             )
 
             # Verify content completeness
-            verification_passed = verify_content_completeness(result_segments, markdown_content)
+            verification_result = verify_content_completeness(result_segments, markdown_content)
 
             # Save result
             with open(job.output_json_path, 'w', encoding='utf-8') as f:
                 json.dump(result_segments, f, indent=2, ensure_ascii=False)
             
             job_name = f"{job.input_md_path.parent.name}/{job.input_md_path.parent.parent.name}"
-            if verification_passed:
-                return True, f"✓ {job_name}"
+            if verification_result["passed"]:
+                return True, f"✅ {job_name}"
             else:
-                return True, f"⚠ {job_name}: Character count mismatch"
+                return True, f"⚠️ {job_name}: Character count mismatch (original: {verification_result['original_count']}, extracted: {verification_result['extracted_count']}, diff: {verification_result['diff']})"
             
         except Exception as e:
             error_msg = f"✗ {job.input_md_path.parent.name}/{job.input_md_path.parent.parent.name}: {str(e)[:100]}{'...' if len(str(e)) > 100 else ''}"
@@ -181,7 +181,7 @@ def extract_segments_using_llm(
         raise
 
 def verify_content_completeness(result_segments: list[dict[str, str]], 
-                               markdown_content: str) -> bool:
+                               markdown_content: str) -> dict[str, int | bool]:
     """
     Verify that all content from markdown is captured in result segments.
     
@@ -190,7 +190,11 @@ def verify_content_completeness(result_segments: list[dict[str, str]],
         markdown_content: Original markdown content
         
     Returns:
-        True if content completeness check passes, False otherwise
+        Dictionary containing verification results with keys:
+        - passed: True if content completeness check passes, False otherwise
+        - original_count: Character count of original markdown (excluding whitespace)
+        - extracted_count: Character count of extracted segments (excluding whitespace)
+        - diff: Difference between original and extracted counts
     """
     # Collect all text from result segments
     result_text = "".join(seg["data"] for seg in result_segments if seg["data"])
@@ -199,5 +203,14 @@ def verify_content_completeness(result_segments: list[dict[str, str]],
     md_clean = "".join(markdown_content.split())
     result_clean = "".join(result_text.split())
     
-    return len(md_clean) == len(result_clean)
+    original_count = len(md_clean)
+    extracted_count = len(result_clean)
+    diff = original_count - extracted_count
+    
+    return {
+        "passed": original_count == extracted_count,
+        "original_count": original_count,
+        "extracted_count": extracted_count,
+        "diff": diff
+    }
 

@@ -7,7 +7,7 @@ from src.pipeline import BenchmarkOrchestrator
 # Configure logging once at startup
 logging.basicConfig(
     level=logging.INFO,
-    format='%(levelname)s: %(message)s'
+    format='%(message)s'
 )
 
 

@@ -2,14 +2,13 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Literal
-from pydantic import BaseModel, Field, model_validator
 import yaml
 from tqdm import tqdm
 
 from ..synthetic_pdf import HtmlSinglePagePDFGenerator, HTMLConfig, LaTeXConfig, ParallelLaTeXPDFGenerator, LaTeXPDFJob
 from ..parser import ParserRegistry
 from ..eval import run_evaluation, ParallelSegmentExtractor, SegmentExtractionJob
+from .config import Config, PipelinePaths, BenchmarkRunConfig
 
 logger = logging.getLogger(__name__)
 
@@ -30,119 +29,6 @@ def setup_clean_logging():
     # Suppress SSL warnings from third-party libraries
     import urllib3
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-
-class PipelineConfig(BaseModel):
-    """Configuration for pipeline execution."""
-    generate_pdfs: bool = False
-    parse_pdfs: bool = False
-    extract_segments: bool = False
-    evaluate_results: bool = False
-    reuse_timestamp: str | None = None
-    formula_llm_judge_models: list[str]
-
-    @model_validator(mode='after')
-    def validate_config(self):
-        if self.generate_pdfs == bool(self.reuse_timestamp):
-            raise ValueError("reuse_timestamp required" if not self.generate_pdfs else "reuse_timestamp cannot be used with generate_pdfs")
-        return self
-
-
-class PdfGenerationConfig(BaseModel):
-    """Configuration for synthetic PDF generation."""
-    amount: int = 100
-    generator_type: Literal["html", "latex"] = "latex"
-
-
-class Config(BaseModel):
-    """Main configuration model."""
-    pipeline: PipelineConfig
-    synthetic_pdf: PdfGenerationConfig
-    parsers: list[str] = Field(default_factory=list)
-
-
-class PipelinePaths(BaseModel):
-    """Centralized path management for the benchmark pipeline."""
-    
-    project_root: Path = Field(default_factory=lambda: Path(__file__).parent.parent.parent)
-    
-    @property
-    def formulas_file(self) -> Path:
-        return self.project_root / "data" / "formulas.json"
-    
-    @property
-    def config_file(self) -> Path:
-        return self.project_root / "config.yaml"
-    
-    @property
-    def artifacts_dir(self) -> Path:
-        return self.project_root / "artifacts"
-    
-    @property
-    def runs_dir(self) -> Path:
-        return self.artifacts_dir / "runs"
-    
-    @property
-    def latest_symlink(self) -> Path:
-        return self.artifacts_dir / "latest"
-
-class BenchmarkRunConfig(BaseModel):
-    """Configuration for a single benchmark run."""
-
-    name: str
-    timestamp: str
-    paths: PipelinePaths
-    parsers: list[str] = Field(default_factory=list)
-
-    @property
-    def run_directory(self) -> Path:
-        """Directory for this specific run configuration."""
-        return self.paths.runs_dir / self.timestamp / self.name
-
-    @property
-    def html_output_path(self) -> Path:
-        """Path to the generated HTML file."""
-        return self.run_directory / "sample.html"
-    
-    @property
-    def latex_output_path(self) -> Path:
-        """Path to the generated LaTeX file."""
-        return self.run_directory / "sample.tex"
-
-    @property
-    def pdf_output_path(self) -> Path:
-        """Path to the generated PDF file."""
-        return self.run_directory / "sample.pdf"
-
-    @property
-    def gt_segments_path(self) -> Path:
-        """Path to the ground truth JSON file."""
-        return self.run_directory / "gt_segments.json"
-    
-    def parsed_md_path(self, parser_name: str) -> Path:
-        """Path to parser output markdown file."""
-        return self.run_directory / parser_name / "parsed.md"
-    
-    def segments_json_path(self, parser_name: str) -> Path:
-        """Path to parser matches JSON file."""
-        return self.run_directory / parser_name / "segments.json"
-    
-    def eval_stats_path(self, parser_name: str) -> Path:
-        """Path to evaluation statistics JSON file."""
-        return self.run_directory / parser_name / "eval_stats.json"
-    
-    def eval_formula_results_path(self, parser_name: str) -> Path:
-        """Path to detailed formula evaluation results JSON file."""
-        return self.run_directory / parser_name / "eval_formula_results.json"
-    
-    def eval_text_results_path(self, parser_name: str) -> Path:
-        """Path to detailed text evaluation results JSON file."""
-        return self.run_directory / parser_name / "eval_text_results.json"
-    
-    def create_directories(self) -> None:
-        """Create necessary directories for this run."""
-        self.run_directory.mkdir(parents=True, exist_ok=True)
 
 
 class BenchmarkOrchestrator:
@@ -214,18 +100,16 @@ class BenchmarkOrchestrator:
         
         parallel_generator = ParallelLaTeXPDFGenerator(self.paths.formulas_file)
         
-        with tqdm(total=len(tasks), desc="Generating PDFs", unit="pdf") as pbar:
+        with tqdm(total=len(tasks), desc="   Generating PDFs", unit="pdf") as pbar:
             for _ in parallel_generator.generate_pdfs_parallel(tasks):
                 pbar.update(1)
-        
-        logger.info(f"Successfully generated all {len(tasks)} PDFs")
         
 
     async def _generate_html_pdfs(self, run_configs: list[BenchmarkRunConfig]) -> None:
         """Generate HTML PDFs sequentially."""
         logger.info(f"Generating {len(run_configs)} HTML PDFs sequentially")
         
-        with tqdm(total=len(run_configs), desc="Generating PDFs", unit="pdf") as pbar:
+        with tqdm(total=len(run_configs), desc="   Generating PDFs", unit="pdf") as pbar:
             for run_config in run_configs:
                 await self._generate_html_pdf_for_config(run_config)
                 pbar.update(1)
@@ -248,31 +132,31 @@ class BenchmarkOrchestrator:
                 run_config.pdf_output_path,
                 output_path
             )
-            logger.info(f"  ✓ {parser_name}")
+            logger.info(f"      ✅ {parser_name}")
         except Exception as e:
-            logger.error(f"  ✗ {parser_name}: {str(e)[:80]}{'...' if len(str(e)) > 80 else ''}")
+            logger.error(f"      ❌ {parser_name}: {str(e)}")
     
     def parse_pdfs(self, run_configs: list[BenchmarkRunConfig]) -> None:
         """Parse all PDFs with all configured parsers."""
         enabled_parsers = self.config.parsers
         
         if not enabled_parsers:
-            logger.warning("No parsers enabled - skipping parsing step")
+            logger.warning("   ⚠️  No parsers enabled - skipping parsing step")
             return
             
-        logger.info(f"Starting parsing with {len(enabled_parsers)} parsers for {len(run_configs)} PDFs")
+        logger.info(f"   Processing {len(run_configs)} PDFs with {len(enabled_parsers)} parsers")
         
         for run_config in run_configs:
             if not run_config.pdf_output_path.exists():
-                logger.warning(f"PDF not found for {run_config.name} - skipping parsing")
+                logger.warning(f"   ⚠️  PDF not found for {run_config.name} - skipping")
                 continue
                 
-            logger.info(f"Processing PDF {run_config.name}:")
+            logger.info(f"   📄 Processing PDF {run_config.name}:")
             
             for parser_name in enabled_parsers:
                 self._parse_pdf_with_parser(run_config, parser_name)
         
-        logger.info("Parsing completed for all configurations")
+        logger.info(f"   ✅ Parsing completed for all PDFs")
     
     # ========== SEGMENT EXTRACTION ==========
     
@@ -283,7 +167,7 @@ class BenchmarkOrchestrator:
         jobs = []
         for run_config in run_configs:
             if not run_config.gt_segments_path.exists():
-                logger.warning(f"Ground truth not found for {run_config.name} - skipping")
+                logger.warning(f"   ⚠️  Ground truth not found for {run_config.name} - skipping")
                 continue
                 
             for parser in enabled_parsers:
@@ -295,21 +179,28 @@ class BenchmarkOrchestrator:
                         output_json_path=run_config.segments_json_path(parser)
                     ))
                 else:
-                    logger.warning(f"Parsed markdown not found for {run_config.name}/{parser}")
+                    logger.warning(f"   ⚠️  Parsed markdown not found for {run_config.name}/{parser}")
         
         if not jobs:
-            logger.warning("No segment extraction jobs to process")
+            logger.warning("   ⚠️  No segment extraction jobs to process")
             return
         
-        logger.info(f"Starting parallel segment extraction for {len(jobs)} jobs")
+        logger.info(f"   Processing {len(jobs)} extraction jobs in parallel")
         
         extractor = ParallelSegmentExtractor(max_workers=10)
         
-        with tqdm(total=len(jobs), desc="Extracting segments", unit="job") as pbar:
+        warnings_count = 0
+        with tqdm(total=len(jobs), desc="   Extracting segments", unit="job") as pbar:
             for success, message in extractor.extract_segments_parallel(jobs):
-                if not success or "⚠" in message:
-                    tqdm.write(message)
+                if not success:
+                    warnings_count += 1
+                    tqdm.write(f"   ❌ {message}")
+                elif "⚠️" in message:
+                    warnings_count += 1
+                    tqdm.write(f"   {message}")
                 pbar.update(1)
+        
+        logger.info(f"   ✅ Segment extraction completed ({warnings_count} warnings)")
         
     
     # ========== EVALUATION ==========
@@ -319,27 +210,27 @@ class BenchmarkOrchestrator:
         enabled_parsers = self.config.parsers
         
         if not enabled_parsers:
-            logger.warning("No parsers enabled - skipping evaluation step")
+            logger.warning("   ⚠️  No parsers enabled - skipping evaluation step")
             return
         
-        logger.info(f"Starting evaluation for {len(enabled_parsers)} parsers across {len(run_configs)} PDFs")
+        logger.info(f"   Processing {len(run_configs)} PDFs with {len(enabled_parsers)} parsers")
         
         for run_config in run_configs:
             if not run_config.gt_segments_path.exists():
-                logger.warning(f"Ground truth not found for {run_config.name} - skipping evaluation")
+                logger.warning(f"   ⚠️  Ground truth not found for {run_config.name} - skipping")
                 continue
             
-            logger.info(f"Evaluating results for: {run_config.name}")
+            logger.info(f"   📊 Evaluating results for PDF {run_config.name}:")
             
             for parser_name in enabled_parsers:
                 segments_path = run_config.segments_json_path(parser_name)
                 
                 if not segments_path.exists():
-                    logger.warning(f"  ✗ Segments file not found for {parser_name} - skipping")
+                    logger.warning(f"      ⚠️  Segments file not found for {parser_name} - skipping")
                     continue
                 
                 try:
-                    logger.info(f"  Evaluating parser: {parser_name}")
+                    logger.info(f"      🔍 Evaluating {parser_name}...")
                     
                     run_evaluation(
                         llm_judge_models=self.config.pipeline.formula_llm_judge_models,
@@ -350,12 +241,12 @@ class BenchmarkOrchestrator:
                         result_text_evals_path=run_config.eval_text_results_path(parser_name)
                     )
                     
-                    logger.info(f"  ✓ Evaluation completed for {parser_name}")
+                    logger.info(f"      ✅ {parser_name} evaluation completed")
                     
                 except Exception as e:
-                    logger.error(f"  ✗ Evaluation failed for {parser_name}: {e}")
+                    logger.error(f"      ❌ {parser_name} evaluation failed: {e}")
         
-        logger.info("Evaluation completed for all configurations")
+        logger.info("   ✅ Evaluation completed for all PDFs")
     
     # ========== MAIN PIPELINE ORCHESTRATION ==========
     
@@ -364,12 +255,13 @@ class BenchmarkOrchestrator:
         pipeline_config = self.config.pipeline
         
         timestamp = pipeline_config.reuse_timestamp or datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        logger.info(f"{'Reusing existing' if pipeline_config.reuse_timestamp else 'Using new'} timestamp: {timestamp}")
+        logger.info(f"🕐 {'Reusing existing' if pipeline_config.reuse_timestamp else 'Starting new'} benchmark run: {timestamp}")
         
         if pipeline_config.generate_pdfs:
             run_configs = self._create_run_configurations(timestamp)
             
-            logger.info(f"Starting PDF generation for {len(run_configs)} configurations")
+            logger.info(f"\n📄 PDF GENERATION")
+            logger.info(f"   Generating {len(run_configs)} PDFs using {self.config.synthetic_pdf.generator_type} generator")
             
             match self.config.synthetic_pdf.generator_type:
                 case "latex":
@@ -377,25 +269,34 @@ class BenchmarkOrchestrator:
                 case "html":
                     await self._generate_html_pdfs(run_configs)
 
-            logger.info(f"Successfully generated {len(run_configs)} PDFs!")
+            logger.info(f"   ✅ Successfully generated {len(run_configs)} PDFs")
         else:
             run_configs = self._create_run_configurations(timestamp)
-            logger.info("Using existing PDFs - loading configurations")
+            logger.info(f"\n📄 PDF GENERATION")
+            logger.info(f"   ⏩ Skipped - using existing PDFs from {timestamp}")
         
         if pipeline_config.parse_pdfs:
+            logger.info(f"\n🔍 PDF PARSING")
             self.parse_pdfs(run_configs)
         else:
-            logger.info("PDF parsing disabled - skipping parsing step")
+            logger.info(f"\n🔍 PDF PARSING")
+            logger.info(f"   ⏩ Skipped - parsing disabled")
         
         if pipeline_config.extract_segments:
+            logger.info(f"\n🧩 SEGMENT EXTRACTION")
             self._extract_segments_parallel(run_configs)
         else:
-            logger.info("Segment extraction disabled - skipping extraction step")
+            logger.info(f"\n🧩 SEGMENT EXTRACTION")
+            logger.info(f"   ⏩ Skipped - extraction disabled")
         
         if pipeline_config.evaluate_results:
+            logger.info(f"\n📈 EVALUATION")
             self._evaluate_results(run_configs)
         else:
-            logger.info("Evaluation disabled - skipping evaluation step")
+            logger.info(f"\n📈 EVALUATION")
+            logger.info(f"   ⏩ Skipped - evaluation disabled")
+        
+        logger.info(f"\n🎉 Pipeline completed successfully!")
     
     # ========== UTILITY METHODS ==========
     
