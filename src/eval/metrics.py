@@ -1,172 +1,24 @@
+import base64
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import asdict, dataclass
 from functools import wraps
 from pathlib import Path
+from typing import Literal
 
 import Levenshtein
+import requests
 from dotenv import load_dotenv
 from openai import OpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from tqdm import tqdm
 
 load_dotenv()
 
 
-# ========== DATA MODELS ==========
+# ========== CONSTANTS ==========
 
-@dataclass
-class TextSimilarityResult:
-    normalized_levenshtein_similarity: float
-    ground_truth_text: str
-    extracted_text: str
-    text_number: int | None = None
-
-
-@dataclass
-class FormulaEvaluationResult:
-    explanation: str
-    is_correct: bool | None
-    score: float | None
-    errors: list[str]
-    ground_truth_formula: str
-    extracted_formula: str
-    judge_model: str
-    formula_number: int | None = None
-
-
-@dataclass
-class FormulaStatistics:
-    judge_model: str
-    total_formulas: int
-    correct_formulas: int
-    accuracy_percentage: float
-    average_score: float
-    average_inline_score: float
-    average_display_score: float
-
-
-@dataclass
-class TextStatistics:
-    total_texts: int
-    average_levenshtein_similarity: float
-
-
-@dataclass
-class SummaryStatistics:
-    formula_statistics: dict[str, FormulaStatistics]
-    text_statistics: TextStatistics
-
-
-class FormulaEvaluationResponse(BaseModel):
-    """Structured response model for LLM formula evaluation."""
-    explanation: str
-    is_correct: bool | None
-    score: float | None
-    errors: list[str]
-
-
-# ========== CORE EVALUATION FUNCTIONS ==========
-
-def retry_formula_evaluation(max_retries: int = 10):
-    def decorator(func) -> object:
-        @wraps(func)
-        def wrapper(client: OpenAI, model: str, gt_formula: str, extracted_formula: str) -> FormulaEvaluationResult:
-            last_error = None
-            for attempt in range(max_retries):
-                try:
-                    return func(client, model, gt_formula, extracted_formula)
-                except Exception as e:
-                    last_error = e
-                    if attempt < max_retries - 1:
-                        print(f"Attempt {attempt + 1} failed: {e}. Retrying...")
-                    continue
-            
-            # If all retries failed, return error result
-            return FormulaEvaluationResult(
-                explanation=f"Failed to evaluate after {max_retries} attempts",
-                is_correct=None,
-                score=None,
-                errors=[f"Evaluation failed: {last_error}"],
-                ground_truth_formula=gt_formula,
-                extracted_formula=extracted_formula,
-                judge_model=model,
-                formula_number=None
-            )
-        return wrapper
-    return decorator
-
-def evaluate_text_similarity(gt_text: str, extracted_text: str) -> TextSimilarityResult:
-    """
-    Evaluate text similarity using normalized Levenshtein distance.
-
-    Args:
-        gt_text: Ground truth text
-        extracted_text: Extracted text
-
-    Returns:
-        TextSimilarityResult with similarity metrics
-    """
-    lev_distance = Levenshtein.distance(gt_text, extracted_text)
-    max_len = max(len(gt_text), len(extracted_text))
-    normalized_lev_similarity = 1 - (lev_distance / max_len) if max_len > 0 else 1.0
-
-    return TextSimilarityResult(
-        normalized_levenshtein_similarity=round(normalized_lev_similarity, 4),
-        ground_truth_text=gt_text,
-        extracted_text=extracted_text,
-        text_number=None
-    )
-
-
-@retry_formula_evaluation()
-def evaluate_formula_pair(
-        client: OpenAI,
-        model: str,
-        gt_formula: str,
-        extracted_formula: str,
-) -> FormulaEvaluationResult:
-    """
-    Evaluate formula correctness using LLM.
-
-    Args:
-        client: OpenAI client instance
-        model: The name of the model to use
-        gt_formula: Ground truth formula content
-        extracted_formula: Extracted formula content
-        
-    Returns:
-        FormulaEvaluationResult with evaluation metrics
-    """
-    prompt = _get_formula_evaluation_prompt(gt_formula, extracted_formula)
-
-    response = client.responses.parse(
-        model=model,
-        input=prompt,
-        text_format=FormulaEvaluationResponse
-    )
-
-    # Extract the parsed data from the structured response
-    parsed_data = response.output_parsed
-
-    return FormulaEvaluationResult(
-        explanation=parsed_data.explanation,
-        is_correct=parsed_data.is_correct,
-        score=parsed_data.score,
-        errors=parsed_data.errors,
-        ground_truth_formula=gt_formula,
-        extracted_formula=extracted_formula,
-        judge_model=model,
-        formula_number=None
-    )
-
-
-
-
-def _get_formula_evaluation_prompt(gt_formula: str, extracted_formula: str) -> str:
-    """Generate evaluation prompt for formula comparison."""
-    return f"""
+FORMULA_EVALUATION_PROMPT_TEMPLATE = """
 You are a mathematical formula evaluator. Your task is to determine if the extracted formula correctly represents the ground truth formula, focusing on both semantic meaning AND proper mathematical notation.
 
 Ground Truth Formula:
@@ -192,156 +44,402 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 }}
 """
 
+CDM_SERVICE_URL = "http://localhost:8080/calculate_metric_single"
 
-def _evaluate_formulas(
-    formula_pairs: list[tuple[str, str]], 
-    models: list[str],
-) -> dict[str, list[FormulaEvaluationResult]]:
-    """Evaluate all formula pairs concurrently using ThreadPoolExecutor for multiple models."""
-    if os.getenv("LLM_PROXY_URL"):
-        client = OpenAI(base_url=os.getenv("LLM_PROXY_URL"),
-                        api_key=os.getenv("LLM_PROXY_API_KEY"))
-    else:
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    all_results = {model: [] for model in models}
+# ========== DATA MODELS ==========
+
+class TextSimilarityResult(BaseModel):
+    normalized_levenshtein_similarity: float
+    ground_truth_text: str
+    extracted_text: str
+    text_number: int
+
+
+class LLMJudgeEval(BaseModel):
+    type: str = "llm_judge"
+    judge_model: str
+    explanation: str
+    is_correct: bool
+    score: float
+    errors: list[str] = Field(default_factory=list)
+
+
+class CDMEval(BaseModel):
+    type: str = "cdm"
+    score: float
+    visualization_path: str
+
+
+class FormulaEvaluationSummary(BaseModel):
+    formula_number: int
+    ground_truth_formula: str
+    extracted_formula: str
+    formula_type: Literal['inline-formula', 'display-formula']
+    llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
+    cdm_eval: CDMEval | None = None
+
+
+class CDMStatistics(BaseModel):
+    total_formulas: int
+    average_score: float
+    average_inline_score: float
+    average_display_score: float
+
+
+class LLMJudgeStatistics(BaseModel):
+    judge_model: str
+    correct_formulas: int
+    accuracy_percentage: float
+    average_score: float
+    average_inline_score: float
+    average_display_score: float
+
+
+class FormulaStatistics(BaseModel):
+    total_formulas: int
+    llm_judge: list[LLMJudgeStatistics] = Field(alias="llm-judge")
+    cdm: CDMStatistics | None
+
+
+class TextStatistics(BaseModel):
+    total_texts: int
+    average_levenshtein_similarity: float
+
+
+class SummaryStatistics(BaseModel):
+    formula_statistics: FormulaStatistics
+    text_statistics: TextStatistics
+
+
+# ========== EVALUATION CLASSES ==========
+
+class TextEvaluator:
+    """Evaluates text similarity using Levenshtein distance."""
     
-    with ThreadPoolExecutor() as executor:
-        future_to_info = {}
+    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[TextSimilarityResult]:
+        results = []
+        for i, (gt_text, extracted_text) in enumerate(tqdm(pairs, desc="Evaluating texts")):
+            lev_distance = Levenshtein.distance(gt_text, extracted_text)
+            max_len = max(len(gt_text), len(extracted_text))
+            similarity = 1 - (lev_distance / max_len) if max_len > 0 else 1.0
+            
+            results.append(TextSimilarityResult(
+                normalized_levenshtein_similarity=round(similarity, 4),
+                ground_truth_text=gt_text,
+                extracted_text=extracted_text,
+                text_number=i
+            ))
+        return results
+
+
+class CDMEvaluator:
+    """Evaluates formulas using CDM service."""
+    
+    def __init__(self, output_dir: Path):
+        self.output_dir = output_dir
+    
+    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMEval]:
+        results = []
+        for i, (gt_formula, extracted_formula) in enumerate(tqdm(pairs, desc="Evaluating CDM")):
+            results.append(self._evaluate_single(gt_formula, extracted_formula, f"formula_{i}"))
+        return results
+    
+    def _evaluate_single(self, gt_formula: str, extracted_formula: str, case_id: str) -> CDMEval:
+        # Call CDM service to evaluate formula similarity and get visualization
+        response = requests.post(CDM_SERVICE_URL, json={
+            'gt_formula': gt_formula,
+            'pred_formula': extracted_formula,
+            'case_id': case_id
+        })
+        response.raise_for_status()
+
+        result = response.json()
         
-        # Submit tasks for all model-formula combinations
-        for model in models:
-            for i, (gt_formula, extracted_formula) in enumerate(formula_pairs):
-                future = executor.submit(evaluate_formula_pair, client, model, gt_formula, extracted_formula)
-                future_to_info[future] = (model, i)
+        # Save visualization
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        image_path = self.output_dir / f"cdm_visualization_{case_id}.png"
         
-        total_tasks = len(models) * len(formula_pairs)
-        for future in tqdm(as_completed(future_to_info), total=total_tasks, desc="Evaluating Formulas"):
-            model, formula_index = future_to_info[future]
-            try:
+        with open(image_path, 'wb') as f:
+            f.write(base64.b64decode(result['visualization_base64']))
+        visualization_path = str(image_path.resolve())
+
+        return CDMEval(score=result['cdm_f1'], visualization_path=visualization_path)
+
+
+class LLMEvaluator:
+    """Evaluates formulas using LLM judges."""
+    
+    def __init__(self, models: list[str]):
+        self.models = models
+        self.openai_client, self.gemini_client = self._init_clients()
+    
+    def _init_clients(self):
+        openai_client = None
+        gemini_client = None
+        
+        openai_models = [m for m in self.models if not m.startswith("gemini-")]
+        gemini_models = [m for m in self.models if m.startswith("gemini-")]
+        
+        if openai_models:
+            if os.getenv("LLM_PROXY_URL"):
+                openai_client = OpenAI(
+                    base_url=os.getenv("LLM_PROXY_URL"),
+                    api_key=os.getenv("LLM_PROXY_API_KEY")
+                )
+            else:
+                openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
+        if gemini_models:
+            from google import genai
+            if not os.getenv("GEMINI_API_KEY"):
+                raise ValueError("GEMINI_API_KEY required for Gemini models")
+            gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        
+        return openai_client, gemini_client
+    
+    def evaluate_batch(self, gt_formulas: list[dict], extracted_formulas: list[dict]) -> list[FormulaEvaluationSummary]:
+        all_results = {model: [] for model in self.models}
+        
+        with ThreadPoolExecutor() as executor:
+            futures = {}
+            
+            for model in self.models:
+                for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas)):
+                    gt_text = gt['data']
+                    extracted_text = extracted['data']
+                    if model.startswith("gemini-"):
+                        future = executor.submit(self._evaluate_gemini, model, gt_text, extracted_text)
+                    else:
+                        future = executor.submit(self._evaluate_openai, model, gt_text, extracted_text)
+                    futures[future] = (model, i, gt, extracted)
+            
+            total = len(self.models) * len(gt_formulas)
+            for future in tqdm(as_completed(futures), total=total, desc="Evaluating formulas"):
+                model, idx, gt, extracted = futures[future]
                 result = future.result()
-                result.formula_number = formula_index
-                all_results[model].append(result)
-            except Exception as exc:
-                print(f"Formula {formula_index} with model {model} generated an exception: {exc}")
-    
-    # Sort results by formula number for each model
-    for model in models:
-        all_results[model] = sorted(all_results[model], key=lambda x: x.formula_number or 0)
-    
-    return all_results
-
-
-def _evaluate_texts(text_pairs: list[tuple[str, str]]) -> list[TextSimilarityResult]:
-    """Evaluate all text pairs sequentially."""
-    results = []
-    for i, (gt_text, extracted_text) in enumerate(tqdm(text_pairs, desc="Evaluating Texts")):
-        try:
-            result = evaluate_text_similarity(gt_text, extracted_text)
-            result.text_number = i
-            results.append(result)
-        except Exception as exc:
-            print(f"Text {i} generated an exception: {exc}")
-    
-    return results
-
-
-# ========== STATISTICS CALCULATION ==========
-
-def calculate_statistics(
-    results: dict[str, list[FormulaEvaluationResult]], 
-    text_results: list[TextSimilarityResult],
-    gt_formulas: list[dict[str, str]],
-) -> SummaryStatistics:
-    """
-    Calculate summary statistics from evaluation results.
-
-    Args:
-        results: Dictionary mapping model names to lists of formula evaluation results
-        text_results: List of text evaluation results
-        gt_formulas: List of ground truth formulas with metadata
-
-    Returns:
-        SummaryStatistics with aggregated metrics per model
-    """
-    # ========== FORMULA STATISTICS PER MODEL ==========
-    formula_statistics = {}
-    
-    for model_name, model_results in results.items():
-        valid_formula_scores = [result.score for result in model_results if result.score is not None]
-        total_formula_score = sum(valid_formula_scores) if valid_formula_scores else 0
-        average_formula_score = total_formula_score / len(valid_formula_scores) if valid_formula_scores else 0
-
-        correct_formula_count = sum(1 for result in model_results if result.is_correct is True)
-        total_formulas_evaluated = sum(1 for result in model_results if result.is_correct is not None)
-        formula_accuracy_percentage = (
-            correct_formula_count / total_formulas_evaluated * 100) if total_formulas_evaluated else 0
+                all_results[model].append((result, idx))
         
-        # ========== SEPARATE INLINE/DISPLAY STATISTICS ==========
-        inline_scores = []
-        display_scores = []
+        # Sort results by index
+        for model in self.models:
+            all_results[model].sort(key=lambda x: x[1])
         
-        for i, result in enumerate(model_results):
-            if result.score is not None and i < len(gt_formulas):
-                if gt_formulas[i]['type'] == 'inline-formula':
-                    inline_scores.append(result.score)
-                elif gt_formulas[i]['type'] == 'display-formula':
-                    display_scores.append(result.score)
+        # Create summaries with typed llm_evals and formula_type
+        summaries = []
+        for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas)):
+            llm_evals = []
+            for model in self.models:
+                model_results = [r for r, idx in all_results[model] if idx == i]
+                if model_results:
+                    llm_evals.append(model_results[0])
+            
+            summaries.append(FormulaEvaluationSummary(
+                formula_number=i,
+                ground_truth_formula=gt['data'],
+                extracted_formula=extracted['data'],
+                formula_type=gt['type'],
+                llm_evals=llm_evals
+            ))
         
-        average_inline_score = sum(inline_scores) / len(inline_scores) if inline_scores else 0
-        average_display_score = sum(display_scores) / len(display_scores) if display_scores else 0
-
-        # ========== BUILD RESULT OBJECTS ==========
-        formula_statistics[model_name] = FormulaStatistics(
-            judge_model=model_name,
-            total_formulas=len(model_results),
-            correct_formulas=correct_formula_count,
-            accuracy_percentage=formula_accuracy_percentage,
-            average_score=average_formula_score,
-            average_inline_score=average_inline_score,
-            average_display_score=average_display_score
+        return summaries
+    
+    @staticmethod
+    def _retry_on_failure(max_retries: int = 10):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+                last_error = None
+                for attempt in range(max_retries):
+                    try:
+                        return func(self, model, gt_formula, extracted_formula)
+                    except Exception as e:
+                        last_error = e
+                        if attempt < max_retries - 1:
+                            print(f"Attempt {attempt + 1} failed: {e}. Retrying...")
+                
+                # If we reach here, all attempts failed
+                raise last_error
+            return wrapper
+        return decorator
+    
+    @_retry_on_failure()
+    def _evaluate_openai(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+        class FormulaResponse(BaseModel):
+            explanation: str
+            is_correct: bool
+            score: float
+            errors: list[str]
+        
+        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
+        response = self.openai_client.responses.parse(
+            model=model, input=prompt, text_format=FormulaResponse
+        )
+        
+        data = response.output_parsed
+        return LLMJudgeEval(
+            judge_model=model,
+            explanation=data.explanation,
+            is_correct=data.is_correct,
+            score=data.score,
+            errors=data.errors
         )
     
-    # ========== TEXT STATISTICS ==========
-    text_similarities = [result.normalized_levenshtein_similarity for result in text_results]
-    average_text_similarity = sum(text_similarities) / len(text_similarities) if text_similarities else 0
+    @_retry_on_failure()
+    def _evaluate_gemini(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+        from google.genai import types
+        from pydantic import BaseModel
+        
+        class FormulaResponse(BaseModel):
+            explanation: str
+            is_correct: bool
+            score: float
+            errors: list[str]
+        
+        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
+        response = self.gemini_client.models.generate_content(
+            model=model,
+            contents=[prompt],
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=FormulaResponse
+            )
+        )
+        
+        data = json.loads(response.text)
+        return LLMJudgeEval(
+            judge_model=model,
+            explanation=data.get("explanation", ""),
+            is_correct=data["is_correct"],
+            score=data.get("score"),
+            errors=data.get("errors", [])
+        )
     
-    text_stats = TextStatistics(
-        total_texts=len(text_results),
-        average_levenshtein_similarity=average_text_similarity
-    )
+
+
+# ========== STATISTICS CALCULATOR ==========
+
+class LLMStatisticsCalculator:
+    """Calculates LLM evaluation statistics."""
     
-    return SummaryStatistics(
-        formula_statistics=formula_statistics,
-        text_statistics=text_stats
-    )
+    @staticmethod
+    def calculate(summaries: list[FormulaEvaluationSummary]) -> list[LLMJudgeStatistics]:
+        # Group by model
+        model_evals = {}
+        for summary in summaries:
+            for llm_eval in summary.llm_evals:
+                model = llm_eval.judge_model
+                if model not in model_evals:
+                    model_evals[model] = []
+                model_evals[model].append((llm_eval, summary))
+        
+        stats = []
+        for model, evals in model_evals.items():
+            scores = [e.score for e, _ in evals]
+            correct = sum(1 for e, _ in evals if e.is_correct is True)
+            total = len(evals)
+            
+            # Calculate inline/display scores
+            inline_scores = [e.score for e, s in evals if s.formula_type == 'inline-formula']
+            display_scores = [e.score for e, s in evals if s.formula_type == 'display-formula']
+            
+            stats.append(LLMJudgeStatistics(
+                judge_model=model,
+                correct_formulas=correct,
+                accuracy_percentage=correct / total * 100 if total else 0,
+                average_score=sum(scores) / len(scores) if scores else 0,
+                average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
+                average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
+            ))
+        
+        return stats
+
+
+class CDMStatisticsCalculator:
+    """Calculates CDM evaluation statistics."""
+    
+    @staticmethod
+    def calculate(summaries: list[FormulaEvaluationSummary]) -> CDMStatistics | None:
+        cdm_evals = [(summary.cdm_eval, summary) for summary in summaries if summary.cdm_eval is not None]
+        
+        if not cdm_evals:
+            return None
+        
+        scores = [e.score for e, _ in cdm_evals]
+        
+        # Calculate inline/display scores
+        inline_scores = [e.score for e, s in cdm_evals if s.formula_type == 'inline-formula']
+        display_scores = [e.score for e, s in cdm_evals if s.formula_type == 'display-formula']
+        
+        return CDMStatistics(
+            total_formulas=len(cdm_evals),
+            average_score=sum(scores) / len(scores) if scores else 0,
+            average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
+            average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
+        )
+
+
+class TextStatisticsCalculator:
+    """Calculates text similarity statistics."""
+    
+    @staticmethod
+    def calculate(text_results: list[TextSimilarityResult]) -> TextStatistics:
+        similarities = [r.normalized_levenshtein_similarity for r in text_results]
+        return TextStatistics(
+            total_texts=len(text_results),
+            average_levenshtein_similarity=sum(similarities) / len(similarities) if similarities else 0
+        )
+
+
+class StatisticsCalculator:
+    """Main statistics calculator that coordinates all evaluation types."""
+    
+    @staticmethod
+    def calculate(
+        formula_summaries: list[FormulaEvaluationSummary],
+        text_results: list[TextSimilarityResult]
+    ) -> SummaryStatistics:
+        
+        llm_judge_stats = LLMStatisticsCalculator.calculate(formula_summaries)
+        cdm_stats = CDMStatisticsCalculator.calculate(formula_summaries)
+        text_stats = TextStatisticsCalculator.calculate(text_results)
+        
+        formula_stats = FormulaStatistics(
+            total_formulas=len(formula_summaries),
+            **{"llm-judge": llm_judge_stats},
+            cdm=cdm_stats
+        )
+        
+        return SummaryStatistics(
+            formula_statistics=formula_stats,
+            text_statistics=text_stats
+        )
+    
 
 
 # ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
-        llm_judge_models: list[str],
-        gt_json_path: Path,
-        parsed_json_path: Path,
-        result_stats_path: Path,
-        result_formula_evals_path: Path,
-        result_text_evals_path: Path,
+    llm_judge_models: list[str],
+    enable_cdm: bool,
+    gt_json_path: Path,
+    parsed_json_path: Path,
+    result_stats_path: Path,
+    result_formula_evals_path: Path,
+    result_text_evals_path: Path,
+    cdm_output_dir: Path,
 ) -> None:
     """
-    Complete evaluation pipeline: load data, validate, evaluate, calculate stats, and save results.
-
+    Complete evaluation pipeline.
+    
     Args:
-        llm_judge_models: List of model names for formula evaluation
-        gt_json_path: Ground truth JSON file path
-        parsed_json_path: Parsed results JSON file path
-        result_stats_path: Output path for summary statistics
-        result_formula_evals_path: Output path for detailed formula evaluations
-        result_text_evals_path: Output path for detailed text evaluations
-
-    Raises:
-        FileNotFoundError: If input files don't exist
-        ValueError: If data counts don't match between ground truth and extracted
-        json.JSONDecodeError: If files contain invalid JSON
+        llm_judge_models: Models for formula evaluation
+        enable_cdm: Whether to enable CDM scoring
+        gt_json_path: Ground truth JSON path
+        parsed_json_path: Parsed results JSON path
+        result_stats_path: Output path for statistics
+        result_formula_evals_path: Output path for formula evaluations
+        result_text_evals_path: Output path for text evaluations
+        cdm_output_dir: CDM visualization output directory
     """
     # ========== LOAD DATA ==========
     with open(gt_json_path, 'r', encoding='utf-8') as f:
@@ -349,46 +447,43 @@ def run_evaluation(
     with open(parsed_json_path, 'r', encoding='utf-8') as f:
         parsed_data = json.load(f)
     
+    # Extract formulas and texts
     gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
     gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
     extracted_formulas = [item for item in parsed_data if item.get('type') in ['inline-formula', 'display-formula']]
     extracted_texts = [item['data'] for item in parsed_data if item.get('type') == 'text']
 
-    # ========== VALIDATE DATA COUNTS ==========
-    if len(gt_formulas) != len(extracted_formulas):
-        raise ValueError(
-            f"Formula count mismatch: gt_formulas={len(gt_formulas)}, "
-            f"extracted_formulas={len(extracted_formulas)}"
-        )
-    if len(gt_texts) != len(extracted_texts):
-        raise ValueError(
-            f"Text count mismatch: gt_texts={len(gt_texts)}, "
-            f"extracted_texts={len(extracted_texts)}"
-        )
-
     # ========== RUN EVALUATIONS ==========
-    # Evaluate formulas with multiple models
-    formula_pairs = list(zip([f['data'] for f in gt_formulas], [f['data'] for f in extracted_formulas]))
-    formula_results = _evaluate_formulas(formula_pairs, llm_judge_models)
+
+    # Formula evaluation with LLMs
+    llm_evaluator = LLMEvaluator(llm_judge_models)
+    formula_summaries = llm_evaluator.evaluate_batch(gt_formulas, extracted_formulas)
     
-    # Evaluate texts
-    text_pairs = list(zip(gt_texts, extracted_texts))
-    text_results = _evaluate_texts(text_pairs)
+    # CDM evaluation if enabled
+    if enable_cdm:
+        cdm_evaluator = CDMEvaluator(cdm_output_dir)
+        formula_pairs = [(gt['data'], e['data']) for gt, e in zip(gt_formulas, extracted_formulas, strict=True)]
+        cdm_results = cdm_evaluator.evaluate_batch(formula_pairs)
+        
+        # Add CDM results to summaries
+        for i, cdm_result in enumerate(cdm_results):
+            if i < len(formula_summaries):
+                formula_summaries[i].cdm_eval = cdm_result
+    
+    # Text evaluation
+    text_evaluator = TextEvaluator()
+    text_pairs = list(zip(gt_texts, extracted_texts, strict=True))
+    text_results = text_evaluator.evaluate_batch(text_pairs)
 
     # ========== CALCULATE STATISTICS ==========
-    summary_stats = calculate_statistics(formula_results, text_results, gt_formulas)
+    stats = StatisticsCalculator.calculate(formula_summaries, text_results)
 
     # ========== WRITE RESULTS ==========
     with open(result_stats_path, 'w', encoding='utf-8') as f:
-        json.dump(asdict(summary_stats), f, indent=2, ensure_ascii=False)
-    
-    # Write formula results with all models
-    formula_results_flattened = []
-    for model_name, model_results in formula_results.items():
-        formula_results_flattened.extend([asdict(result) for result in model_results])
+        json.dump(stats.model_dump(), f, indent=2, ensure_ascii=False)
     
     with open(result_formula_evals_path, 'w', encoding='utf-8') as f:
-        json.dump(formula_results_flattened, f, indent=2, ensure_ascii=False)
+        json.dump([s.model_dump() for s in formula_summaries], f, indent=2, ensure_ascii=False)
     
     with open(result_text_evals_path, 'w', encoding='utf-8') as f:
-        json.dump([asdict(result) for result in text_results], f, indent=2, ensure_ascii=False)
+        json.dump([r.model_dump() for r in text_results], f, indent=2, ensure_ascii=False)
