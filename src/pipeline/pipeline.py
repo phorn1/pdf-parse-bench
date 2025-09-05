@@ -7,7 +7,8 @@ from tqdm import tqdm
 
 from ..synthetic_pdf import HtmlSinglePagePDFGenerator, HTMLConfig, LaTeXConfig, ParallelLaTeXPDFGenerator, LaTeXPDFJob
 from ..parser import ParserRegistry
-from ..eval import run_evaluation, ParallelSegmentExtractor, SegmentExtractionJob
+from ..eval import run_evaluation
+from ..utilities import ParallelSegmentExtractor, SegmentExtractionJob
 from .config import Config, PipelinePaths, BenchmarkRunConfig
 
 logger = logging.getLogger(__name__)
@@ -93,7 +94,8 @@ class BenchmarkOrchestrator:
                 config=LaTeXConfig.random(seed=hash(f"{run_config.name}_{run_config.timestamp}")),
                 latex_path=run_config.latex_output_path,
                 pdf_path=run_config.pdf_output_path,
-                gt_path=run_config.gt_segments_path
+                gt_path=run_config.gt_segments_path,
+                rendered_formulas_dir=run_config.rendered_formulas_dir() if self.config.pipeline.enable_formula2png_rendering else None
             )
             for run_config in run_configs
         ]
@@ -176,7 +178,8 @@ class BenchmarkOrchestrator:
                     jobs.append(SegmentExtractionJob(
                         gt_json_path=run_config.gt_segments_path,
                         input_md_path=md_path,
-                        output_json_path=run_config.segments_json_path(parser)
+                        output_json_path=run_config.segments_json_path(parser),
+                        rendered_formulas_dir=run_config.rendered_formulas_dir(parser) if self.config.pipeline.enable_formula2png_rendering else None
                     ))
                 else:
                     logger.warning(f"   ⚠️  Parsed markdown not found for {run_config.name}/{parser}")
@@ -187,7 +190,7 @@ class BenchmarkOrchestrator:
         
         logger.info(f"   Processing {len(jobs)} extraction jobs in parallel")
         
-        extractor = ParallelSegmentExtractor(max_workers=10)
+        extractor = ParallelSegmentExtractor(max_workers=5)
         
         warnings_count = 0
         with tqdm(total=len(jobs), desc="   Extracting segments", unit="job") as pbar:
@@ -234,11 +237,13 @@ class BenchmarkOrchestrator:
                     
                     run_evaluation(
                         llm_judge_models=self.config.pipeline.formula_llm_judge_models,
+                        enable_cdm=self.config.pipeline.enable_cdm_score,
                         gt_json_path=run_config.gt_segments_path,
                         parsed_json_path=segments_path,
                         result_stats_path=run_config.eval_stats_path(parser_name),
                         result_formula_evals_path=run_config.eval_formula_results_path(parser_name),
-                        result_text_evals_path=run_config.eval_text_results_path(parser_name)
+                        result_text_evals_path=run_config.eval_text_results_path(parser_name),
+                        cdm_output_dir=run_config.cdm_image_dir_path(parser_name)
                     )
                     
                     logger.info(f"      ✅ {parser_name} evaluation completed")
