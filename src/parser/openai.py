@@ -21,10 +21,10 @@ class BaseOpenAIParser(PDFParser):
 
         client = OpenAI(api_key=self.api_key)
 
-        file = client.files.create(
-            file=open(pdf_path, "rb"),
-            purpose="user_data"
-        )
+        with open(pdf_path, "rb") as f:
+            data = f.read()
+
+        base64_string = base64.b64encode(data).decode("utf-8")
 
         response = client.responses.create(
             model=self.model,
@@ -34,7 +34,8 @@ class BaseOpenAIParser(PDFParser):
                     "content": [
                         {
                             "type": "input_file",
-                            "file_id": file.id,
+                            "filename": pdf_path.name,
+                            "file_data": f"data:application/pdf;base64,{base64_string}",
                         },
                         {
                             "type": "input_text",
