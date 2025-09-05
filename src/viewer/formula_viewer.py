@@ -1,13 +1,11 @@
 import json
-import re
-import gradio as gr
-import subprocess
-import tempfile
-import os
 import logging
 from pathlib import Path
-from pylatexenc.latexencode import UnicodeToLatexEncoder
+import gradio as gr
+from pydantic import BaseModel
+
 from ..pipeline import PipelinePaths, BenchmarkRunConfig
+from ..eval import LLMJudgeEval, LLMJudgeStatistics, SummaryStatistics, FormulaEvaluationSummary
 
 
 # ========== CONSTANTS ==========
@@ -65,215 +63,152 @@ CUSTOM_CSS = """
 }
 """
 
-STANDARD_DISPLAY_OUTPUTS = [
-    "formula_progress", "ground_truth_formula", "extracted_formula",
-    "combined_status", "explanation", "errors", "formula_index", "formula_number_input"
-]
-
-FULL_RELOAD_OUTPUTS = [
-    "summary_html_component", "formula_progress", "ground_truth_formula", "extracted_formula",
-    "combined_status", "explanation", "errors", "formula_index", "formula_number_input",
-    "current_data", "current_stats_data", "formula_number_input", "judge_model_dropdown"
-]
 
 
-# ========== EXCEPTIONS ==========
-
-class LatexRenderError(Exception):
-    """Exception raised when LaTeX rendering fails."""
-    pass
+# ========== PYDANTIC MODELS ==========
 
 
-# ========== FORMULA RENDERING ==========
-
-class FormulaRenderer:
-    """Handles LaTeX to PNG conversion."""
+class ViewerState(BaseModel):
+    """Current state of the formula viewer."""
+    run_config: BenchmarkRunConfig
+    parser: str
+    formula_evaluations: dict[int, FormulaEvaluationSummary]  # formula_number -> evaluation
+    stats: SummaryStatistics
+    current_formula_index: int = 0
+    current_judge_model: str | None = None
     
-    LATEX_TEMPLATE = """
-\\documentclass[preview, border=5pt]{{standalone}}
-\\usepackage{{amsmath,amssymb,amsfonts}}
-\\usepackage[version=4]{{mhchem}}
-\\usepackage{{varwidth}}
-\\begin{{document}}
-\\begin{{varwidth}}{{25cm}}
-{formula}
-\\end{{varwidth}}
-\\end{{document}}
-"""
+    @property
+    def available_judge_models(self) -> list[str]:
+        """Get sorted list of available judge models."""
+        judge_models = set()
+        for evaluation in self.formula_evaluations.values():
+            judge_models.update(evaluation.llm_evals_by_model.keys())
+        return sorted(judge_models)
     
-    def preprocess_unicode(self, text: str) -> str:
-        """Convert Unicode mathematical symbols to LaTeX commands using pylatexenc."""
-        try:
-            has_dollars = '$' in text
-            rules = 'unicode-xml' if has_dollars else 'defaults'
-            
-            encoder = UnicodeToLatexEncoder(
-                conversion_rules=[rules],
-                non_ascii_only=True,
-                replacement_latex_protection='braces',
-            )
-            
-            converted = encoder.unicode_to_latex(text)
-            return converted
-        except Exception as e:
-            raise LatexRenderError(f"Unicode conversion failed: {e}")
-
-    def render(self, latex_formula: str) -> str:
-        """Convert LaTeX formula to PNG using pdflatex + magick."""
-        preprocessed_formula = self.preprocess_unicode(latex_formula)
-        latex_doc = self.LATEX_TEMPLATE.format(formula=preprocessed_formula)
-        
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_png:
-            output_path = tmp_png.name
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tex_file = os.path.join(tmpdir, 'formula.tex')
-            pdf_file = os.path.join(tmpdir, 'formula.pdf')
-            
-            with open(tex_file, 'w') as f:
-                f.write(latex_doc)
-            
-            result = subprocess.run(
-                ['pdflatex', '-interaction=nonstopmode', '-output-directory', tmpdir, tex_file], 
-                capture_output=True, text=True, encoding='utf-8', errors='replace'
-            )
-            
-            if result.returncode != 0:
-                logging.debug(f"LaTeX Warning: {result.stdout}\n{result.stderr}")
-
-            if not os.path.exists(pdf_file):
-                raise LatexRenderError(f"PDF not generated for formula: {latex_formula}")
-            
-            try:
-                subprocess.run(
-                    ['magick', '-density', '800', pdf_file, '-quality', '100', output_path],
-                    check=True, capture_output=True
-                )
-            except subprocess.CalledProcessError as e:
-                raise LatexRenderError(f"ImageMagick conversion failed: {e}")
-            
-            return output_path
+    @property
+    def total_formulas(self) -> int:
+        """Get total number of formulas."""
+        return len(self.formula_evaluations)
     
-    def create_error_image(self, error_msg: str) -> str:
-        """Create a simple error image with text."""
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_png:
-            error_png_path = tmp_png.name
-        
-        short_error = error_msg[:50] + "..." if len(error_msg) > 50 else error_msg
+    @property
+    def current_formula(self) -> FormulaEvaluationSummary | None:
+        """Get current formula evaluation."""
+        formula_numbers = sorted(self.formula_evaluations.keys())
+        if 0 <= self.current_formula_index < len(formula_numbers):
+            formula_num = formula_numbers[self.current_formula_index]
+            return self.formula_evaluations[formula_num]
+        return None
+    
+    @property
+    def current_evaluation(self) -> LLMJudgeEval | None:
+        """Get current LLM evaluation."""
+        formula = self.current_formula
+        if formula and self.current_judge_model and self.current_judge_model in formula.llm_evals_by_model:
+            return formula.llm_evals_by_model[self.current_judge_model]
+        return None
 
-        subprocess.run([
-            'magick', '-size', '600x300', 'xc:white',
-            '-pointsize', '14', '-fill', 'red',
-            '-gravity', 'center', '-annotate', '+0-20', 'LaTeX Render Error',
-            '-pointsize', '10', '-annotate', '+0+20', short_error,
-            error_png_path
-        ], check=True, capture_output=True)
-        return error_png_path
+    class Config:
+        arbitrary_types_allowed = True  # Allow BenchmarkRunConfig
 
 
 # ========== DATA LOADING ==========
 
-def load_formula_data(formula_results_path: Path) -> dict[int, dict[str, dict]] | None:
-    """Load formula evaluation results from JSON file and group by formula_number and judge_model."""
+def load_formula_evaluations(formula_results_path: Path) -> dict[int, FormulaEvaluationSummary] | None:
+    """Load formula evaluation results from JSON file."""
     if not formula_results_path.exists():
         return None
     
     with open(formula_results_path, 'r', encoding='utf-8') as f:
         raw_data = json.load(f)
     
-    # Group evaluations by formula_number, then by judge_model
-    grouped_data = {}
-    for entry in raw_data:
-        formula_num = entry['formula_number']
-        ground_truth = entry['ground_truth_formula']
-        extracted = entry['extracted_formula']
-        
-        if formula_num not in grouped_data:
-            grouped_data[formula_num] = {}
-        
-        # Process each evaluation in the llm_evals array
-        for eval_entry in entry['llm_evals']:
-            judge_model = eval_entry['judge_model']
-            
-            # Create a combined entry with formula data and evaluation results
-            combined_entry = {
-                'formula_number': formula_num,
-                'ground_truth_formula': ground_truth,
-                'extracted_formula': extracted,
-                'judge_model': judge_model,
-                'explanation': eval_entry['explanation'],
-                'is_correct': eval_entry['is_correct'],
-                'score': eval_entry['score'],
-                'errors': eval_entry['errors']
-            }
-            
-            grouped_data[formula_num][judge_model] = combined_entry
+    evaluations = {}
+    for raw_entry in raw_data:
+        formula_eval = FormulaEvaluationSummary.model_validate(raw_entry)
+        evaluations[formula_eval.formula_number] = formula_eval
     
-    return grouped_data
+    return evaluations
 
 
-def load_stats_data(stats_path: Path) -> dict | None:
+def load_evaluation_stats(stats_path: Path) -> SummaryStatistics | None:
     """Load evaluation statistics from JSON file."""
     if not stats_path.exists():
         return None
     
     with open(stats_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        raw_stats = json.load(f)
+        
+    return SummaryStatistics.model_validate(raw_stats)
+
+
+def create_viewer_state(run_config: BenchmarkRunConfig, parser: str) -> ViewerState | None:
+    """Create a complete viewer state from run config and parser."""
+    formula_evaluations = load_formula_evaluations(run_config.eval_formula_results_path(parser))
+    stats = load_evaluation_stats(run_config.eval_stats_path(parser))
+    
+    if not formula_evaluations or not stats:
+        return None
+    
+    # Get first available judge model
+    first_judge = None
+    if formula_evaluations:
+        for evaluation in formula_evaluations.values():
+            if evaluation.llm_evals:
+                first_judge = next(iter(evaluation.llm_evals_by_model.keys()))
+                break
+    
+    return ViewerState(
+        run_config=run_config,
+        parser=parser,
+        formula_evaluations=formula_evaluations,
+        stats=stats,
+        current_formula_index=0,
+        current_judge_model=first_judge
+    )
 
 
 # ========== HTML GENERATION ==========
 
-def create_summary_html(stats: dict, judge_model: str = None) -> str:
+def create_summary_html(stats: SummaryStatistics, judge_model: str | None = None) -> str:
     """Create HTML for summary statistics for a specific judge model."""
-    formula_stats_all = stats.get('formula_statistics', {})
-    text_stats = stats.get('text_statistics', {})
-    
-    # Handle the llm_judge array format
-    llm_judge_array = formula_stats_all.get('llm_judge', [])
-    
-    if llm_judge_array:
-        # Find the specific judge model or use the first one
-        if judge_model:
-            formula_stats = next((stats for stats in llm_judge_array if stats.get('judge_model') == judge_model), {})
-            if not formula_stats:
-                # Fallback to first if specified judge not found
-                formula_stats = llm_judge_array[0]
-                judge_model = formula_stats.get('judge_model', 'N/A')
+    judge_stats_dict = stats.llm_judge_stats_by_model
+    if not judge_model or judge_model not in judge_stats_dict:
+        # Use first available judge model
+        if judge_stats_dict:
+            judge_model = next(iter(judge_stats_dict.keys()))
         else:
-            formula_stats = llm_judge_array[0]
-            judge_model = formula_stats.get('judge_model', 'N/A')
+            judge_model = 'N/A'
+    
+    if judge_model == 'N/A' or judge_model not in judge_stats_dict:
+        formula_stats = LLMJudgeStatistics(
+            judge_model='N/A',
+            correct_formulas=0,
+            accuracy_percentage=0.0,
+            average_score=0.0,
+            average_inline_score=0.0,
+            average_display_score=0.0
+        )
     else:
-        formula_stats = {}
-        judge_model = 'N/A'
+        formula_stats = judge_stats_dict[judge_model]
     
-    # Get total formulas from the main formula_statistics level
-    total_formulas = formula_stats_all.get('total_formulas', 'N/A')
-    
-    # Format accuracy percentage
-    accuracy = formula_stats.get('accuracy_percentage')
-    accuracy_str = f"{accuracy:.1f}" if accuracy and accuracy != int(accuracy) else str(int(accuracy)) if accuracy else "N/A"
-    
-    # Format average score
-    avg_score = formula_stats.get('average_score')
-    score_str = f"{avg_score:.1f}" if avg_score and avg_score != int(avg_score) else str(int(avg_score)) if avg_score else "N/A"
-    
-    # Format levenshtein similarity
-    lev_sim = text_stats.get('average_levenshtein_similarity')
+    # Format numbers
+    accuracy_str = f"{formula_stats.accuracy_percentage:.1f}" if formula_stats.accuracy_percentage != int(formula_stats.accuracy_percentage) else str(int(formula_stats.accuracy_percentage))
+    score_str = f"{formula_stats.average_score:.1f}" if formula_stats.average_score != int(formula_stats.average_score) else str(int(formula_stats.average_score))
+    lev_sim = stats.text_statistics.average_levenshtein_similarity
     lev_sim_str = f"{lev_sim:.3f}" if lev_sim else "N/A"
     
     return f"""
     <div class="summary-stats">
         <div style="display: inline-block; margin: 0 15px;">
             <div>Judge Model</div>
-            <div class="summary-value">{judge_model}</div>
+            <div class="summary-value">{formula_stats.judge_model}</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Total Formulas</div>
-            <div class="summary-value">{total_formulas}</div>
+            <div class="summary-value">{stats.formula_statistics.total_formulas}</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Correct Formulas</div>
-            <div class="summary-value">{formula_stats.get('correct_formulas', 'N/A')}</div>
+            <div class="summary-value">{formula_stats.correct_formulas}</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Accuracy</div>
@@ -355,15 +290,20 @@ def get_available_runs_and_parsers(paths: PipelinePaths) -> dict[str, dict[str, 
             if not pdf_dir.is_dir():
                 continue
                 
+            run_config = BenchmarkRunConfig(
+                name=pdf_dir.name,
+                timestamp=timestamp_dir.name,
+                paths=paths
+            )
+            
             parsers = []
             
             for parser_dir in pdf_dir.iterdir():
                 if not parser_dir.is_dir():
                     continue
                     
-                # Check if evaluation results exist
-                eval_formula_path = parser_dir / "eval_formula_results.json"
-                eval_stats_path = parser_dir / "eval_stats.json"
+                eval_formula_path = run_config.eval_formula_results_path(parser_dir.name)
+                eval_stats_path = run_config.eval_stats_path(parser_dir.name)
                 
                 if eval_formula_path.exists() and eval_stats_path.exists():
                     parsers.append(parser_dir.name)
@@ -398,78 +338,69 @@ def get_parsers_for_pdf(data: dict, timestamp: str, pdf_name: str) -> list[str]:
 
 
 
-def get_judge_models_for_combination(formula_data: dict[int, dict[str, dict]] | None) -> list[str]:
-    """Get sorted list of available judge models from the formula data."""
-    if not formula_data:
-        return []
-    
-    judge_models = set()
-    for formula_evaluations in formula_data.values():
-        judge_models.update(formula_evaluations.keys())
-    
-    return sorted(judge_models)
 
 
 # ========== EVENT HANDLERS ==========
 
-def render_formula_to_image(renderer: FormulaRenderer, formula_text: str) -> str | None:
-    """Render formula to PNG image, return path or error image if failed."""
+def get_formula_image_path(run_config: BenchmarkRunConfig, parser: str | None, formula_number: int, is_ground_truth: bool = False) -> str | None:
+    """Get path to pre-rendered formula PNG file."""
     try:
-        return renderer.render(formula_text)
-    except LatexRenderError as e:
-        logging.warning(f"Formula rendering failed: {e}")
-        return renderer.create_error_image(str(e))
+        if is_ground_truth:
+            # Ground truth formulas are in run_directory/rendered_formulas/
+            rendered_dir = run_config.rendered_formulas_dir()
+        else:
+            # Parser formulas are in run_directory/parser_name/rendered_formulas/
+            rendered_dir = run_config.rendered_formulas_dir(parser)
+        
+        # Formula files are named formula_000.png, formula_001.png, etc.
+        formula_filename = f"formula_{formula_number-1:03d}.png"  # Convert to 0-based index
+        formula_path = rendered_dir / formula_filename
+        
+        if formula_path.exists() and formula_path.is_file():
+            return str(formula_path)
+        else:
+            if formula_path.exists():
+                logging.warning(f"Formula path exists but is not a file: {formula_path}")
+            else:
+                logging.warning(f"Formula PNG not found: {formula_path}")
+            return None
+    except Exception as e:
+        logging.error(f"Error getting formula image path: {e}")
+        return None
 
 
-def update_display(idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None, renderer: FormulaRenderer):
-    """Update display based on index and judge model."""
-    if not formula_data or not judge_model or idx < 0:
-        return ("", None, None, "", "", "", "", "", idx, 1)
+def update_display_from_state(state: ViewerState) -> tuple:
+    """Update display based on viewer state."""
+    if not state.current_formula or not state.current_evaluation:
+        return ("", None, None, "", "", "", "", "", state.current_formula_index, 1)
 
-    formula_numbers = sorted(formula_data.keys())
-    if idx >= len(formula_numbers):
-        return ("", None, None, "", "", "", "", "", idx, 1)
-
-    formula_num = formula_numbers[idx]
-    judge_evaluations = formula_data[formula_num]
-    
-    if judge_model not in judge_evaluations:
-        # If selected judge model doesn't exist for this formula, use first available
-        available_judges = list(judge_evaluations.keys())
-        if not available_judges:
-            return ("", None, None, "", "", "", "", "", idx, 1)
-        judge_model = available_judges[0]
-
-    formula = judge_evaluations[judge_model]
-    formula_number = idx + 1
-    total_formulas = len(formula_numbers)
+    formula = state.current_formula
+    evaluation = state.current_evaluation
+    formula_number = state.current_formula_index + 1
+    total_formulas = state.total_formulas
 
     # Create HTML components
     progress_html, result_html = create_display_html(
         formula_number, total_formulas, 
-        formula.get('is_correct'),
-        formula.get('score')
+        evaluation.is_correct,
+        evaluation.score
     )
-    errors_html = create_errors_html(formula.get('errors'))
+    errors_html = create_errors_html(evaluation.errors)
     
-    # Render formulas to images
-    ground_truth_img = render_formula_to_image(renderer, formula.get('ground_truth_formula'))
-    extracted_img = render_formula_to_image(renderer, formula.get('extracted_formula'))
+    # Load pre-rendered formula images
+    ground_truth_img = get_formula_image_path(state.run_config, None, formula_number, is_ground_truth=True)
+    extracted_img = get_formula_image_path(state.run_config, state.parser, formula_number, is_ground_truth=False)
     
-    # Get raw LaTeX text
-    ground_truth_text = formula.get('ground_truth_formula', '')
-    extracted_text = formula.get('extracted_formula', '')
-
     return (
         progress_html,
         ground_truth_img,
         extracted_img,
         result_html,
-        formula.get('explanation'),
+        evaluation.explanation,
         errors_html,
-        ground_truth_text,
-        extracted_text,
-        idx,
+        formula.ground_truth_formula,
+        formula.extracted_formula,
+        state.current_formula_index,
         formula_number
     )
 
@@ -486,7 +417,7 @@ def update_pdf_choices(timestamp: str, data_dict: dict):
     )
 
 
-def update_parser_choices(timestamp: str, pdf_name: str, data_dict: dict, current_parser: str = None):
+def update_parser_choices(timestamp: str, pdf_name: str, data_dict: dict, current_parser: str | None = None):
     """Update parser choices based on timestamp and PDF."""
     parsers = get_parsers_for_pdf(data_dict, timestamp, pdf_name)
     
@@ -499,51 +430,39 @@ def update_parser_choices(timestamp: str, pdf_name: str, data_dict: dict, curren
     return gr.update(choices=parsers, value=selected_parser)
 
 
-def load_combination(timestamp: str, pdf_name: str, parser: str, current_idx: int, paths: PipelinePaths, renderer: FormulaRenderer):
+def load_combination(timestamp: str, pdf_name: str, parser: str, current_idx: int, paths: PipelinePaths):
     """Load a combination and update the interface."""
     if not all([timestamp, pdf_name, parser]):
-        return ("", "", "", "", "", "", "", "", "", 0, 1, None, None, 1, gr.update(choices=[], value=None))
+        return ("", "", "", "", "", "", "", "", "", 0, 1, None, 1, gr.update(choices=[], value=None))
 
     try:
-        # Create BenchmarkRunConfig to get file paths
+        # Create BenchmarkRunConfig
         run_config = BenchmarkRunConfig(
             name=pdf_name,
             timestamp=timestamp,
             paths=paths
         )
 
-        # Load the evaluation data
-        formula_data = load_formula_data(run_config.eval_formula_results_path(parser))
-        stats_data = load_stats_data(run_config.eval_stats_path(parser))
-
-        if not formula_data or not stats_data:
+        # Create viewer state
+        state = create_viewer_state(run_config, parser)
+        if not state:
             return (
                 "No evaluation data found",
                 "", "", "", "", "", "", "", "",
-                0, 1, None, None, 1, gr.update(choices=[], value=None)
+                0, 1, None, 1, gr.update(choices=[], value=None)
             )
 
-        # Get available judge models and select first one
-        judge_models = get_judge_models_for_combination(formula_data)
-        first_judge = judge_models[0] if judge_models else None
-
-        if not first_judge:
-            return (
-                "No judge models found",
-                "", "", "", "", "", "", "", "",
-                0, 1, None, None, 1, gr.update(choices=[], value=None)
-            )
-
-        # Validate index
-        formula_numbers = sorted(formula_data.keys())
-        if current_idx >= len(formula_numbers):
-            current_idx = len(formula_numbers) - 1
+        # Validate and set current index
+        if current_idx >= state.total_formulas:
+            current_idx = state.total_formulas - 1
         if current_idx < 0:
             current_idx = 0
+        state.current_formula_index = current_idx
         
         # Create summary HTML and display
-        summary_html = create_summary_html(stats_data, first_judge)
-        display_result = update_display(current_idx, first_judge, formula_data, renderer)
+        summary_html = create_summary_html(state.stats, state.current_judge_model)
+        display_result = update_display_from_state(state)
+        judge_models = state.available_judge_models
 
         # Return everything needed to update the UI
         return (
@@ -558,10 +477,9 @@ def load_combination(timestamp: str, pdf_name: str, parser: str, current_idx: in
             display_result[7],  # extracted_text
             current_idx,  # formula_index
             display_result[9],  # formula_number for input
-            formula_data,  # current_data
-            stats_data,  # current_stats_data
+            state,  # current_state
             display_result[9],  # formula_number for input (duplicate for consistency)
-            gr.update(choices=judge_models, value=first_judge)  # judge model dropdown
+            gr.update(choices=judge_models, value=state.current_judge_model)  # judge model dropdown
         )
         
     except Exception as e:
@@ -569,44 +487,128 @@ def load_combination(timestamp: str, pdf_name: str, parser: str, current_idx: in
         return (
             "Error loading data",
             "", "", "", "", "", "", "", "",
-            0, 1, None, None, 1, gr.update(choices=[], value=None)
+            0, 1, None, 1, gr.update(choices=[], value=None)
         )
 
 
-def go_to_prev(current_idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None, renderer: FormulaRenderer):
+def navigate_previous(state: ViewerState) -> tuple:
     """Navigate to previous formula."""
-    if formula_data and current_idx > 0:
-        current_idx -= 1
-    return update_display(current_idx, judge_model, formula_data, renderer)
+    if state.current_formula_index > 0:
+        state.current_formula_index -= 1
+    return update_display_from_state(state)
 
 
-def go_to_next(current_idx: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None, renderer: FormulaRenderer):
+def navigate_next(state: ViewerState) -> tuple:
     """Navigate to next formula."""
-    if formula_data:
-        formula_numbers = sorted(formula_data.keys())
-        if current_idx < len(formula_numbers) - 1:
-            current_idx += 1
-    return update_display(current_idx, judge_model, formula_data, renderer)
+    if state.current_formula_index < state.total_formulas - 1:
+        state.current_formula_index += 1
+    return update_display_from_state(state)
 
 
-def go_to_number(formula_num: int, judge_model: str, formula_data: dict[int, dict[str, dict]] | None, renderer: FormulaRenderer):
+def navigate_to_number(formula_num: int, state: ViewerState) -> tuple:
     """Navigate to specific formula number."""
     # Convert 1-based formula number to 0-based index
     idx = formula_num - 1
-    if formula_data:
-        formula_numbers = sorted(formula_data.keys())
-        if idx < 0:
-            idx = 0
-        if idx >= len(formula_numbers):
-            idx = len(formula_numbers) - 1
-    else:
+    if idx < 0:
         idx = 0
-    return update_display(idx, judge_model, formula_data, renderer)
+    if idx >= state.total_formulas:
+        idx = state.total_formulas - 1
+    state.current_formula_index = idx
+    return update_display_from_state(state)
 
 
-def judge_model_changed(new_judge_model: str, current_idx: int, formula_data: dict[int, dict[str, dict]] | None, renderer: FormulaRenderer):
+def change_judge_model(new_judge_model: str, state: ViewerState) -> tuple:
     """Update display when judge model changes."""
-    return update_display(current_idx, new_judge_model, formula_data, renderer)
+    state.current_judge_model = new_judge_model
+    return update_display_from_state(state)
+
+
+# ========== UI COMPONENT BUILDERS ==========
+
+def create_file_selection_row(data: dict) -> tuple[gr.Dropdown, gr.Dropdown, gr.Dropdown, gr.Dropdown]:
+    """Create hierarchical file selection dropdowns."""
+    timestamps = get_timestamps_list(data)
+    initial_timestamp = timestamps[0] if timestamps else None
+    initial_pdfs = get_pdfs_for_timestamp(data, initial_timestamp) if initial_timestamp else []
+    initial_pdf = initial_pdfs[0] if initial_pdfs else None
+    initial_parsers = get_parsers_for_pdf(data, initial_timestamp, initial_pdf) if initial_timestamp and initial_pdf else []
+    initial_parser = initial_parsers[0] if initial_parsers else None
+    
+    with gr.Row(elem_classes="file-selection"):
+        with gr.Column():
+            timestamp_dropdown = gr.Dropdown(
+                choices=timestamps,
+                label="Select Timestamp",
+                value=initial_timestamp
+            )
+        with gr.Column():
+            pdf_dropdown = gr.Dropdown(
+                choices=initial_pdfs,
+                label="Select PDF",
+                value=initial_pdf
+            )
+        with gr.Column():
+            parser_dropdown = gr.Dropdown(
+                choices=initial_parsers,
+                label="Select Parser",
+                value=initial_parser
+            )
+        with gr.Column():
+            judge_model_dropdown = gr.Dropdown(
+                choices=[],
+                label="Select Judge Model",
+                value=None
+            )
+    
+    return timestamp_dropdown, pdf_dropdown, parser_dropdown, judge_model_dropdown
+
+
+def create_navigation_controls() -> tuple[gr.Button, gr.Number, gr.Button]:
+    """Create navigation controls."""
+    with gr.Row(elem_classes="navigation-row"):
+        prev_btn = gr.Button("← Previous")
+        formula_number_input = gr.Number(
+            label="Formula Number",
+            value=1,
+            minimum=1,
+            step=1
+        )
+        next_btn = gr.Button("Next →")
+    
+    return prev_btn, formula_number_input, next_btn
+
+
+def create_formula_comparison_section() -> tuple[gr.Image, gr.Textbox, gr.HTML, gr.Image, gr.Textbox]:
+    """Create the main formula comparison section."""
+    gr.Markdown("## Formula Comparison")
+    
+    with gr.Row(elem_classes="formula-display-container", elem_id="formula-comparison-row"):
+        with gr.Column(elem_classes="formula-box"):
+            gr.Markdown("### Ground Truth Formula")
+            ground_truth_formula = gr.Image(show_label=False, show_download_button=False, container=True)
+            ground_truth_text = gr.Textbox(label="Raw LaTeX", lines=3, interactive=False)
+
+        # Comparison box with fixed width
+        with gr.Column(elem_classes="comparison-box", elem_id="status-comparison-box", scale=0):
+            combined_status = gr.HTML()
+
+        with gr.Column(elem_classes="formula-box"):
+            gr.Markdown("### Extracted Formula")
+            extracted_formula = gr.Image(show_label=False, show_download_button=False, container=True)
+            extracted_text = gr.Textbox(label="Raw LaTeX", lines=3, interactive=False)
+    
+    return ground_truth_formula, ground_truth_text, combined_status, extracted_formula, extracted_text
+
+
+def create_explanation_section() -> tuple[gr.Textbox, gr.HTML]:
+    """Create explanation and errors section."""
+    gr.Markdown("### Explanation")
+    explanation = gr.Textbox(lines=3)
+
+    gr.Markdown("### Errors")
+    errors = gr.HTML()
+    
+    return explanation, errors
 
 
 # ========== GRADIO INTERFACE ==========
@@ -615,7 +617,6 @@ def create_formula_viewer():
     """Create the Gradio interface for formula comparison."""
     paths = PipelinePaths()
     
-
     # Get all available combinations
     data = get_available_runs_and_parsers(paths)
 
@@ -623,96 +624,32 @@ def create_formula_viewer():
         print(f"Error: No evaluation results found in {paths.runs_dir}")
         return None
 
-    # Get initial choices
-    timestamps = get_timestamps_list(data)
-    initial_timestamp = timestamps[0] if timestamps else None
-    initial_pdfs = get_pdfs_for_timestamp(data, initial_timestamp) if initial_timestamp else []
-    initial_pdf = initial_pdfs[0] if initial_pdfs else None
-    initial_parsers = get_parsers_for_pdf(data, initial_timestamp, initial_pdf) if initial_timestamp and initial_pdf else []
-    initial_parser = initial_parsers[0] if initial_parsers else None
-
     # Create the interface
     with gr.Blocks(title="Formula Comparison Viewer", theme=gr.themes.Soft(), css=CUSTOM_CSS) as interface:
         gr.Markdown("# Formula Comparison Viewer")
 
-        # Hierarchical file selection
-        with gr.Row(elem_classes="file-selection"):
-            with gr.Column():
-                timestamp_dropdown = gr.Dropdown(
-                    choices=timestamps,
-                    label="Select Timestamp",
-                    value=initial_timestamp
-                )
-            with gr.Column():
-                pdf_dropdown = gr.Dropdown(
-                    choices=initial_pdfs,
-                    label="Select PDF",
-                    value=initial_pdf
-                )
-            with gr.Column():
-                parser_dropdown = gr.Dropdown(
-                    choices=initial_parsers,
-                    label="Select Parser",
-                    value=initial_parser
-                )
-            with gr.Column():
-                judge_model_dropdown = gr.Dropdown(
-                    choices=[],
-                    label="Select Judge Model",
-                    value=None
-                )
-
+        # Create UI components using extracted functions
+        timestamp_dropdown, pdf_dropdown, parser_dropdown, judge_model_dropdown = create_file_selection_row(data)
+        
         # Summary statistics
         summary_html_component = gr.HTML()
-
+        
         # Formula progress indicator
         formula_progress = gr.HTML()
-
-        # Direct navigation controls
-        with gr.Row(elem_classes="navigation-row"):
-            prev_btn = gr.Button("← Previous")
-            formula_number_input = gr.Number(
-                label="Formula Number",
-                value=1,
-                minimum=1,
-                step=1
-            )
-            next_btn = gr.Button("Next →")
-
-        gr.Markdown("## Formula Comparison")
-
-        # Side by side display with comparison in middle
-        with gr.Row(elem_classes="formula-display-container", elem_id="formula-comparison-row"):
-            with gr.Column(elem_classes="formula-box"):
-                gr.Markdown("### Ground Truth Formula")
-                ground_truth_formula = gr.Image(show_label=False, show_download_button=False, container=True)
-                ground_truth_text = gr.Textbox(label="Raw LaTeX", lines=3, interactive=False)
-
-            # Comparison box with fixed width
-            with gr.Column(elem_classes="comparison-box", elem_id="status-comparison-box", scale=0):
-                combined_status = gr.HTML()
-
-            with gr.Column(elem_classes="formula-box"):
-                gr.Markdown("### Extracted Formula")
-                extracted_formula = gr.Image(show_label=False, show_download_button=False, container=True)
-                extracted_text = gr.Textbox(label="Raw LaTeX", lines=3, interactive=False)
-
-        # Explanation and Errors
-        gr.Markdown("### Explanation")
-        explanation = gr.Textbox(lines=3)
-
-        gr.Markdown("### Errors")
-        errors = gr.HTML()
+        
+        # Navigation controls
+        prev_btn, formula_number_input, next_btn = create_navigation_controls()
+        
+        # Formula comparison section
+        ground_truth_formula, ground_truth_text, combined_status, extracted_formula, extracted_text = create_formula_comparison_section()
+        
+        # Explanation section
+        explanation, errors = create_explanation_section()
 
         # State variables to track current data
-        current_data = gr.State(None)  # Will hold the current formula data
-        current_stats_data = gr.State(None)  # Store the current stats data
+        current_data = gr.State(None)  # Will hold the ViewerState
         formula_index = gr.State(0)  # 0-based index for internal use
-        current_judge_model = gr.State(None)  # Current selected judge model
         hierarchical_data = gr.State(data)  # Store the hierarchical data
-
-        # Initialize formula renderer
-        renderer = FormulaRenderer()
         
         # Connect event handlers for dropdown changes
         timestamp_dropdown.change(
@@ -727,15 +664,15 @@ def create_formula_viewer():
             outputs=[parser_dropdown]
         )
 
-        # Connect event handlers for loading data
+        # Connect event handlers for loading data  
         def reload_data(timestamp, pdf_name, parser, current_idx):
-            return load_combination(timestamp, pdf_name, parser, current_idx, paths, renderer)
+            return load_combination(timestamp, pdf_name, parser, current_idx, paths)
 
         # Full reload outputs for dropdown changes
         full_reload_outputs = [
             summary_html_component, formula_progress, ground_truth_formula, extracted_formula,
             combined_status, explanation, errors, ground_truth_text, extracted_text,
-            formula_index, formula_number_input, current_data, current_stats_data, 
+            formula_index, formula_number_input, current_data, 
             formula_number_input, judge_model_dropdown
         ]
         
@@ -754,26 +691,26 @@ def create_formula_viewer():
         ]
         
         judge_model_dropdown.change(
-            lambda judge_model, idx, data: judge_model_changed(judge_model, idx, data, renderer),
-            inputs=[judge_model_dropdown, formula_index, current_data],
+            lambda judge_model, state: change_judge_model(judge_model, state),
+            inputs=[judge_model_dropdown, current_data],
             outputs=navigation_outputs
         )
 
         prev_btn.click(
-            lambda idx, judge_model, data: go_to_prev(idx, judge_model, data, renderer),
-            inputs=[formula_index, judge_model_dropdown, current_data],
+            lambda state: navigate_previous(state),
+            inputs=[current_data],
             outputs=navigation_outputs
         )
 
         next_btn.click(
-            lambda idx, judge_model, data: go_to_next(idx, judge_model, data, renderer),
-            inputs=[formula_index, judge_model_dropdown, current_data],
+            lambda state: navigate_next(state),
+            inputs=[current_data],
             outputs=navigation_outputs
         )
 
         formula_number_input.change(
-            lambda formula_num, judge_model, data: go_to_number(formula_num, judge_model, data, renderer),
-            inputs=[formula_number_input, judge_model_dropdown, current_data],
+            lambda formula_num, state: navigate_to_number(formula_num, state),
+            inputs=[formula_number_input, current_data],
             outputs=navigation_outputs
         )
 
