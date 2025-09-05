@@ -36,5 +36,7 @@ dependencies = [
     "docling==2.43.0",
     "mlx-vlm==0.3.2",
     "llama-cloud-services==0.6.60",
+    "pypandoc>=1.15",
+    "pylatexenc>=2.10",
 ]
 
