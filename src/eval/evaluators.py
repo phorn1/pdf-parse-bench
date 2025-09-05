@@ -44,7 +44,6 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 }}
 """
 
-CDM_SERVICE_URL = "http://localhost:8080/calculate_metric_single"
 
 
 # ========== DATA MODELS ==========
@@ -78,6 +77,11 @@ class FormulaEvaluationSummary(BaseModel):
     formula_type: Literal['inline-formula', 'display-formula']
     llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
     cdm_eval: CDMEval | None = None
+    
+    @property
+    def llm_evals_by_model(self) -> dict[str, LLMJudgeEval]:
+        """Get LLM evaluations as dict by judge model for easier UI access."""
+        return {eval.judge_model: eval for eval in self.llm_evals}
 
 
 class CDMStatistics(BaseModel):
@@ -98,7 +102,7 @@ class LLMJudgeStatistics(BaseModel):
 
 class FormulaStatistics(BaseModel):
     total_formulas: int
-    llm_judge: list[LLMJudgeStatistics] = Field(alias="llm-judge")
+    llm_judge: list[LLMJudgeStatistics]
     cdm: CDMStatistics | None
 
 
@@ -110,6 +114,11 @@ class TextStatistics(BaseModel):
 class SummaryStatistics(BaseModel):
     formula_statistics: FormulaStatistics
     text_statistics: TextStatistics
+    
+    @property
+    def llm_judge_stats_by_model(self) -> dict[str, LLMJudgeStatistics]:
+        """Get LLM judge statistics as dict by judge model for easier access."""
+        return {stat.judge_model: stat for stat in self.formula_statistics.llm_judge}
 
 
 # ========== EVALUATION CLASSES ==========
@@ -138,6 +147,14 @@ class CDMEvaluator:
     
     def __init__(self, output_dir: Path):
         self.output_dir = output_dir
+        
+        # Check CDM service URL availability at initialization
+        cdm_service_url = os.getenv("CDM_SERVICE_URL")
+        if not cdm_service_url:
+            raise ValueError("CDM_SERVICE_URL environment variable is required for CDM evaluation. "
+                             "Note: CDM evaluation is an experimental feature that requires a separate local service installation. "
+                             "This component is not part of the core benchmarking suite and does not work out-of-the-box.")
+        self.cdm_service_url = cdm_service_url
     
     def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMEval]:
         results = []
@@ -147,7 +164,7 @@ class CDMEvaluator:
     
     def _evaluate_single(self, gt_formula: str, extracted_formula: str, case_id: str) -> CDMEval:
         # Call CDM service to evaluate formula similarity and get visualization
-        response = requests.post(CDM_SERVICE_URL, json={
+        response = requests.post(self.cdm_service_url, json={
             'gt_formula': gt_formula,
             'pred_formula': extracted_formula,
             'case_id': case_id
@@ -172,14 +189,16 @@ class LLMEvaluator:
     
     def __init__(self, models: list[str]):
         self.models = models
-        self.openai_client, self.gemini_client = self._init_clients()
+        self.openai_client, self.gemini_client, self.mistral_client = self._init_clients()
     
     def _init_clients(self):
         openai_client = None
         gemini_client = None
+        mistral_client = None
         
-        openai_models = [m for m in self.models if not m.startswith("gemini-")]
+        openai_models = [m for m in self.models if not m.startswith("gemini-") and not m.startswith("mistral-")]
         gemini_models = [m for m in self.models if m.startswith("gemini-")]
+        mistral_models = [m for m in self.models if m.startswith("mistral-")]
         
         if openai_models:
             if os.getenv("LLM_PROXY_URL"):
@@ -196,7 +215,16 @@ class LLMEvaluator:
                 raise ValueError("GEMINI_API_KEY required for Gemini models")
             gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
         
-        return openai_client, gemini_client
+        if mistral_models:
+            try:
+                from mistralai import Mistral
+            except ImportError:
+                raise ImportError("mistralai package required for Mistral models. Install with: pip install mistralai")
+            if not os.getenv("MISTRAL_API_KEY"):
+                raise ValueError("MISTRAL_API_KEY required for Mistral models")
+            mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
+        
+        return openai_client, gemini_client, mistral_client
     
     def evaluate_batch(self, gt_formulas: list[dict], extracted_formulas: list[dict]) -> list[FormulaEvaluationSummary]:
         all_results = {model: [] for model in self.models}
@@ -210,6 +238,8 @@ class LLMEvaluator:
                     extracted_text = extracted['data']
                     if model.startswith("gemini-"):
                         future = executor.submit(self._evaluate_gemini, model, gt_text, extracted_text)
+                    elif model.startswith("mistral-"):
+                        future = executor.submit(self._evaluate_mistral, model, gt_text, extracted_text)
                     else:
                         future = executor.submit(self._evaluate_openai, model, gt_text, extracted_text)
                     futures[future] = (model, i, gt, extracted)
@@ -314,6 +344,42 @@ class LLMEvaluator:
             errors=data.get("errors", [])
         )
     
+    @_retry_on_failure()
+    def _evaluate_mistral(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+        from pydantic import BaseModel
+        
+        class FormulaResponse(BaseModel):
+            explanation: str
+            is_correct: bool
+            score: float
+            errors: list[str]
+        
+        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
+        
+        messages = [
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ]
+        
+        chat_response = self.mistral_client.chat.parse(
+            model=model,
+            messages=messages,
+            response_format=FormulaResponse,
+            temperature=0
+        )
+        
+        # Access the parsed Pydantic object directly
+        data = chat_response.choices[0].message.parsed
+        return LLMJudgeEval(
+            judge_model=model,
+            explanation=data.explanation,
+            is_correct=data.is_correct,
+            score=data.score,
+            errors=data.errors
+        )
+    
 
 
 # ========== STATISTICS CALCULATOR ==========
@@ -405,7 +471,7 @@ class StatisticsCalculator:
         
         formula_stats = FormulaStatistics(
             total_formulas=len(formula_summaries),
-            **{"llm-judge": llm_judge_stats},
+            llm_judge=llm_judge_stats,
             cdm=cdm_stats
         )
         
