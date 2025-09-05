@@ -1,6 +1,7 @@
 """Main LaTeX PDF generator with automated variations."""
 
 import json
+import os
 import tempfile
 import traceback
 import logging
@@ -14,6 +15,7 @@ from .style_config import LaTeXConfig
 from .content_generator import LaTeXContentGenerator
 from .compiler import LaTeXCompiler
 from ..generators import generate_text_paragraphs, load_formula_generator
+from ...utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +35,14 @@ class LaTeXSinglePagePDFGenerator:
         self.text_generator = generate_text_paragraphs(language=config.language.locale_code, seed=config.seed)
         self.config = config
 
-    def generate_single_page_pdf(self, output_latex_path: Path, output_pdf_path: Path, output_gt_json: Path):
+    def generate_single_page_pdf(self, output_latex_path: Path, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
         """Generate a single-page PDF with LaTeX to match HTML interface.
         
         Args:
             output_latex_path: Path for the generated LaTeX file
             output_pdf_path: Path for the generated PDF file
             output_gt_json: Path for the ground truth JSON file
+            rendered_formulas_dir: Optional directory to save rendered formula PNGs
         """
         # Build LaTeX content generator with generators
         builder = LaTeXContentGenerator(
@@ -70,6 +73,12 @@ class LaTeXSinglePagePDFGenerator:
 
             # Save ground truth JSON
             gt_data = page_content.to_ground_truth()
+            
+            # Render formulas if requested
+            if rendered_formulas_dir is not None:
+                renderer = FormulaRenderer()
+                renderer.render_formulas_in_segments(gt_data, rendered_formulas_dir)
+            
             with open(output_gt_json, 'w', encoding='utf-8') as f:
                 json.dump(gt_data, f, indent=4, ensure_ascii=False)
 
@@ -83,11 +92,12 @@ class LaTeXPDFJob:
     latex_path: Path
     pdf_path: Path
     gt_path: Path
+    rendered_formulas_dir: Path | None = None
 
 def _generate_single_pdf_task(formula_file: Path, task: LaTeXPDFJob) -> None:
     """Worker function for parallel PDF generation."""
     generator = LaTeXSinglePagePDFGenerator(formula_file, task.config)
-    generator.generate_single_page_pdf(task.latex_path, task.pdf_path, task.gt_path)
+    generator.generate_single_page_pdf(task.latex_path, task.pdf_path, task.gt_path, task.rendered_formulas_dir)
 
 
 class ParallelLaTeXPDFGenerator:
@@ -99,7 +109,6 @@ class ParallelLaTeXPDFGenerator:
         Args:
             formula_file: Path to formulas JSON file
             max_workers: Number of parallel workers (defaults to CPU count - 1)
-            debug_dir: Directory to save failed configurations for debugging
         """
         self.formula_file = formula_file
         self.max_workers = max_workers or max(1, multiprocessing.cpu_count() - 1)

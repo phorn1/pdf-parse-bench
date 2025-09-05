@@ -303,6 +303,9 @@ class LaTeXContentGenerator:
         self.validator = PageFittingValidator(self.template)
         self.text_generator = text_generator
         self.formula_generator = formula_generator
+        
+        # Prime the text generator so we can use send() later
+        next(self.text_generator)
     
     def generate_page_content(self) -> PageContent:
         """Generate page content that fills exactly one page."""
@@ -328,8 +331,12 @@ class LaTeXContentGenerator:
         return page_content
     
     def _generate_paragraph(self) -> ParagraphBlock:
-        """Generate a text paragraph."""
-        content = next(self.text_generator)
+        """Generate a text paragraph with random length."""
+        paragraph_length = random.randint(
+            self.config.content.paragraph_min_chars,
+            self.config.content.paragraph_max_chars
+        )
+        content = self.text_generator.send(paragraph_length)
         return ParagraphBlock(text=content)
     
     def _generate_formula(self) -> FormulaBlock:
@@ -348,8 +355,8 @@ class LaTeXContentGenerator:
         while True:
             # Generate random number of text segments based on config
             num_segments = random.randint(
-                self.config.content.mixed_text_segments_min,
-                self.config.content.mixed_text_segments_max
+                self.config.content.mixed_segments_min_count,
+                self.config.content.mixed_segments_max_count
             )
             
             text_segments = []
@@ -358,8 +365,8 @@ class LaTeXContentGenerator:
             for i in range(num_segments):
                 # Generate text segment with variable length
                 segment_length = random.randint(
-                    self.config.content.text_segment_min_chars,
-                    self.config.content.text_segment_max_chars
+                    self.config.content.mixed_segment_min_chars,
+                    self.config.content.mixed_segment_max_chars
                 )
                 
                 # Use generator.send() to specify exact length for this segment

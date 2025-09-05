@@ -47,9 +47,9 @@ class Language(Enum):
 class PageGeometry(str, Enum):
     """Page size options."""
     A4 = "a4paper"
-    LETTER = "letterpaper"
-    A5 = "a5paper"
-    B5 = "b5paper"
+    # LETTER = "letterpaper"
+    # A5 = "a5paper"
+    # B5 = "b5paper"
 
 
 @dataclass
@@ -108,20 +108,15 @@ class TypographySettings:
 @dataclass
 class ContentSettings:
     """Content generation configuration."""
-    text_segment_min_chars: int = 50
-    text_segment_max_chars: int = 200
-    mixed_text_segments_min: int = 1
-    mixed_text_segments_max: int = 5
+    # Mixed text block settings
+    mixed_segment_min_chars: int = 50
+    mixed_segment_max_chars: int = 90
+    mixed_segments_min_count: int = 2
+    mixed_segments_max_count: int = 5
+    # Paragraph block settings
+    paragraph_min_chars: int = 120
+    paragraph_max_chars: int = 200
     
-    @classmethod
-    def random(cls) -> 'ContentSettings':
-        """Generate random content settings."""
-        return cls(
-            text_segment_min_chars=random.randint(40, 80),
-            text_segment_max_chars=random.randint(150, 250),
-            mixed_text_segments_min=random.randint(1, 2),
-            mixed_text_segments_max=random.randint(3, 5)
-        )
 
 
 class LaTeXConfig(BaseModel):
@@ -161,7 +156,7 @@ class LaTeXConfig(BaseModel):
             language=random.choice(list(Language)),
             margins=MarginSettings.random(),
             typography=TypographySettings.random(),
-            content=ContentSettings.random(),
+            content=ContentSettings(),
             two_column=random.choice([True, False]),
             column_sep=random.choice(["0.8cm", "1cm", "1.2cm"]),
             include_headers=random.choice([True, False]),
