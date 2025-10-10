@@ -1,4 +1,5 @@
 import base64
+import json
 import requests
 from pathlib import Path
 import pdf2image
@@ -33,11 +34,11 @@ class OCRFluxParser(PDFParser):
                 timeout=300  # 5 minutes timeout for OCR processing
             )
             response.raise_for_status()
-            return response.json()["result"]
+            return json.loads(response.json()["result"])["natural_text"]
         except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"Nanonets API request failed: {e}")
-        except KeyError:
-            raise RuntimeError("Unexpected response format from Nanonets API")
+            raise RuntimeError(f"OCRFlux API request failed: {e}")
+        except (KeyError, json.JSONDecodeError) as e:
+            raise RuntimeError(f"Unexpected response format from OCRFlux API: {e}")
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """
