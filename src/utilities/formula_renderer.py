@@ -33,15 +33,32 @@ class FormulaRenderer:
     def preprocess_unicode(self, text: str) -> str:
         """Convert Unicode mathematical symbols to LaTeX commands using pylatexenc."""
         try:
+            # ========== MANUAL UNICODE REPLACEMENTS ==========
+            # Handle subscript numbers (U+2080 to U+2089)
+            subscript_map = {
+                '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4',
+                '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+            }
+            # Handle superscript numbers (U+2070 to U+2079)
+            superscript_map = {
+                '⁰': '^0', '¹': '^1', '²': '^2', '³': '^3', '⁴': '^4',
+                '⁵': '^5', '⁶': '^6', '⁷': '^7', '⁸': '^8', '⁹': '^9'
+            }
+
+            # Apply manual replacements
+            for unicode_char, latex_replacement in {**subscript_map, **superscript_map}.items():
+                text = text.replace(unicode_char, latex_replacement)
+
+            # ========== PYLATEXENC CONVERSION ==========
             has_dollars = '$' in text
             rules = 'unicode-xml' if has_dollars else 'defaults'
-            
+
             encoder = UnicodeToLatexEncoder(
                 conversion_rules=[rules],
                 non_ascii_only=True,
                 replacement_latex_protection='braces',
             )
-            
+
             converted = encoder.unicode_to_latex(text)
             return converted
         except Exception as e:

@@ -13,7 +13,7 @@ class PipelineConfig(BaseModel):
     extract_segments: bool = False
     evaluate_results: bool = False
     reuse_timestamp: str | None = None
-    formula_llm_judge_models: list[str]
+    formula_llm_judge_models: list[str] = Field(default_factory=list)
     enable_cdm_score: bool = False
     enable_formula2png_rendering: bool = False
     enable_png_renderings: bool = False
@@ -44,10 +44,6 @@ class PipelinePaths(BaseModel):
     """Centralized path management for the benchmark pipeline."""
     
     project_root: Path = Field(default_factory=lambda: Path(__file__).parent.parent.parent)
-    
-    @property
-    def formulas_file(self) -> Path:
-        return self.project_root / "data" / "formulas.json"
     
     @property
     def config_file(self) -> Path:

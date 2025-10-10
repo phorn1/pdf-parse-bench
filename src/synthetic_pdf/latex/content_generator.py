@@ -2,6 +2,7 @@
 
 import random
 import tempfile
+import re
 from typing import Generator
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -188,10 +189,18 @@ class LaTeXDocumentTemplate:
         packages = [
             "\\usepackage[utf8]{inputenc}",
             "\\usepackage[T1]{fontenc}",
-            f"\\usepackage[{self.config.language.babel_name}]{{babel}}",
+        ]
+        
+        # Handle Spanish babel with proper options to avoid active character conflicts
+        if self.config.language.babel_name == "spanish":
+            packages.append("\\usepackage[spanish,es-noshorthands]{babel}")
+        else:
+            packages.append(f"\\usepackage[{self.config.language.babel_name}]{{babel}}")
+        
+        packages.extend([
             "\\usepackage{amsmath}",
             "\\usepackage{geometry}"
-        ]
+        ])
         
         # Don't load setspace with memoir class - it has its own spacing commands
         if self.config.document_class.value != "memoir":
@@ -211,12 +220,17 @@ class LaTeXDocumentTemplate:
 
         packages.append("\\usepackage[version=4]{mhchem}")
         packages.append("\\usepackage{xcolor}")
-        
+
         if self.config.two_column:
             packages.append("\\usepackage{multicol}")
         
-        # Add backward compatibility for old font commands like \rm
+        # Add backward compatibility for old font commands
         packages.append("\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}")
+        packages.append("\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}")
+        packages.append("\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}")
+        packages.append("\\DeclareOldFontCommand{\\tt}{\\normalfont\\ttfamily}{\\mathtt}")
+        packages.append("\\DeclareOldFontCommand{\\sf}{\\normalfont\\sffamily}{\\mathsf}")
+        packages.append("\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}")
 
         return "\n".join(packages)
     
@@ -261,11 +275,11 @@ class PageFittingValidator:
     def check_fits_one_page(self, page_content: PageContent) -> bool:
         """Check if page content fits on one page by compiling LaTeX."""
         latex_content = self.template.build_document_template(page_content)
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
             tex_file = temp_path / "test.tex"
-            
+
             tex_file.write_text(latex_content, encoding='utf-8')
             
             temp_pdf = temp_path / "test.pdf"
@@ -279,15 +293,64 @@ class PageFittingValidator:
         """Check if a single content block fits within page bounds."""
         single_block_content = PageContent(content_blocks=[block])
         latex_content = self.template.build_document_template(single_block_content)
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
             tex_file = temp_path / "test_block.tex"
+
             tex_file.write_text(latex_content, encoding='utf-8')
-            
+
             LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None, timeout=30)
             log_path = tex_file.with_suffix('.log')
             return LaTeXCompiler.check_bounds_from_log(log_path)
+
+    def check_inline_formula_height(self, formula: str, max_height_pt: float = 10.0) -> bool:
+        """Check if formula is flat enough for inline use.
+
+        Args:
+            formula: LaTeX formula string (without $ delimiters)
+            max_height_pt: Maximum allowed height in points
+
+        Returns:
+            True if formula height is within bounds, False otherwise
+        """
+        # Create minimal test document that measures formula height
+        test_latex = r"""
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\begin{document}
+\setbox0=\hbox{$""" + formula + r"""$}
+\typeout{FORMULA_HEIGHT_PT:\the\ht0}
+\end{document}
+"""
+
+        try:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_path = Path(temp_dir)
+                tex_file = temp_path / "height_test.tex"
+
+                tex_file.write_text(test_latex, encoding='utf-8')
+
+                LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None)
+
+                # Extract height from log file
+                log_path = tex_file.with_suffix('.log')
+                log_content = log_path.read_text(encoding='utf-8', errors='ignore')
+
+                # Search for our typeout message
+                height_match = re.search(r'FORMULA_HEIGHT_PT:([\d.]+)pt', log_content)
+
+                if height_match:
+                    height_pt = float(height_match.group(1))
+                    return height_pt <= max_height_pt
+                else:
+                    raise Exception
+        except Exception:
+            print("wtf")
+            raise Exception
 
 
 # ========== CONTENT GENERATOR ==========
@@ -311,16 +374,17 @@ class LaTeXContentGenerator:
         """Generate page content that fills exactly one page."""
 
         page_content = PageContent()
-        
+
         # Add blocks iteratively until page is full
         while True:
-            # Generate block with improved variety
-            block = random.choice([
-                self._generate_paragraph(),
-                self._generate_formula(),
-                self._generate_mixed_text()
+            # Choose block type first, then generate (lazy evaluation)
+            block_generator = random.choice([
+                self._generate_paragraph,
+                self._generate_formula,
+                self._generate_mixed_text,
             ])
-            
+            block = block_generator()
+
             # Test if adding this block would exceed one page
             page_content.content_blocks.append(block)
             if not self.validator.check_fits_one_page(page_content):
@@ -344,42 +408,55 @@ class LaTeXContentGenerator:
         while True:
             formula = next(self.formula_generator)
             block = FormulaBlock(latex_formula=formula)
-            
+
             # Check if formula fits bounds by testing compilation
             if self.validator.check_block_fits_bounds(block):
                 return block
             # If not, skip this formula and try the next one
-    
+
+    def _get_inline_formula(self) -> str:
+        """Get a formula suitable for inline use (not too tall).
+
+        Returns:
+            Formula string that is flat enough for inline use
+        """
+        while True:
+            formula = next(self.formula_generator)
+
+            # Check if formula height is suitable for inline use
+            if self.validator.check_inline_formula_height(formula):
+                return formula
+            # If not, skip this formula and try the next one
+
     def _generate_mixed_text(self) -> MixedTextBlock:
         """Generate a mixed text block with inline formulas that fits within bounds."""
         while True:
             # Generate random number of text segments based on config
-            num_segments = random.randint(
-                self.config.content.mixed_segments_min_count,
-                self.config.content.mixed_segments_max_count
-            )
-            
+            num_segments = random.randint(2, self.config.content.mixed_segments_max_count)
+
             text_segments = []
             inline_formulas = []
-            
+
             for i in range(num_segments):
                 # Generate text segment with variable length
                 segment_length = random.randint(
                     self.config.content.mixed_segment_min_chars,
                     self.config.content.mixed_segment_max_chars
                 )
-                
+
                 # Use generator.send() to specify exact length for this segment
                 segment_text = self.text_generator.send(segment_length)
                 text_segments.append(segment_text)
-                
+
                 # Add inline formula between segments (except for the last one)
                 if i < num_segments - 1:
-                    inline_formulas.append(next(self.formula_generator))
-            
+                    # Use height-validated formula for inline use
+                    inline_formulas.append(self._get_inline_formula())
+
             block = MixedTextBlock(text_segments=text_segments, inline_formulas=inline_formulas)
 
             # Check if mixed text block fits bounds by testing compilation
             if self.validator.check_block_fits_bounds(block):
                 return block
             # If not, skip this block and try again
+    

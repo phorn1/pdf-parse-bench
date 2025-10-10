@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 from tqdm import tqdm
 
-from ..synthetic_pdf import HtmlSinglePagePDFGenerator, HTMLConfig, LaTeXConfig, ParallelLaTeXPDFGenerator, LaTeXPDFJob
+from ..synthetic_pdf import LaTeXConfig, ParallelLaTeXPDFGenerator, LaTeXPDFJob
 from ..parser import ParserRegistry
 from ..eval import run_evaluation
 from ..utilities import ParallelSegmentExtractor, SegmentExtractionJob
@@ -19,7 +19,7 @@ def setup_clean_logging():
     noisy_loggers = [
         'httpx', 'urllib3', 'openai._base_client', 'mathpix', 'google_genai',
         'marker', 'mistral', 'llamaparse', 'unstructured', 'transformers',
-        'torch', 'tensorflow', 'PIL', 'matplotlib'
+        'torch', 'tensorflow', 'PIL', 'matplotlib',
     ]
     for name in noisy_loggers:
         logger = logging.getLogger(name)
@@ -70,21 +70,6 @@ class BenchmarkOrchestrator:
     # ========== PDF GENERATION ==========
     
     
-    async def _generate_html_pdf_for_config(self, run_config: BenchmarkRunConfig) -> None:
-        """Generate a single HTML PDF for the given configuration."""
-        logger.info(f"Generating HTML PDF for configuration: {run_config.name}")
-        
-        generator = HtmlSinglePagePDFGenerator(
-            self.paths.formulas_file, 
-            HTMLConfig.random(),
-        )
-        
-        await generator.generate_single_page_pdf(
-            output_html_path=run_config.html_output_path,
-            output_pdf_path=run_config.pdf_output_path,
-            output_gt_json=run_config.gt_segments_path,
-        )
-
     async def _generate_latex_pdfs(self, run_configs: list[BenchmarkRunConfig]) -> None:
         """Generate LaTeX PDFs in parallel using ParallelLaTeXPDFGenerator."""
 
@@ -100,24 +85,12 @@ class BenchmarkOrchestrator:
             for run_config in run_configs
         ]
         
-        parallel_generator = ParallelLaTeXPDFGenerator(self.paths.formulas_file)
+        parallel_generator = ParallelLaTeXPDFGenerator()
         
         with tqdm(total=len(tasks), desc="   Generating PDFs", unit="pdf") as pbar:
             for _ in parallel_generator.generate_pdfs_parallel(tasks):
                 pbar.update(1)
         
-
-    async def _generate_html_pdfs(self, run_configs: list[BenchmarkRunConfig]) -> None:
-        """Generate HTML PDFs sequentially."""
-        logger.info(f"Generating {len(run_configs)} HTML PDFs sequentially")
-        
-        with tqdm(total=len(run_configs), desc="   Generating PDFs", unit="pdf") as pbar:
-            for run_config in run_configs:
-                await self._generate_html_pdf_for_config(run_config)
-                pbar.update(1)
-        
-        logger.info(f"Successfully generated all {len(run_configs)} PDFs")
-
 
     # ========== PDF PARSING ==========
 
@@ -162,7 +135,7 @@ class BenchmarkOrchestrator:
     
     # ========== SEGMENT EXTRACTION ==========
     
-    def _extract_segments_parallel(self, run_configs: list[BenchmarkRunConfig]) -> None:
+    def _extract_segments_parallel(self, run_configs: list[BenchmarkRunConfig], skip_existing=True) -> None:
         """Extract segments in parallel using ParallelSegmentExtractor."""
         enabled_parsers = self.config.parsers
         
@@ -174,36 +147,33 @@ class BenchmarkOrchestrator:
                 
             for parser in enabled_parsers:
                 md_path = run_config.parsed_md_path(parser)
-                if md_path.exists():
-                    jobs.append(SegmentExtractionJob(
-                        gt_json_path=run_config.gt_segments_path,
-                        input_md_path=md_path,
-                        output_json_path=run_config.segments_json_path(parser),
-                        rendered_formulas_dir=run_config.rendered_formulas_dir(parser) if self.config.pipeline.enable_formula2png_rendering else None
-                    ))
-                else:
+                segments_json_path = run_config.segments_json_path(parser)
+                
+                if not md_path.exists():
                     logger.warning(f"   ⚠️  Parsed markdown not found for {run_config.name}/{parser}")
+                    continue
+                    
+                if skip_existing and segments_json_path.exists():
+                    logger.info(f"   ⏩ Segments JSON already exists for {run_config.name}/{parser} - skipping")
+                    continue
+                
+                jobs.append(SegmentExtractionJob(
+                    gt_json_path=run_config.gt_segments_path,
+                    input_md_path=md_path,
+                    output_json_path=segments_json_path,
+                    rendered_formulas_dir=run_config.rendered_formulas_dir(parser) if self.config.pipeline.enable_formula2png_rendering else None
+                ))
         
         if not jobs:
             logger.warning("   ⚠️  No segment extraction jobs to process")
             return
         
         logger.info(f"   Processing {len(jobs)} extraction jobs in parallel")
-        
-        extractor = ParallelSegmentExtractor(max_workers=5)
-        
-        warnings_count = 0
-        with tqdm(total=len(jobs), desc="   Extracting segments", unit="job") as pbar:
-            for success, message in extractor.extract_segments_parallel(jobs):
-                if not success:
-                    warnings_count += 1
-                    tqdm.write(f"   ❌ {message}")
-                elif "⚠️" in message:
-                    warnings_count += 1
-                    tqdm.write(f"   {message}")
-                pbar.update(1)
-        
-        logger.info(f"   ✅ Segment extraction completed ({warnings_count} warnings)")
+
+        extractor = ParallelSegmentExtractor(max_workers=20)
+        extractor.extract_segments_parallel(jobs)
+
+        logger.info(f"   ✅ Segment extraction completed")
         
     
     # ========== EVALUATION ==========
@@ -271,8 +241,6 @@ class BenchmarkOrchestrator:
             match self.config.synthetic_pdf.generator_type:
                 case "latex":
                     await self._generate_latex_pdfs(run_configs)
-                case "html":
-                    await self._generate_html_pdfs(run_configs)
 
             logger.info(f"   ✅ Successfully generated {len(run_configs)} PDFs")
         else:

@@ -111,7 +111,6 @@ class ContentSettings:
     # Mixed text block settings
     mixed_segment_min_chars: int = 50
     mixed_segment_max_chars: int = 90
-    mixed_segments_min_count: int = 2
     mixed_segments_max_count: int = 5
     # Paragraph block settings
     paragraph_min_chars: int = 120

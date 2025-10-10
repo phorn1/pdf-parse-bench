@@ -14,7 +14,7 @@ import multiprocessing
 from .style_config import LaTeXConfig
 from .content_generator import LaTeXContentGenerator
 from .compiler import LaTeXCompiler
-from ..generators import generate_text_paragraphs, load_formula_generator
+from ..generators import generate_text_paragraphs, load_formula_generator, load_formulas_from_dataset
 from ...utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
@@ -23,15 +23,15 @@ logger = logging.getLogger(__name__)
 
 class LaTeXSinglePagePDFGenerator:
     """Generates single-page PDFs using LaTeX."""
-    
-    def __init__(self, default_formula_file: Path, config: LaTeXConfig):
+
+    def __init__(self, config: LaTeXConfig, formulas: list[str] | None = None):
         """Initialize the LaTeX PDF generator to match HTML interface.
-        
+
         Args:
-            default_formula_file: Path to formulas JSON file
             config: Configuration for LaTeX document generation
+            formulas: Pre-loaded formulas list (if None, will download ~35MB dataset)
         """
-        self.formula_generator = load_formula_generator(default_formula_file, seed=config.seed)
+        self.formula_generator = load_formula_generator(seed=config.seed, formulas=formulas)
         self.text_generator = generate_text_paragraphs(language=config.language.locale_code, seed=config.seed)
         self.config = config
 
@@ -93,28 +93,37 @@ class LaTeXPDFJob:
     pdf_path: Path
     gt_path: Path
     rendered_formulas_dir: Path | None = None
+    retry_count: int = 0
 
-def _generate_single_pdf_task(formula_file: Path, task: LaTeXPDFJob) -> None:
-    """Worker function for parallel PDF generation."""
-    generator = LaTeXSinglePagePDFGenerator(formula_file, task.config)
+def _generate_single_pdf_task(task: LaTeXPDFJob, formulas: list[str]) -> None:
+    """Worker function for parallel PDF generation.
+
+    Args:
+        task: Task configuration
+        formulas: Pre-loaded formulas to avoid re-downloading in each worker
+    """
+    # Update seed to include retry count for different random content on retry
+    task.config.seed = task.config.seed + task.retry_count
+
+    generator = LaTeXSinglePagePDFGenerator(task.config, formulas=formulas)
     generator.generate_single_page_pdf(task.latex_path, task.pdf_path, task.gt_path, task.rendered_formulas_dir)
 
 
 class ParallelLaTeXPDFGenerator:
     """Parallel PDF generator for batch processing."""
-    
-    def __init__(self, formula_file: Path, max_workers: int | None = None):
+
+    def __init__(self, max_workers: int | None = None):
         """Initialize parallel PDF generator.
-        
+
         Args:
-            formula_file: Path to formulas JSON file
             max_workers: Number of parallel workers (defaults to CPU count - 1)
         """
-        self.formula_file = formula_file
         self.max_workers = max_workers or max(1, multiprocessing.cpu_count() - 1)
 
+        self.formulas = load_formulas_from_dataset()
+
     def generate_pdfs_parallel(self, tasks: list[LaTeXPDFJob]) -> Iterator[None]:
-        """Generate multiple PDFs in parallel.
+        """Generate multiple PDFs in parallel with infinite retry.
         
         Args:
             tasks: List of PDFTask configurations
@@ -123,22 +132,37 @@ class ParallelLaTeXPDFGenerator:
             None for each completed task (used for progress tracking)
         """
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
-            # Submit all tasks
-            future_to_task = {
-                executor.submit(_generate_single_pdf_task, self.formula_file, task): task 
-                for task in tasks
-            }
+            pending_tasks = tasks.copy()
             
-            # Yield completion signals as tasks complete
-            for future in as_completed(future_to_task):
-                task = future_to_task[future]
-                try:
-                    future.result()  # This will raise any exception from the worker
-                    yield None
-                except Exception as e:
-                    self._save_failed_config(task, e)
-                    logger.error(f"Task failed with seed {task.config.seed}: {e}")
-                    yield None
+            while pending_tasks:
+                # Submit current batch of tasks
+                future_to_task = {
+                    executor.submit(_generate_single_pdf_task, task, self.formulas): task
+                    for task in pending_tasks
+                }
+                
+                failed_tasks = []
+                
+                # Process completed tasks
+                for future in as_completed(future_to_task):
+                    task = future_to_task[future]
+                    try:
+                        future.result()
+                        if task.retry_count > 0:
+                            logger.info(f"Task succeeded on retry {task.retry_count} with seed {task.config.seed}")
+                        yield None
+                    except Exception as e:
+                        task.retry_count += 1
+                        self._save_failed_config(task, e)
+                        logger.warning(f"Task failed with seed {task.config.seed} (attempt {task.retry_count}): {e}")
+                        failed_tasks.append(task)
+                
+                # Continue with failed tasks
+                if failed_tasks:
+                    logger.info(f"Retrying {len(failed_tasks)} failed tasks...")
+                    pending_tasks = failed_tasks
+                else:
+                    pending_tasks = []
 
     @staticmethod
     def _save_failed_config(task: LaTeXPDFJob, error: Exception) -> None:
