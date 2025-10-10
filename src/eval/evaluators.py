@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import wraps
 from pathlib import Path
@@ -9,7 +10,11 @@ from typing import Literal
 import Levenshtein
 import requests
 from dotenv import load_dotenv
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
+from google.genai import types
+from google import genai
+from mistralai import Mistral
 from pydantic import BaseModel, Field
 from tqdm import tqdm
 
@@ -17,6 +22,22 @@ load_dotenv()
 
 
 # ========== CONSTANTS ==========
+
+SUPPORTED_MODELS = {
+    "gemini-2.5-flash": "gemini",
+    "mistral-medium-2508": "mistral", 
+    "gpt-5-nano": "openai",
+    "gpt-5-mini": "openai",
+    "gpt-5": "openai"
+}
+
+MODEL_MAX_WORKERS = {
+    "gemini-2.5-flash": 8,
+    "mistral-medium-2508": 2,
+    "gpt-5-nano": 16,
+    "gpt-5-mini": 12,
+    "gpt-5": 8
+}
 
 FORMULA_EVALUATION_PROMPT_TEMPLATE = """
 You are a mathematical formula evaluator. Your task is to determine if the extracted formula correctly represents the ground truth formula, focusing on both semantic meaning AND proper mathematical notation.
@@ -60,14 +81,14 @@ class LLMJudgeEval(BaseModel):
     judge_model: str
     explanation: str
     is_correct: bool
-    score: float
+    score: int
     errors: list[str] = Field(default_factory=list)
 
 
 class CDMEval(BaseModel):
     type: str = "cdm"
     score: float
-    visualization_path: str
+    image_name: str | None = None
 
 
 class FormulaEvaluationSummary(BaseModel):
@@ -77,6 +98,8 @@ class FormulaEvaluationSummary(BaseModel):
     formula_type: Literal['inline-formula', 'display-formula']
     llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
     cdm_eval: CDMEval | None = None
+    bleu_score: float | None = None
+    levenshtein_similarity: float | None = None
     
     @property
     def llm_evals_by_model(self) -> dict[str, LLMJudgeEval]:
@@ -151,7 +174,7 @@ class CDMEvaluator:
         # Check CDM service URL availability at initialization
         cdm_service_url = os.getenv("CDM_SERVICE_URL")
         if not cdm_service_url:
-            raise ValueError("CDM_SERVICE_URL environment variable is required for CDM evaluation. "
+            raise ValueError("CDM_SERVICE_URL environment variable is required for CDM evaluation.\n"
                              "Note: CDM evaluation is an experimental feature that requires a separate local service installation. "
                              "This component is not part of the core benchmarking suite and does not work out-of-the-box.")
         self.cdm_service_url = cdm_service_url
@@ -159,129 +182,107 @@ class CDMEvaluator:
     def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMEval]:
         results = []
         for i, (gt_formula, extracted_formula) in enumerate(tqdm(pairs, desc="Evaluating CDM")):
-            results.append(self._evaluate_single(gt_formula, extracted_formula, f"formula_{i}"))
+            results.append(self._evaluate_single(gt_formula, extracted_formula, i))
         return results
     
-    def _evaluate_single(self, gt_formula: str, extracted_formula: str, case_id: str) -> CDMEval:
+    def _evaluate_single(self, gt_formula: str, extracted_formula: str, index: int) -> CDMEval:
         # Call CDM service to evaluate formula similarity and get visualization
         response = requests.post(self.cdm_service_url, json={
             'gt_formula': gt_formula,
             'pred_formula': extracted_formula,
-            'case_id': case_id
+            'case_id': f"formula_{index}"
         })
         response.raise_for_status()
 
         result = response.json()
         
-        # Save visualization
+        # Save visualization if available
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        image_path = self.output_dir / f"cdm_visualization_{case_id}.png"
+        image_name = f"formula_{index:03}.png"
+        image_path = self.output_dir / image_name
         
-        with open(image_path, 'wb') as f:
-            f.write(base64.b64decode(result['visualization_base64']))
-        visualization_path = str(image_path.resolve())
+        # Check if visualization_base64 exists and is not None
+        visualization_b64 = result.get('visualization_base64')
+        if visualization_b64:
+            with open(image_path, 'wb') as f:
+                f.write(base64.b64decode(visualization_b64))
+        else:
+            image_name = None
 
-        return CDMEval(score=result['cdm_f1'], visualization_path=visualization_path)
+        return CDMEval(score=result['cdm_f1'], image_name=image_name)
+
+
+class NaiveEvaluator:
+    """Evaluates formulas using naive text similarity metrics (BLEU and Levenshtein)."""
+    
+    @staticmethod
+    def _clean_formula(formula: str) -> str:
+        """Clean LaTeX formula by removing $$ delimiters and normalizing whitespace."""
+        cleaned = re.sub(r'\$+', '', formula)
+        cleaned = ' '.join(cleaned.split())
+        return cleaned.strip()
+    
+    @staticmethod
+    def _tokenize_formula(formula: str) -> list[str]:
+        """Tokenize formula into meaningful parts for BLEU calculation."""
+        tokens = re.findall(r'\\[a-zA-Z]+|[a-zA-Z0-9]+|[{}()\[\]|_^=+\-*/\\,.<>]|\'', formula)
+        return [token for token in tokens if token.strip()]
+    
+    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[tuple[float, float]]:
+        """
+        Calculate BLEU and Levenshtein similarity for formula pairs.
+        Returns list of (bleu_score, levenshtein_similarity) tuples.
+        """
+        results = []
+        for gt_formula, extracted_formula in tqdm(pairs, desc="Evaluating naive metrics"):
+            # Clean formulas
+            gt_clean = self._clean_formula(gt_formula)
+            ext_clean = self._clean_formula(extracted_formula)
+            
+            # Calculate BLEU score
+            try:
+                tokens_gt = self._tokenize_formula(gt_clean)
+                tokens_ext = self._tokenize_formula(ext_clean)
+                smoothing_function = SmoothingFunction().method1
+                bleu_score = sentence_bleu([tokens_gt], tokens_ext, smoothing_function=smoothing_function)
+                bleu_score = round(bleu_score, 4)
+            except:
+                bleu_score = 0.0
+            
+            # Calculate Levenshtein similarity
+            distance = Levenshtein.distance(gt_clean, ext_clean)
+            max_length = max(len(gt_clean), len(ext_clean))
+            
+            if max_length == 0:
+                levenshtein_similarity = 1.0
+            else:
+                similarity = 1 - (distance / max_length)
+                levenshtein_similarity = round(similarity, 4)
+            
+            results.append((bleu_score, levenshtein_similarity))
+        
+        return results
 
 
 class LLMEvaluator:
     """Evaluates formulas using LLM judges."""
     
-    def __init__(self, models: list[str]):
-        self.models = models
-        self.openai_client, self.gemini_client, self.mistral_client = self._init_clients()
+    class FormulaResponse(BaseModel):
+        explanation: str
+        is_correct: bool
+        score: int
+        errors: list[str]
     
-    def _init_clients(self):
-        openai_client = None
-        gemini_client = None
-        mistral_client = None
-        
-        openai_models = [m for m in self.models if not m.startswith("gemini-") and not m.startswith("mistral-")]
-        gemini_models = [m for m in self.models if m.startswith("gemini-")]
-        mistral_models = [m for m in self.models if m.startswith("mistral-")]
-        
-        if openai_models:
-            if os.getenv("LLM_PROXY_URL"):
-                openai_client = OpenAI(
-                    base_url=os.getenv("LLM_PROXY_URL"),
-                    api_key=os.getenv("LLM_PROXY_API_KEY")
-                )
-            else:
-                openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        
-        if gemini_models:
-            from google import genai
-            if not os.getenv("GEMINI_API_KEY"):
-                raise ValueError("GEMINI_API_KEY required for Gemini models")
-            gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        
-        if mistral_models:
-            try:
-                from mistralai import Mistral
-            except ImportError:
-                raise ImportError("mistralai package required for Mistral models. Install with: pip install mistralai")
-            if not os.getenv("MISTRAL_API_KEY"):
-                raise ValueError("MISTRAL_API_KEY required for Mistral models")
-            mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
-        
-        return openai_client, gemini_client, mistral_client
-    
-    def evaluate_batch(self, gt_formulas: list[dict], extracted_formulas: list[dict]) -> list[FormulaEvaluationSummary]:
-        all_results = {model: [] for model in self.models}
-        
-        with ThreadPoolExecutor() as executor:
-            futures = {}
-            
-            for model in self.models:
-                for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas)):
-                    gt_text = gt['data']
-                    extracted_text = extracted['data']
-                    if model.startswith("gemini-"):
-                        future = executor.submit(self._evaluate_gemini, model, gt_text, extracted_text)
-                    elif model.startswith("mistral-"):
-                        future = executor.submit(self._evaluate_mistral, model, gt_text, extracted_text)
-                    else:
-                        future = executor.submit(self._evaluate_openai, model, gt_text, extracted_text)
-                    futures[future] = (model, i, gt, extracted)
-            
-            total = len(self.models) * len(gt_formulas)
-            for future in tqdm(as_completed(futures), total=total, desc="Evaluating formulas"):
-                model, idx, gt, extracted = futures[future]
-                result = future.result()
-                all_results[model].append((result, idx))
-        
-        # Sort results by index
-        for model in self.models:
-            all_results[model].sort(key=lambda x: x[1])
-        
-        # Create summaries with typed llm_evals and formula_type
-        summaries = []
-        for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas)):
-            llm_evals = []
-            for model in self.models:
-                model_results = [r for r, idx in all_results[model] if idx == i]
-                if model_results:
-                    llm_evals.append(model_results[0])
-            
-            summaries.append(FormulaEvaluationSummary(
-                formula_number=i,
-                ground_truth_formula=gt['data'],
-                extracted_formula=extracted['data'],
-                formula_type=gt['type'],
-                llm_evals=llm_evals
-            ))
-        
-        return summaries
-    
+
     @staticmethod
     def _retry_on_failure(max_retries: int = 10):
         def decorator(func):
             @wraps(func)
-            def wrapper(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+            def wrapper(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
                 last_error = None
                 for attempt in range(max_retries):
                     try:
-                        return func(self, model, gt_formula, extracted_formula)
+                        return func(model, gt_formula, extracted_formula)
                     except Exception as e:
                         last_error = e
                         if attempt < max_retries - 1:
@@ -292,17 +293,22 @@ class LLMEvaluator:
             return wrapper
         return decorator
     
+    
+    @staticmethod
     @_retry_on_failure()
-    def _evaluate_openai(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        class FormulaResponse(BaseModel):
-            explanation: str
-            is_correct: bool
-            score: float
-            errors: list[str]
+    def evaluate_openai(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+        
+        if os.getenv("LLM_PROXY_URL"):
+            openai_client = OpenAI(
+                base_url=os.getenv("LLM_PROXY_URL"),
+                api_key=os.getenv("LLM_PROXY_API_KEY")
+            )
+        else:
+            openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
-        response = self.openai_client.responses.parse(
-            model=model, input=prompt, text_format=FormulaResponse
+        response = openai_client.responses.parse(
+            model=model, input=prompt, text_format=LLMEvaluator.FormulaResponse
         )
         
         data = response.output_parsed
@@ -314,47 +320,50 @@ class LLMEvaluator:
             errors=data.errors
         )
     
+    @staticmethod
     @_retry_on_failure()
-    def _evaluate_gemini(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        from google.genai import types
-        from pydantic import BaseModel
+    def evaluate_gemini(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
         
-        class FormulaResponse(BaseModel):
-            explanation: str
-            is_correct: bool
-            score: float
-            errors: list[str]
+        if not os.getenv("GEMINI_API_KEY"):
+            raise ValueError("GEMINI_API_KEY required for Gemini models")
+        gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
         
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
-        response = self.gemini_client.models.generate_content(
+        response = gemini_client.models.generate_content(
             model=model,
             contents=[prompt],
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=FormulaResponse
+                response_schema=LLMEvaluator.FormulaResponse
             )
         )
         
-        data = json.loads(response.text)
+        parsed_data = json.loads(response.text)
+        data = LLMEvaluator.FormulaResponse(**parsed_data)
         return LLMJudgeEval(
             judge_model=model,
-            explanation=data.get("explanation", ""),
-            is_correct=data["is_correct"],
-            score=data.get("score"),
-            errors=data.get("errors", [])
+            explanation=data.explanation,
+            is_correct=data.is_correct,
+            score=data.score,
+            errors=data.errors
         )
     
+    @staticmethod
     @_retry_on_failure()
-    def _evaluate_mistral(self, model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        from pydantic import BaseModel
+    def evaluate_mistral(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
         
-        class FormulaResponse(BaseModel):
-            explanation: str
-            is_correct: bool
-            score: float
-            errors: list[str]
+        if not os.getenv("MISTRAL_API_KEY"):
+            raise ValueError("MISTRAL_API_KEY required for Mistral models")
+        mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
         
-        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
+        # Escape the formulas for safe JSON inclusion
+        gt_formula_escaped = json.dumps(gt_formula)[1:-1]  # Remove outer quotes
+        extracted_formula_escaped = json.dumps(extracted_formula)[1:-1]  # Remove outer quotes
+        
+        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(
+            gt_formula=gt_formula_escaped, 
+            extracted_formula=extracted_formula_escaped
+        )
         
         messages = [
             {
@@ -363,14 +372,13 @@ class LLMEvaluator:
             },
         ]
         
-        chat_response = self.mistral_client.chat.parse(
+        chat_response = mistral_client.chat.parse(
             model=model,
             messages=messages,
-            response_format=FormulaResponse,
+            response_format=LLMEvaluator.FormulaResponse,
             temperature=0
         )
         
-        # Access the parsed Pydantic object directly
         data = chat_response.choices[0].message.parsed
         return LLMJudgeEval(
             judge_model=model,
@@ -464,22 +472,56 @@ class StatisticsCalculator:
         formula_summaries: list[FormulaEvaluationSummary],
         text_results: list[TextSimilarityResult]
     ) -> SummaryStatistics:
-        
         llm_judge_stats = LLMStatisticsCalculator.calculate(formula_summaries)
         cdm_stats = CDMStatisticsCalculator.calculate(formula_summaries)
         text_stats = TextStatisticsCalculator.calculate(text_results)
-        
-        formula_stats = FormulaStatistics(
-            total_formulas=len(formula_summaries),
-            llm_judge=llm_judge_stats,
-            cdm=cdm_stats
-        )
-        
+
         return SummaryStatistics(
-            formula_statistics=formula_stats,
+            formula_statistics=FormulaStatistics(
+                total_formulas=len(formula_summaries),
+                llm_judge=llm_judge_stats,
+                cdm=cdm_stats
+            ),
             text_statistics=text_stats
         )
     
+
+
+# ========== FILE I/O HELPERS ==========
+
+def load_formula_summaries(file_path: Path) -> list[FormulaEvaluationSummary]:
+    """Load formula summaries from JSON file, return empty list if file doesn't exist."""
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return [FormulaEvaluationSummary(**item) for item in data]
+    return []
+
+def load_text_results(file_path: Path) -> list[TextSimilarityResult]:
+    """Load text results from JSON file, return empty list if file doesn't exist."""
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return [TextSimilarityResult(**item) for item in data]
+    return []
+
+def save_formula_summaries(file_path: Path, summaries: list[FormulaEvaluationSummary]) -> None:
+    """Save formula summaries to JSON file."""
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump([s.model_dump() for s in summaries], f, indent=2, ensure_ascii=False)
+
+def save_text_results(file_path: Path, results: list[TextSimilarityResult]) -> None:
+    """Save text results to JSON file."""
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump([r.model_dump() for r in results], f, indent=2, ensure_ascii=False)
+
+def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
+    """Save statistics to JSON file."""
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(stats.model_dump(), f, indent=2, ensure_ascii=False)
 
 
 # ========== MAIN EVALUATION PIPELINE ==========
@@ -495,7 +537,7 @@ def run_evaluation(
     cdm_output_dir: Path,
 ) -> None:
     """
-    Complete evaluation pipeline.
+    Complete evaluation pipeline with incremental saving.
     
     Args:
         llm_judge_models: Models for formula evaluation
@@ -507,49 +549,102 @@ def run_evaluation(
         result_text_evals_path: Output path for text evaluations
         cdm_output_dir: CDM visualization output directory
     """
-    # ========== LOAD DATA ==========
+    # ========== LOAD AND PREPARE DATA ==========
     with open(gt_json_path, 'r', encoding='utf-8') as f:
         gt_data = json.load(f)
     with open(parsed_json_path, 'r', encoding='utf-8') as f:
         parsed_data = json.load(f)
     
-    # Extract formulas and texts
     gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
     gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
     extracted_formulas = [item for item in parsed_data if item.get('type') in ['inline-formula', 'display-formula']]
     extracted_texts = [item['data'] for item in parsed_data if item.get('type') == 'text']
 
-    # ========== RUN EVALUATIONS ==========
-
-    # Formula evaluation with LLMs
-    llm_evaluator = LLMEvaluator(llm_judge_models)
-    formula_summaries = llm_evaluator.evaluate_batch(gt_formulas, extracted_formulas)
+    # Load existing results
+    formula_summaries = load_formula_summaries(result_formula_evals_path) or [
+        FormulaEvaluationSummary(
+            formula_number=i,
+            ground_truth_formula=gt['data'],
+            extracted_formula=extracted['data'],
+            formula_type=gt['type']
+        )
+        for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas))
+    ]
     
-    # CDM evaluation if enabled
+    text_results = load_text_results(result_text_evals_path)
+    
+    # ========== RUN TEXT EVALUATION ==========
+    if not text_results:
+        text_evaluator = TextEvaluator()
+        text_pairs = list(zip(gt_texts, extracted_texts, strict=True))
+        text_results = text_evaluator.evaluate_batch(text_pairs)
+        save_text_results(result_text_evals_path, text_results)
+
+    # ========== LLM FORMULA EVALUATIONS ==========
+    existing_models = {
+        eval_result.judge_model 
+        for summary in formula_summaries 
+        for eval_result in summary.llm_evals
+    }
+    
+    for model in [m for m in llm_judge_models if m not in existing_models]:
+        # Validate model is supported
+        if model not in SUPPORTED_MODELS:
+            raise ValueError(f"Unsupported model: {model}")
+        
+        client_type = SUPPORTED_MODELS[model]
+        
+        if client_type == "gemini":
+            evaluate_func = LLMEvaluator.evaluate_gemini
+        elif client_type == "mistral":
+            evaluate_func = LLMEvaluator.evaluate_mistral
+        else:  # openai
+            evaluate_func = LLMEvaluator.evaluate_openai
+        
+        # Parallel evaluation with results tracking
+        with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
+            future_to_index = {
+                executor.submit(evaluate_func, model, gt['data'], extracted['data']): i
+                for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas))
+            }
+            
+            # Collect and sort results
+            results = [(future.result(), future_to_index[future]) 
+                      for future in tqdm(as_completed(future_to_index), 
+                                       total=len(future_to_index), 
+                                       desc=f"Evaluating with {model}")]
+            results.sort(key=lambda x: x[1])
+        
+        # Apply results and save incrementally
+        for (result, index) in results:
+            formula_summaries[index].llm_evals.append(result)
+        
+        save_formula_summaries(result_formula_evals_path, formula_summaries)
+        save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries, text_results))
+    
+    # ========== NAIVE FORMULA SIMILARITY EVALUATION ==========
+    if any(summary.bleu_score is None or summary.levenshtein_similarity is None for summary in formula_summaries):
+        naive_evaluator = NaiveEvaluator()
+        formula_pairs = [(gt['data'], e['data']) for gt, e in zip(gt_formulas, extracted_formulas, strict=True)]
+        naive_results = naive_evaluator.evaluate_batch(formula_pairs)
+        
+        for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
+            formula_summaries[i].bleu_score = bleu_score
+            formula_summaries[i].levenshtein_similarity = levenshtein_similarity
+        
+        save_formula_summaries(result_formula_evals_path, formula_summaries)
+    
+    # ========== CDM EVALUATION ==========
     if enable_cdm:
+    # if enable_cdm and any(summary.cdm_eval is None for summary in formula_summaries):
         cdm_evaluator = CDMEvaluator(cdm_output_dir)
         formula_pairs = [(gt['data'], e['data']) for gt, e in zip(gt_formulas, extracted_formulas, strict=True)]
         cdm_results = cdm_evaluator.evaluate_batch(formula_pairs)
         
-        # Add CDM results to summaries
         for i, cdm_result in enumerate(cdm_results):
-            if i < len(formula_summaries):
-                formula_summaries[i].cdm_eval = cdm_result
-    
-    # Text evaluation
-    text_evaluator = TextEvaluator()
-    text_pairs = list(zip(gt_texts, extracted_texts, strict=True))
-    text_results = text_evaluator.evaluate_batch(text_pairs)
+            formula_summaries[i].cdm_eval = cdm_result
+        
+        save_formula_summaries(result_formula_evals_path, formula_summaries)
 
-    # ========== CALCULATE STATISTICS ==========
-    stats = StatisticsCalculator.calculate(formula_summaries, text_results)
-
-    # ========== WRITE RESULTS ==========
-    with open(result_stats_path, 'w', encoding='utf-8') as f:
-        json.dump(stats.model_dump(), f, indent=2, ensure_ascii=False)
-    
-    with open(result_formula_evals_path, 'w', encoding='utf-8') as f:
-        json.dump([s.model_dump() for s in formula_summaries], f, indent=2, ensure_ascii=False)
-    
-    with open(result_text_evals_path, 'w', encoding='utf-8') as f:
-        json.dump([r.model_dump() for r in text_results], f, indent=2, ensure_ascii=False)
+    # ========== FINALIZE ==========
+    save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries, text_results))
