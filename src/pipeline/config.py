@@ -101,7 +101,11 @@ class BenchmarkRunConfig(BaseModel):
     
     def segments_json_path(self, parser_name: str) -> Path:
         """Path to parser matches JSON file."""
-        return self.run_directory / parser_name / "segments.json"
+        return self.run_directory / parser_name / "formulas.json"
+
+    def stripped_parsed_text_path(self, parser_name: str) -> Path:
+        """Path to parser output markdown file."""
+        return self.run_directory / parser_name / "stripped_parsed_text.md"
     
     def eval_stats_path(self, parser_name: str) -> Path:
         """Path to evaluation statistics JSON file."""

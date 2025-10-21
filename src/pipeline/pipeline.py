@@ -135,7 +135,7 @@ class BenchmarkOrchestrator:
     
     # ========== SEGMENT EXTRACTION ==========
     
-    def _extract_segments_parallel(self, run_configs: list[BenchmarkRunConfig], skip_existing=True) -> None:
+    def _extract_segments_parallel(self, run_configs: list[BenchmarkRunConfig], skip_existing=False) -> None:
         """Extract segments in parallel using ParallelSegmentExtractor."""
         enabled_parsers = self.config.parsers
         
@@ -148,6 +148,7 @@ class BenchmarkOrchestrator:
             for parser in enabled_parsers:
                 md_path = run_config.parsed_md_path(parser)
                 segments_json_path = run_config.segments_json_path(parser)
+                stripped_parsed_text_path = run_config.stripped_parsed_text_path(parser)
                 
                 if not md_path.exists():
                     logger.warning(f"   ⚠️  Parsed markdown not found for {run_config.name}/{parser}")
@@ -161,6 +162,7 @@ class BenchmarkOrchestrator:
                     gt_json_path=run_config.gt_segments_path,
                     input_md_path=md_path,
                     output_json_path=segments_json_path,
+                    stripped_parsed_text_path=stripped_parsed_text_path,
                     rendered_formulas_dir=run_config.rendered_formulas_dir(parser) if self.config.pipeline.enable_formula2png_rendering else None
                 ))
         
