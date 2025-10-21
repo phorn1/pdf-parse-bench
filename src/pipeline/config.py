@@ -99,7 +99,7 @@ class BenchmarkRunConfig(BaseModel):
         """Path to parser output markdown file."""
         return self.run_directory / parser_name / "parsed.md"
     
-    def segments_json_path(self, parser_name: str) -> Path:
+    def extracted_formulas_path(self, parser_name: str) -> Path:
         """Path to parser matches JSON file."""
         return self.run_directory / parser_name / "formulas.json"
 
@@ -115,10 +115,6 @@ class BenchmarkRunConfig(BaseModel):
         """Path to detailed formula evaluation results JSON file."""
         return self.run_directory / parser_name / "eval_formula_results.json"
     
-    def eval_text_results_path(self, parser_name: str) -> Path:
-        """Path to detailed text evaluation results JSON file."""
-        return self.run_directory / parser_name / "eval_text_results.json"
-
     def cdm_image_dir_path(self, parser_name: str) -> Path:
         """Path to CDM image JSON file."""
         return self.run_directory / parser_name / "cdm"

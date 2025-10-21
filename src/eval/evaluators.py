@@ -69,13 +69,6 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 
 # ========== DATA MODELS ==========
 
-class TextSimilarityResult(BaseModel):
-    normalized_levenshtein_similarity: float
-    ground_truth_text: str
-    extracted_text: str
-    text_number: int
-
-
 class LLMJudgeEval(BaseModel):
     type: str = "llm_judge"
     judge_model: str
@@ -129,15 +122,9 @@ class FormulaStatistics(BaseModel):
     cdm: CDMStatistics | None
 
 
-class TextStatistics(BaseModel):
-    total_texts: int
-    average_levenshtein_similarity: float
-
-
 class SummaryStatistics(BaseModel):
     formula_statistics: FormulaStatistics
-    text_statistics: TextStatistics
-    
+
     @property
     def llm_judge_stats_by_model(self) -> dict[str, LLMJudgeStatistics]:
         """Get LLM judge statistics as dict by judge model for easier access."""
@@ -145,25 +132,6 @@ class SummaryStatistics(BaseModel):
 
 
 # ========== EVALUATION CLASSES ==========
-
-class TextEvaluator:
-    """Evaluates text similarity using Levenshtein distance."""
-    
-    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[TextSimilarityResult]:
-        results = []
-        for i, (gt_text, extracted_text) in enumerate(tqdm(pairs, desc="Evaluating texts")):
-            lev_distance = Levenshtein.distance(gt_text, extracted_text)
-            max_len = max(len(gt_text), len(extracted_text))
-            similarity = 1 - (lev_distance / max_len) if max_len > 0 else 1.0
-            
-            results.append(TextSimilarityResult(
-                normalized_levenshtein_similarity=round(similarity, 4),
-                ground_truth_text=gt_text,
-                extracted_text=extracted_text,
-                text_number=i
-            ))
-        return results
-
 
 class CDMEvaluator:
     """Evaluates formulas using CDM service."""
@@ -452,37 +420,20 @@ class CDMStatisticsCalculator:
         )
 
 
-class TextStatisticsCalculator:
-    """Calculates text similarity statistics."""
-    
-    @staticmethod
-    def calculate(text_results: list[TextSimilarityResult]) -> TextStatistics:
-        similarities = [r.normalized_levenshtein_similarity for r in text_results]
-        return TextStatistics(
-            total_texts=len(text_results),
-            average_levenshtein_similarity=sum(similarities) / len(similarities) if similarities else 0
-        )
-
-
 class StatisticsCalculator:
     """Main statistics calculator that coordinates all evaluation types."""
-    
+
     @staticmethod
-    def calculate(
-        formula_summaries: list[FormulaEvaluationSummary],
-        text_results: list[TextSimilarityResult]
-    ) -> SummaryStatistics:
+    def calculate(formula_summaries: list[FormulaEvaluationSummary]) -> SummaryStatistics:
         llm_judge_stats = LLMStatisticsCalculator.calculate(formula_summaries)
         cdm_stats = CDMStatisticsCalculator.calculate(formula_summaries)
-        text_stats = TextStatisticsCalculator.calculate(text_results)
 
         return SummaryStatistics(
             formula_statistics=FormulaStatistics(
                 total_formulas=len(formula_summaries),
                 llm_judge=llm_judge_stats,
                 cdm=cdm_stats
-            ),
-            text_statistics=text_stats
+            )
         )
     
 
@@ -497,25 +448,11 @@ def load_formula_summaries(file_path: Path) -> list[FormulaEvaluationSummary]:
             return [FormulaEvaluationSummary(**item) for item in data]
     return []
 
-def load_text_results(file_path: Path) -> list[TextSimilarityResult]:
-    """Load text results from JSON file, return empty list if file doesn't exist."""
-    if file_path.exists():
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            return [TextSimilarityResult(**item) for item in data]
-    return []
-
 def save_formula_summaries(file_path: Path, summaries: list[FormulaEvaluationSummary]) -> None:
     """Save formula summaries to JSON file."""
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump([s.model_dump() for s in summaries], f, indent=2, ensure_ascii=False)
-
-def save_text_results(file_path: Path, results: list[TextSimilarityResult]) -> None:
-    """Save text results to JSON file."""
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump([r.model_dump() for r in results], f, indent=2, ensure_ascii=False)
 
 def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
     """Save statistics to JSON file."""
@@ -529,122 +466,101 @@ def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
 def run_evaluation(
     llm_judge_models: list[str],
     enable_cdm: bool,
-    gt_json_path: Path,
-    parsed_json_path: Path,
+    extracted_formulas_path: Path,
     result_stats_path: Path,
     result_formula_evals_path: Path,
-    result_text_evals_path: Path,
     cdm_output_dir: Path,
 ) -> None:
     """
     Complete evaluation pipeline with incremental saving.
-    
+
     Args:
         llm_judge_models: Models for formula evaluation
         enable_cdm: Whether to enable CDM scoring
-        gt_json_path: Ground truth JSON path
-        parsed_json_path: Parsed results JSON path
+        extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
         result_stats_path: Output path for statistics
         result_formula_evals_path: Output path for formula evaluations
-        result_text_evals_path: Output path for text evaluations
         cdm_output_dir: CDM visualization output directory
     """
     # ========== LOAD AND PREPARE DATA ==========
-    with open(gt_json_path, 'r', encoding='utf-8') as f:
-        gt_data = json.load(f)
-    with open(parsed_json_path, 'r', encoding='utf-8') as f:
-        parsed_data = json.load(f)
-    
-    gt_formulas = [item for item in gt_data if item.get('type') in ['inline-formula', 'display-formula']]
-    gt_texts = [item['data'] for item in gt_data if item.get('type') == 'text']
-    extracted_formulas = [item for item in parsed_data if item.get('type') in ['inline-formula', 'display-formula']]
-    extracted_texts = [item['data'] for item in parsed_data if item.get('type') == 'text']
+    with open(extracted_formulas_path, 'r', encoding='utf-8') as f:
+        formula_pairs_data = json.load(f)
 
-    # Load existing results
+    # Load existing results or initialize new ones
     formula_summaries = load_formula_summaries(result_formula_evals_path) or [
         FormulaEvaluationSummary(
             formula_number=i,
-            ground_truth_formula=gt['data'],
-            extracted_formula=extracted['data'],
-            formula_type=gt['type']
+            ground_truth_formula=pair['gt_formula'],
+            extracted_formula=pair['parsed_formula'],
+            formula_type='display-formula'  # Type info no longer available, defaulting
         )
-        for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas))
+        for i, pair in enumerate(formula_pairs_data)
     ]
-    
-    text_results = load_text_results(result_text_evals_path)
-    
-    # ========== RUN TEXT EVALUATION ==========
-    if not text_results:
-        text_evaluator = TextEvaluator()
-        text_pairs = list(zip(gt_texts, extracted_texts, strict=True))
-        text_results = text_evaluator.evaluate_batch(text_pairs)
-        save_text_results(result_text_evals_path, text_results)
 
     # ========== LLM FORMULA EVALUATIONS ==========
     existing_models = {
-        eval_result.judge_model 
-        for summary in formula_summaries 
+        eval_result.judge_model
+        for summary in formula_summaries
         for eval_result in summary.llm_evals
     }
-    
+
     for model in [m for m in llm_judge_models if m not in existing_models]:
         # Validate model is supported
         if model not in SUPPORTED_MODELS:
             raise ValueError(f"Unsupported model: {model}")
-        
+
         client_type = SUPPORTED_MODELS[model]
-        
+
         if client_type == "gemini":
             evaluate_func = LLMEvaluator.evaluate_gemini
         elif client_type == "mistral":
             evaluate_func = LLMEvaluator.evaluate_mistral
         else:  # openai
             evaluate_func = LLMEvaluator.evaluate_openai
-        
+
         # Parallel evaluation with results tracking
         with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
             future_to_index = {
-                executor.submit(evaluate_func, model, gt['data'], extracted['data']): i
-                for i, (gt, extracted) in enumerate(zip(gt_formulas, extracted_formulas))
+                executor.submit(evaluate_func, model, pair['gt_formula'], pair['parsed_formula']): i
+                for i, pair in enumerate(formula_pairs_data)
             }
-            
+
             # Collect and sort results
-            results = [(future.result(), future_to_index[future]) 
-                      for future in tqdm(as_completed(future_to_index), 
-                                       total=len(future_to_index), 
+            results = [(future.result(), future_to_index[future])
+                      for future in tqdm(as_completed(future_to_index),
+                                       total=len(future_to_index),
                                        desc=f"Evaluating with {model}")]
             results.sort(key=lambda x: x[1])
-        
+
         # Apply results and save incrementally
         for (result, index) in results:
             formula_summaries[index].llm_evals.append(result)
-        
+
         save_formula_summaries(result_formula_evals_path, formula_summaries)
-        save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries, text_results))
-    
+        save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries))
+
     # ========== NAIVE FORMULA SIMILARITY EVALUATION ==========
     if any(summary.bleu_score is None or summary.levenshtein_similarity is None for summary in formula_summaries):
         naive_evaluator = NaiveEvaluator()
-        formula_pairs = [(gt['data'], e['data']) for gt, e in zip(gt_formulas, extracted_formulas, strict=True)]
+        formula_pairs = [(pair['gt_formula'], pair['parsed_formula']) for pair in formula_pairs_data]
         naive_results = naive_evaluator.evaluate_batch(formula_pairs)
-        
+
         for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
             formula_summaries[i].bleu_score = bleu_score
             formula_summaries[i].levenshtein_similarity = levenshtein_similarity
-        
+
         save_formula_summaries(result_formula_evals_path, formula_summaries)
-    
+
     # ========== CDM EVALUATION ==========
     if enable_cdm:
-    # if enable_cdm and any(summary.cdm_eval is None for summary in formula_summaries):
         cdm_evaluator = CDMEvaluator(cdm_output_dir)
-        formula_pairs = [(gt['data'], e['data']) for gt, e in zip(gt_formulas, extracted_formulas, strict=True)]
+        formula_pairs = [(pair['gt_formula'], pair['parsed_formula']) for pair in formula_pairs_data]
         cdm_results = cdm_evaluator.evaluate_batch(formula_pairs)
-        
+
         for i, cdm_result in enumerate(cdm_results):
             formula_summaries[i].cdm_eval = cdm_result
-        
+
         save_formula_summaries(result_formula_evals_path, formula_summaries)
 
     # ========== FINALIZE ==========
-    save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries, text_results))
+    save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries))

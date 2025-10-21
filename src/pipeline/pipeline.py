@@ -147,21 +147,21 @@ class BenchmarkOrchestrator:
                 
             for parser in enabled_parsers:
                 md_path = run_config.parsed_md_path(parser)
-                segments_json_path = run_config.segments_json_path(parser)
+                extracted_formulas_path = run_config.extracted_formulas_path(parser)
                 stripped_parsed_text_path = run_config.stripped_parsed_text_path(parser)
                 
                 if not md_path.exists():
                     logger.warning(f"   ⚠️  Parsed markdown not found for {run_config.name}/{parser}")
                     continue
                     
-                if skip_existing and segments_json_path.exists():
+                if skip_existing and extracted_formulas_path.exists():
                     logger.info(f"   ⏩ Segments JSON already exists for {run_config.name}/{parser} - skipping")
                     continue
                 
                 jobs.append(SegmentExtractionJob(
                     gt_json_path=run_config.gt_segments_path,
                     input_md_path=md_path,
-                    output_json_path=segments_json_path,
+                    output_json_path=extracted_formulas_path,
                     stripped_parsed_text_path=stripped_parsed_text_path,
                     rendered_formulas_dir=run_config.rendered_formulas_dir(parser) if self.config.pipeline.enable_formula2png_rendering else None
                 ))
@@ -198,9 +198,9 @@ class BenchmarkOrchestrator:
             logger.info(f"   📊 Evaluating results for PDF {run_config.name}:")
             
             for parser_name in enabled_parsers:
-                segments_path = run_config.segments_json_path(parser_name)
+                extracted_formulas_path = run_config.extracted_formulas_path(parser_name)
                 
-                if not segments_path.exists():
+                if not extracted_formulas_path.exists():
                     logger.warning(f"      ⚠️  Segments file not found for {parser_name} - skipping")
                     continue
                 
@@ -210,11 +210,9 @@ class BenchmarkOrchestrator:
                     run_evaluation(
                         llm_judge_models=self.config.pipeline.formula_llm_judge_models,
                         enable_cdm=self.config.pipeline.enable_cdm_score,
-                        gt_json_path=run_config.gt_segments_path,
-                        parsed_json_path=segments_path,
+                        extracted_formulas_path=extracted_formulas_path,
                         result_stats_path=run_config.eval_stats_path(parser_name),
                         result_formula_evals_path=run_config.eval_formula_results_path(parser_name),
-                        result_text_evals_path=run_config.eval_text_results_path(parser_name),
                         cdm_output_dir=run_config.cdm_image_dir_path(parser_name)
                     )
                     

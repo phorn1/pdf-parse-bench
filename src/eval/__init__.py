@@ -5,7 +5,6 @@ from .evaluators import (
     LLMJudgeStatistics,
     SummaryStatistics,
     FormulaStatistics,
-    TextStatistics
 )
 
 __all__ = [
@@ -15,5 +14,4 @@ __all__ = [
     "LLMJudgeStatistics",
     "SummaryStatistics",
     "FormulaStatistics",
-    "TextStatistics"
 ]
