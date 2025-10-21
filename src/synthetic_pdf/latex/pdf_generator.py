@@ -1,7 +1,6 @@
 """Main LaTeX PDF generator with automated variations."""
 
 import json
-import os
 import tempfile
 import traceback
 import logging
@@ -73,12 +72,17 @@ class LaTeXSinglePagePDFGenerator:
 
             # Save ground truth JSON
             gt_data = page_content.to_ground_truth()
-            
+
             # Render formulas if requested
             if rendered_formulas_dir is not None:
                 renderer = FormulaRenderer()
-                renderer.render_formulas_in_segments(gt_data, rendered_formulas_dir)
-            
+                for i, segment in enumerate(seg for seg in gt_data if seg["type"] in ["inline-formula", "display-formula"]):
+                    segment["rendered_png"] = renderer.render_formula(
+                        segment["data"],
+                        rendered_formulas_dir,
+                        f"formula_{i:03d}"
+                    )
+
             with open(output_gt_json, 'w', encoding='utf-8') as f:
                 json.dump(gt_data, f, indent=4, ensure_ascii=False)
 

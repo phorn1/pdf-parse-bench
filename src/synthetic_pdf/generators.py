@@ -47,7 +47,7 @@ def load_formulas_from_dataset() -> list[str]:
     """
     # Parquet file URL for the dataset
     parquet_url = (
-        "https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-321k/"
+        "https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k/"
         "resolve/refs%2Fconvert%2Fparquet/default/train/0000.parquet"
     )
 
