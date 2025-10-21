@@ -116,46 +116,49 @@ class FormulaRenderer:
         ], check=True, capture_output=True)
         return error_png_path
     
-    def render_formulas_in_segments(self, segments: list[dict], rendered_formulas_dir: Path):
-        """Render all formulas in segments and update them with rendered_png filenames."""
+    def render_formula(self, formula: str, rendered_formulas_dir: Path, name: str) -> str:
+        """Render a single formula to PNG and save it with the given name.
 
+        Args:
+            formula: LaTeX formula string to render
+            rendered_formulas_dir: Directory to save the rendered PNG
+            name: Filename for the rendered PNG (without extension)
+
+        Returns:
+            Filename of the rendered PNG (including extension)
+        """
         rendered_formulas_dir.mkdir(parents=True, exist_ok=True)
-        
-        formula_counter = 0
-        for segment in segments:
-            if segment["type"] in ["inline-formula", "display-formula"]:
-                try:
-                    # Render formula to PNG
-                    temp_png_path = self.render(segment["data"])
-                    
-                    # Create final filename and path
-                    formula_filename = f"formula_{formula_counter:03d}.png"
-                    final_png_path = rendered_formulas_dir / formula_filename
-                    
-                    # Move temp file to final location
-                    os.rename(temp_png_path, final_png_path)
-                    
-                    # Add rendered_png field to segment
-                    segment["rendered_png"] = formula_filename
-                    
-                except LatexRenderError as e:
-                    logging.warning(f"Failed to render formula {formula_counter}: {e}")
-                    # Create error image
-                    error_png_path = self.create_error_image(str(e))
-                    formula_filename = f"formula_{formula_counter:03d}_error.png"
-                    final_png_path = rendered_formulas_dir / formula_filename
-                    os.rename(error_png_path, final_png_path)
-                    segment["rendered_png"] = formula_filename
-                except Exception as e:
-                    logging.warning(f"Failed to render formula {formula_counter}: {e}")
-                    # Create error image
-                    try:
-                        error_png_path = self.create_error_image(str(e))
-                        formula_filename = f"formula_{formula_counter:03d}_error.png"
-                        final_png_path = rendered_formulas_dir / formula_filename
-                        os.rename(error_png_path, final_png_path)
-                        segment["rendered_png"] = formula_filename
-                    except Exception as render_error:
-                        logging.error(f"Failed to create error image for formula {formula_counter}: {render_error}")
-                
-                formula_counter += 1
+
+        try:
+            # Render formula to PNG
+            temp_png_path = self.render(formula)
+
+            # Create final filename and path
+            formula_filename = f"{name}.png"
+            final_png_path = rendered_formulas_dir / formula_filename
+
+            # Move temp file to final location
+            os.rename(temp_png_path, final_png_path)
+
+            return formula_filename
+
+        except LatexRenderError as e:
+            logging.warning(f"Failed to render formula {name}: {e}")
+            # Create error image
+            error_png_path = self.create_error_image(str(e))
+            formula_filename = f"{name}_error.png"
+            final_png_path = rendered_formulas_dir / formula_filename
+            os.rename(error_png_path, final_png_path)
+            return formula_filename
+        except Exception as e:
+            logging.warning(f"Failed to render formula {name}: {e}")
+            # Create error image
+            try:
+                error_png_path = self.create_error_image(str(e))
+                formula_filename = f"{name}_error.png"
+                final_png_path = rendered_formulas_dir / formula_filename
+                os.rename(error_png_path, final_png_path)
+                return formula_filename
+            except Exception as render_error:
+                logging.error(f"Failed to create error image for formula {name}: {render_error}")
+                raise
