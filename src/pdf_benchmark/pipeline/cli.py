@@ -42,7 +42,7 @@ def run_cli(parser: PDFParser) -> None:
     @click.option(
         "-i", "--input-dir",
         type=click.Path(exists=True, file_okay=False, path_type=Path),
-        default=Path("data") / "2025-10-24_12-52-02",
+        default=Path("data") / "2025-10-small",
         show_default=True,
         help="Input data directory containing 'pdfs' and 'ground_truth' subdirectories"
     )
