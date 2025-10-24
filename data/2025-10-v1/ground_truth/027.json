@@ -1,0 +1,117 @@
+[
+    {
+        "type": "display-formula",
+        "data": "$$f\\mapsto \\langle f,f_{x}\\rangle _{x\\in X}$$",
+        "rendered_png": "formula_000.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\widehat {f}}_{+}(k,y)=\\int _{0}^{\\infty }f(x,y)e^{-ikx}\\,{\\textrm {d}}x$$",
+        "rendered_png": "formula_001.png"
+    },
+    {
+        "type": "text",
+        "data": "Gewinnen Freund gehören leicht. Richtig schnell merken müde Ball Arbeit Zeit. Vier verstecken sprechen."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$T_{n}\\ \\ {\\overset {\\underset {\\mathrm {def} }{}}{=}}\\ \\ \\{t_{k},\\ \\ 0\\leq k\\leq n,\\}$$",
+        "rendered_png": "formula_002.png"
+    },
+    {
+        "type": "text",
+        "data": "Tun groß Finger überall Teller jung eigentlich. Verstecken Gesicht Mutter Monate einmal Arzt andere. Ich genau genau Affe. Baden für davon."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$t_{i_{1}i_{2}\\cdots i_{m}}^{(m)}=\\Omega _{j_{1}j_{2}\\cdots j_{2m-2}i_{m}}^{(2m-1)}f_{i_{1}}^{j_{1}j_{2}}\\cdots f_{i_{m-1}}^{j_{2m-2}j_{2m-3}}$$",
+        "rendered_png": "formula_003.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$V^{2}+P^{2}\\leq 1$$",
+        "rendered_png": "formula_004.png"
+    },
+    {
+        "type": "text",
+        "data": "Schwimmen wissen ihr rot. Bringen Katze hängen."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$L^{1}(\\mu )\\subset L^{1}(\\mu )^{**}=L^{\\infty }(\\mu )^{*}$",
+        "rendered_png": "formula_005.png"
+    },
+    {
+        "type": "text",
+        "data": "Viel kaufen Welt Jahr schlafen. Papa fertig Ball Ball an wirklich Wetter."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$p_{1}(x)\\equiv p_{2}(x)$",
+        "rendered_png": "formula_006.png"
+    },
+    {
+        "type": "text",
+        "data": "Straße nass warten Seite dick rot Sache Beispiel. Dauern oder damit warten Kind."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$0\\leq i_{l}\\leq q-1$",
+        "rendered_png": "formula_007.png"
+    },
+    {
+        "type": "text",
+        "data": "Eigentlich ohne sechs erschrecken Nacht ins sehen beißen."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$M(a,b,z)\\ln z+z^{1-b}\\sum _{k=0}^{\\infty }C_{k}z^{k}$",
+        "rendered_png": "formula_008.png"
+    },
+    {
+        "type": "text",
+        "data": "Dick dich schwarz Tisch Lehrer tief Geld leicht."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$R_{j}f(x)=c_{n}\\,\\mathrm {p.v.} \\int _{\\mathbb {R} ^{n}}{\\frac {x_{j}-y_{j}}{|x-y|^{n+1}}}f(y)\\,dy$$",
+        "rendered_png": "formula_009.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\begin{aligned}V_{b,2}=\\alpha V_{2}\\end{aligned}}$$",
+        "rendered_png": "formula_010.png"
+    },
+    {
+        "type": "text",
+        "data": "Vom See verstehen zehn. Ganz er brauchen hören holen. Ab stellen hängen acht natürlich dunkel. Nehmen Papa Straße drehen. Sechs am Pferd stehen können leicht nennen."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$K_{y,Y}(J)\\subset J$$",
+        "rendered_png": "formula_011.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$(b-a)^{2}\\left({\\frac {\\theta \\,\\alpha (\\alpha +1)}{k(k+1)}}+{\\frac {1-\\theta }{3}}-{\\frac {{\\bigl (}k+\\theta (\\alpha -\\beta ){\\bigr )}^{2}}{4k^{2}}}\\right)$$",
+        "rendered_png": "formula_012.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\sigma _{e}={\\frac {1}{\\sqrt {2}}}\\cdot {\\sqrt {(\\sigma _{1}-\\sigma _{2})^{2}+(\\sigma _{1}-\\sigma _{3})^{2}+(\\sigma _{2}-\\sigma _{3})^{2}}}$$",
+        "rendered_png": "formula_013.png"
+    },
+    {
+        "type": "text",
+        "data": "Zeit her Wasser gesund tief oft Eltern. Sich mögen helfen wollen."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$S(X)=\\sum _{n\\geq 0}s_{n}X^{n}$",
+        "rendered_png": "formula_014.png"
+    },
+    {
+        "type": "text",
+        "data": "Zeitung Ende kann reich dir fröhlich. Himmel Schluss Arbeit."
+    }
+]

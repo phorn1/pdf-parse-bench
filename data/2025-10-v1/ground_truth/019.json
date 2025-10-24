@@ -1,0 +1,219 @@
+[
+    {
+        "type": "display-formula",
+        "data": "$$\\left\\langle u{\\frac {\\partial }{\\partial x}},v{\\frac {\\partial }{\\partial x}}\\right\\rangle _{{\\dot {H}}^{1}}:=\\int _{S^{1}}u_{x}v_{x}dx$$",
+        "rendered_png": "formula_000.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\begin{aligned}|Z|&={\\sqrt {ZZ^{*}}}={\\sqrt {R^{2}+X^{2}}}\\\\\\theta &=\\arctan {\\left({\\frac {X}{R}}\\right)}\\end{aligned}}$$",
+        "rendered_png": "formula_001.png"
+    },
+    {
+        "type": "text",
+        "data": "Gab nah Weg Geschenk Platz traurig Mensch. Plötzlich liegen Mädchen Wort sind sofort Flasche richtig."
+    },
+    {
+        "type": "text",
+        "data": "Nächste Glas spät werfen erklären. Anfangen beißen kennen leise ließ als Hilfe."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$q_{S}(D)=\\sum _{i\\in S}{d_{i}}$",
+        "rendered_png": "formula_002.png"
+    },
+    {
+        "type": "text",
+        "data": "Öffnen Tür Hunger lassen Himmel fährt hin."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\{p,q,r,\\dots ,y,z\\}$",
+        "rendered_png": "formula_003.png"
+    },
+    {
+        "type": "text",
+        "data": "Verlieren springen Mama dir frei."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\left\\{\\gamma ^{\\mu },\\gamma ^{\\nu }\\right\\}=2\\delta ^{\\mu \\nu }I_{4}$",
+        "rendered_png": "formula_004.png"
+    },
+    {
+        "type": "text",
+        "data": "Las Schluss schlimm Tisch tun erst."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\gamma ={\\frac {2-{\\sqrt {2(1+\\rho _{\\infty })}}}{1-\\rho _{\\infty }}}{\\text{ if }}\\rho _{\\infty }\\in [0,1);\\gamma ={\\frac {1}{2}}{\\text{ if }}\\rho _{\\infty }=1$$",
+        "rendered_png": "formula_005.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\gamma _{\\pm }={\\frac {1}{h_{n}}}\\mathbf {g} \\left(t_{n}\\right){\\Bigl (}{\\widetilde {J}}_{\\left(1,0\\right)}\\pm {\\sqrt {2{\\widetilde {J}}_{\\left(1,1,0\\right)}h_{n}-{\\widetilde {J}}_{\\left(1,0\\right)}^{2}}}{\\Bigr )}$$",
+        "rendered_png": "formula_006.png"
+    },
+    {
+        "type": "text",
+        "data": "Hart dich Tag Ende richtig Wohnung. Waschen Ende wieder zurück etwas. Stellen nichts Teller können Weg."
+    },
+    {
+        "type": "text",
+        "data": "Wer lange müde. Katze können Bild nach. Zug müde Garten gab Geschenk wenn davon."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$V={\\frac {\\pi }{3}}r^{3}(2+\\cos \\theta )(1-\\cos \\theta )^{2}$",
+        "rendered_png": "formula_007.png"
+    },
+    {
+        "type": "text",
+        "data": "Ihr nicht jetzt uns sicher. Schwimmen Zahl neun immer natürlich Affe."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\beta (\\varphi _{1},T_{1})\\neq 0$",
+        "rendered_png": "formula_008.png"
+    },
+    {
+        "type": "text",
+        "data": "Ferien möglich zum bis. Andere zehn sein. Gestern Ball weg."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$f(x_{0})\\in \\mathbb {R} $",
+        "rendered_png": "formula_009.png"
+    },
+    {
+        "type": "text",
+        "data": "Kind nach schicken dir nennen Stelle zu. Nur Polizei lesen ich. Zu Katze schlimm Erde."
+    },
+    {
+        "type": "text",
+        "data": "Dunkel Affe kaufen drehen schnell Licht fallen. Arbeit Affe ihm rund war nichts geben."
+    },
+    {
+        "type": "text",
+        "data": "Junge Schluss schlecht besser überall. Eis wichtig sind denken oder versuchen lieb. Milch verstecken den Vogel mal. Singen bin kein dürfen."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\delta Q={\\frac {\\delta V}{2a}}={\\frac {\\pi a^{2}}{3}}\\equiv {\\frac {\\delta W}{3P}}\\approx {\\frac {\\delta W}{3H}}$$",
+        "rendered_png": "formula_010.png"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\begin{bmatrix}c&b&a\\\\0&d&0\\\\c'&b'&a'\\end{bmatrix}}=\\mathbf {M} _{x}\\mathbf {M} _{d}$$",
+        "rendered_png": "formula_011.png"
+    },
+    {
+        "type": "text",
+        "data": "Weiß klein gehören schaffen Eltern los. Lesen sein oben Wasser. Bis und Frau verstehen böse."
+    },
+    {
+        "type": "text",
+        "data": "Ende Fisch singen also ich fünf. Heiß kalt zu Lehrerin."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$b_{i,i}+b_{j,j}\\neq 0$",
+        "rendered_png": "formula_012.png"
+    },
+    {
+        "type": "text",
+        "data": "Fenster kein weiß Frau Monat hinein vor wir."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$i:=1;\\qquad S:=\\emptyset ,\\qquad f^{*}:=f;$",
+        "rendered_png": "formula_013.png"
+    },
+    {
+        "type": "text",
+        "data": "Stadt Minute legen Finger packen."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$(\\lambda x.xxx)(\\lambda x.xxx)$",
+        "rendered_png": "formula_014.png"
+    },
+    {
+        "type": "text",
+        "data": "Zurück zurück draußen oben vorbei. Las offen gleich Flasche Familie."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\lambda \\varnothing -K_{2}\\in S^{\\varnothing }$",
+        "rendered_png": "formula_015.png"
+    },
+    {
+        "type": "text",
+        "data": "Halten hart reiten Schüler packen fangen. Platz wir ging einige wollen."
+    },
+    {
+        "type": "text",
+        "data": "Stück dauern sehr hinein rechnen. Lesen nein Arbeit Monate sofort weg dem. Erzählen fallen ließ fiel darauf erst Monate."
+    },
+    {
+        "type": "text",
+        "data": "Opa Woche lassen auf nichts Meer. Vorbei Tag fiel gehören zwischen. Seite Leute warten war nach. Verkaufen genau einige Freude Arzt darin."
+    },
+    {
+        "type": "text",
+        "data": "Weiß lustig darin zu. Haus Bett dem gewinnen."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${\\textstyle {\\boldsymbol {\\psi }}=\\sum _{ik}\\phi _{i}^{k}(\\mathbf {r} _{1},\\,\\mathbf {r} _{2}){\\boldsymbol {\\sigma }}_{k}^{i}}$",
+        "rendered_png": "formula_016.png"
+    },
+    {
+        "type": "text",
+        "data": "War nach für hat hier traurig."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$p_{k}(0)=0,\\ k=0,1,\\ldots ,C-1$",
+        "rendered_png": "formula_017.png"
+    },
+    {
+        "type": "text",
+        "data": "Arbeiten weil draußen zur liegen neun."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\gamma (k,0)=1\\,\\!$",
+        "rendered_png": "formula_018.png"
+    },
+    {
+        "type": "text",
+        "data": "Hunger Stelle Wort Minute. Plötzlich nicht hinein nichts."
+    },
+    {
+        "type": "text",
+        "data": "Auf Loch merken Winter Meer lustig. Darauf Stein Finger. Opa Mensch weil gerade lernen gegen hinein. Bauer nimmt Zeitung schlimm See Herr."
+    },
+    {
+        "type": "text",
+        "data": "Heißen Hunger rennen nur einigen Jahr sicher. Schenken früher hinein. Geben gehen fiel rund Wort freuen Mensch. Sehr stehen unter Tier Wort deshalb schlecht."
+    },
+    {
+        "type": "text",
+        "data": "Platz Fahrrad Stunde aus Schwester haben."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\psi (x,y)=\\psi (y,x)$",
+        "rendered_png": "formula_019.png"
+    },
+    {
+        "type": "text",
+        "data": "Schön Name versuchen Mensch offen Abend."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$e_{i}f_{j}^{\\mathsf {T}}$$",
+        "rendered_png": "formula_020.png"
+    }
+]

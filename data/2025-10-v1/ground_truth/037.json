@@ -1,0 +1,254 @@
+[
+    {
+        "type": "display-formula",
+        "data": "$$=\\underbrace {\\int \\psi _{v}'^{*}\\psi _{v}\\,d\\tau _{n}} _{\\displaystyle {{\\text{Franck–Condon}} \\atop {\\text{factor}}}}\\underbrace {\\int \\psi _{e}'^{*}{\\boldsymbol {\\mu }}_{e}\\psi _{e}\\,d\\tau _{e}} _{\\displaystyle {{\\text{orbital}} \\atop {\\text{selection rule}}}}\\underbrace {\\int \\psi _{s}'^{*}\\psi _{s}\\,d\\tau _{s}} _{\\displaystyle {{\\text{spin}} \\atop {\\text{selection rule}}}}+\\underbrace {\\int \\psi _{e}'^{*}\\psi _{e}\\,d\\tau _{e}} _{\\displaystyle 0}\\int \\psi _{v}'^{*}{\\boldsymbol {\\mu }}_{N}\\psi _{v}\\,d\\tau _{v}\\int \\psi _{s}'^{*}\\psi _{s}\\,d\\tau _{s}$$",
+        "rendered_png": "formula_000.png"
+    },
+    {
+        "type": "text",
+        "data": "Selon lentement personne froid clair rire."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${\\frac {\\mathrm {d} x}{\\mathrm {d} t}}=F(x)-V(x)$",
+        "rendered_png": "formula_001.png"
+    },
+    {
+        "type": "text",
+        "data": "Yeux qualité dehors leur. Empêcher jouer oui jardin cruel."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$W(A):=\\{W(t):t\\in A\\}\\subset \\mathbb {R} ^{d}$",
+        "rendered_png": "formula_002.png"
+    },
+    {
+        "type": "text",
+        "data": "Se commencement ennemi vendre plonger fin."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$c=2\\xi \\omega m,\\;k=\\omega ^{2}m$",
+        "rendered_png": "formula_003.png"
+    },
+    {
+        "type": "text",
+        "data": "Pur lire froid arrêter poitrine."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\sum _{j\\neq i}r_{j}=N-r_{i}$",
+        "rendered_png": "formula_004.png"
+    },
+    {
+        "type": "text",
+        "data": "Voici consentir page froid habitant."
+    },
+    {
+        "type": "text",
+        "data": "Suivre celui placer chien. Salle tandis que colon payer. Voisin succès mer poursuivre intérêt fort."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$K(G)\\leq {\\frac {\\pi }{2\\log \\left({\\frac {1+{\\sqrt {(\\vartheta -1)^{2}+1}}}{\\vartheta -1}}\\right)}}$$",
+        "rendered_png": "formula_005.png"
+    },
+    {
+        "type": "text",
+        "data": "Gauche exister haut étude port plaindre si."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\operatorname {Var} (Y)=\\operatorname {E} {\\bigl [}p_{X}(1-p_{X}){\\bigr ]}+\\operatorname {Var} {\\bigl (}p_{X}{\\bigr )}$",
+        "rendered_png": "formula_006.png"
+    },
+    {
+        "type": "text",
+        "data": "Face passion forêt. Passer annoncer bien hors."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${\\begin{Bmatrix}2,p\\end{Bmatrix}}$",
+        "rendered_png": "formula_007.png"
+    },
+    {
+        "type": "text",
+        "data": "Regarder désert oui liberté aspect recommencer."
+    },
+    {
+        "type": "text",
+        "data": "Renoncer vieux tandis que scène silence espèce mer."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$h={\\frac {4}{K_{\\text{J}}^{2}R_{\\text{K}}}}$",
+        "rendered_png": "formula_008.png"
+    },
+    {
+        "type": "text",
+        "data": "Répandre honneur sûr naturellement."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\Omega _{X}^{\\bullet }(\\log D)$",
+        "rendered_png": "formula_009.png"
+    },
+    {
+        "type": "text",
+        "data": "Davantage moindre exiger siècle crainte fidèle."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$v_{p}(0)=+\\infty $",
+        "rendered_png": "formula_010.png"
+    },
+    {
+        "type": "text",
+        "data": "Complet glisser tard jouer nation arbre on."
+    },
+    {
+        "type": "text",
+        "data": "Seuil vieux créer. Poète vide nommer arrêter bas dégager céder. Petit douceur humide essuyer bon appeler inconnu."
+    },
+    {
+        "type": "text",
+        "data": "Gros arbre passer distinguer loin. Chacun nu jeter général jeunesse jeunesse renverser."
+    },
+    {
+        "type": "text",
+        "data": "Marquer premier menacer lit durer disposer fixer. Commander jeter quelque."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$P^{(1)}(x)=2A(x-c)^{2}$$",
+        "rendered_png": "formula_011.png"
+    },
+    {
+        "type": "text",
+        "data": "Sonner éclater sur signe hiver contenir."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$e^{-(\\mu _{1}+\\mu _{2})+\\mu _{1}e^{t}+\\mu _{2}e^{-t}}$",
+        "rendered_png": "formula_012.png"
+    },
+    {
+        "type": "text",
+        "data": "Espèce hasard quoi troubler théâtre doute emmener exiger."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\mathbf {AUT-KPl} ^{w}$",
+        "rendered_png": "formula_013.png"
+    },
+    {
+        "type": "text",
+        "data": "Bois animer consentir. Revenir tombe ajouter. Hier aimer considérer accepter."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\langle A\\mid \\gamma \\rangle =W(\\gamma )=\\exp \\left[ie\\int _{\\gamma }dy^{\\alpha }A_{\\alpha }(y)\\right]$$",
+        "rendered_png": "formula_014.png"
+    },
+    {
+        "type": "text",
+        "data": "Neuf sans sentir type. Naissance compagnon force lit."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$0{.}00828{\\text{ }}38328{\\text{ }}56133{\\text{ }}59253\\ldots $",
+        "rendered_png": "formula_015.png"
+    },
+    {
+        "type": "text",
+        "data": "Gros manier printemps parent. Poitrine suffire réfléchir pousser."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$[c_{3}T_{3}(1-f_{3})]^{2}$",
+        "rendered_png": "formula_016.png"
+    },
+    {
+        "type": "text",
+        "data": "Enlever abandonner agir colon temps. Sac mariage peu attacher article."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\forall k\\in \\mathbb {N} :\\phi (x,k+1)\\leq \\phi (x,k)$",
+        "rendered_png": "formula_017.png"
+    },
+    {
+        "type": "text",
+        "data": "Début peur complet bas."
+    },
+    {
+        "type": "text",
+        "data": "Maître afin de voix depuis vite."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$f(X\\setminus R)~\\subseteq ~f(X)\\setminus f(R)$",
+        "rendered_png": "formula_018.png"
+    },
+    {
+        "type": "text",
+        "data": "Rencontre comme manger retour tombe élément pièce."
+    },
+    {
+        "type": "text",
+        "data": "Bois rare cuisine vieil confondre dire complet."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$F=F_{0}\\sin(2\\pi ft).\\!$",
+        "rendered_png": "formula_019.png"
+    },
+    {
+        "type": "text",
+        "data": "Nature naturel supérieur. Fois importer lisser drame."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\mu ={\\frac {1}{j+1}}{\\bigl \\langle }(l,s),j,m_{j}{=}j\\,{\\bigr |}\\,{\\vec {\\mu }}\\cdot {\\vec {\\jmath }}\\,{\\bigl |}\\,(l,s),j,m_{j}{=}j{\\bigr \\rangle }$",
+        "rendered_png": "formula_020.png"
+    },
+    {
+        "type": "text",
+        "data": "Joie manier garder toute beau habitant repousser."
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\partial x \\over \\partial t}+{\\partial x \\over \\partial t^{*}}={x_{\\infty }(U)-x \\over \\tau _{x}(U)}$$",
+        "rendered_png": "formula_021.png"
+    },
+    {
+        "type": "text",
+        "data": "Affirmer droite remercier attaquer ouvert immobile frère."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$B_{n}(x)=i^{n}F_{n}(ix)$",
+        "rendered_png": "formula_022.png"
+    },
+    {
+        "type": "text",
+        "data": "Loin dangereux croix réel désert supposer. Plein question protéger taire désir."
+    },
+    {
+        "type": "text",
+        "data": "Savoir dresser vague scène accrocher répéter tout. Poussière oncle déjà résoudre presque guère perte. Jeu refuser fidèle demande sol sauver oeuvre."
+    },
+    {
+        "type": "text",
+        "data": "Lier hiver grain règle honte prince vieux connaître."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$(p_{u}-p_{v})\\cdot (p'_{u}-p'_{v})>0$",
+        "rendered_png": "formula_023.png"
+    },
+    {
+        "type": "text",
+        "data": "Préparer herbe courir proposer contenter."
+    }
+]
