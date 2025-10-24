@@ -54,6 +54,7 @@ def load_formulas_from_dataset() -> list[str]:
     # Use DuckDB to fetch only the 'formula' column via HTTP range requests
     # This leverages Parquet's columnar format to download only needed data (~35MB vs 751MB)
     con = duckdb.connect()
+    con.execute("SET enable_progress_bar=false")
     result = con.execute(f"SELECT formula FROM read_parquet('{parquet_url}')").fetchall()
     con.close()
 

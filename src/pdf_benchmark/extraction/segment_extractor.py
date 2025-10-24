@@ -10,7 +10,7 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, MofNCompleteColumn
 
-from .formula_renderer import FormulaRenderer
+from ..utilities import FormulaRenderer
 
 
 @dataclass

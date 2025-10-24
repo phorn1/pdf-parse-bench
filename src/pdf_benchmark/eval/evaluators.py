@@ -464,24 +464,28 @@ def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
 # ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
-    llm_judge_models: list[str],
-    enable_cdm: bool,
-    extracted_formulas_path: Path,
-    result_stats_path: Path,
-    result_formula_evals_path: Path,
-    cdm_output_dir: Path,
+    llm_judge_models: str | list[str] = "gpt-5-mini",
+    enable_cdm: bool = False,
+    extracted_formulas_path: Path = None,
+    result_stats_path: Path = None,
+    result_formula_evals_path: Path = None,
+    cdm_output_dir: Path = None,
 ) -> None:
     """
     Complete evaluation pipeline with incremental saving.
 
     Args:
-        llm_judge_models: Models for formula evaluation
+        llm_judge_models: Model(s) for formula evaluation
         enable_cdm: Whether to enable CDM scoring
         extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
         result_stats_path: Output path for statistics
         result_formula_evals_path: Output path for formula evaluations
         cdm_output_dir: CDM visualization output directory
     """
+    # Normalize to list
+    if isinstance(llm_judge_models, str):
+        llm_judge_models = [llm_judge_models]
+
     # ========== LOAD AND PREPARE DATA ==========
     with open(extracted_formulas_path, 'r', encoding='utf-8') as f:
         formula_pairs_data = json.load(f)

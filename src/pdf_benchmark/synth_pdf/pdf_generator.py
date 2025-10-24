@@ -11,10 +11,10 @@ from dataclasses import dataclass
 import multiprocessing
 
 from .style_config import LaTeXConfig
-from .content_generator import LaTeXContentGenerator
+from .assembler import LaTeXContentGenerator
 from .compiler import LaTeXCompiler
-from ..generators import generate_text_paragraphs, load_formula_generator, load_formulas_from_dataset
-from ...utilities import FormulaRenderer
+from .random_content import generate_text_paragraphs, load_formula_generator, load_formulas_from_dataset
+from pdf_benchmark.utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +34,11 @@ class LaTeXSinglePagePDFGenerator:
         self.text_generator = generate_text_paragraphs(language=config.language.locale_code, seed=config.seed)
         self.config = config
 
-    def generate_single_page_pdf(self, output_latex_path: Path, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
+    def generate_single_page_pdf(self, output_latex_path: Path | None, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
         """Generate a single-page PDF with LaTeX to match HTML interface.
-        
+
         Args:
-            output_latex_path: Path for the generated LaTeX file
+            output_latex_path: Optional path for the generated LaTeX file (None to skip saving)
             output_pdf_path: Path for the generated PDF file
             output_gt_json: Path for the ground truth JSON file
             rendered_formulas_dir: Optional directory to save rendered formula PNGs
@@ -67,8 +67,9 @@ class LaTeXSinglePagePDFGenerator:
             # Compile to PDF directly to output path
             LaTeXCompiler.compile_latex(temp_tex_file, output_pdf_path=output_pdf_path)
 
-            # Copy LaTeX file to output path
-            temp_tex_file.rename(output_latex_path)
+            # Copy LaTeX file to output path (if requested)
+            if output_latex_path is not None:
+                temp_tex_file.rename(output_latex_path)
 
             # Save ground truth JSON
             gt_data = page_content.to_ground_truth()
@@ -93,7 +94,7 @@ class LaTeXSinglePagePDFGenerator:
 class LaTeXPDFJob:
     """Task configuration for parallel PDF generation."""
     config: LaTeXConfig
-    latex_path: Path
+    latex_path: Path | None
     pdf_path: Path
     gt_path: Path
     rendered_formulas_dir: Path | None = None
@@ -178,7 +179,7 @@ class ParallelLaTeXPDFGenerator:
         config_dict = task.config.model_dump(mode='json')
         # Convert Path objects to strings for JSON serialization
         config_dict.update({
-            "latex_path": str(task.latex_path),
+            "latex_path": str(task.latex_path) if task.latex_path else None,
             "pdf_path": str(task.pdf_path),
             "gt_path": str(task.gt_path)
         })

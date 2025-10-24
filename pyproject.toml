@@ -1,42 +1,58 @@
 [project]
-name = "pdf-to-text-benchmark"
+name = "pdf-parser-benchmark"
 version = "0.1.0"
-description = "Add your description here"
+description = "Benchmark suite for PDF-to-text parsers with built-in test dataset"
 requires-python = ">=3.12"
 dependencies = [
-    "faker>=37.4.0",
-    "playwright==1.52.0",
+    # Core
     "pydantic>=2.11.7",
     "pydantic-settings>=2.0.0",
-    "pypdf>=5.6.0",
     "pyyaml>=6.0.0",
-    # PDF parsing libraries
-    "pymupdf4llm>=0.0.17",
-    "pymupdf>=1.24.0",
-    "unstructured[pdf]==0.18.11",
-    "pdfminer-six==20250506",
-    "marker-pdf>=0.2.0",
-    "megaparse>=0.0.30",
-    "llama-cloud>=0.0.15",
-    "pdfservices-sdk>=4.1.0",
-    "pdf2image>=1.17.0",
-    # AI/ML libraries
-    "openai==1.99.3",
-    "google-generativeai>=0.8.0",
-    "mistralai>=1.2.0",
-    "langchain-openai>=0.2.0",
-    # Utility libraries
     "python-dotenv>=1.0.0",
-    "matplotlib>=3.9.0",
+    "tqdm>=4.66.0",
+    "rich>=14.1.0",
+    # Evaluation & AI
+    "openai>=1.99.0",
+    "google-genai>=1.46.0",
+    "mistralai>=1.9.0",
     "requests>=2.32.0",
-    "typing-extensions>=4.12.0",
     "levenshtein>=0.27.1",
-    "gradio>=5.41.0",
-    "mpxpy==0.0.17",
-    "docling==2.43.0",
-    "mlx-vlm==0.3.2",
-    "llama-cloud-services==0.6.60",
-    "pypandoc>=1.15",
+    "nltk>=3.9.1",
+    # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
+    # Visualization
+    "gradio>=5.41.0",
 ]
 
+[project.optional-dependencies]
+# Synthetic PDF generation - for creating test documents
+synth_pdf = [
+    "faker>=37.11.0",
+    "duckdb>=1.4.1",
+]
+
+# PDF Parsers - install individually as needed
+pymupdf = [
+    "pymupdf4llm>=0.0.17",
+]
+
+# All extras combined
+all = [
+    "pdf-parser-benchmark[synth_pdf,pymupdf]",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pdf_benchmark", "parsers"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data" = "pdf_benchmark/data"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/data",
+]
