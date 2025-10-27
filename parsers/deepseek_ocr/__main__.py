@@ -61,7 +61,7 @@ class DeepSeekOCRParser(PDFParser):
         # ========== RUN OCR WITH VLLM ==========
         try:
             image = Image.open(temp_path).convert("RGB")
-            prompt = "<image>\n<|grounding|>Convert the document to markdown."
+            prompt = "<image>\nConvert the document to markdown."
 
             model_input = [{"prompt": prompt, "multi_modal_data": {"image": image}}]
 
