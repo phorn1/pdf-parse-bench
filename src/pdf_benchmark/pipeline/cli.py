@@ -77,10 +77,10 @@ def run_cli(parser: PDFParser) -> None:
         help="Skip evaluation step"
     )
     @click.option(
-        "--skip-existing",
-        is_flag=True,
-        default=False,
-        help="Skip already processed files"
+        "--reprocess",
+        multiple=True,
+        type=click.Choice(["all", "parse", "extract", "evaluate"], case_sensitive=False),
+        help="Reprocess specific steps (use 'all' for all steps, or specify individual steps)"
     )
     @click.option(
         "--llm-judge-models",
@@ -101,7 +101,7 @@ def run_cli(parser: PDFParser) -> None:
         skip_parse: bool,
         skip_extract: bool,
         skip_evaluate: bool,
-        skip_existing: bool,
+        reprocess: tuple[str, ...],
         llm_judge_models: str,
         enable_cdm: bool,
     ) -> None:
@@ -126,6 +126,15 @@ def run_cli(parser: PDFParser) -> None:
             run_extract = not skip_extract
             run_evaluate = not skip_evaluate
 
+        # Determine which steps to reprocess
+        if reprocess:
+            if "all" in reprocess:
+                steps_to_reprocess = {"parse", "extract", "evaluate"}
+            else:
+                steps_to_reprocess = {s.lower() for s in reprocess}
+        else:
+            steps_to_reprocess = set()
+
         # Display active steps
         steps = []
         if run_parse:
@@ -144,10 +153,10 @@ def run_cli(parser: PDFParser) -> None:
         )
 
         if run_parse:
-            orchestrator.parse_pdfs(skip_existing=not skip_existing)
+            orchestrator.parse_pdfs(skip_existing="parse" not in steps_to_reprocess)
 
         if run_extract:
-            orchestrator.extract_segments(skip_existing=not skip_existing)
+            orchestrator.extract_segments(skip_existing="extract" not in steps_to_reprocess)
 
         if run_evaluate:
             # Parse LLM judge models
@@ -159,7 +168,7 @@ def run_cli(parser: PDFParser) -> None:
             orchestrator.evaluate_results(
                 llm_judge_models=llm_models,
                 enable_cdm=enable_cdm,
-                skip_existing=not skip_existing
+                skip_existing="evaluate" not in steps_to_reprocess
             )
 
         console.print(f"\n[bold green]✅ Pipeline completed successfully![/]\n")

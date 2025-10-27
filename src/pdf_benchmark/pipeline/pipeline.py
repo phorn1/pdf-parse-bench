@@ -146,6 +146,7 @@ class BenchmarkOrchestrator:
                 run_evaluation(
                     llm_judge_models=llm_judge_models,
                     enable_cdm=enable_cdm,
+                    skip_existing=skip_existing,
                     extracted_formulas_path=extracted_formulas_path,
                     result_stats_path=eval_stats_path,
                     result_formula_evals_path=eval_formula_results_path,

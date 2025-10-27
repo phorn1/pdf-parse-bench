@@ -466,6 +466,7 @@ def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
 def run_evaluation(
     llm_judge_models: str | list[str] = "gpt-5-mini",
     enable_cdm: bool = False,
+    skip_existing: bool = True,
     extracted_formulas_path: Path = None,
     result_stats_path: Path = None,
     result_formula_evals_path: Path = None,
@@ -477,6 +478,7 @@ def run_evaluation(
     Args:
         llm_judge_models: Model(s) for formula evaluation
         enable_cdm: Whether to enable CDM scoring
+        skip_existing: If True, skip models that already have results. If False, re-evaluate and overwrite existing results
         extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
         result_stats_path: Output path for statistics
         result_formula_evals_path: Output path for formula evaluations
@@ -496,19 +498,34 @@ def run_evaluation(
             formula_number=i,
             ground_truth_formula=pair['gt_formula'],
             extracted_formula=pair['parsed_formula'],
-            formula_type='display-formula'  # Type info no longer available, defaulting
+            formula_type='display-formula' if pair['gt_formula'].startswith('$$') else 'inline-formula'
         )
         for i, pair in enumerate(formula_pairs_data)
     ]
 
     # ========== LLM FORMULA EVALUATIONS ==========
-    existing_models = {
-        eval_result.judge_model
-        for summary in formula_summaries
-        for eval_result in summary.llm_evals
-    }
+    # Determine which models to evaluate
+    if skip_existing:
+        # Skip models that already have results
+        existing_models = {
+            eval_result.judge_model
+            for summary in formula_summaries
+            for eval_result in summary.llm_evals
+        }
+        models_to_evaluate = [m for m in llm_judge_models if m not in existing_models]
+    else:
+        # Reprocess: remove old results for requested models and re-evaluate
+        models_to_evaluate = llm_judge_models
+        models_to_reprocess = set(llm_judge_models)
 
-    for model in [m for m in llm_judge_models if m not in existing_models]:
+        # Remove existing evaluations for models being reprocessed
+        for summary in formula_summaries:
+            summary.llm_evals = [
+                eval_result for eval_result in summary.llm_evals
+                if eval_result.judge_model not in models_to_reprocess
+            ]
+
+    for model in models_to_evaluate:
         # Validate model is supported
         if model not in SUPPORTED_MODELS:
             raise ValueError(f"Unsupported model: {model}")
