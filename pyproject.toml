@@ -22,7 +22,6 @@ dependencies = [
     "pylatexenc>=2.10",
     # Visualization
     "gradio>=5.41.0",
-    "transformers>=4.40.0",
 ]
 
 [project.optional-dependencies]
@@ -37,6 +36,14 @@ pymupdf = [
     "pymupdf4llm>=0.0.17",
 ]
 
+llamaparse = [
+    "llama-cloud-services>=0.6.76"
+]
+
+mathpix = [
+    "mpxpy>=0.0.18"
+]
+
 got_ocr2 = [
     "torch>=2.0.1",
     "torchvision>=0.15.2",
@@ -47,6 +54,7 @@ got_ocr2 = [
     "pymupdf>=1.24.0",
 ]
 
+
 deepseek_ocr = [
     "vllm>=0.6.0",
     "pillow>=10.0.0",
@@ -55,7 +63,7 @@ deepseek_ocr = [
 
 # All extras combined
 all = [
-    "pdf-parser-benchmark[synth_pdf,pymupdf,got_ocr2,deepseek_ocr]",
+    "pdf-parser-benchmark[synth_pdf,pymupdf,got_ocr2]",
 ]
 
 [build-system]
@@ -73,13 +81,3 @@ include = [
     "/src",
     "/data",
 ]
-
-# ========== UV CONFIGURATION ==========
-[tool.uv.sources]
-# Pin vllm to nightly index (required until v0.11.1 release)
-vllm = { index = "vllm-nightly" }
-
-[[tool.uv.index]]
-name = "vllm-nightly"
-url = "https://wheels.vllm.ai/nightly"
-explicit = true  # Only use for packages explicitly pinned to this index
