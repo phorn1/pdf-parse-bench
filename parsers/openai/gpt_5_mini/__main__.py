@@ -12,7 +12,7 @@ class GPT5MiniParser(BaseOpenAIParser):
     @classmethod
     def parser_name(cls) -> str:
         """Return parser name identifier."""
-        return "GPT-5-mini"
+        return "gpt_5_mini"
 
 
 if __name__ == "__main__":

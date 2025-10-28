@@ -52,18 +52,18 @@ got_ocr2 = [
     "pymupdf>=1.24.0",
 ]
 
-
-# Temporarily disabled due to transformers version conflict with got_ocr2
-# deepseek_ocr = [
-#     "vllm>=0.6.0",
-#     "pillow>=10.0.0",
-#     "pymupdf>=1.24.0",
-# ]
+nanonets_ocr_s = [
+    "torch>=2.0.1",
+    "transformers>=4.37.0",
+    "pymupdf>=1.24.0",
+    "accelerate>=0.28.0",
+]
 
 # All extras combined (parsers excluded - install individually as needed)
 all = [
-    "pdf-parser-benchmark[synth_pdf,pymupdf]",
+    "pdf-parser-benchmark[synth_pdf]",
 ]
+
 deepseek_ocr = [
     "triton-kernels",
     "vllm",
