@@ -29,7 +29,6 @@ class NanonetsOCRSParser(PDFParser):
             model_path,
             torch_dtype="auto",
             device_map="auto",
-            attn_implementation="flash_attention_2"
         )
         self.model.eval()
 

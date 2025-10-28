@@ -51,7 +51,7 @@ class GOTOCR2Parser(PDFParser):
     @classmethod
     def parser_name(cls) -> str:
         """Return parser name identifier."""
-        return "GOT-OCR2.0"
+        return "got_ocr2"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """
