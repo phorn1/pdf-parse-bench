@@ -1,43 +1,36 @@
-"""CLI entry point for DOTS OCR parser benchmark."""
-
+import base64
 import json
+import os
 import tempfile
+from io import BytesIO
 from pathlib import Path
 
+from openai import OpenAI
 from pdf_benchmark.pipeline import run_cli
 from pdf_benchmark.utilities import PDFParser
 
 
 class DOTSOCRParser(PDFParser):
-    """PDF parser using DOTS OCR (Rednote HiLab)."""
+    """PDF parser using DOTS OCR (Rednote HiLab) via vLLM."""
 
     def __init__(self):
-        """Initialize DOTS OCR parser."""
+        """Initialize DOTS OCR parser with vLLM client."""
         super().__init__()
-        self.model = None
-        self.processor = None
 
-    def _load_model(self):
-        """Load DOTS OCR model using transformers."""
-        if self.model is not None:
-            return
+        self.vllm_url = "http://localhost:8000/v1"
+        self.model_name = "rednote-hilab/dots.ocr"
 
-        import torch
-        from transformers import AutoModelForCausalLM, AutoProcessor
-
-        model_path = "rednote-hilab/dots.ocr"
-
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_path,
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-            trust_remote_code=True,
+        # Initialize OpenAI client for vLLM
+        self.client = OpenAI(
+            api_key="EMPTY",  # vLLM doesn't require an API key
+            base_url=self.vllm_url,
         )
 
-        self.processor = AutoProcessor.from_pretrained(
-            model_path,
-            trust_remote_code=True
-        )
+    def _encode_image_to_base64(self, image) -> str:
+        """Encode PIL Image to base64 string."""
+        buffered = BytesIO()
+        image.save(buffered, format="PNG")
+        return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
     def _get_formula_in_markdown(self, text: str) -> str:
         """Format formula text into markdown (from original DOTS OCR format_transformer.py)."""
@@ -111,27 +104,25 @@ class DOTSOCRParser(PDFParser):
         return "dots_ocr"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
-        """Parse single-page PDF to markdown using DOTS OCR."""
-        self._load_model()
-
+        """Parse single-page PDF to markdown using DOTS OCR via vLLM."""
         # ========== PDF TO IMAGE ==========
         import fitz
         from PIL import Image
 
         doc = fitz.open(pdf_path)
-        page = doc[0]  # Single page only
-        pix = page.get_pixmap(dpi=200)  # DOTS OCR recommends 200 DPI
+        page = doc[0]
+        pix = page.get_pixmap(dpi=200)  # DOTS OCR recommends 200 dpi
 
         temp_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
         temp_path = Path(temp_file.name)
         pix.save(temp_path)
         doc.close()
 
-        # ========== RUN OCR WITH DOTS ==========
+        # ========== RUN OCR WITH VLLM ==========
         try:
-            from qwen_vl_utils import process_vision_info
+            image = Image.open(temp_path)
+            base64_image = self._encode_image_to_base64(image)
 
-            # Using the official prompt from the model card
             prompt = """Please output the layout information from the PDF image, including each layout element's bbox, its category, and the corresponding text content within the bbox.
 
 1. Bbox format: [x1, y1, x2, y2]
@@ -151,45 +142,29 @@ class DOTSOCRParser(PDFParser):
 5. Final Output: The entire output must be a single JSON object.
 """
 
-            messages = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "image", "image": str(temp_path)},
-                        {"type": "text", "text": prompt},
-                    ],
-                }
-            ]
-
-            # Preparation for inference
-            text = self.processor.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
+            # Call vLLM API using OpenAI client
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/png;base64,{base64_image}"
+                                },
+                            },
+                            {"type": "text", "text": prompt},
+                        ],
+                    }
+                ],
+                temperature=0.1,
+                top_p=0.9,
+                max_tokens=24000,
             )
-            image_inputs, video_inputs = process_vision_info(messages)
-            inputs = self.processor(
-                text=[text],
-                images=image_inputs,
-                videos=video_inputs,
-                padding=True,
-                return_tensors="pt",
-            )
 
-            inputs = inputs.to(self.model.device)
-
-            # Inference: Generation of the output
-            generated_ids = self.model.generate(**inputs, max_new_tokens=24000)
-            generated_ids_trimmed = [
-                out_ids[len(in_ids) :]
-                for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
-            ]
-            output_text = self.processor.batch_decode(
-                generated_ids_trimmed,
-                skip_special_tokens=True,
-                clean_up_tokenization_spaces=False,
-            )
-            json_output = output_text[0]
-
-            # Parse JSON and convert to markdown
+            json_output = response.choices[0].message.content
             layout_data = json.loads(json_output)
             markdown = self._layout_json_to_markdown(layout_data)
 
