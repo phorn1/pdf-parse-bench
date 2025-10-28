@@ -20,8 +20,6 @@ dependencies = [
     "nltk>=3.9.1",
     # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
-    # Visualization
-    "gradio>=5.41.0",
 ]
 
 [project.optional-dependencies]
@@ -47,7 +45,7 @@ mathpix = [
 got_ocr2 = [
     "torch>=2.0.1",
     "torchvision>=0.15.2",
-    "transformers>=4.37.2",
+    "transformers==4.37.2",
     "tiktoken>=0.6.0",
     "verovio>=4.3.1",
     "accelerate>=0.28.0",
@@ -55,15 +53,22 @@ got_ocr2 = [
 ]
 
 
+# Temporarily disabled due to transformers version conflict with got_ocr2
+# deepseek_ocr = [
+#     "vllm>=0.6.0",
+#     "pillow>=10.0.0",
+#     "pymupdf>=1.24.0",
+# ]
+
+# All extras combined (parsers excluded - install individually as needed)
+all = [
+    "pdf-parser-benchmark[synth_pdf,pymupdf]",
+]
 deepseek_ocr = [
-    "vllm>=0.6.0",
+    "triton-kernels",
+    "vllm",
     "pillow>=10.0.0",
     "pymupdf>=1.24.0",
-]
-
-# All extras combined
-all = [
-    "pdf-parser-benchmark[synth_pdf,pymupdf,got_ocr2]",
 ]
 
 [build-system]
@@ -81,3 +86,20 @@ include = [
     "/src",
     "/data",
 ]
+
+[[tool.uv.index]]
+name = "vllm-nightly"
+url = "https://wheels.vllm.ai/nightly"
+explicit = true
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = "got_ocr2" },
+        { extra = "deepseek_ocr" },
+    ],
+]
+
+[tool.uv.sources]
+triton-kernels = { git = "https://github.com/triton-lang/triton.git", subdirectory = "python/triton_kernels", rev = "v3.5.0" }
+vllm = { index = "vllm-nightly" }
