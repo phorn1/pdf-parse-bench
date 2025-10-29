@@ -30,8 +30,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-
 # PDF Parsers - install individually as needed
+
 pymupdf4llm = [
     "pymupdf4llm>=0.0.17",
 ]
