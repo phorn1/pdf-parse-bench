@@ -1,0 +1,32 @@
+services:
+  monkeyocr-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: monkeyocr:latest
+    container_name: monkeyocr-api
+    entrypoint: /app/MonkeyOCR/entrypoint.sh
+    ports:
+      - "7861:7861"
+    volumes:
+      - model_data:/app/MonkeyOCR/model_weight
+      - ./input:/app/input
+      - ./output:/app/output
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TMPDIR=/app/tmp
+      - HF_HUB_CACHE=/app/MonkeyOCR/model_weight/.cache/huggingface
+      - MODELSCOPE_CACHE=/app/MonkeyOCR/model_weight/.cache/modelscope
+      - FASTAPI_HOST=0.0.0.0
+      - FASTAPI_PORT=7861
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: ["fastapi"]
+
+volumes:
+  model_data:

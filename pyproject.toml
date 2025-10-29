@@ -5,7 +5,7 @@ description = "Benchmark suite for PDF-to-text parsers with built-in test datase
 requires-python = ">=3.12"
 dependencies = [
     # Core
-    "pydantic>=2.11.7",
+    "pydantic>=2.10",
     "pydantic-settings>=2.0.0",
     "pyyaml>=6.0.0",
     "python-dotenv>=1.0.0",
@@ -65,9 +65,19 @@ all = [
     "pdf-parser-benchmark[synth_pdf]",
 ]
 
-deepseek_ocr = [
-    "triton-kernels",
-    "vllm",
+#deepseek_ocr = [
+#    "triton-kernels",
+#    "vllm",
+#]
+
+monkey_ocr = [
+    # MonkeyOCR runs in separate environment via subprocess
+    # No dependencies needed here
+]
+
+olmocr = [
+    "vllm>=0.6.0",
+    "torch>=2.0.1",
 ]
 
 
@@ -87,20 +97,23 @@ include = [
     "/data",
 ]
 
-[[tool.uv.index]]
-name = "vllm-nightly"
-url = "https://wheels.vllm.ai/nightly"
-explicit = true
-
+#[[tool.uv.index]]
+#name = "vllm-nightly"
+#url = "https://wheels.vllm.ai/nightly"
+#explicit = true
+#
 [tool.uv]
 conflicts = [
     [
         { extra = "got_ocr2" },
-        { extra = "deepseek_ocr" },
-        { extra = "dots_ocr" },
+        { extra = "olmocr" },
+#        { extra = "deepseek_ocr" },
+#        { extra = "dots_ocr" },
+        { extra = "monkey_ocr" },
     ],
 ]
 
-[tool.uv.sources]
-triton-kernels = { git = "https://github.com/triton-lang/triton.git", subdirectory = "python/triton_kernels", rev = "v3.5.0" }
-vllm = { index = "vllm-nightly" }
+#[tool.uv.sources]
+#magic_pdf = { git = "https://github.com/Yuliang-Liu/MonkeyOCR.git", branch = "main" }
+#triton-kernels = { git = "https://github.com/triton-lang/triton.git", subdirectory = "python/triton_kernels", rev = "v3.5.0" }
+#vllm = { index = "vllm-nightly" }
