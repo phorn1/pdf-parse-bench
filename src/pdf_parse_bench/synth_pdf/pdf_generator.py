@@ -14,7 +14,7 @@ from .style_config import LaTeXConfig
 from .assembler import LaTeXContentGenerator
 from .compiler import LaTeXCompiler
 from .random_content import generate_text_paragraphs, load_formula_generator, load_formulas_from_dataset
-from pdf_benchmark.utilities import FormulaRenderer
+from pdf_parse_bench.utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
 

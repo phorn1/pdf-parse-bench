@@ -8,8 +8,8 @@ import tempfile
 from pathlib import Path
 import requests
 from dotenv import load_dotenv
-from pdf_benchmark.pipeline import run_cli
-from pdf_benchmark.utilities import PDFParser
+from pdf_parse_bench.pipeline import run_cli
+from pdf_parse_bench.utilities import PDFParser
 
 # Load environment variables
 load_dotenv()

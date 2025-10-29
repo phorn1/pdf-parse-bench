@@ -1,7 +1,7 @@
 [project]
-name = "pdf-parser-benchmark"
+name = "pdf-parse-bench"
 version = "0.1.0"
-description = "Benchmark suite for PDF-to-text parsers with built-in test dataset"
+description = "Benchmark suite for evaluating PDF parser quality on mathematical formulas"
 requires-python = ">=3.12"
 dependencies = [
     # Core
@@ -23,17 +23,16 @@ dependencies = [
 
     "pymupdf>=1.24.0",
     "pillow>=10.0.0",
-]
 
-[project.optional-dependencies]
-# Synthetic PDF generation - for creating test documents
-synth_pdf = [
+    # Synthetic PDF generation - for creating test documents
     "faker>=37.11.0",
     "duckdb>=1.4.1",
 ]
 
+[project.optional-dependencies]
+
 # PDF Parsers - install individually as needed
-pymupdf = [
+pymupdf4llm = [
     "pymupdf4llm>=0.0.17",
 ]
 
@@ -60,21 +59,6 @@ nanonets_ocr_s = [
     "accelerate>=0.28.0",
 ]
 
-# All extras combined (parsers excluded - install individually as needed)
-all = [
-    "pdf-parser-benchmark[synth_pdf]",
-]
-
-#deepseek_ocr = [
-#    "triton-kernels",
-#    "vllm",
-#]
-
-monkey_ocr = [
-    # MonkeyOCR runs in separate environment via subprocess
-    # No dependencies needed here
-]
-
 olmocr = [
     "vllm>=0.6.0",
     "torch>=2.0.1",
@@ -86,10 +70,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pdf_benchmark", "parsers"]
+packages = ["pdf_parse_bench", "parsers"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"data" = "pdf_benchmark/data"
+"data" = "pdf_parse_bench/data"
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -97,23 +81,11 @@ include = [
     "/data",
 ]
 
-#[[tool.uv.index]]
-#name = "vllm-nightly"
-#url = "https://wheels.vllm.ai/nightly"
-#explicit = true
-#
 [tool.uv]
 conflicts = [
     [
         { extra = "got_ocr2" },
         { extra = "olmocr" },
-#        { extra = "deepseek_ocr" },
-#        { extra = "dots_ocr" },
-        { extra = "monkey_ocr" },
     ],
 ]
 
-#[tool.uv.sources]
-#magic_pdf = { git = "https://github.com/Yuliang-Liu/MonkeyOCR.git", branch = "main" }
-#triton-kernels = { git = "https://github.com/triton-lang/triton.git", subdirectory = "python/triton_kernels", rev = "v3.5.0" }
-#vllm = { index = "vllm-nightly" }

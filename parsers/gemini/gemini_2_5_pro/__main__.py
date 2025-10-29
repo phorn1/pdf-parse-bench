@@ -1,4 +1,4 @@
-from pdf_benchmark.pipeline import run_cli
+from pdf_parse_bench.pipeline import run_cli
 from parsers.gemini.base_gemini_parser import BaseGeminiParser
 
 

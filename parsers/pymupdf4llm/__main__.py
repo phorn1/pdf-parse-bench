@@ -1,9 +1,9 @@
 """CLI entry point for PyMuPDF parser benchmark."""
 
-from pdf_benchmark.pipeline import run_cli
+from pdf_parse_bench.pipeline import run_cli
 import pymupdf4llm
 from pathlib import Path
-from pdf_benchmark.utilities import PDFParser
+from pdf_parse_bench.utilities import PDFParser
 
 
 class PyMuPDFParser(PDFParser):

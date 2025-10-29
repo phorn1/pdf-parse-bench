@@ -4,8 +4,8 @@ import os
 import base64
 from pathlib import Path
 from dotenv import load_dotenv
-from pdf_benchmark.utilities import PDFParser
-from pdf_benchmark.utilities.vlm_prompt import PDF_TO_MARKDOWN_PROMPT
+from pdf_parse_bench.utilities import PDFParser
+from pdf_parse_bench.utilities.vlm_prompt import PDF_TO_MARKDOWN_PROMPT
 
 # Load environment variables
 load_dotenv()

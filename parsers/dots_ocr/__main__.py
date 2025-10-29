@@ -6,8 +6,8 @@ from io import BytesIO
 from pathlib import Path
 
 from openai import OpenAI
-from pdf_benchmark.pipeline import run_cli
-from pdf_benchmark.utilities import PDFParser
+from pdf_parse_bench.pipeline import run_cli
+from pdf_parse_bench.utilities import PDFParser
 
 
 class DOTSOCRParser(PDFParser):

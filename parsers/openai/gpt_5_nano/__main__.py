@@ -1,6 +1,6 @@
 """CLI entry point for GPT-5-nano parser benchmark."""
 
-from pdf_benchmark.pipeline import run_cli
+from pdf_parse_bench.pipeline import run_cli
 from parsers.openai.base_openai_parser import BaseOpenAIParser
 
 
