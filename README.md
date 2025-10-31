@@ -2,8 +2,6 @@
 
 | Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
 |------|--------|-----------|--------------|--------------|---------------|---------|
-| Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
-|------|--------|-----------|--------------|--------------|---------------|---------|
 | 1 | PaddleOCR-VL | 9.58 | 91.31% | 9.55 | 9.62 | 50 |
 | 2 | dots.ocr | 9.17 | 85.23% | 9.22 | 9.09 | 50 |
 | 3 | Nanonets-OCR-s | 9.17 | 85.26% | 9.13 | 9.24 | 50 |
