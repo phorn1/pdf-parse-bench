@@ -1,4 +1,4 @@
-"""Benchmark pipeline orchestrator for PDF generation and processing."""
+"""Benchmark pipeline for PDF parser evaluation."""
 import logging
 from pathlib import Path
 
@@ -12,44 +12,66 @@ logger = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
-# def setup_clean_logging():
-#     """Suppress noisy third-party loggers."""
-#     # Suppress noisy external loggers
-#     noisy_loggers = [
-#         'httpx', 'urllib3', 'openai._base_client', 'mathpix', 'google_genai',
-#         'marker', 'mistral', 'llamaparse', 'unstructured', 'transformers',
-#         'torch', 'tensorflow', 'PIL', 'matplotlib',
-#     ]
-#     for name in noisy_loggers:
-#         logger = logging.getLogger(name)
-#         logger.setLevel(logging.WARNING)
-#         logger.propagate = False  # Stop propagation to root logger
-#
-#     # Suppress SSL warnings from third-party libraries
-#     import urllib3
-#     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+class Benchmark:
+    """PDF parser benchmark runner."""
 
-
-class BenchmarkOrchestrator:
-    """Main orchestrator for the benchmark pipeline."""
-    
     # ========== INITIALIZATION & CONFIGURATION ==========
-    def __init__(self, parser: PDFParser, input_data_dir: Path, output_dir: Path):
-        self.parser = parser
-        self.input_data_dir = input_data_dir
-        self.output_dir = output_dir
+    def __init__(
+        self,
+        parser_output_dir: Path | str,
+        ground_truth_dir: Path | str,
+    ):
+        """
+        Initialize benchmark.
 
-    def parse_pdfs(self, skip_existing: bool = True):
-        """Parse all PDFs in input directory."""
+        Args:
+            parser_output_dir: Directory containing parsed markdown files (or where they will be saved)
+            ground_truth_dir: Directory containing ground truth JSON files
+
+        Example (extract and evaluate already parsed results):
+            >>> benchmark = Benchmark(
+            ...     parser_output_dir="results/my_parser",
+            ...     ground_truth_dir="data/2025-10-small/ground_truth"
+            ... )
+            >>> benchmark.extract().evaluate()
+
+        Example (full pipeline with parsing):
+            >>> benchmark = Benchmark(
+            ...     parser_output_dir="results/my_parser",
+            ...     ground_truth_dir="data/2025-10-small/ground_truth"
+            ... )
+            >>> benchmark.parse(parser=my_parser, pdfs_dir="data/2025-10-small/pdfs")
+            >>> benchmark.extract().evaluate()
+        """
+        self.parser_output_dir = Path(parser_output_dir)
+        self.ground_truth_dir = Path(ground_truth_dir)
+
+    def parse(
+        self,
+        parser: PDFParser,
+        pdfs_dir: Path | str,
+        skip_existing: bool = True
+    ) -> "Benchmark":
+        """
+        Parse all PDFs in the specified directory.
+
+        Args:
+            parser: The PDF parser to use
+            pdfs_dir: Directory containing PDF files to parse
+            skip_existing: If True, skip PDFs that already have parsed results
+
+        Returns:
+            Self for method chaining
+        """
         logger.info("\n🔍 PDF PARSING")
 
-        pdf_dir = self.input_data_dir / "pdfs"
-        pdf_files = sorted(pdf_dir.glob("*.pdf"))
+        pdfs_dir = Path(pdfs_dir)
+        pdf_files = sorted(pdfs_dir.glob("*.pdf"))
 
         logger.info(f"   Processing {len(pdf_files)} PDFs")
 
         for pdf_path in pdf_files:
-            output_path = self.output_dir / pdf_path.stem / "parsed.md"
+            output_path = self.parser_output_dir / pdf_path.stem / "parsed.md"
 
             # Skip if output already exists and skip_existing is True
             if skip_existing and output_path.exists():
@@ -57,26 +79,35 @@ class BenchmarkOrchestrator:
                 continue
 
             try:
-                self.parser.parse(pdf_path, output_path)
+                parser.parse(pdf_path, output_path)
                 logger.info(f"   ✅ {pdf_path.name}")
             except Exception as e:
                 logger.warning(f"   ❌ {pdf_path.name}: {e}")
 
         logger.info("   ✅ Parsing completed")
+        return self
 
-    def extract_segments(self, skip_existing=True) -> None:
-        """Extract formula segments from parsed markdown files."""
+    def extract(self, skip_existing: bool = True) -> "Benchmark":
+        """
+        Extract formula segments from parsed markdown files.
+
+        Args:
+            skip_existing: If True, skip extraction for files that already have results
+
+        Returns:
+            Self for method chaining
+        """
         logger.info(f"\n🧩 SEGMENT EXTRACTION")
 
         # Collect extraction jobs
         jobs = []
-        for result_dir in sorted(self.output_dir.iterdir()):
+        for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
                 continue
 
             # Path to files
             parsed_md_path = result_dir / "parsed.md"
-            gt_json_path = self.input_data_dir / "ground_truth" / f"{result_dir.name}.json"
+            gt_json_path = self.ground_truth_dir / f"{result_dir.name}.json"
             output_json_path = result_dir / "formulas.json"
             stripped_parsed_text_path = result_dir / "stripped_parsed_text.md"
 
@@ -96,7 +127,7 @@ class BenchmarkOrchestrator:
 
         if not jobs:
             logger.warning("   ⚠️  No segment extraction jobs to process")
-            return
+            return self
 
         logger.info(f"   Processing {len(jobs)} extraction jobs in parallel")
 
@@ -105,14 +136,30 @@ class BenchmarkOrchestrator:
         extractor.extract_segments_parallel(jobs)
 
         logger.info(f"   ✅ Segment extraction completed")
+        return self
 
-    def evaluate_results(self, llm_judge_models: str | list[str] = "gpt-5-mini", enable_cdm: bool = False, skip_existing: bool = True) -> None:
-        """Evaluate parsing results against ground truth."""
+    def evaluate(
+        self,
+        llm_judge_models: str | list[str] = "gpt-5-mini",
+        enable_cdm: bool = False,
+        skip_existing: bool = True
+    ) -> "Benchmark":
+        """
+        Evaluate parsing results against ground truth.
+
+        Args:
+            llm_judge_models: Single model name or list of model names for evaluation
+            enable_cdm: If True, enable CDM (Character Detection Metrics) evaluation
+            skip_existing: If True, skip evaluation for files that already have results
+
+        Returns:
+            Self for method chaining
+        """
         logger.info(f"\n📈 EVALUATION")
 
         # Collect all result directories
         result_dirs = []
-        for result_dir in sorted(self.output_dir.iterdir()):
+        for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
                 continue
 
@@ -157,3 +204,22 @@ class BenchmarkOrchestrator:
                 logger.error(f"   ❌ {result_dir.name} evaluation failed: {e}")
 
         logger.info(f"   ✅ Evaluation completed for all PDFs")
+        return self
+
+
+# ========== CONVENIENCE FUNCTION ==========
+
+def run_benchmark(
+    parser_output_dir: Path | str,
+    ground_truth_dir: Path | str,
+) -> Benchmark:
+    """
+    Quick benchmark runner - runs extract and evaluate on already parsed results.
+
+    Args:
+        parser_output_dir: Directory containing parsed markdown files
+        ground_truth_dir: Directory containing ground truth JSON files
+    """
+    return Benchmark(parser_output_dir, ground_truth_dir) \
+        .extract() \
+        .evaluate()

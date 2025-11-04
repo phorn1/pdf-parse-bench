@@ -2,7 +2,25 @@
 name = "pdf-parse-bench"
 version = "0.1.0"
 description = "Benchmark suite for evaluating PDF parser quality on mathematical formulas"
+readme = "README.md"
 requires-python = ">=3.12"
+license = {file = "LICENSE"}
+authors = [{name = "Pius Horn", email = "piushorn@me.com"}]
+keywords = ["pdf", "parser", "benchmark", "ocr", "evaluation", "mathematical-formulas"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Text Processing",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     # Core
     "pydantic>=2.10",
@@ -29,7 +47,19 @@ dependencies = [
     "duckdb>=1.4.1",
 ]
 
+[project.urls]
+Homepage = "https://github.com/phorn1/pdf-parse-bench"
+Repository = "https://github.com/phorn1/pdf-parse-bench"
+Issues = "https://github.com/phorn1/pdf-parse-bench/issues"
+
 [project.optional-dependencies]
+# HuggingFace - for downloading/uploading benchmark results
+hf = [
+    "huggingface-hub>=0.20.0",
+    "pandas>=2.0.0",
+    "pyarrow>=14.0.0",
+]
+
 # PDF Parsers - install individually as needed
 
 pymupdf4llm = [
@@ -70,10 +100,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pdf_parse_bench", "parsers"]
+packages = ["src/pdf_parse_bench"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"data" = "pdf_parse_bench/data"
+"data/2025-10-v1" = "pdf_parse_bench/data/2025-10-v1"
 
 [tool.hatch.build.targets.sdist]
 include = [

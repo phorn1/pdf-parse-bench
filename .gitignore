@@ -9,3 +9,5 @@ artifacts/
 
 # Virtual environments
 .venv/
+
+results/

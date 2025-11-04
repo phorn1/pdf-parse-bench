@@ -7,7 +7,7 @@ import click
 from rich.console import Console
 from rich.logging import RichHandler
 
-from .pipeline import BenchmarkOrchestrator
+from .pipeline import Benchmark
 from ..utilities.base_parser import PDFParser
 
 console = Console()
@@ -145,18 +145,24 @@ def run_cli(parser: PDFParser) -> None:
             steps.append("evaluate")
         console.print(" → ".join(steps) if steps else "none")
 
-        # Create orchestrator
-        orchestrator = BenchmarkOrchestrator(
-            parser=parser,
-            input_data_dir=input_dir,
-            output_dir=output_dir
+        # Create benchmark
+        pdfs_dir = input_dir / "pdfs"
+        ground_truth_dir = input_dir / "ground_truth"
+
+        benchmark = Benchmark(
+            parser_output_dir=output_dir,
+            ground_truth_dir=ground_truth_dir
         )
 
         if run_parse:
-            orchestrator.parse_pdfs(skip_existing="parse" not in steps_to_reprocess)
+            benchmark.parse(
+                parser=parser,
+                pdfs_dir=pdfs_dir,
+                skip_existing="parse" not in steps_to_reprocess
+            )
 
         if run_extract:
-            orchestrator.extract_segments(skip_existing="extract" not in steps_to_reprocess)
+            benchmark.extract(skip_existing="extract" not in steps_to_reprocess)
 
         if run_evaluate:
             # Parse LLM judge models
@@ -165,7 +171,7 @@ def run_cli(parser: PDFParser) -> None:
             else:
                 llm_models = llm_judge_models
 
-            orchestrator.evaluate_results(
+            benchmark.evaluate(
                 llm_judge_models=llm_models,
                 enable_cdm=enable_cdm,
                 skip_existing="evaluate" not in steps_to_reprocess
