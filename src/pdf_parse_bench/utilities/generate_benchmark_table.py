@@ -11,6 +11,28 @@ from pathlib import Path
 from dataclasses import dataclass
 
 
+# ========== PARSER NAME MAPPING ==========
+PARSER_NAMES = {
+    "deepseek_ocr": "DeepSeek-OCR",
+    "dots_ocr": "dots.ocr",
+    "gemini_2_5_flash": "Gemini 2.5 Flash",
+    "gemini_2_5_pro": "Gemini 2.5 Pro",
+    "got_ocr2": "GOT-OCR2.0",
+    "gpt_5_mini": "GPT-5 mini",
+    "gpt_5_nano": "GPT-5 nano",
+    "llamaparse": "LlamaParse",
+    "mathpix": "Mathpix",
+    "mineru": "MinerU2.5",
+    "mistral": "Mistral OCR",
+    "monkey_ocr": "MonkeyOCR-pro-3B",
+    "nanonetsocrs": "Nanonets-OCR-s",
+    "olmocr": "olmOCR-2-7B-1025-FP8",
+    "paddle_ocr_vl": "PaddleOCR-VL",
+    "pp_structurev3": "PP-StructureV3",
+    "pymupdf4llm": "PyMuPDF4LLM",
+}
+
+
 @dataclass
 class ParserStats:
     """Statistics for a single parser."""
@@ -93,7 +115,7 @@ def collect_parser_stats(results_dir: Path, max_samples: int | None = None) -> l
 
         # Calculate averages
         parser_stats.append(ParserStats(
-            name=parser_dir.name,
+            name=PARSER_NAMES.get(parser_dir.name, parser_dir.name),
             average_score=total_avg_score / valid_samples,
             accuracy_percentage=total_accuracy / valid_samples,
             inline_score=total_inline / valid_samples,

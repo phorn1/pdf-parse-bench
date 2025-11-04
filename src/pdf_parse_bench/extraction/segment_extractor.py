@@ -25,9 +25,10 @@ class SegmentExtractionJob:
 class ParallelSegmentExtractor:
     """Parallel segment extraction processor with integrated progress tracking."""
 
-    def __init__(self, max_workers: int, model: str = "gpt-5-mini"):
+    def __init__(self, max_workers: int, model: str = "gpt-5-mini", verbose: bool = False):
         self.max_workers = max_workers
         self.model = model
+        self.verbose = verbose
 
     def _process_single_job(self, job: SegmentExtractionJob, console) -> bool:
         """Process a single segment extraction job.
@@ -57,7 +58,8 @@ class ParallelSegmentExtractor:
                 markdown_content,
                 self.model,
                 console=console,
-                job_name=job_name
+                job_name=job_name,
+                verbose=self.verbose
             )
 
             # Normalize parsed formulas in-place
@@ -85,6 +87,11 @@ class ParallelSegmentExtractor:
                 if pair["parsed_formula"] is None
             ]
 
+            # Convert None to empty string for failed extractions
+            for formula_pair in formula_extraction_result:
+                if formula_pair["parsed_formula"] is None:
+                    formula_pair["parsed_formula"] = ""
+
             # Save result
             with open(job.output_json_path, 'w', encoding='utf-8') as f:
                 json.dump(formula_extraction_result, f, indent=2, ensure_ascii=False)
@@ -95,7 +102,7 @@ class ParallelSegmentExtractor:
             if failed_extractions:
                 console.print(f"   ⚠️  {job_name} - {len(failed_extractions)} formula(s) not extracted:")
                 for idx, gt_formula in failed_extractions:
-                    console.print(f"   ❌ {idx} GT Formula: {gt_formula}")
+                    console.print(f"   ⚠️  {idx} GT Formula: {gt_formula}")
             else:
                 console.print(f"   ✅ {job_name}")
 
@@ -191,7 +198,8 @@ def extract_formulas_using_llm(
     model: str,
     console=None,
     job_name: str = "",
-    max_retries: int = 1
+    max_retries: int = 1,
+    verbose: bool = False
 ) -> tuple[list[dict[str, str]], str]:
     """Extract formula segments using LLM with structured output and post-validation.
 
@@ -297,16 +305,13 @@ def extract_formulas_using_llm(
                     raise Exception(f"Unexpected: matched formula not in text: {matched_formula!r}")
                 formulas_dict[original_idx]["parsed_formula"] = matched_formula
                 current_text = current_text.replace(matched_formula, "", 1)
-                if console:
+                if console and verbose:
                     console.print(f"   🔧 {job_name}: Matched formula [{formula.index}] via normalization:\n"
                                   f"LLM formula:\n"
                                   f"{formula.data}\n"
                                   f"Parsed formula:\n"
                                   f"{matched_formula}")
-            else:
-                # Keep as None to retry in next iteration
-                if console:
-                    console.print(f"   ⚠️  {job_name}: Formula not found in markdown - Index:{formula.index}: {formula.data}")
+            # else: Keep as None to retry in next iteration
 
         # ========== CHECK IF RETRY NEEDED ==========
 
