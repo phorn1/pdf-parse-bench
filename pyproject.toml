@@ -52,47 +52,6 @@ Homepage = "https://github.com/phorn1/pdf-parse-bench"
 Repository = "https://github.com/phorn1/pdf-parse-bench"
 Issues = "https://github.com/phorn1/pdf-parse-bench/issues"
 
-[project.optional-dependencies]
-# HuggingFace - for downloading/uploading benchmark results
-hf = [
-    "huggingface-hub>=0.20.0",
-    "pandas>=2.0.0",
-    "pyarrow>=14.0.0",
-]
-
-# PDF Parsers - install individually as needed
-
-pymupdf4llm = [
-    "pymupdf4llm>=0.0.17",
-]
-
-llamaparse = [
-    "llama-cloud-services>=0.6.76"
-]
-
-mathpix = [
-    "mpxpy>=0.0.18"
-]
-
-got_ocr2 = [
-    "torch>=2.0.1",
-    "torchvision>=0.15.2",
-    "transformers==4.37.2",
-    "tiktoken>=0.6.0",
-    "verovio>=4.3.1",
-    "accelerate>=0.28.0",
-]
-
-nanonets_ocr_s = [
-    "torch>=2.0.1",
-    "transformers>=4.37.0",
-    "accelerate>=0.28.0",
-]
-
-olmocr = [
-    "vllm>=0.6.0",
-    "torch>=2.0.1",
-]
 
 
 [build-system]
@@ -110,12 +69,3 @@ include = [
     "/src",
     "/data",
 ]
-
-[tool.uv]
-conflicts = [
-    [
-        { extra = "got_ocr2" },
-        { extra = "olmocr" },
-    ],
-]
-
