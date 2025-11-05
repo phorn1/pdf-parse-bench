@@ -1,34 +1,38 @@
 # PDF Parse Bench
 
-A comprehensive benchmark for evaluating PDF parser quality on mathematical formula extraction.
+This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios and use LLM-as-a-Judge scoring to assess parser quality on mathematical content extraction.
 
-## Overview
+## Benchmark Dataset
 
-This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. Our approach uses synthetic PDF generation with LaTeX to create a robust and scalable evaluation framework.
+PDFs are generated synthetically using LaTeX with randomized parameters:
 
-### Methodology
+- **PDF Generation:** Each document contains randomly selected formulas embedded in text passages, displayed as inline or display-mode equations. Parameters include formats, styling, languages, and content structure. Layout and structure vary to test parser robustness across different scenarios.
 
-**Synthetic Dataset Generation:** We generate PDFs synthetically using LaTeX with randomized parameters including formats, styling, languages, and content. Each PDF contains numerous randomly selected formulas embedded in random text passages, displayed either as inline formulas or display-mode equations. The layout and structure vary across documents to test parser robustness across different formatting scenarios.
+- **Formula Dataset:** Mathematical formulas are randomly sampled from our dataset of 319,000 formulas extracted from Wikipedia, ensuring diversity in formula complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
 
-**Formula Dataset:** The mathematical formulas used in our benchmark are randomly sampled from our dataset of 319,000 formulas that we extracted from Wikipedia. This ensures diversity in formula complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
+- **Ground Truth:** Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth for each formula as a byproduct of the generation process.
 
-**Ground Truth:** Since PDFs are generated synthetically from LaTeX source, we automatically obtain exact ground truth as a byproduct of the generation process. Each formula in the benchmark has a corresponding LaTeX ground truth.
+## Evaluation Pipeline
 
-### Evaluation Approach
+Parser outputs are assessed using a two-step pipeline:
 
-Our benchmark uses a two-step evaluation pipeline:
+### Step 1: Formula Extraction
 
-**1. Extraction Step:** An LLM establishes initial formula-to-ground-truth correspondences, then fuzzy search reliably extracts exact formula strings from the parsed output. This achieves robust alignment even when parser outputs differ significantly from ground truth.
+Given a parser's output (the extracted text from a PDF), an LLM establishes initial formula-to-ground-truth correspondences, then fuzzy search reliably extracts exact formula strings from the parsed output. This achieves robust alignment even when parser outputs differ significantly from ground truth.
 
-**2. Evaluation Step:** The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: GPT-5-mini). For each formula pair, the LLM judge evaluates three key criteria: (1) **Correctness** - whether mathematical symbols, variables, and operations are accurately preserved, (2) **Completeness** - whether all parts are present without omissions, and (3) **Semantic equivalence** - whether the extracted formula conveys the same mathematical meaning as the ground truth. Our research demonstrates that using LLMs as judges provides a robust and meaningful metric for comparing ground truth LaTeX formulas against parsed output, focusing on semantic equivalence and mathematical correctness rather than relying solely on text similarity metrics or visual rendering comparison. Scores are computed separately for inline and display formulas.
+### Step 2: Scoring with LLM-as-a-Judge
+
+The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: GPT-5-mini). For each formula pair, the LLM judge evaluates three key criteria: (1) **Correctness** - whether mathematical symbols, variables, and operations are accurately preserved, (2) **Completeness** - whether all parts are present without omissions, and (3) **Semantic equivalence** - whether the extracted formula conveys the same mathematical meaning as the ground truth. Our research demonstrates that using LLMs as judges provides a robust and meaningful metric for comparing ground truth LaTeX formulas against parsed output, focusing on semantic equivalence and mathematical correctness rather than relying solely on text similarity metrics or visual rendering comparison. Scores are computed separately for inline and display formulas.
 
 ## Quick Start
+
+**Benchmark Datasets:** New benchmark datasets are released quarterly (e.g., 2025-q4), each containing 100 PDFs with diverse mathematical content.
 
 There are two ways to use this benchmark, depending on your needs:
 
 ### Option 1: Evaluate Your Existing Parser (pip install)
 
-**Use this if:** You already have a PDF parser and want to quickly evaluate it against the benchmark.
+**Use this if:** You quickly want to evaluate your PDF Parsing tool against the benchmark.
 
 **Advantage:** Simple pip install, no need to integrate with the repository structure.
 
@@ -133,7 +137,7 @@ uv run -m parsers.my_parser
 ```
 
 The benchmark infrastructure handles everything automatically:
-- Loading test PDFs from `data/2025-10-v1/pdfs/`
+- Loading test PDFs from `data/2025-q4/pdfs/`
 - Parsing each PDF with your parser
 - Extracting formulas from parsed output
 - Running evaluation against ground truth
@@ -166,16 +170,10 @@ uv run -m parsers.my_parser --llm-judge-models "gpt-5-mini,gemini-2.5-flash"
 uv run -m parsers.my_parser --enable-cdm
 
 # Custom input/output directories
-uv run -m parsers.my_parser -i data/2025-10-v1 -o results/custom
+uv run -m parsers.my_parser -i data/2025-q4 -o results/custom
 ```
 
-## Dataset Details
-
-- **Size**: 50 PDFs with diverse mathematical content
-- **Metric**: LLM-as-a-Judge score (0-10 scale, default: GPT-5-mini)
-- **Extensibility**: Can be regenerated or expanded with different parameters
-
-## 🏆 Latest Results (2025-10-v1)
+## 🏆 Latest Results (2025-q4)
 
 | Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
 |------|--------|-----------|--------------|--------------|---------------|---------|
@@ -213,7 +211,7 @@ pdf-parse-bench/
 │   ├── mathpix/
 │   └── ...                    # Add your own!
 ├── data/                      # Benchmark datasets
-│   └── 2025-10-v1/           # Current benchmark version
+│   └── 2025-q4/              # Current benchmark version
 │       ├── pdfs/             # Test PDFs
 │       └── ground_truth/     # LaTeX formulas
 ```
