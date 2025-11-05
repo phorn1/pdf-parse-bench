@@ -1,6 +1,6 @@
 # PDF Parse Bench
 
-This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios and use LLM-as-a-Judge scoring to assess parser quality on mathematical content extraction.
+This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas in the parsed text, then scoring them based on semantic similarity to the ground truth.
 
 ## Benchmark Dataset
 
