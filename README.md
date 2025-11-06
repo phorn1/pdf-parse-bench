@@ -2,6 +2,28 @@
 
 This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas in the parsed text, then scoring them based on semantic similarity to the ground truth.
 
+## 🏆 Leaderboard - Latest Results (2025-q4)
+
+| Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
+|------|--------|-----------|--------------|--------------|---------------|---------|
+| 1 | PaddleOCR-VL | 9.58 | 91.31% | 9.55 | 9.62 | 50 |
+| 2 | dots.ocr | 9.17 | 85.23% | 9.22 | 9.09 | 50 |
+| 3 | Nanonets-OCR-s | 9.17 | 85.26% | 9.13 | 9.24 | 50 |
+| 4 | Gemini 2.5 Pro | 9.15 | 84.08% | 9.07 | 9.28 | 49 |
+| 5 | MonkeyOCR-pro-3B | 9.11 | 83.61% | 9.32 | 8.74 | 50 |
+| 6 | MinerU2.5 | 9.08 | 84.99% | 9.02 | 9.24 | 50 |
+| 7 | PP-StructureV3 | 9.03 | 82.16% | 8.87 | 9.26 | 50 |
+| 8 | olmOCR-2-7B-1025-FP8 | 8.94 | 84.7% | 9.0 | 8.9 | 50 |
+| 9 | Gemini 2.5 Flash | 8.75 | 77.65% | 8.69 | 8.88 | 48 |
+| 10 | Mathpix | 8.48 | 78.63% | 9.52 | 6.81 | 50 |
+| 11 | DeepSeek-OCR | 8.16 | 72.85% | 8.27 | 8.08 | 50 |
+| 12 | LlamaParse | 7.99 | 74.03% | 7.95 | 8.08 | 47 |
+| 13 | Mistral OCR | 7.63 | 67.78% | 8.51 | 6.17 | 50 |
+| 14 | GPT-5 nano | 7.18 | 53.7% | 7.42 | 6.65 | 50 |
+| 15 | GOT-OCR2.0 | 6.31 | 50.09% | 6.71 | 6.02 | 50 |
+| 16 | PyMuPDF4LLM | 6.27 | 42.32% | 0.0 | 6.27 | 50 |
+| 17 | GPT-5 mini | 5.94 | 38.06% | 6.35 | 5.28 | 49 |
+
 ## Benchmark Dataset
 
 PDFs are generated synthetically using LaTeX with randomized parameters:
@@ -41,6 +63,8 @@ There are two ways to use this benchmark, depending on your needs:
 ```bash
 pip install pdf-parse-bench
 ```
+
+**Note:** Set `OPENAI_API_KEY` environment variable for evaluation.
 
 #### Step 1: Parse the Benchmark PDFs
 
@@ -106,6 +130,9 @@ cd pdf-parse-bench
 
 # Install with uv
 uv sync
+
+# Configure environment (copy and edit .env.example)
+cp .env.example .env
 ```
 
 #### Add Your Parser Implementation
@@ -114,17 +141,20 @@ Create a new parser module in the `parsers/` directory:
 
 ```python
 # parsers/my_parser/__main__.py
-from pdf_parse_bench.utilities.base_parser import PDFParser
-from pdf_parse_bench.pipeline.cli import run_cli
+from pathlib import Path
+from pdf_parse_bench.utilities import PDFParser
+from pdf_parse_bench.pipeline import run_cli
 
 class MyParser(PDFParser):
-    @staticmethod
-    def parser_name() -> str:
-        return "my_parser"
+    @classmethod
+    def display_name(cls) -> str:
+        return "My Parser"
 
-    def parse_pdf(self, pdf_path: str) -> str:
+    def parse(self, pdf_path: Path, output_path: Path) -> str:
         # Your parsing logic here
-        return parsed_text
+        markdown = "# Parsed content"
+        self._write_output(markdown, output_path)
+        return markdown
 
 if __name__ == "__main__":
     run_cli(MyParser())
@@ -172,28 +202,6 @@ uv run -m parsers.my_parser --enable-cdm
 # Custom input/output directories
 uv run -m parsers.my_parser -i data/2025-q4 -o results/custom
 ```
-
-## 🏆 Latest Results (2025-q4)
-
-| Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
-|------|--------|-----------|--------------|--------------|---------------|---------|
-| 1 | PaddleOCR-VL | 9.58 | 91.31% | 9.55 | 9.62 | 50 |
-| 2 | dots.ocr | 9.17 | 85.23% | 9.22 | 9.09 | 50 |
-| 3 | Nanonets-OCR-s | 9.17 | 85.26% | 9.13 | 9.24 | 50 |
-| 4 | Gemini 2.5 Pro | 9.15 | 84.08% | 9.07 | 9.28 | 49 |
-| 5 | MonkeyOCR-pro-3B | 9.11 | 83.61% | 9.32 | 8.74 | 50 |
-| 6 | MinerU2.5 | 9.08 | 84.99% | 9.02 | 9.24 | 50 |
-| 7 | PP-StructureV3 | 9.03 | 82.16% | 8.87 | 9.26 | 50 |
-| 8 | olmOCR-2-7B-1025-FP8 | 8.94 | 84.7% | 9.0 | 8.9 | 50 |
-| 9 | Gemini 2.5 Flash | 8.75 | 77.65% | 8.69 | 8.88 | 48 |
-| 10 | Mathpix | 8.48 | 78.63% | 9.52 | 6.81 | 50 |
-| 11 | DeepSeek-OCR | 8.16 | 72.85% | 8.27 | 8.08 | 50 |
-| 12 | LlamaParse | 7.99 | 74.03% | 7.95 | 8.08 | 47 |
-| 13 | Mistral OCR | 7.63 | 67.78% | 8.51 | 6.17 | 50 |
-| 14 | GPT-5 nano | 7.18 | 53.7% | 7.42 | 6.65 | 50 |
-| 15 | GOT-OCR2.0 | 6.31 | 50.09% | 6.71 | 6.02 | 50 |
-| 16 | PyMuPDF4LLM | 6.27 | 42.32% | 0.0 | 6.27 | 50 |
-| 17 | GPT-5 mini | 5.94 | 38.06% | 6.35 | 5.28 | 49 |
 
 ## Project Structure
 
