@@ -22,9 +22,8 @@ class PPStructureV3Parser(PDFParser):
         self.pipeline = PPStructureV3()
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "pp_structure_v3_3"
+    def display_name(cls) -> str:
+        return "PP-StructureV3"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """Parse single-page PDF to markdown using PP-StructureV3."""

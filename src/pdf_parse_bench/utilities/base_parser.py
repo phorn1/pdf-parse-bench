@@ -14,9 +14,19 @@ class PDFParser(ABC):
 
     @classmethod
     @abstractmethod
-    def parser_name(self) -> str:
-        """Return parser name identifier."""
+    def display_name(cls) -> str:
+        """Return human-readable parser name (e.g., 'DeepSeek-OCR', 'Gemini 2.5 Flash')."""
         pass
+
+    @classmethod
+    def parser_id(cls) -> str:
+        """Return unique parser identifier extracted from module path."""
+        import inspect
+
+        # Get file path of the class definition
+        file_path = Path(inspect.getfile(cls))
+        # Return parent directory name (e.g., "mistral" from "parsers/mistral/__main__.py")
+        return file_path.parent.name
 
     @abstractmethod
     def parse(self, pdf_path: Path, output_path: Path) -> str:

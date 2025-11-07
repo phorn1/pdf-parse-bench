@@ -10,9 +10,8 @@ class GPT5NanoParser(BaseOpenAIParser):
     model = "gpt-5-nano"
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "gpt_5_nano"
+    def display_name(cls) -> str:
+        return "GPT-5 nano"
 
 
 if __name__ == "__main__":

@@ -20,8 +20,8 @@ class MathpixParser(PDFParser):
             raise ValueError("MATHPIX_APP_ID and MATHPIX_APP_KEY environment variables are required")
 
     @classmethod
-    def parser_name(cls) -> str:
-        return "mathpix"
+    def display_name(cls) -> str:
+        return "Mathpix"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """

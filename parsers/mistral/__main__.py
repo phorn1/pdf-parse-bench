@@ -23,8 +23,8 @@ class MistralParser(PDFParser):
             raise ValueError("MISTRAL_API_KEY environment variable is required")
 
     @classmethod
-    def parser_name(cls) -> str:
-        return "mistral"
+    def display_name(cls) -> str:
+        return "Mistral OCR"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """

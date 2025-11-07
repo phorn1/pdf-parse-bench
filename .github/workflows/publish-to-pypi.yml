@@ -38,8 +38,8 @@ jobs:
       name: pypi
       url: https://pypi.org/p/pdf-parse-bench
     permissions:
-      id-token: write  # Required for trusted publishing
-      attestations: write  # Required for generating attestations
+      id-token: write
+      attestations: write
       contents: read
 
     steps:

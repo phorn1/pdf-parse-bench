@@ -26,9 +26,8 @@ class Qwen3VLParser(PDFParser):
             raise ValueError("OPENROUTER_API_KEY environment variable is required")
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "qwen3_vl"
+    def display_name(cls) -> str:
+        return "Qwen3-VL-235B-A22B-Instruct"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """Parse single-page PDF to markdown using Qwen3-VL via OpenRouter."""

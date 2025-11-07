@@ -27,8 +27,8 @@ class MineRUParser(PDFParser):
             raise ValueError("MINERU_API_KEY environment variable is required")
 
     @classmethod
-    def parser_name(cls) -> str:
-        return "mineru"
+    def display_name(cls) -> str:
+        return "MinerU2.5"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """

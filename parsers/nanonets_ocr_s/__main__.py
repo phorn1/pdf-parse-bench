@@ -35,8 +35,7 @@ class NanonetsOCRSParser(PDFParser):
         self.processor = AutoProcessor.from_pretrained(model_path)
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
+    def display_name(cls) -> str:
         return "Nanonets-OCR-s"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:

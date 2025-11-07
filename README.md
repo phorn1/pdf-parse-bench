@@ -253,6 +253,6 @@ If you use this benchmark in your research or project, please cite:
 This work has been supported by the German Federal Ministry of Research, Technology and Space (BMFTR) in the program "Forschung an Fachhochschulen in Kooperation mit Unternehmen (FH-Kooperativ)" within the joint project **LLMpraxis** under grant 13FH622KX2.
 
 <p align="center">
-  <img src="assets/BMFTR_logo.png" alt="BMFTR_logo" width="150" />
-  <img src="assets/HAW_logo.png" alt="HAW_logo" width="150" />
+  <img src="https://raw.githubusercontent.com/phorn1/pdf-parse-bench/main/assets/BMFTR_logo.png" alt="BMFTR_logo" width="150" />
+  <img src="https://raw.githubusercontent.com/phorn1/pdf-parse-bench/main/assets/HAW_logo.png" alt="HAW_logo" width="150" />
 </p>

@@ -49,9 +49,8 @@ class GOTOCR2Parser(PDFParser):
             self.model = self.model.cuda()
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "got_ocr2"
+    def display_name(cls) -> str:
+        return "GOT-OCR2.0"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """

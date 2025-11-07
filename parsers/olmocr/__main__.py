@@ -33,9 +33,8 @@ class OLMoOCRParser(PDFParser):
         return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "olmocr"
+    def display_name(cls) -> str:
+        return "olmOCR-2-7B-1025-FP8"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """Parse single-page PDF to markdown using OLMo-OCR via vLLM."""

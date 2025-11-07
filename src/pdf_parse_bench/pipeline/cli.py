@@ -105,13 +105,12 @@ def run_cli(parser: PDFParser) -> None:
         llm_judge_models: str,
         enable_cdm: bool,
     ) -> None:
-        f"""Run benchmark pipeline with {parser.parser_name()}."""
+        f"""Run benchmark pipeline with {parser.display_name()}."""
 
         # Auto-generate output directory if not specified
         if output_dir is None:
             dataset_name = input_dir.name
-            parser_name = parser.parser_name().lower().replace(" ", "_").replace("-", "")
-            output_dir = Path("results") / dataset_name / parser_name
+            output_dir = Path("results") / dataset_name / parser.parser_id()
             console.print(f"[dim]Output directory: {output_dir}[/dim]")
 
         # Determine which steps to run
@@ -151,12 +150,12 @@ def run_cli(parser: PDFParser) -> None:
 
         benchmark = Benchmark(
             parser_output_dir=output_dir,
-            ground_truth_dir=ground_truth_dir
+            ground_truth_dir=ground_truth_dir,
+            parser=parser
         )
 
         if run_parse:
             benchmark.parse(
-                parser=parser,
                 pdfs_dir=pdfs_dir,
                 skip_existing="parse" not in steps_to_reprocess
             )
@@ -176,6 +175,8 @@ def run_cli(parser: PDFParser) -> None:
                 enable_cdm=enable_cdm,
                 skip_existing="evaluate" not in steps_to_reprocess
             )
+
+        benchmark.save_benchmark_summary()
 
         console.print(f"\n[bold green]✅ Pipeline completed successfully![/]\n")
 

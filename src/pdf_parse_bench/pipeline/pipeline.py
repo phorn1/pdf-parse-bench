@@ -1,10 +1,14 @@
 """Benchmark pipeline for PDF parser evaluation."""
+import json
 import logging
+from datetime import datetime
+from collections import defaultdict
 from pathlib import Path
 
 from ..eval import run_evaluation
 from ..extraction import ParallelSegmentExtractor, SegmentExtractionJob
 from ..utilities.base_parser import PDFParser
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +24,7 @@ class Benchmark:
         self,
         parser_output_dir: Path | str,
         ground_truth_dir: Path | str,
+        parser: PDFParser | None = None,
     ):
         """
         Initialize benchmark.
@@ -27,6 +32,7 @@ class Benchmark:
         Args:
             parser_output_dir: Directory containing parsed markdown files (or where they will be saved)
             ground_truth_dir: Directory containing ground truth JSON files
+            parser: Optional PDF parser to use for parsing PDFs
 
         Example (extract and evaluate already parsed results):
             >>> benchmark = Benchmark(
@@ -38,17 +44,18 @@ class Benchmark:
         Example (full pipeline with parsing):
             >>> benchmark = Benchmark(
             ...     parser_output_dir="results/my_parser",
-            ...     ground_truth_dir="data/2025-10-small/ground_truth"
+            ...     ground_truth_dir="data/2025-10-small/ground_truth",
+            ...     parser=my_parser
             ... )
-            >>> benchmark.parse(parser=my_parser, pdfs_dir="data/2025-10-small/pdfs")
+            >>> benchmark.parse(pdfs_dir="data/2025-10-small/pdfs")
             >>> benchmark.extract().evaluate()
         """
         self.parser_output_dir = Path(parser_output_dir)
         self.ground_truth_dir = Path(ground_truth_dir)
+        self._parser = parser
 
     def parse(
         self,
-        parser: PDFParser,
         pdfs_dir: Path | str,
         skip_existing: bool = True
     ) -> "Benchmark":
@@ -56,13 +63,18 @@ class Benchmark:
         Parse all PDFs in the specified directory.
 
         Args:
-            parser: The PDF parser to use
             pdfs_dir: Directory containing PDF files to parse
             skip_existing: If True, skip PDFs that already have parsed results
 
         Returns:
             Self for method chaining
+
+        Raises:
+            ValueError: If no parser was provided during initialization
         """
+        if self._parser is None:
+            raise ValueError("No parser provided. Pass a parser to the Benchmark constructor.")
+
         logger.info("\n🔍 PDF PARSING")
 
         pdfs_dir = Path(pdfs_dir)
@@ -79,7 +91,7 @@ class Benchmark:
                 continue
 
             try:
-                parser.parse(pdf_path, output_path)
+                self._parser.parse(pdf_path, output_path)
                 logger.info(f"   ✅ {pdf_path.name}")
             except Exception as e:
                 logger.warning(f"   ❌ {pdf_path.name}: {e}")
@@ -206,6 +218,89 @@ class Benchmark:
         logger.info(f"   ✅ Evaluation completed for all PDFs")
         return self
 
+    def save_benchmark_summary(self) -> "Benchmark":
+        """
+        Save benchmark summary to JSON file.
+        """
+        logger.info(f"\n💾 SAVING BENCHMARK SUMMARY")
+
+        # Determine parser name
+        if self._parser is not None:
+            parser_name = self._parser.display_name()
+        else:
+            parser_name = self.parser_output_dir.name
+
+        # Extract benchmark name from ground_truth_dir
+        benchmark_name = self.ground_truth_dir.parent.name
+
+        num_pdfs = 0
+        total_inline_formulas = 0
+        total_display_formulas = 0
+        llm_scores = defaultdict(list)
+        llm_inline_scores = defaultdict(list)
+        llm_display_scores = defaultdict(list)
+
+        for result_dir in sorted(self.parser_output_dir.iterdir()):
+            if not result_dir.is_dir():
+                continue
+
+            eval_stats_path = result_dir / "eval_stats.json"
+            formulas_path = result_dir / "formulas.json"
+
+            if not eval_stats_path.exists() or not formulas_path.exists():
+                continue
+
+            num_pdfs += 1
+
+            # Count inline and display formulas from formulas.json
+            with open(formulas_path, 'r', encoding='utf-8') as f:
+                formulas = json.load(f)
+                for formula in formulas:
+                    gt_formula = formula["gt_formula"]
+                    if gt_formula.startswith("$$") and gt_formula.endswith("$$"):
+                        total_display_formulas += 1
+                    elif gt_formula.startswith("$") and gt_formula.endswith("$"):
+                        total_inline_formulas += 1
+
+            # Aggregate scores from eval_stats.json
+            with open(eval_stats_path, 'r', encoding='utf-8') as f:
+                eval_stats = json.load(f)
+                for judge in eval_stats["formula_statistics"]["llm_judge"]:
+                    model = judge["judge_model"]
+                    llm_scores[model].append(judge["average_score"])
+                    llm_inline_scores[model].append(judge["average_inline_score"])
+                    llm_display_scores[model].append(judge["average_display_score"])
+
+        # Calculate average scores using helper function
+        def avg_scores(score_dict: dict[str, list[float]]) -> dict[str, float]:
+            return {
+                model: sum(scores) / len(scores) if scores else 0.0
+                for model, scores in score_dict.items()
+            }
+
+        # Build metadata dictionary
+        metadata = {
+            "date": datetime.now().date().isoformat(),
+            "parser_name": parser_name,
+            "benchmark_name": benchmark_name,
+            "num_pdfs": num_pdfs,
+            "total_formulas": {
+                "inline": total_inline_formulas,
+                "display": total_display_formulas
+            },
+            "average_scores": avg_scores(llm_scores),
+            "average_inline_scores": avg_scores(llm_inline_scores),
+            "average_display_scores": avg_scores(llm_display_scores)
+        }
+
+        # Save to JSON file
+        results_path = self.parser_output_dir / "benchmark_results.json"
+        with open(results_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"   ✅ Benchmark summary saved to {results_path}")
+        return self
+
 
 # ========== CONVENIENCE FUNCTION ==========
 
@@ -214,7 +309,7 @@ def run_benchmark(
     ground_truth_dir: Path | str,
 ) -> Benchmark:
     """
-    Quick benchmark runner - runs extract and evaluate on already parsed results.
+    Quick benchmark runner - runs extract, evaluate and save summary on already parsed results.
 
     Args:
         parser_output_dir: Directory containing parsed markdown files
@@ -222,4 +317,5 @@ def run_benchmark(
     """
     return Benchmark(parser_output_dir, ground_truth_dir) \
         .extract() \
-        .evaluate()
+        .evaluate() \
+        .save_benchmark_summary()

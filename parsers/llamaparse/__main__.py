@@ -19,8 +19,8 @@ class LlamaParseParser(PDFParser):
             raise ValueError("LLAMACLOUD_API_KEY environment variable is required")
 
     @classmethod
-    def parser_name(cls) -> str:
-        return "llamaparse"
+    def display_name(cls) -> str:
+        return "LlamaParse"
     
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:

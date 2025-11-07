@@ -8,9 +8,8 @@ class GeminiFlashParser(BaseGeminiParser):
     model = "gemini-2.5-flash"
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "gemini_2_5_flash"
+    def display_name(cls) -> str:
+        return "Gemini 2.5 Flash"
 
 
 if __name__ == "__main__":

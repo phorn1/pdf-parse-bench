@@ -23,9 +23,8 @@ class PaddleOCRVLParser(PDFParser):
         self.pipeline = PaddleOCRVL()
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "paddle_ocr_vl"
+    def display_name(cls) -> str:
+        return "PaddleOCR-VL"
 
     def parse(self, pdf_path: Path, output_path: Path) -> str:
         """Parse single-page PDF to markdown using PaddleOCR-VL."""

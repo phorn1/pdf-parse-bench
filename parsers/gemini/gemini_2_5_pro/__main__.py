@@ -8,9 +8,8 @@ class GeminiProParser(BaseGeminiParser):
     model = "gemini-2.5-pro"
 
     @classmethod
-    def parser_name(cls) -> str:
-        """Return parser name identifier."""
-        return "gemini_2_5_pro"
+    def display_name(cls) -> str:
+        return "Gemini 2.5 Pro"
 
 
 if __name__ == "__main__":
