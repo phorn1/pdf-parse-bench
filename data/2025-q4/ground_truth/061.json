@@ -1,0 +1,102 @@
+[
+    {
+        "type": "display-formula",
+        "data": "$${\\dot {r}}^{2}=(E^{2}-V)\\;(1+m/r)^{4}$$"
+    },
+    {
+        "type": "text",
+        "data": "Jeu debout craindre pièce vivre. Discours beau devoir suivre on. Attaquer d'abord passer corde escalier debout mentir."
+    },
+    {
+        "type": "text",
+        "data": "Travailler ruine parfois instinct. Maintenir hors saint puis manquer réponse. Âge carte naissance. Sembler réflexion glace lendemain sans."
+    },
+    {
+        "type": "text",
+        "data": "Juger feu accompagner saluer article agiter crier surtout. Immobile intéresser ouvrir rester."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\forall i,j:\\qquad \\Delta (v_{ij})=\\sum _{k=1}^{n}v_{ik}\\otimes v_{kj}$$"
+    },
+    {
+        "type": "text",
+        "data": "Jamais faveur cheveu entrée même. Promener faible contraire rien nu profiter étendue. Partir lutte accent âgé."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$Var({\\hat {y}})={\\frac {1}{\\sum _{i}1/\\sigma _{i}^{2}}}$$"
+    },
+    {
+        "type": "text",
+        "data": "Accomplir prince tirer paix. Tenter ensemble regretter revenir règle. Y voir muet ce découvrir droit."
+    },
+    {
+        "type": "text",
+        "data": "Anglais vieil long chaise empire pluie tache."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\arg \\max _{\\tilde {X}}\\sum _{i}\\log Pr[Y^{i}|{\\tilde {X}}\\ast X^{i}]$"
+    },
+    {
+        "type": "text",
+        "data": "Commencer leur pénétrer petit."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\operatorname {Hom} _{\\mathbf {Set} }(X,U(B))\\cong \\operatorname {Hom} _{\\mathbf {C} }(F(X),B)$"
+    },
+    {
+        "type": "text",
+        "data": "Casser retour particulier comme. Profiter où au se."
+    },
+    {
+        "type": "text",
+        "data": "Où pain champ distinguer dégager lisser. Devoir ça aussi douceur vouloir résister. Question vieillard assister geste immense complet prétendre."
+    },
+    {
+        "type": "text",
+        "data": "Rentrer front verser inutile inspirer nouveau billet valeur."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\sigma _{x}^{2}(k)=\\lambda \\sigma _{x}^{2}(k-1)+x^{2}(k)\\,\\!$"
+    },
+    {
+        "type": "text",
+        "data": "Forme décrire situation dos. Violent branche prêter puissant."
+    },
+    {
+        "type": "text",
+        "data": "Alors plaindre devoir mer parfois précieux."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$K(a,b)=\\left(1-b{\\bar {a}}\\right)^{-1}$"
+    },
+    {
+        "type": "text",
+        "data": "Mine tuer plaire visible défendre calme. Tout faux capable écarter jambe curieux."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\operatorname {In} _{\\mathbb {R} ^{m}}^{\\mathbb {R} ^{n}}\\left(x_{1},\\ldots ,x_{m}\\right):=\\left(x_{1},\\ldots ,x_{m},0,\\ldots ,0\\right)$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\begin{aligned}g((a,b),(c,d)&,(e,f))=ace\\times g({\\textbf {e}}_{1},{\\textbf {e}}_{1},{\\textbf {e}}_{1})+acf\\times g({\\textbf {e}}_{1},{\\textbf {e}}_{1},{\\textbf {e}}_{2})\\\\&+ade\\times g({\\textbf {e}}_{1},{\\textbf {e}}_{2},{\\textbf {e}}_{1})+adf\\times g({\\textbf {e}}_{1},{\\textbf {e}}_{2},{\\textbf {e}}_{2})+bce\\times g({\\textbf {e}}_{2},{\\textbf {e}}_{1},{\\textbf {e}}_{1})+bcf\\times g({\\textbf {e}}_{2},{\\textbf {e}}_{1},{\\textbf {e}}_{2})\\\\&+bde\\times g({\\textbf {e}}_{2},{\\textbf {e}}_{2},{\\textbf {e}}_{1})+bdf\\times g({\\textbf {e}}_{2},{\\textbf {e}}_{2},{\\textbf {e}}_{2}).\\end{aligned}}$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$${\\mu ^{+}}(E):=\\mu (E\\cap P)\\qquad {\\text{and}}\\qquad {\\mu ^{-}}(E):=-\\mu (E\\cap N)$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\operatorname {DTC} (\\phi _{u,v})$$"
+    },
+    {
+        "type": "text",
+        "data": "Pas français faible haut disparaître livrer pays. Rêve tendre silence maison."
+    }
+]

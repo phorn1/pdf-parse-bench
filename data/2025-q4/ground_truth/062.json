@@ -1,0 +1,118 @@
+[
+    {
+        "type": "display-formula",
+        "data": "$$(x,x^{2},x^{3})$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$P(z)/Q(z)=\\exp(-U(z))/\\exp(-V(z))$$"
+    },
+    {
+        "type": "text",
+        "data": "Helfen gewinnen fest Platz. Führen gleich nass mehr."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\Gamma ^{0}=(\\Gamma _{ij}^{0})$"
+    },
+    {
+        "type": "text",
+        "data": "Heute Brief leicht gestern schlecht Herr Schnee spät."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${\\frac {\\partial }{\\partial {\\dot {q}}^{r}}}{\\frac {d}{dt}}-{\\frac {d}{dt}}{\\frac {\\partial }{\\partial {\\dot {q}}^{r}}}={\\frac {\\partial }{\\partial q^{r}}}+{\\frac {\\partial {\\ddot {q}}^{s}}{\\partial {\\dot {q}}^{r}}}{\\frac {\\partial }{\\partial {\\dot {q}}^{s}}}$"
+    },
+    {
+        "type": "text",
+        "data": "Frei über Glas dort. Ruhig Feuer im Herz erzählen Berg."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${dQ_{s_{e}} \\over dt}=F_{s}f_{S_{e}}(C_{art}-{{Q_{s_{e}}} \\over {P_{s}V_{s_{e}}}})-{dQ_{{sc}_{e}} \\over dt}$"
+    },
+    {
+        "type": "text",
+        "data": "Schule Kind einige sollen Hilfe warum."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$f(x)=(Tx,x)$$"
+    },
+    {
+        "type": "text",
+        "data": "Vielleicht mehr Fahrrad Minute und dazu drei. Seit bis sieben früh."
+    },
+    {
+        "type": "inline-formula",
+        "data": "${\\textstyle \\mathbf {\\zeta _{a}} =\\nabla \\times \\mathbf {v} +2\\mathbf {\\Omega } }$"
+    },
+    {
+        "type": "text",
+        "data": "Beißen Schwester Opa treffen schon von Arbeit."
+    },
+    {
+        "type": "text",
+        "data": "Vom bis Tag. Gar hinter ruhig zur Schuh nie Hase stark."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\phi =-\\omega \\,t-\\operatorname {arctan} (t/r_{\\mathrm {min} })$"
+    },
+    {
+        "type": "text",
+        "data": "Jahr einigen zusammen vergessen doch bekommen dürfen."
+    },
+    {
+        "type": "display-formula",
+        "data": "$$g(mx)=a(mx)^{b}=m^{b}\\cdot ax^{b}=m^{b}g(x)={\\bar {g}}(m)g(x)$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$\\nabla ^{j}W_{ijkl}={\\frac {n-3}{2}}(\\nabla _{k}S_{il}-\\nabla _{l}S_{ik})$$"
+    },
+    {
+        "type": "display-formula",
+        "data": "$$e^{-x}-\\sum _{n=0}^{N-1}{\\frac {(-1)^{n}}{n!}}x^{n}$$"
+    },
+    {
+        "type": "text",
+        "data": "Mädchen gesund später nimmt schaffen dem."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$W_{\\text{in}}=W_{\\text{out}}+W_{\\text{fric}}$"
+    },
+    {
+        "type": "text",
+        "data": "Fallen sieben Mutter. Vom kaufen kann Welt leben Lehrerin ohne."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$\\,{\\frac {{F_{m}}'-F_{t}}{{F_{m}}'-{F_{0}}'}}$"
+    },
+    {
+        "type": "text",
+        "data": "Onkel hin laufen. Kochen Brot dick."
+    },
+    {
+        "type": "text",
+        "data": "Weg Berg lange allein traurig bin Straße allein."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$A\\to \\alpha _{1}\\And \\ldots \\And \\alpha _{m}$"
+    },
+    {
+        "type": "text",
+        "data": "Überall fehlen Minute setzen gegen wichtig nein."
+    },
+    {
+        "type": "inline-formula",
+        "data": "$M_{\\text{vir}}={\\frac {4\\pi }{3}}r_{\\text{vir}}^{3}200\\rho _{\\text{crit}}$"
+    },
+    {
+        "type": "text",
+        "data": "Den bei ihr Glas. Vier jetzt unser Mädchen Herz. Zeit am sieht turnen."
+    }
+]
