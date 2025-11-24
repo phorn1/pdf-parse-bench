@@ -53,15 +53,12 @@ Evaluate the extracted formula using the following criteria:
 2. Completeness: Are all parts of the formula present without omissions?
 3. Semantic equivalence: Does the extracted formula convey the same mathematical meaning?
 
-First, provide a thorough explanation of your evaluation. Then assign a score and determine correctness.
-In case there is no  extracted formula, assign a score of 0.
+In case there is no extracted formula, assign a score of 0 and is_correct as false.
 
 Provide your evaluation STRICTLY in JSON format, starting with {{ and ending with }}:
 {{
-    "explanation": "Detailed explanation of your evaluation",
     "is_correct": true/false,
-    "score": (0-10 scale, where 10 is perfect match),
-    "errors": ["error1", "error2", ...]
+    "score": (0-10 scale, where 10 is perfect match)
 }}
 """
 
@@ -72,10 +69,8 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 class LLMJudgeEval(BaseModel):
     type: str = "llm_judge"
     judge_model: str
-    explanation: str
     is_correct: bool
     score: int
-    errors: list[str] = Field(default_factory=list)
 
 
 class CDMEval(BaseModel):
@@ -234,13 +229,46 @@ class NaiveEvaluator:
 
 class LLMEvaluator:
     """Evaluates formulas using LLM judges."""
-    
+
+    # Shared client instances (initialized lazily)
+    _openai_client = None
+    _gemini_client = None
+    _mistral_client = None
+
     class FormulaResponse(BaseModel):
-        explanation: str
         is_correct: bool
         score: int
-        errors: list[str]
-    
+
+    @classmethod
+    def _get_openai_client(cls):
+        """Get or create the shared OpenAI client."""
+        if cls._openai_client is None:
+            if os.getenv("LLM_PROXY_URL"):
+                cls._openai_client = OpenAI(
+                    base_url=os.getenv("LLM_PROXY_URL"),
+                    api_key=os.getenv("LLM_PROXY_API_KEY")
+                )
+            else:
+                cls._openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        return cls._openai_client
+
+    @classmethod
+    def _get_gemini_client(cls):
+        """Get or create the shared Gemini client."""
+        if cls._gemini_client is None:
+            if not os.getenv("GEMINI_API_KEY"):
+                raise ValueError("GEMINI_API_KEY required for Gemini models")
+            cls._gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        return cls._gemini_client
+
+    @classmethod
+    def _get_mistral_client(cls):
+        """Get or create the shared Mistral client."""
+        if cls._mistral_client is None:
+            if not os.getenv("MISTRAL_API_KEY"):
+                raise ValueError("MISTRAL_API_KEY required for Mistral models")
+            cls._mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
+        return cls._mistral_client
 
     @staticmethod
     def _retry_on_failure(max_retries: int = 10):
@@ -255,47 +283,35 @@ class LLMEvaluator:
                         last_error = e
                         if attempt < max_retries - 1:
                             print(f"Attempt {attempt + 1} failed: {e}. Retrying...")
-                
+
                 # If we reach here, all attempts failed
                 raise last_error
             return wrapper
         return decorator
-    
-    
+
+
     @staticmethod
     @_retry_on_failure()
     def evaluate_openai(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        
-        if os.getenv("LLM_PROXY_URL"):
-            openai_client = OpenAI(
-                base_url=os.getenv("LLM_PROXY_URL"),
-                api_key=os.getenv("LLM_PROXY_API_KEY")
-            )
-        else:
-            openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        
+        openai_client = LLMEvaluator._get_openai_client()
+
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
         response = openai_client.responses.parse(
             model=model, input=prompt, text_format=LLMEvaluator.FormulaResponse
         )
-        
+
         data = response.output_parsed
         return LLMJudgeEval(
             judge_model=model,
-            explanation=data.explanation,
             is_correct=data.is_correct,
-            score=data.score,
-            errors=data.errors
+            score=data.score
         )
-    
+
     @staticmethod
     @_retry_on_failure()
     def evaluate_gemini(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        
-        if not os.getenv("GEMINI_API_KEY"):
-            raise ValueError("GEMINI_API_KEY required for Gemini models")
-        gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        
+        gemini_client = LLMEvaluator._get_gemini_client()
+
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
         response = gemini_client.models.generate_content(
             model=model,
@@ -305,55 +321,48 @@ class LLMEvaluator:
                 response_schema=LLMEvaluator.FormulaResponse
             )
         )
-        
+
         parsed_data = json.loads(response.text)
         data = LLMEvaluator.FormulaResponse(**parsed_data)
         return LLMJudgeEval(
             judge_model=model,
-            explanation=data.explanation,
             is_correct=data.is_correct,
-            score=data.score,
-            errors=data.errors
+            score=data.score
         )
-    
+
     @staticmethod
     @_retry_on_failure()
     def evaluate_mistral(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        
-        if not os.getenv("MISTRAL_API_KEY"):
-            raise ValueError("MISTRAL_API_KEY required for Mistral models")
-        mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
-        
+        mistral_client = LLMEvaluator._get_mistral_client()
+
         # Escape the formulas for safe JSON inclusion
         gt_formula_escaped = json.dumps(gt_formula)[1:-1]  # Remove outer quotes
         extracted_formula_escaped = json.dumps(extracted_formula)[1:-1]  # Remove outer quotes
-        
+
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(
-            gt_formula=gt_formula_escaped, 
+            gt_formula=gt_formula_escaped,
             extracted_formula=extracted_formula_escaped
         )
-        
+
         messages = [
             {
                 "role": "user",
                 "content": prompt,
             },
         ]
-        
+
         chat_response = mistral_client.chat.parse(
             model=model,
             messages=messages,
             response_format=LLMEvaluator.FormulaResponse,
             temperature=0
         )
-        
+
         data = chat_response.choices[0].message.parsed
         return LLMJudgeEval(
             judge_model=model,
-            explanation=data.explanation,
             is_correct=data.is_correct,
-            score=data.score,
-            errors=data.errors
+            score=data.score
         )
     
 

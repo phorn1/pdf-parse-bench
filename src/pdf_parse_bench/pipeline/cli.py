@@ -165,8 +165,11 @@ def run_cli(parser: PDFParser) -> None:
 
         if run_evaluate:
             # Parse LLM judge models
-            if "," in llm_judge_models:
-                llm_models = [m.strip() for m in llm_judge_models.split(",")]
+            if llm_judge_models.strip() == "":
+                # Empty string means no LLM models
+                llm_models = []
+            elif "," in llm_judge_models:
+                llm_models = [m.strip() for m in llm_judge_models.split(",") if m.strip()]
             else:
                 llm_models = llm_judge_models
 

@@ -62,12 +62,17 @@ class ParallelSegmentExtractor:
                 verbose=self.verbose
             )
 
-            # Normalize parsed formulas in-place
+            # Split grouped formulas
+            process_grouped_formulas(
+                formula_extraction_result,
+                self.model,
+                console=console,
+                job_name=job_name
+            )
+
+            # Remove is_grouped field after processing
             for formula_pair in formula_extraction_result:
-                if formula_pair["parsed_formula"] is not None:
-                    formula_pair["parsed_formula"] = normalize_gathered_display_formula(
-                        formula_pair["parsed_formula"]
-                    )
+                formula_pair.pop("is_grouped", None)
 
             # Render formulas if path is provided
             if job.rendered_formulas_dir is not None:
@@ -174,19 +179,21 @@ INSTRUCTIONS:
 
 1. For each ground truth formula, find its match in the markdown
 2. EXTRACT EXACTLY, DON'T TRANSFORM: Copy formulas character-by-character as they appear in markdown
-   - Extract the COMPLETE formula from the very beginning to the very end, including ALL delimiter characters (e.g., $, $$, \\[, \\], \\(, \\))
+   - Extract the COMPLETE formula including ALL delimiters (e.g., $, $$, \\[, \\], \\(, \\))
+   - If the parser split a formula incorrectly, include adjacent text that belongs to it
+       Example: Markdown has "$x = 5$ meters" but GT is "$x = 5 \\text{{meters}}$" → extract "$x = 5$ meters" (include "meters")
    - Preserve ALL whitespace using actual newline and tab characters in JSON (not escaped \\n or \\t sequences)
    - Do NOT add, remove, or normalize anything
-3. HANDLE VARIATIONS: Formulas in markdown may be split or merged differently than ground truth
-   - A single ground truth formula might be split into multiple parts in the markdown
-   - Multiple ground truth formulas might be merged into one in the markdown
-   - Adjust your mapping accordingly while maintaining the ground truth structure
-4. If a formula is not found, use empty string ""
+3. GROUPED FORMULAS: If multiple ground truth formulas appear merged together (within the same delimiters or in environments like aligned/gathered/array):
+   - Extract the COMPLETE grouped content and assign it to the FIRST formula
+   - For subsequent formulas that are part of this group: set data="" and is_grouped=true
+4. If a formula is genuinely missing from the markdown, use empty string "" (is_grouped defaults to false)
 
 OUTPUT:
 JSON list with {len(gt_formula_structure)} objects:
 - index: Sequential index from 0 to {len(gt_formula_structure)-1}
-- data: Extracted formula from markdown, or "" if missing
+- data: Extracted formula from markdown, or "" if missing/grouped
+- is_grouped: true if this formula is part of a previous formula's group
 """
 
     return prompt
@@ -211,19 +218,13 @@ def extract_formulas_using_llm(
 
     # ========== OPENAI CLIENT SETUP ==========
 
-    if os.getenv("LLM_PROXY_URL"):
-        client = OpenAI(
-            base_url=os.getenv("LLM_PROXY_URL"),
-            api_key=os.getenv("LLM_PROXY_API_KEY")
-        )
-    else:
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     # ========== EXTRACTION STATE ==========
 
     current_text = markdown_content
     formulas_dict = {
-        i: {"gt_data": gt["gt_data"], "parsed_formula": None}
+        i: {"gt_data": gt["gt_data"], "parsed_formula": None, "is_grouped": False}
         for i, gt in enumerate(gt_formulas)
     }
 
@@ -241,6 +242,14 @@ def extract_formulas_using_llm(
         class FormulaExtraction(BaseModel):
             index: int = Field(description=f"Sequential index (0 to {len(formulas_for_prompt)-1})")
             data: str = Field(description="Exact formula from markdown, verbatim. Empty string if not found.")
+            is_grouped: bool = Field(
+                default=False,
+                description=(
+                    "Set to true ONLY if this formula is part of a grouped environment "
+                    "in a PREVIOUS formula (e.g., aligned/gathered/array). "
+                    "Set to false if the formula is genuinely missing from the markdown."
+                )
+            )
 
         class ExtractedFormulas(BaseModel):
             formulas: list[FormulaExtraction] = Field(
@@ -259,6 +268,19 @@ def extract_formulas_using_llm(
         )
 
         extraction_batch = response.output_parsed
+
+        # ========== VALIDATE IS_GROUPED CONSISTENCY ==========
+
+        for local_idx, formula in enumerate(extraction_batch.formulas):
+            if formula.is_grouped:
+                if formula.data != "":
+                    raise ValueError(
+                        f"{job_name}: Formula [{formula.index}] has is_grouped=true but data is not empty: {formula.data!r}"
+                    )
+                if local_idx == 0:
+                    raise ValueError(
+                        f"{job_name}: Formula [{formula.index}] has is_grouped=true but is the first formula"
+                    )
 
         # ========== VALIDATE INDICES ==========
 
@@ -283,13 +305,18 @@ def extract_formulas_using_llm(
         for local_idx, formula in enumerate(extraction_batch.formulas):
             original_idx = original_indices[local_idx]
 
-            # Skip empty formulas (intentionally not found)
+            # Skip empty formulas (intentionally not found or grouped)
             if not formula.data:
                 formulas_dict[original_idx]["parsed_formula"] = ""
+                formulas_dict[original_idx]["is_grouped"] = formula.is_grouped
                 continue
 
-            # Try exact match first (fast path)
-            if formula.data in current_text:
+            # Try exact match first (fast path) - only if proper delimiters are present
+            has_delimiters = any(
+                formula.data.startswith(start) and formula.data.endswith(end)
+                for start, end in [('$$', '$$'), ('$', '$'), (r'\[', r'\]'), (r'\(', r'\)')]
+            )
+            if has_delimiters and formula.data in current_text:
                 formulas_dict[original_idx]["parsed_formula"] = formula.data
                 current_text = current_text.replace(formula.data, "", 1)
                 continue
@@ -315,23 +342,200 @@ def extract_formulas_using_llm(
 
         # ========== CHECK IF RETRY NEEDED ==========
 
-        has_failed_formulas = any(data["parsed_formula"] is None for data in formulas_dict.values())
-        if not has_failed_formulas or attempt == max_retries:
+        failed_indices = [idx for idx, data in formulas_dict.items() if data["parsed_formula"] is None]
+        if not failed_indices or attempt == max_retries:
             break
         if console:
-            console.print(f"   🔄 {job_name}: Retrying failed formulas in cleaned text...")
+            failed_indices_str = ", ".join(f"[{idx}]" for idx in failed_indices)
+            console.print(f"   🔄 {job_name}: Retrying {len(failed_indices)} failed formula(s) in cleaned text: {failed_indices_str}")
 
     # ========== COMBINE RESULTS ==========
 
     result = [
         {
             "gt_formula": formulas_dict[i]["gt_data"],
-            "parsed_formula": formulas_dict[i]["parsed_formula"]
+            "parsed_formula": formulas_dict[i]["parsed_formula"],
+            "is_grouped": formulas_dict[i]["is_grouped"]
         }
         for i in range(len(gt_formulas))
     ]
 
     return result, current_text
+
+
+# ========== GROUPED FORMULA SPLITTING ==========
+
+def process_grouped_formulas(
+    formula_results: list[dict[str, str | bool]],
+    model: str,
+    console=None,
+    job_name: str = ""
+) -> None:
+    """
+    Process and split grouped formulas in-place.
+
+    Args:
+        formula_results: List of formula extraction results (modified in-place)
+        model: LLM model to use for splitting
+        console: Console for logging
+        job_name: Job name for logging
+    """
+    i = 0
+    while i < len(formula_results):
+        # Check if next formula(s) are marked as grouped
+        if i + 1 < len(formula_results) and formula_results[i + 1].get('is_grouped', False):
+            # Found start of group - collect all grouped members
+            group_members = []
+            j = i + 1
+
+            while j < len(formula_results) and formula_results[j].get('is_grouped', False):
+                group_members.append(j)
+                j += 1
+
+            # Split the grouped formula using LLM
+            grouped_formula = formula_results[i]["parsed_formula"]
+            gt_formulas_for_split = [formula_results[i]["gt_formula"]] + [
+                formula_results[idx]["gt_formula"] for idx in group_members
+            ]
+
+            try:
+                split_formulas = split_grouped_formula(
+                    grouped_formula,
+                    gt_formulas_for_split,
+                    model,
+                    console=console,
+                    job_name=job_name
+                )
+
+                # Assign split formulas back to results
+                formula_results[i]["parsed_formula"] = split_formulas[0]
+                formula_results[i]["is_grouped"] = False
+                for idx, member_idx in enumerate(group_members):
+                    formula_results[member_idx]["parsed_formula"] = split_formulas[idx + 1]
+                    formula_results[member_idx]["is_grouped"] = False
+
+            except Exception as e:
+                if console:
+                    console.print(f"   ⚠️  {job_name}: Failed to split grouped formula at [{i}]: {str(e)}")
+
+            i = j
+        else:
+            i += 1
+
+
+def split_grouped_formula(
+    grouped_formula: str,
+    gt_formulas: list[str],
+    model: str,
+    console=None,
+    job_name: str = ""
+) -> list[str]:
+    """
+    Split a grouped formula into individual formulas using LLM.
+
+    Args:
+        grouped_formula: The complete grouped formula with environment
+        gt_formulas: List of ground truth formulas to match against
+        model: LLM model to use
+        console: Console for logging
+        job_name: Job name for logging
+
+    Returns:
+        List of individual formulas (same length as gt_formulas)
+    """
+
+    # ========== EXTRACT DELIMITERS ==========
+
+    delimiter_start = ""
+    delimiter_end = ""
+    grouped_formula = grouped_formula.strip()
+
+    # Check for delimiters and extract them
+    for start, end in [('$$', '$$'), ('$', '$'), (r'\[', r'\]'), (r'\(', r'\)')]:
+        if grouped_formula.startswith(start) and grouped_formula.endswith(end):
+            delimiter_start = start
+            delimiter_end = end
+            grouped_formula = grouped_formula[len(start):-len(end)]
+            break
+
+    # ========== OPENAI CLIENT SETUP ==========
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # ========== CREATE PROMPT ==========
+
+    gt_formula_list = "\n".join([f"[{i}] {formula}" for i, formula in enumerate(gt_formulas)])
+
+    prompt = f"""You are a LaTeX formula splitting specialist.
+
+TASK:
+You are given a grouped formula that contains {len(gt_formulas)} individual formulas merged together.
+Your task is to split this grouped formula into {len(gt_formulas)} separate formulas.
+
+GROUPED FORMULA CONTENT:
+```
+{grouped_formula}
+```
+
+GROUND TRUTH FORMULAS (reference - may differ significantly from actual content):
+{gt_formula_list}
+
+INSTRUCTIONS:
+1. Remove grouping environment wrappers (e.g., \\begin{{aligned}}...\\end{{aligned}})
+2. Use line breaks (\\\\) as split indicators where applicable - REMOVE these separators from output
+3. Match parts to ground truth formulas by content similarity
+4. EXTRACT EXACTLY - preserve ALL content character-by-character, no transformations/normalization, NO content loss
+5. If a formula cannot be extracted, return empty string ""
+
+OUTPUT:
+JSON list with {len(gt_formulas)} strings, one for each ground truth formula in order.
+"""
+
+    # ========== PYDANTIC MODEL ==========
+
+    class SplitFormulas(BaseModel):
+        formulas: list[str] = Field(
+            min_length=len(gt_formulas),
+            max_length=len(gt_formulas)
+        )
+
+    # ========== LLM CALL ==========
+
+    response = client.responses.parse(
+        model=model,
+        input=[{"role": "user", "content": prompt}],
+        text_format=SplitFormulas
+    )
+
+    raw_formulas = response.output_parsed.formulas
+
+    # ========== VALIDATE AND ADD DELIMITERS ==========
+
+    result_formulas = []
+    for i, raw_formula in enumerate(raw_formulas):
+        if not raw_formula:
+            result_formulas.append("")
+            continue
+
+        # Validate that the formula content exists in grouped_formula
+        if raw_formula not in grouped_formula:
+            # Try fuzzy matching
+            matched = find_original_formula_in_markdown(
+                llm_formula=raw_formula,
+                markdown_content=grouped_formula
+            )
+            if matched:
+                raw_formula = matched
+
+        # Add delimiters back if they were detected
+        if delimiter_start:
+            final_formula = f"{delimiter_start}{raw_formula}{delimiter_end}"
+        else:
+            final_formula = raw_formula
+
+        result_formulas.append(final_formula)
+
+    return result_formulas
 
 
 # ========== FORMULA NORMALIZATION ==========
@@ -435,41 +639,3 @@ def find_original_formula_in_markdown(
                 best_match, best_final_dist, best_score = candidate, dist, score
 
     return best_match if best_final_dist <= threshold else None
-
-
-def normalize_gathered_display_formula(formula_data: str) -> str:
-    """
-    Normalize display formula by removing unmatched gathered environments
-    and ensuring proper $$ delimiters.
-
-    WHY THIS IS NECESSARY:
-    Some parsers merge consecutive formulas from the PDF into a single formula using
-    `gathered` environments. During LLM extraction, these merged formulas get split back
-    into individual formulas, breaking the gathered environment and leaving unmatched
-    `\\begin{gathered}` or `\\end{gathered}` fragments that cause rendering errors.
-
-    Args:
-        formula_data: Raw LaTeX formula string
-
-    Returns:
-        Normalized LaTeX formula string with proper delimiters
-    """
-    # Remove unmatched gathered environments
-    begin_matches = list(re.finditer(r'\\begin\{gathered\}', formula_data))
-    end_matches = list(re.finditer(r'\\end\{gathered\}', formula_data))
-
-    if len(begin_matches) != len(end_matches):
-        formula_data = re.sub(r'\\(?:begin|end)\{gathered\}', '', formula_data)
-        print(f"Removed unmatched gathered environment: {len(begin_matches)} begin + {len(end_matches)} end")
-    else:
-        return formula_data
-
-    # Ensure proper $$ delimiters for the repaired formula
-    stripped = formula_data.strip()
-
-    if not stripped.startswith('$$'):
-        stripped = f"$${stripped}"
-    if not stripped.endswith('$$'):
-        stripped = f"{stripped}$$"
-
-    return stripped

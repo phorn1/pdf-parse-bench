@@ -114,8 +114,9 @@ def collect_parser_stats(results_dir: Path, max_samples: int | None = None) -> l
             continue
 
         # Calculate averages
+        display_name = PARSER_NAMES.get(parser_dir.name, parser_dir.name)
         parser_stats.append(ParserStats(
-            name=PARSER_NAMES.get(parser_dir.name, parser_dir.name),
+            name=display_name,
             average_score=total_avg_score / valid_samples,
             accuracy_percentage=total_accuracy / valid_samples,
             inline_score=total_inline / valid_samples,
