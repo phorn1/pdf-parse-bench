@@ -21,7 +21,12 @@ uv pip install "paddleocr[doc-parser]"
 uv pip install https://paddle-whl.bj.bcebos.com/nightly/cu126/safetensors/safetensors-0.6.2.dev0-cp38-abi3-linux_x86_64.whl
 ```
 
-**4. Run parser:**
+**4. Upgrade NCCL (fixes compatibility with PyTorch):**
+```bash
+uv pip install "nvidia-nccl-cu12>=2.27.5"
+```
+
+**5. Run parser:**
 ```bash
 uv run -m parsers.paddle_ocr_vl
 ```
