@@ -25,3 +25,8 @@ For Gemini 2.5 Pro:
 ```bash
 uv run -m parsers.gemini.gemini_2_5_pro
 ```
+
+For Gemini 3 Pro:
+```bash
+uv run -m parsers.gemini.gemini_3_pro
+```
