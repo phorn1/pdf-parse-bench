@@ -2,8 +2,11 @@
 import json
 import logging
 from datetime import datetime
+from datetime import date as date_type
 from collections import defaultdict
 from pathlib import Path
+
+from pydantic import BaseModel, Field
 
 from ..eval import run_evaluation
 from ..extraction import ParallelSegmentExtractor, SegmentExtractionJob
@@ -15,6 +18,36 @@ logger = logging.getLogger(__name__)
 # Suppress HTTP request logging
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
+
+# ========== PYDANTIC MODELS ==========
+
+class BenchmarkResults(BaseModel):
+    """Benchmark evaluation results for a parser."""
+
+    date: date_type = Field(description="Date of benchmark run")
+    parser_name: str = Field(description="Name of the parser")
+    benchmark_name: str = Field(description="Name of the benchmark dataset")
+    num_pdfs: int = Field(ge=0, description="Number of PDFs evaluated")
+    total_inline_formulas: int = Field(ge=0, description="Total number of inline formulas")
+    total_display_formulas: int = Field(ge=0, description="Total number of display formulas")
+    average_scores: dict[str, float] = Field(description="Average scores by LLM judge model")
+    average_inline_scores: dict[str, float] = Field(description="Average inline formula scores by LLM judge model")
+    average_display_scores: dict[str, float] = Field(description="Average display formula scores by LLM judge model")
+    average_cdm_score: float | None = Field(default=None, description="Average CDM score if available")
+
+    def save_to_file(self, path: Path) -> None:
+        """Save model to JSON file with default formatting."""
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(self.model_dump_json(indent=2))
+
+    @classmethod
+    def load_from_file(cls, path: Path) -> "BenchmarkResults":
+        """Load model from JSON file."""
+        with open(path, 'r', encoding='utf-8') as f:
+            return cls.model_validate_json(f.read())
+
+
+# ========== BENCHMARK PIPELINE ==========
 
 class Benchmark:
     """PDF parser benchmark runner."""
@@ -239,6 +272,7 @@ class Benchmark:
         llm_scores = defaultdict(list)
         llm_inline_scores = defaultdict(list)
         llm_display_scores = defaultdict(list)
+        cdm_scores = []
 
         for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
@@ -271,6 +305,11 @@ class Benchmark:
                     llm_inline_scores[model].append(judge["average_inline_score"])
                     llm_display_scores[model].append(judge["average_display_score"])
 
+                # Aggregate CDM scores if available
+                cdm_stats = eval_stats["formula_statistics"].get("cdm")
+                if cdm_stats:
+                    cdm_scores.append(cdm_stats["average_score"])
+
         # Calculate average scores using helper function
         def avg_scores(score_dict: dict[str, list[float]]) -> dict[str, float]:
             return {
@@ -278,25 +317,23 @@ class Benchmark:
                 for model, scores in score_dict.items()
             }
 
-        # Build metadata dictionary
-        metadata = {
-            "date": datetime.now().date().isoformat(),
-            "parser_name": parser_name,
-            "benchmark_name": benchmark_name,
-            "num_pdfs": num_pdfs,
-            "total_formulas": {
-                "inline": total_inline_formulas,
-                "display": total_display_formulas
-            },
-            "average_scores": avg_scores(llm_scores),
-            "average_inline_scores": avg_scores(llm_inline_scores),
-            "average_display_scores": avg_scores(llm_display_scores)
-        }
+        # Build BenchmarkResults model
+        results = BenchmarkResults(
+            date=datetime.now().date(),
+            parser_name=parser_name,
+            benchmark_name=benchmark_name,
+            num_pdfs=num_pdfs,
+            total_inline_formulas=total_inline_formulas,
+            total_display_formulas=total_display_formulas,
+            average_scores=avg_scores(llm_scores),
+            average_inline_scores=avg_scores(llm_inline_scores),
+            average_display_scores=avg_scores(llm_display_scores),
+            average_cdm_score=sum(cdm_scores) / len(cdm_scores) if cdm_scores else None
+        )
 
         # Save to JSON file
         results_path = self.parser_output_dir / "benchmark_results.json"
-        with open(results_path, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=2, ensure_ascii=False)
+        results.save_to_file(results_path)
 
         logger.info(f"   ✅ Benchmark summary saved to {results_path}")
         return self

@@ -4,25 +4,36 @@ This benchmark evaluates how effectively different PDF parsing solutions extract
 
 ## 🏆 Leaderboard - Latest Results (2025-q4)
 
-| Rank | Parser | Avg Score | Accuracy (%) | Inline Score | Display Score | Samples |
-|------|--------|-----------|--------------|--------------|---------------|---------|
-| 1 | PaddleOCR-VL | 9.58 | 91.31% | 9.55 | 9.62 | 50 |
-| 2 | dots.ocr | 9.17 | 85.23% | 9.22 | 9.09 | 50 |
-| 3 | Nanonets-OCR-s | 9.17 | 85.26% | 9.13 | 9.24 | 50 |
-| 4 | Gemini 2.5 Pro | 9.15 | 84.08% | 9.07 | 9.28 | 49 |
-| 5 | MonkeyOCR-pro-3B | 9.11 | 83.61% | 9.32 | 8.74 | 50 |
-| 6 | MinerU2.5 | 9.08 | 84.99% | 9.02 | 9.24 | 50 |
-| 7 | PP-StructureV3 | 9.03 | 82.16% | 8.87 | 9.26 | 50 |
-| 8 | olmOCR-2-7B-1025-FP8 | 8.94 | 84.7% | 9.0 | 8.9 | 50 |
-| 9 | Gemini 2.5 Flash | 8.75 | 77.65% | 8.69 | 8.88 | 48 |
-| 10 | Mathpix | 8.48 | 78.63% | 9.52 | 6.81 | 50 |
-| 11 | DeepSeek-OCR | 8.16 | 72.85% | 8.27 | 8.08 | 50 |
-| 12 | LlamaParse | 7.99 | 74.03% | 7.95 | 8.08 | 47 |
-| 13 | Mistral OCR | 7.63 | 67.78% | 8.51 | 6.17 | 50 |
-| 14 | GPT-5 nano | 7.18 | 53.7% | 7.42 | 6.65 | 50 |
-| 15 | GOT-OCR2.0 | 6.31 | 50.09% | 6.71 | 6.02 | 50 |
-| 16 | PyMuPDF4LLM | 6.27 | 42.32% | 0.0 | 6.27 | 50 |
-| 17 | GPT-5 mini | 5.94 | 38.06% | 6.35 | 5.28 | 49 |
+| Rank | Parser | Overall | Inline | Display | CDM |
+|------|--------|---------|--------|---------|-----|
+| 1 | Qwen3-VL-235B-A22B-Instruct | 9.76 | 9.75 | 9.65 | 0.99 |
+| 2 | Gemini 3 Pro | 9.75 | 9.72 | 9.71 | 0.99 |
+| 3 | PaddleOCR-VL | 9.65 | 9.64 | 9.60 | 0.98 |
+| 4 | Mathpix | 9.64 | 9.60 | 9.62 | 0.97 |
+| 5 | dots.ocr | 9.43 | 9.31 | 9.55 | 0.94 |
+| 6 | PP-StructureV3 | 9.34 | 9.26 | 9.47 | 0.98 |
+| 7 | Nanonets-OCR-s | 9.31 | 9.30 | 9.26 | 0.96 |
+| 8 | Gemini 2.5 Pro | 9.28 | 9.16 | 9.39 | 0.97 |
+| 9 | MonkeyOCR-pro-3B | 9.25 | 9.26 | 9.20 | 0.98 |
+| 10 | MinerU2.5 | 9.17 | 9.16 | 9.17 | 0.96 |
+| 11 | olmOCR-2-7B-1025-FP8 | 8.94 | 8.88 | 8.94 | 0.92 |
+| 12 | Gemini 2.5 Flash | 8.78 | 8.63 | 8.98 | 0.96 |
+| 13 | Mistral OCR | 8.66 | 8.46 | 9.01 | 0.95 |
+| 14 | DeepSeek-OCR | 8.55 | 8.65 | 8.30 | 0.95 |
+| 15 | LlamaParse | 8.14 | 8.06 | 8.20 | 0.85 |
+| 16 | GPT-5 nano | 7.79 | 7.77 | 7.67 | 0.75 |
+| 17 | PyPDF | 7.69 | 7.75 | 7.52 | 0.75 |
+| 18 | GOT-OCR2.0 | 7.38 | 7.07 | 7.95 | 0.91 |
+| 19 | PyMuPDF4LLM | 6.67 | 6.70 | 6.41 | 0.58 |
+| 20 | GPT-5 mini | 6.61 | 6.55 | 6.56 | 0.75 |
+| 21 | GROBID | 5.70 | 5.97 | 5.07 | 0.71 |
+
+**Legend:**
+- **Overall**: Average LLM-as-a-Judge score (0-10 scale) across all formulas (1411 inline + 641 display formulas from 100 PDFs)
+- **Inline**: Average score for inline formulas only (1411 formulas)
+- **Display**: Average score for display-mode formulas only (641 formulas)
+- **CDM**: Character Detection Metric (0-1 scale) - measures character-level accuracy using visual rendering comparison
+
 
 ## Benchmark Dataset
 
