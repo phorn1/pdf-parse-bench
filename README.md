@@ -2,37 +2,72 @@
 
 This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas in the parsed text, then scoring them based on semantic similarity to the ground truth.
 
+![Workflow Overview](assets/workflow.png)
+*Overview of the benchmarking framework: (1) Formula dataset extraction from Wikipedia, (2) Synthetic PDF generation with ground truth, (3) Two-stage evaluation pipeline with LLM-based matching and scoring.*
+
 ## 🏆 Leaderboard - Latest Results (2025-q4)
 
-| Rank | Parser | Overall | Inline | Display | CDM |
-|------|--------|---------|--------|---------|-----|
-| 1 | Qwen3-VL-235B-A22B-Instruct | 9.76 | 9.75 | 9.65 | 0.99 |
-| 2 | Gemini 3 Pro | 9.75 | 9.72 | 9.71 | 0.99 |
-| 3 | PaddleOCR-VL | 9.65 | 9.64 | 9.60 | 0.98 |
-| 4 | Mathpix | 9.64 | 9.60 | 9.62 | 0.97 |
-| 5 | dots.ocr | 9.43 | 9.31 | 9.55 | 0.94 |
-| 6 | PP-StructureV3 | 9.34 | 9.26 | 9.47 | 0.98 |
-| 7 | Nanonets-OCR-s | 9.31 | 9.30 | 9.26 | 0.96 |
-| 8 | Gemini 2.5 Pro | 9.28 | 9.16 | 9.39 | 0.97 |
-| 9 | MonkeyOCR-pro-3B | 9.25 | 9.26 | 9.20 | 0.98 |
-| 10 | MinerU2.5 | 9.17 | 9.16 | 9.17 | 0.96 |
-| 11 | olmOCR-2-7B-1025-FP8 | 8.94 | 8.88 | 8.94 | 0.92 |
-| 12 | Gemini 2.5 Flash | 8.78 | 8.63 | 8.98 | 0.96 |
-| 13 | Mistral OCR | 8.66 | 8.46 | 9.01 | 0.95 |
-| 14 | DeepSeek-OCR | 8.55 | 8.65 | 8.30 | 0.95 |
-| 15 | LlamaParse | 8.14 | 8.06 | 8.20 | 0.85 |
-| 16 | GPT-5 nano | 7.79 | 7.77 | 7.67 | 0.75 |
-| 17 | PyPDF | 7.69 | 7.75 | 7.52 | 0.75 |
-| 18 | GOT-OCR2.0 | 7.38 | 7.07 | 7.95 | 0.91 |
-| 19 | PyMuPDF4LLM | 6.67 | 6.70 | 6.41 | 0.58 |
-| 20 | GPT-5 mini | 6.61 | 6.55 | 6.56 | 0.75 |
-| 21 | GROBID | 5.70 | 5.97 | 5.07 | 0.71 |
+| Rank | Parser | Score | Params/Cost | Inference |
+|------|--------|-------|-------------|-----------|
+| 1 | Qwen3-VL-235B-A22B-Instruct | 9.76 | 22B | GPU/API |
+| 2 | Gemini 3 Pro | 9.75 | $2.00/12.00 M tok | API |
+| 3 | PaddleOCR-VL | 9.65 | 0.9B | CPU/GPU |
+| 4 | Mathpix | 9.64 | $0.005/page | API |
+| 5 | dots.ocr | 9.43 | 1.7B | GPU |
+| 6 | PP-StructureV3 | 9.34 | <0.3B | CPU/GPU |
+| 7 | Nanonets-OCR-s | 9.31 | 4B | GPU |
+| 8 | Gemini 2.5 Pro | 9.28 | $1.25/10.00 M tok | API |
+| 9 | MonkeyOCR-pro-3B | 9.25 | 3B | GPU |
+| 10 | MinerU2.5 | 9.17 | 1.2B | CPU/GPU/API |
+| 11 | olmOCR-2-7B-1025-FP8 | 8.94 | 7B | GPU |
+| 12 | Gemini 2.5 Flash | 8.78 | $0.15/0.60 M tok | API |
+| 13 | Mistral OCR | 8.66 | $0.001/page | API |
+| 14 | DeepSeek-OCR | 8.55 | 0.6B | GPU |
+| 15 | LlamaParse | 8.14 | $0.09/page | API |
+| 16 | GPT-5 nano | 7.79 | $0.05/0.40 M tok | API |
+| 17 | PyPDF | 7.69 | —/Free | CPU |
+| 18 | GOT-OCR2.0 | 7.38 | 0.58B | CPU/GPU |
+| 19 | PyMuPDF4LLM | 6.67 | —/Free | CPU |
+| 20 | GPT-5 mini | 6.61 | $0.25/2.00 M tok | API |
+| 21 | GROBID | 5.70 | —/Free | CPU |
 
 **Legend:**
-- **Overall**: Average LLM-as-a-Judge score (0-10 scale) across all formulas (1411 inline + 641 display formulas from 100 PDFs)
-- **Inline**: Average score for inline formulas only (1411 formulas)
-- **Display**: Average score for display-mode formulas only (641 formulas)
-- **CDM**: Character Detection Metric (0-1 scale) - measures character-level accuracy using visual rendering comparison
+- **Score**: Average LLM-as-a-Judge score (0-10 scale) across all formulas (1411 inline + 641 display formulas from 100 PDFs)
+- **Params/Cost**: Active parameters for open-source models or API pricing for commercial services (as of December 2025)
+- **Inference**: Deployment options (CPU, GPU, API)
+
+<details>
+<summary>📊 Detailed scores (Inline/Display/CDM)</summary>
+
+| Rank | Parser | Inline | Display | CDM |
+|------|--------|--------|---------|-----|
+| 1 | Qwen3-VL-235B-A22B-Instruct | 9.75 | 9.65 | 0.99 |
+| 2 | Gemini 3 Pro | 9.72 | 9.71 | 0.99 |
+| 3 | PaddleOCR-VL | 9.64 | 9.60 | 0.98 |
+| 4 | Mathpix | 9.60 | 9.62 | 0.97 |
+| 5 | dots.ocr | 9.31 | 9.55 | 0.94 |
+| 6 | PP-StructureV3 | 9.26 | 9.47 | 0.98 |
+| 7 | Nanonets-OCR-s | 9.30 | 9.26 | 0.96 |
+| 8 | Gemini 2.5 Pro | 9.16 | 9.39 | 0.97 |
+| 9 | MonkeyOCR-pro-3B | 9.26 | 9.20 | 0.98 |
+| 10 | MinerU2.5 | 9.16 | 9.17 | 0.96 |
+| 11 | olmOCR-2-7B-1025-FP8 | 8.88 | 8.94 | 0.92 |
+| 12 | Gemini 2.5 Flash | 8.63 | 8.98 | 0.96 |
+| 13 | Mistral OCR | 8.46 | 9.01 | 0.95 |
+| 14 | DeepSeek-OCR | 8.65 | 8.30 | 0.95 |
+| 15 | LlamaParse | 8.06 | 8.20 | 0.85 |
+| 16 | GPT-5 nano | 7.77 | 7.67 | 0.75 |
+| 17 | PyPDF | 7.75 | 7.52 | 0.75 |
+| 18 | GOT-OCR2.0 | 7.07 | 7.95 | 0.91 |
+| 19 | PyMuPDF4LLM | 6.70 | 6.41 | 0.58 |
+| 20 | GPT-5 mini | 6.55 | 6.56 | 0.75 |
+| 21 | GROBID | 5.97 | 5.07 | 0.71 |
+
+- **Inline**: LLM-as-a-Judge score for inline formulas (1411 formulas)
+- **Display**: LLM-as-a-Judge score for display-mode formulas (641 formulas)
+- **CDM**: Character Detection Metric (0-1 scale) - character-level accuracy via visual rendering comparison
+
+</details>
 
 
 ## Benchmark Dataset
@@ -44,6 +79,8 @@ PDFs are generated synthetically using LaTeX with randomized parameters:
 - **Formula Dataset:** Mathematical formulas are randomly sampled from our dataset of 319,000 formulas extracted from Wikipedia, ensuring diversity in formula complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
 
 - **Ground Truth:** Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth for each formula as a byproduct of the generation process.
+
+- **Reproducibility Artifacts:** All parsing outputs and evaluation artifacts (matching results, LLM ratings) for all 20+ evaluated parsers are available on [Zenodo](https://doi.org/10.5281/zenodo.17806191).
 
 ## Evaluation Pipeline
 
@@ -249,16 +286,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Citation
 
-If you use this benchmark in your research or project, please cite:
+If you use this benchmark in your research or project, please cite our paper:
 
 ```bibtex
-@software{pdf_parse_bench_2025,
-  author = {Horn, Pius; Keuper, Janis},
-  title = {Benchmarking PDF-to-Text Parsers on Mathematical Formula Extraction},
+@article{horn2025benchmarking,
+  author = {Horn, Pius and Keuper, Janis},
+  title = {Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
   year = {2025},
-  url = {https://github.com/phorn1/pdf-parse-bench}
+  url = {https://arxiv.org/abs/XXXX.XXXXX}
 }
 ```
+
+📄 **Paper:** [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX) *(Link will be updated upon publication)*
 
 ## Acknowledgments
 This work has been supported by the German Federal Ministry of Research, Technology and Space (BMFTR) in the program "Forschung an Fachhochschulen in Kooperation mit Unternehmen (FH-Kooperativ)" within the joint project **LLMpraxis** under grant 13FH622KX2.
