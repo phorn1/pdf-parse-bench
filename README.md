@@ -289,16 +289,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you use this benchmark in your research or project, please cite our paper:
 
 ```bibtex
-@article{horn2025benchmarking,
-  author = {Horn, Pius and Keuper, Janis},
-  title = {Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
-  year = {2025},
-  url = {https://arxiv.org/abs/XXXX.XXXXX}
+@misc{horn2025benchmarking,
+    title = {Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs},
+    author = {Horn, Pius and Keuper, Janis},
+    year = {2025},
+    eprint={2511.10390},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url = {https://arxiv.org/abs/2512.09874}
 }
 ```
 
-📄 **Paper:** [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX) *(Link will be updated upon publication)*
+📄 **Paper:** [arXiv:2512.09874](https://arxiv.org/abs/2512.09874)
 
 ## Acknowledgments
 This work has been supported by the German Federal Ministry of Research, Technology and Space (BMFTR) in the program "Forschung an Fachhochschulen in Kooperation mit Unternehmen (FH-Kooperativ)" within the joint project **LLMpraxis** under grant 13FH622KX2.
