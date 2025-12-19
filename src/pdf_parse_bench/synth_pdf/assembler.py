@@ -362,9 +362,14 @@ class LaTeXContentGenerator:
         self.formula_generator = formula_generator
         self.rng = random.Random(config.seed)
     
-    def generate_page_content(self) -> PageContent:
-        """Generate page content that fills exactly one page."""
+    def generate_page(self) -> tuple[PageContent, str]:
+        """Generate page content and complete LaTeX document."""
+        page_content = self._generate_page_content()
+        latex_document = self.template.build_document_template(page_content)
+        return page_content, latex_document
 
+    def _generate_page_content(self) -> PageContent:
+        """Generate page content that fills exactly one page."""
         page_content = PageContent()
 
         # Add blocks iteratively until page is full
