@@ -19,17 +19,20 @@ class DocumentClass(Enum):
 
 class FontFamily(Enum):
     """Available font families with their LaTeX packages."""
-    TIMES = (["\\usepackage{times}", "\\usepackage{txfonts}"])
-    PALATINO = (["\\usepackage{palatino}", "\\usepackage{euler}"])
-    LIBERTINE = (["\\usepackage{libertine}", "\\usepackage{libertinust1math}"])
-    CHARTER = (["\\usepackage{charter}", "\\usepackage[charter]{mathdesign}"])
-    LMODERN = (["\\usepackage{lmodern}"])
-    KPFONTS = (["\\usepackage{kpfonts}"])
+    TIMES = ["\\usepackage{times}", "\\usepackage{txfonts}"]
+    PALATINO = ["\\usepackage{palatino}", "\\usepackage{euler}"]
+    LIBERTINE = ["\\usepackage{libertine}", "\\usepackage{libertinust1math}"]
+    CHARTER = ["\\usepackage{charter}", "\\usepackage[charter]{mathdesign}"]
+    LMODERN = ["\\usepackage{lmodern}"]
+    KPFONTS = ["\\usepackage{kpfonts}"]
 
     @property
     def packages(self) -> list[str]:
-        """Get required LaTeX packages for this font family."""
         return self.value
+
+    @property
+    def conflicts_with_amsfonts(self) -> bool:
+        return any("mathdesign" in pkg for pkg in self.value)
 
 
 class Language(Enum):
@@ -42,6 +45,12 @@ class Language(Enum):
     def __init__(self, babel_name: str, locale_code: str):
         self.babel_name = babel_name
         self.locale_code = locale_code
+
+    @property
+    def babel_package(self) -> str:
+        if self.babel_name == "spanish":
+            return "\\usepackage[spanish,es-noshorthands]{babel}"
+        return f"\\usepackage[{self.babel_name}]{{babel}}"
 
 
 class MarginSettings(BaseModel):

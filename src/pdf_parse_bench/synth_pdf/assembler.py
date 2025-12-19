@@ -185,32 +185,20 @@ class LaTeXDocumentTemplate:
         packages = [
             "\\usepackage[utf8]{inputenc}",
             "\\usepackage[T1]{fontenc}",
-        ]
-        
-        # Handle Spanish babel with proper options to avoid active character conflicts
-        if self.config.language.babel_name == "spanish":
-            packages.append("\\usepackage[spanish,es-noshorthands]{babel}")
-        else:
-            packages.append(f"\\usepackage[{self.config.language.babel_name}]{{babel}}")
-        
-        packages.extend([
+            self.config.language.babel_package,
             "\\usepackage{amsmath}",
-            "\\usepackage{geometry}"
-        ])
-        
+            "\\usepackage{geometry}",
+        ]
+
         # Don't load setspace with memoir class - it has its own spacing commands
         if self.config.document_class.value != "memoir":
             packages.append("\\usepackage{setspace}")
-        
-        # Font packages
-        font_packages = self.config.font_family.packages
-        packages.extend(font_packages)
-        
-        # Add amsfonts and amssymb only if not using mathdesign (which conflicts with these)
-        uses_mathdesign = any("mathdesign" in pkg for pkg in font_packages)
-        if not uses_mathdesign:
+
+        packages.extend(self.config.font_family.packages)
+
+        if not self.config.font_family.conflicts_with_amsfonts:
             packages.extend(["\\usepackage{amsfonts}", "\\usepackage{amssymb}"])
-        
+
         if self.config.use_fancy_headers:
             packages.append("\\usepackage{fancyhdr}")
 
@@ -219,14 +207,16 @@ class LaTeXDocumentTemplate:
 
         if self.config.two_column:
             packages.append("\\usepackage{multicol}")
-        
-        # Add backward compatibility for old font commands
-        packages.append("\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}")
-        packages.append("\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}")
-        packages.append("\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}")
-        packages.append("\\DeclareOldFontCommand{\\tt}{\\normalfont\\ttfamily}{\\mathtt}")
-        packages.append("\\DeclareOldFontCommand{\\sf}{\\normalfont\\sffamily}{\\mathsf}")
-        packages.append("\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}")
+
+        # Backward compatibility for old font commands
+        packages.extend([
+            "\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}",
+            "\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}",
+            "\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}",
+            "\\DeclareOldFontCommand{\\tt}{\\normalfont\\ttfamily}{\\mathtt}",
+            "\\DeclareOldFontCommand{\\sf}{\\normalfont\\sffamily}{\\mathsf}",
+            "\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}",
+        ])
 
         return "\n".join(packages)
     
