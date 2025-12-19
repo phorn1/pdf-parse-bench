@@ -1,7 +1,7 @@
 """Content generators for synthetic PDF content."""
 import logging
 import random
-from typing import Generator
+from typing import Callable
 
 from faker import Faker
 import duckdb
@@ -12,28 +12,28 @@ logging.getLogger('faker.factory').setLevel(logging.WARNING)
 
 
 
-def generate_text_paragraphs(language: str = "en_US", default_max_chars: int = 345, seed: int | None = None) -> Generator[str, int, None]:
-    """Generate random text paragraphs using Faker with dynamic max_chars.
+def create_text_generator(language: str = "en_US", seed: int | None = None) -> Callable[[int], str]:
+    """Create a text generator function using Faker.
 
     Args:
         language: Language locale (e.g., 'en_US', 'de_DE', 'fr_FR', 'es_ES', etc.)
-        default_max_chars: Default maximum number of characters for text generation
         seed: Random seed for reproducible text generation
 
+    Returns:
+        A function that generates text of specified max length.
+
     Usage:
-        gen = generate_text_paragraphs()
-        text = next(gen)  # Uses default_max_chars
-        text = gen.send(150)  # Uses 150 as max_chars
+        generate = create_text_generator()
+        text = generate(150)  # Generate text up to 150 chars
     """
     fake = Faker(locale=language)
     if seed is not None:
         fake.seed_instance(seed)
 
-    max_chars = default_max_chars
-    while True:
-        text = fake.text(max_nb_chars=max_chars).replace('\n', ' ')
-        # yield returns None when next() is called, or the sent value when send() is used
-        max_chars = (yield text) or default_max_chars
+    def generate(max_chars: int) -> str:
+        return fake.text(max_nb_chars=max_chars).replace('\n', ' ')
+
+    return generate
 
 
 def load_formulas_from_dataset() -> list[str]:
@@ -62,25 +62,31 @@ def load_formulas_from_dataset() -> list[str]:
     return [formula for (formula,) in result]
 
 
-def load_formula_generator(seed: int | None = None, formulas: list[str] | None = None) -> Generator[str, None, None]:
+def create_formula_generator(seed: int | None = None, formulas: list[str] | None = None) -> Callable[[], str]:
     """
-    Create a generator that yields random formulas.
+    Create a formula generator function.
 
     Args:
-        seed (int | None): Random seed for reproducible formula selection
-        formulas (list[str] | None): Pre-loaded formula list. If None, formulas will be downloaded.
+        seed: Random seed for reproducible formula selection
+        formulas: Pre-loaded formula list. If None, formulas will be downloaded.
 
-    Yields:
-        str: Individual LaTeX formulas from the dataset (randomly selected)
+    Returns:
+        A function that returns a random formula on each call.
+
+    Usage:
+        get_formula = create_formula_generator()
+        formula = get_formula()  # Get random formula
     """
     # Load formulas if not provided
     if formulas is None:
         formulas = load_formulas_from_dataset()
 
     rng = random.Random(seed)
-    # Infinite generator that randomly samples formulas without copying the list
-    while True:
-        yield rng.choice(formulas)
+
+    def generate() -> str:
+        return rng.choice(formulas)
+
+    return generate
 
 
             

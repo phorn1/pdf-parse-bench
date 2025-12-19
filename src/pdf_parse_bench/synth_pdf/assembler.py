@@ -3,7 +3,7 @@
 import random
 import tempfile
 import re
-from typing import Generator
+from typing import Callable
 from pathlib import Path
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
@@ -357,18 +357,15 @@ class PageFittingValidator:
 
 class LaTeXContentGenerator:
     """Handles content generation using page fitting validation."""
-    
+
     def __init__(self, config: LaTeXConfig,
-                 text_generator: Generator[str, int, None],
-                 formula_generator: Generator[str, None, None]):
+                 text_generator: Callable[[int], str],
+                 formula_generator: Callable[[], str]):
         self.config = config
         self.template = LaTeXDocumentTemplate(config)
         self.validator = PageFittingValidator(self.template)
         self.text_generator = text_generator
         self.formula_generator = formula_generator
-        
-        # Prime the text generator so we can use send() later
-        next(self.text_generator)
     
     def generate_page_content(self) -> PageContent:
         """Generate page content that fills exactly one page."""
@@ -400,13 +397,13 @@ class LaTeXContentGenerator:
             self.config.content.paragraph_min_chars,
             self.config.content.paragraph_max_chars
         )
-        content = self.text_generator.send(paragraph_length)
+        content = self.text_generator(paragraph_length)
         return ParagraphBlock(text=content)
     
     def _generate_formula(self) -> FormulaBlock:
         """Generate a mathematical formula that fits within bounds."""
         while True:
-            formula = next(self.formula_generator)
+            formula = self.formula_generator()
             block = FormulaBlock(latex_formula=formula)
 
             # Check if formula fits bounds by testing compilation
@@ -421,7 +418,7 @@ class LaTeXContentGenerator:
             Formula string that is flat enough for inline use
         """
         while True:
-            formula = next(self.formula_generator)
+            formula = self.formula_generator()
 
             # Check if formula height is suitable for inline use
             if self.validator.check_inline_formula_height(formula):
@@ -443,9 +440,7 @@ class LaTeXContentGenerator:
                     self.config.content.mixed_segment_min_chars,
                     self.config.content.mixed_segment_max_chars
                 )
-
-                # Use generator.send() to specify exact length for this segment
-                segment_text = self.text_generator.send(segment_length)
+                segment_text = self.text_generator(segment_length)
                 text_segments.append(segment_text)
 
                 # Add inline formula between segments (except for the last one)

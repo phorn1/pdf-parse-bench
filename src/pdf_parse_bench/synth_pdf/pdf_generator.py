@@ -13,7 +13,7 @@ import multiprocessing
 from .style_config import LaTeXConfig
 from .assembler import LaTeXContentGenerator
 from .compiler import LaTeXCompiler
-from .random_content import generate_text_paragraphs, load_formula_generator, load_formulas_from_dataset
+from .random_content import create_text_generator, create_formula_generator, load_formulas_from_dataset
 from pdf_parse_bench.utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
@@ -30,8 +30,8 @@ class LaTeXSinglePagePDFGenerator:
             config: Configuration for LaTeX document generation
             formulas: Pre-loaded formulas list (if None, will download ~35MB dataset)
         """
-        self.formula_generator = load_formula_generator(seed=config.seed, formulas=formulas)
-        self.text_generator = generate_text_paragraphs(language=config.language.locale_code, seed=config.seed)
+        self.formula_generator = create_formula_generator(seed=config.seed, formulas=formulas)
+        self.text_generator = create_text_generator(language=config.language.locale_code, seed=config.seed)
         self.config = config
 
     def generate_single_page_pdf(self, output_latex_path: Path | None, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
