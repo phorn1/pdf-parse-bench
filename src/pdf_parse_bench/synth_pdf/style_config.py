@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 
 
-class DocumentClass(str, Enum):
+class DocumentClass(Enum):
     """Available LaTeX document classes."""
     ARTICLE = "article"
     REPORT = "report" 
@@ -51,18 +51,7 @@ class MarginSettings:
     bottom: str
     left: str
     right: str
-    
-    @classmethod
-    def random(cls) -> 'MarginSettings':
-        """Generate random margin settings."""
-        margins = ["1.5cm", "2cm", "2.5cm", "3cm"]
-        return cls(
-            top=random.choice(margins),
-            bottom=random.choice(margins), 
-            left=random.choice(margins),
-            right=random.choice(margins)
-        )
-    
+
     def to_latex_options(self) -> list[str]:
         """Convert margins to LaTeX geometry options."""
         return [
@@ -80,21 +69,6 @@ class TypographySettings:
     line_spacing: str = "single"  # single, onehalf, double
     paragraph_indent: str = "1.5em"
     paragraph_skip: str = "0pt"
-    
-    @classmethod
-    def random(cls) -> 'TypographySettings':
-        """Generate random typography settings."""
-        font_sizes = ["10pt", "11pt", "12pt"]
-        line_spacings = ["single", "onehalf", "double"]
-        indents = ["0pt", "1em", "1.5em", "2em"]
-        skips = ["0pt", "0.5em", "1em"]
-        
-        return cls(
-            font_size=random.choice(font_sizes),
-            line_spacing=random.choice(line_spacings),
-            paragraph_indent=random.choice(indents),
-            paragraph_skip=random.choice(skips)
-        )
 
 
 @dataclass
@@ -136,22 +110,34 @@ class LaTeXConfig(BaseModel):
     @classmethod
     def random(cls, seed: int | None = None) -> 'LaTeXConfig':
         """Generate random LaTeX configuration."""
-        if seed is not None:
-            random.seed(seed)
-            
+        rng = random.Random(seed)
+
+        margins = ["1.5cm", "2cm", "2.5cm", "3cm"]
+        font_sizes = ["10pt", "11pt", "12pt"]
+        line_spacings = ["single", "onehalf", "double"]
+        indents = ["0pt", "1em", "1.5em", "2em"]
+        skips = ["0pt", "0.5em", "1em"]
+
         return cls(
-            document_class=random.choice(list(DocumentClass)),
-            font_family=random.choice(list(FontFamily)),
-            language=random.choice(list(Language)),
-            margins=MarginSettings.random(),
-            typography=TypographySettings.random(),
+            document_class=rng.choice(list(DocumentClass)),
+            font_family=rng.choice(list(FontFamily)),
+            language=rng.choice(list(Language)),
+            margins=MarginSettings(
+                top=rng.choice(margins),
+                bottom=rng.choice(margins),
+                left=rng.choice(margins),
+                right=rng.choice(margins),
+            ),
+            typography=TypographySettings(
+                font_size=rng.choice(font_sizes),
+                line_spacing=rng.choice(line_spacings),
+                paragraph_indent=rng.choice(indents),
+                paragraph_skip=rng.choice(skips),
+            ),
             content=ContentSettings(),
-            two_column=random.choice([True, False]),
-            column_sep=random.choice(["0.8cm", "1cm", "1.2cm"]),
-            include_headers=random.choice([True, False]),
-            use_fancy_headers=random.choice([True, False]),
-            seed=seed
+            two_column=rng.choice([True, False]),
+            column_sep=rng.choice(["0.8cm", "1cm", "1.2cm"]),
+            include_headers=rng.choice([True, False]),
+            use_fancy_headers=rng.choice([True, False]),
+            seed=seed,
         )
-    
-    
-    
