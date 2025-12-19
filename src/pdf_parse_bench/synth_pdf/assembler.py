@@ -175,7 +175,7 @@ class LaTeXDocumentTemplate:
         options.append(self.config.typography.font_size)
         
         # Paper size
-        options.append(self.config.page_geometry.value)
+        options.append("a4paper")
         
         # Two column
         if self.config.two_column:
@@ -236,7 +236,7 @@ class LaTeXDocumentTemplate:
     
     def _build_geometry(self) -> str:
         """Build geometry package configuration."""
-        options = [self.config.page_geometry.value] + self.config.margins.to_latex_options()
+        options = ["a4paper"] + self.config.margins.to_latex_options()
         return f"\\geometry{{{','.join(options)}}}"
     
     def _build_typography_section(self) -> str:

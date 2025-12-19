@@ -44,14 +44,6 @@ class Language(Enum):
         self.locale_code = locale_code
 
 
-class PageGeometry(str, Enum):
-    """Page size options."""
-    A4 = "a4paper"
-    # LETTER = "letterpaper"
-    # A5 = "a5paper"
-    # B5 = "b5paper"
-
-
 @dataclass
 class MarginSettings:
     """Margin configuration."""
@@ -124,7 +116,6 @@ class LaTeXConfig(BaseModel):
     # Document structure
     document_class: DocumentClass
     font_family: FontFamily
-    page_geometry: PageGeometry
     language: Language
     margins: MarginSettings
     typography: TypographySettings
@@ -151,7 +142,6 @@ class LaTeXConfig(BaseModel):
         return cls(
             document_class=random.choice(list(DocumentClass)),
             font_family=random.choice(list(FontFamily)),
-            page_geometry=random.choice(list(PageGeometry)),
             language=random.choice(list(Language)),
             margins=MarginSettings.random(),
             typography=TypographySettings.random(),
