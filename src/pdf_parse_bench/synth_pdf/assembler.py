@@ -346,11 +346,9 @@ class PageFittingValidator:
                 if height_match:
                     height_pt = float(height_match.group(1))
                     return height_pt <= max_height_pt
-                else:
-                    raise Exception
-        except Exception:
-            print("wtf")
-            raise Exception
+                raise RuntimeError(f"Could not extract formula height from LaTeX log: {log_content}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to measure formula height for: {formula}") from e
 
 
 # ========== CONTENT GENERATOR ==========
