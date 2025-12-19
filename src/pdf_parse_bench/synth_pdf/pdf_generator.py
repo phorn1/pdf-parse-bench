@@ -107,10 +107,10 @@ def _generate_single_pdf_task(task: LaTeXPDFJob, formulas: list[str]) -> None:
         task: Task configuration
         formulas: Pre-loaded formulas to avoid re-downloading in each worker
     """
-    # Update seed to include retry count for different random content on retry
-    task.config.seed = task.config.seed + task.retry_count
+    # Create config copy with updated seed for retries (avoid mutating original)
+    config = task.config.model_copy(update={"seed": task.config.seed + task.retry_count})
 
-    generator = LaTeXSinglePagePDFGenerator(task.config, formulas=formulas)
+    generator = LaTeXSinglePagePDFGenerator(config, formulas=formulas)
     generator.generate_single_page_pdf(task.latex_path, task.pdf_path, task.gt_path, task.rendered_formulas_dir)
 
 
