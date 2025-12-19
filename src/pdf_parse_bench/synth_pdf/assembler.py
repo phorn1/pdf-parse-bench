@@ -364,6 +364,7 @@ class LaTeXContentGenerator:
         self.validator = PageFittingValidator(self.template)
         self.text_generator = text_generator
         self.formula_generator = formula_generator
+        self.rng = random.Random(config.seed)
     
     def generate_page_content(self) -> PageContent:
         """Generate page content that fills exactly one page."""
@@ -373,7 +374,7 @@ class LaTeXContentGenerator:
         # Add blocks iteratively until page is full
         while True:
             # Choose block type first, then generate (lazy evaluation)
-            block_generator = random.choice([
+            block_generator = self.rng.choice([
                 self._generate_paragraph,
                 self._generate_formula,
                 self._generate_mixed_text,
@@ -391,7 +392,7 @@ class LaTeXContentGenerator:
     
     def _generate_paragraph(self) -> ParagraphBlock:
         """Generate a text paragraph with random length."""
-        paragraph_length = random.randint(
+        paragraph_length = self.rng.randint(
             self.config.content.paragraph_min_chars,
             self.config.content.paragraph_max_chars
         )
@@ -427,14 +428,14 @@ class LaTeXContentGenerator:
         """Generate a mixed text block with inline formulas that fits within bounds."""
         while True:
             # Generate random number of text segments based on config
-            num_segments = random.randint(2, self.config.content.mixed_segments_max_count)
+            num_segments = self.rng.randint(2, self.config.content.mixed_segments_max_count)
 
             text_segments = []
             inline_formulas = []
 
             for i in range(num_segments):
                 # Generate text segment with variable length
-                segment_length = random.randint(
+                segment_length = self.rng.randint(
                     self.config.content.mixed_segment_min_chars,
                     self.config.content.mixed_segment_max_chars
                 )
