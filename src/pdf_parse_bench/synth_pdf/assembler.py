@@ -5,8 +5,9 @@ import tempfile
 import re
 from typing import Callable
 from pathlib import Path
-from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+
+from pydantic import BaseModel, Field
 
 from .style_config import LaTeXConfig
 from .compiler import LaTeXCompiler
@@ -14,43 +15,40 @@ from .compiler import LaTeXCompiler
 
 # ========== CONTENT BLOCK TYPES ==========
 
-@dataclass
-class ContentBlock(ABC):
+class ContentBlock(BaseModel, ABC):
     """Base class for all content blocks."""
-    
+
     @staticmethod
     def _fix_formula_for_latex(formula: str) -> str:
         """Fix formula for LaTeX compilation (e.g., Spanish babel conflicts)."""
         return formula.replace("\\%", "\\text{\\%}")
-    
+
     @abstractmethod
     def to_latex(self) -> str:
         """Convert this block to LaTeX format."""
         pass
-    
+
     @abstractmethod
     def to_ground_truth(self) -> dict[str, str] | list[dict[str, str]]:
         """Convert this block to ground truth format."""
         pass
 
 
-@dataclass
 class ParagraphBlock(ContentBlock):
     """Text paragraph content block."""
     text: str
-    
+
     def to_latex(self) -> str:
         return self.text + "\n"
-    
+
     def to_ground_truth(self) -> dict[str, str]:
         return {"type": "text", "data": self.text}
 
 
-@dataclass
 class FormulaBlock(ContentBlock):
     """Mathematical formula content block."""
     latex_formula: str
-    
+
     def to_latex(self) -> str:
         formula = self._fix_formula_for_latex(self.latex_formula)
         return f"$${formula}$$\n"
@@ -59,15 +57,14 @@ class FormulaBlock(ContentBlock):
         return {"type": "display-formula", "data": f"$${self.latex_formula}$$"}
 
 
-@dataclass
 class MixedTextBlock(ContentBlock):
     """Mixed text block with inline formulas between text segments."""
     text_segments: list[str]
     inline_formulas: list[str]
-    
+
     def to_latex(self) -> str:
         result = []
-        
+
         # Interleave text segments and inline formulas
         for i, text in enumerate(self.text_segments):
             result.append(text)
@@ -75,34 +72,33 @@ class MixedTextBlock(ContentBlock):
             if i < len(self.inline_formulas):
                 formula = self._fix_formula_for_latex(self.inline_formulas[i])
                 result.append(f" \\mbox{{${formula}$}} ")
-        
+
         return "".join(result) + "\n"
-    
+
     def to_ground_truth(self) -> list[dict[str, str]]:
         ground_truth_entries = []
-        
+
         for i, text in enumerate(self.text_segments):
             ground_truth_entries.append({"type": "text", "data": text})
             if i < len(self.inline_formulas):
                 ground_truth_entries.append({
-                    "type": "inline-formula", 
+                    "type": "inline-formula",
                     "data": f"${self.inline_formulas[i]}$"
                 })
-        
+
         return ground_truth_entries
 
 
 # ========== PAGE CONTENT ==========
 
-@dataclass
-class PageContent:
+class PageContent(BaseModel):
     """Content structure for a single page."""
-    content_blocks: list[ContentBlock] = field(default_factory=list)
-    
+    content_blocks: list[ContentBlock] = Field(default_factory=list)
+
     def to_latex(self) -> str:
         """Convert all content blocks to LaTeX format."""
         return "\n".join(block.to_latex() for block in self.content_blocks)
-    
+
     def to_ground_truth(self) -> list[dict[str, str]]:
         """Convert all content blocks to flattened ground truth format."""
         gt_data = []

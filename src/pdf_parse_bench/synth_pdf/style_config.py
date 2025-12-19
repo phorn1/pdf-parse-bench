@@ -2,14 +2,14 @@
 
 import random
 from enum import Enum
-from dataclasses import dataclass
+
 from pydantic import BaseModel
 
 
 class DocumentClass(Enum):
     """Available LaTeX document classes."""
     ARTICLE = "article"
-    REPORT = "report" 
+    REPORT = "report"
     BOOK = "book"
     MEMOIR = "memoir"
     SCRARTCL = "scrartcl"
@@ -25,7 +25,7 @@ class FontFamily(Enum):
     CHARTER = (["\\usepackage{charter}", "\\usepackage[charter]{mathdesign}"])
     LMODERN = (["\\usepackage{lmodern}"])
     KPFONTS = (["\\usepackage{kpfonts}"])
-    
+
     @property
     def packages(self) -> list[str]:
         """Get required LaTeX packages for this font family."""
@@ -38,14 +38,13 @@ class Language(Enum):
     GERMAN = ("german", "de_DE")
     SPANISH = ("spanish", "es_ES")
     FRENCH = ("french", "fr_FR")
-    
+
     def __init__(self, babel_name: str, locale_code: str):
         self.babel_name = babel_name
         self.locale_code = locale_code
 
 
-@dataclass
-class MarginSettings:
+class MarginSettings(BaseModel):
     """Margin configuration."""
     top: str
     bottom: str
@@ -62,8 +61,7 @@ class MarginSettings:
         ]
 
 
-@dataclass
-class TypographySettings:
+class TypographySettings(BaseModel):
     """Typography configuration."""
     font_size: str = "11pt"
     line_spacing: str = "single"  # single, onehalf, double
@@ -71,8 +69,7 @@ class TypographySettings:
     paragraph_skip: str = "0pt"
 
 
-@dataclass
-class ContentSettings:
+class ContentSettings(BaseModel):
     """Content generation configuration."""
     # Mixed text block settings
     mixed_segment_min_chars: int = 50
