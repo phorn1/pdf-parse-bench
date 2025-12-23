@@ -49,7 +49,8 @@ class Language(Enum):
     @property
     def babel_package(self) -> str:
         if self.babel_name == "spanish":
-            return "\\usepackage[spanish,es-noshorthands]{babel}"
+            # Disable shorthands that break math mode
+            return "\\usepackage[spanish,es-noshorthands]{babel}\n\\spanishplainpercent"
         return f"\\usepackage[{self.babel_name}]{{babel}}"
 
 

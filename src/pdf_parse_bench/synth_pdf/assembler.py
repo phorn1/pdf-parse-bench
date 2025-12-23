@@ -18,11 +18,6 @@ from .compiler import LaTeXCompiler
 class ContentBlock(BaseModel, ABC):
     """Base class for all content blocks."""
 
-    @staticmethod
-    def _fix_formula_for_latex(formula: str) -> str:
-        """Fix formula for LaTeX compilation (e.g., Spanish babel conflicts)."""
-        return formula.replace("\\%", "\\text{\\%}")
-
     @abstractmethod
     def to_latex(self) -> str:
         """Convert this block to LaTeX format."""
@@ -50,8 +45,7 @@ class FormulaBlock(ContentBlock):
     latex_formula: str
 
     def to_latex(self) -> str:
-        formula = self._fix_formula_for_latex(self.latex_formula)
-        return f"$${formula}$$\n"
+        return f"$${self.latex_formula}$$\n"
 
     def to_ground_truth(self) -> dict[str, str]:
         return {"type": "display-formula", "data": f"$${self.latex_formula}$$"}
@@ -63,30 +57,19 @@ class MixedTextBlock(ContentBlock):
     inline_formulas: list[str]
 
     def to_latex(self) -> str:
-        result = []
-
-        # Interleave text segments and inline formulas
-        for i, text in enumerate(self.text_segments):
-            result.append(text)
-            # Add inline formula after each text segment except the last
-            if i < len(self.inline_formulas):
-                formula = self._fix_formula_for_latex(self.inline_formulas[i])
-                result.append(f" \\mbox{{${formula}$}} ")
-
-        return "".join(result) + "\n"
+        # First text, then alternating: formula as separator, next text
+        result = self.text_segments[0]
+        for formula, text in zip(self.inline_formulas, self.text_segments[1:]):
+            result += f" \\mbox{{${formula}$}} " + text
+        return result + "\n"
 
     def to_ground_truth(self) -> list[dict[str, str]]:
-        ground_truth_entries = []
-
-        for i, text in enumerate(self.text_segments):
-            ground_truth_entries.append({"type": "text", "data": text})
-            if i < len(self.inline_formulas):
-                ground_truth_entries.append({
-                    "type": "inline-formula",
-                    "data": f"${self.inline_formulas[i]}$"
-                })
-
-        return ground_truth_entries
+        # First text, then alternating: formula, text
+        result = [{"type": "text", "data": self.text_segments[0]}]
+        for formula, text in zip(self.inline_formulas, self.text_segments[1:]):
+            result.append({"type": "inline-formula", "data": f"${formula}$"})
+            result.append({"type": "text", "data": text})
+        return result
 
 
 # ========== PAGE CONTENT ==========
