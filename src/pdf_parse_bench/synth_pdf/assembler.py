@@ -134,21 +134,11 @@ class LaTeXDocument:
         if self.config.two_column:
             pkgs.append("\\usepackage{multicol}")
 
-        # Backward compatibility for old font commands
-        pkgs.extend([
-            "\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}",
-            "\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}",
-            "\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}",
-            "\\DeclareOldFontCommand{\\tt}{\\normalfont\\ttfamily}{\\mathtt}",
-            "\\DeclareOldFontCommand{\\sf}{\\normalfont\\sffamily}{\\mathsf}",
-            "\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}",
-        ])
-
         return pkgs
 
     @property
     def preamble_settings(self) -> list[str]:
-        """All preamble settings (geometry, typography, headers)."""
+        """All preamble settings (geometry, typography, font commands)."""
         cfg = self.config
         settings = [
             f"\\geometry{{a4paper,{','.join(cfg.margins.to_latex_options())}}}",
@@ -161,6 +151,16 @@ class LaTeXDocument:
 
         if cfg.typography.line_spacing.command:
             settings.append(cfg.typography.line_spacing.command)
+
+        # Backward compatibility for old font commands
+        settings.extend([
+            "\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}",
+            "\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}",
+            "\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}",
+            "\\DeclareOldFontCommand{\\tt}{\\normalfont\\ttfamily}{\\mathtt}",
+            "\\DeclareOldFontCommand{\\sf}{\\normalfont\\sffamily}{\\mathsf}",
+            "\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}",
+        ])
 
         return settings
 
@@ -229,16 +229,13 @@ class PageFittingValidator:
             True if formula height is within bounds, False otherwise
         """
         # Create minimal test document that measures formula height
-        test_latex = r"""
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage[version=4]{mhchem}
-\begin{document}
-\setbox0=\hbox{$""" + formula + r"""$}
-\typeout{FORMULA_HEIGHT_PT:\the\ht0}
-\end{document}
+        packages = "\n".join(self.document.packages)
+        test_latex = f"""{self.document.documentclass_line}
+{packages}
+\\begin{{document}}
+\\setbox0=\\hbox{{${formula}$}}
+\\typeout{{FORMULA_HEIGHT_PT:\\the\\ht0}}
+\\end{{document}}
 """
 
         try:
