@@ -96,8 +96,8 @@ class PageContent(BaseModel):
         return gt_data
 
 
-class LaTeXDocumentTemplate:
-    """Declarative LaTeX document template generator."""
+class LaTeXDocument:
+    """LaTeX document with preamble and content rendering."""
 
     def __init__(self, config: LaTeXConfig):
         self.config = config
@@ -164,35 +164,31 @@ class LaTeXDocumentTemplate:
 
         return settings
 
-    def render(self, content: str) -> str:
-        """Render complete LaTeX document."""
+    def assemble(self, page_content: PageContent) -> str:
+        """Assemble complete LaTeX document from page content."""
         sections = [
             self.documentclass_line,
             "\n".join(self.packages),
             "\n".join(self.preamble_settings),
             "",
             "\\begin{document}",
-            content,
+            page_content.to_latex(),
             "\\end{document}",
         ]
         return "\n".join(sections)
-
-    def build_document_template(self, page_content: PageContent) -> str:
-        """Build complete LaTeX document with given page content."""
-        return self.render(page_content.to_latex())
 
 
 # ========== PAGE FITTING VALIDATOR ==========
 
 class PageFittingValidator:
-    """Handles page fitting validation."""
-    
-    def __init__(self, template: LaTeXDocumentTemplate):
-        self.template = template
-    
+    """Validates content fits within page bounds."""
+
+    def __init__(self, document: LaTeXDocument):
+        self.document = document
+
     def check_fits_one_page(self, page_content: PageContent) -> bool:
-        """Check if page content fits on one page by compiling LaTeX."""
-        latex_content = self.template.build_document_template(page_content)
+        """Check if page content fits on one page."""
+        latex_content = self.document.assemble(page_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -210,7 +206,7 @@ class PageFittingValidator:
     def check_block_fits_bounds(self, block: ContentBlock) -> bool:
         """Check if a single content block fits within page bounds."""
         single_block_content = PageContent(content_blocks=[block])
-        latex_content = self.template.build_document_template(single_block_content)
+        latex_content = self.document.assemble(single_block_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -272,23 +268,22 @@ class PageFittingValidator:
 # ========== CONTENT GENERATOR ==========
 
 class LaTeXContentGenerator:
-    """Handles content generation using page fitting validation."""
+    """Generates random content that fits within page bounds."""
 
     def __init__(self, config: LaTeXConfig,
                  text_generator: Callable[[int], str],
                  formula_generator: Callable[[], str]):
         self.config = config
-        self.template = LaTeXDocumentTemplate(config)
-        self.validator = PageFittingValidator(self.template)
+        self.document = LaTeXDocument(config)
+        self.validator = PageFittingValidator(self.document)
         self.text_generator = text_generator
         self.formula_generator = formula_generator
         self.rng = random.Random(config.seed)
-    
+
     def generate_page(self) -> tuple[PageContent, str]:
         """Generate page content and complete LaTeX document."""
         page_content = self._generate_page_content()
-        latex_document = self.template.build_document_template(page_content)
-        return page_content, latex_document
+        return page_content, self.document.assemble(page_content)
 
     def _generate_page_content(self) -> PageContent:
         """Generate page content that fills exactly one page."""
