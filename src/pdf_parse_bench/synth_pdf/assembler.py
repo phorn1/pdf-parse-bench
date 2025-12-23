@@ -97,90 +97,45 @@ class PageContent(BaseModel):
 
 
 class LaTeXDocumentTemplate:
-    """Handles LaTeX document template generation (preamble, packages, etc.)."""
-    
+    """Declarative LaTeX document template generator."""
+
     def __init__(self, config: LaTeXConfig):
         self.config = config
-    
-    def build_document_template(self, page_content: PageContent) -> str:
-        """Build complete LaTeX document with given page content."""
-        latex_code = ""
 
-        # Document class and options
-        latex_code += self._build_documentclass() + "\n"
-        
-        # Packages
-        latex_code += self._build_packages_section() + "\n"
-        
-        # Geometry settings  
-        latex_code += self._build_geometry() + "\n"
-        
-        # Typography settings
-        latex_code += self._build_typography_section() + "\n"
-        
-        # Line spacing command
-        if self.config.typography.line_spacing.command:
-            latex_code += self.config.typography.line_spacing.command + "\n"
-        
-        # Header/footer setup
-        if self.config.use_fancy_headers:
-            latex_code += self._build_fancy_headers_section() + "\n"
-        
-        # Document begin
-        latex_code += "\n\\begin{document}\n"
-        
-        # Document content
-        latex_code += page_content.to_latex()
-        
-        # Document end
-        latex_code += "\\end{document}"
-        
-        return latex_code
-    
-    def _build_documentclass(self) -> str:
-        """Build document class line."""
-        options = []
-        
-        # Font size
-        options.append(self.config.typography.font_size)
-        
-        # Paper size
-        options.append("a4paper")
-        
-        # Two column
+    @property
+    def documentclass_line(self) -> str:
+        """Document class declaration with options."""
+        options = [self.config.typography.font_size, "a4paper"]
         if self.config.two_column:
             options.append("twocolumn")
-        
-        options_str = ",".join(options)
-        return f"\\documentclass[{options_str}]{{{self.config.document_class.value}}}"
-    
-    def _build_packages_section(self) -> str:
-        """Build required packages section."""
-        packages = [
+        return f"\\documentclass[{','.join(options)}]{{{self.config.document_class.value}}}"
+
+    @property
+    def packages(self) -> list[str]:
+        """All required package declarations."""
+        pkgs = [
             "\\usepackage[utf8]{inputenc}",
             "\\usepackage[T1]{fontenc}",
             self.config.language.babel_package,
             "\\usepackage{amsmath}",
             "\\usepackage{geometry}",
             "\\usepackage{setspace}",
+            *self.config.font_family.packages,
         ]
 
-        packages.extend(self.config.font_family.packages)
-
         if not self.config.font_family.conflicts_with_amsfonts:
-            packages.extend(["\\usepackage{amsfonts}", "\\usepackage{amssymb}"])
+            pkgs.extend(["\\usepackage{amsfonts}", "\\usepackage{amssymb}"])
 
-        if self.config.use_fancy_headers:
-            packages.append("\\usepackage{fancyhdr}")
-
-        packages.append("\\usepackage[version=4]{mhchem}")
-        packages.append("\\usepackage{xcolor}")
+        pkgs.extend([
+            "\\usepackage[version=4]{mhchem}",
+            "\\usepackage{xcolor}",
+        ])
 
         if self.config.two_column:
-            packages.append("\\usepackage{multicol}")
+            pkgs.append("\\usepackage{multicol}")
 
         # Backward compatibility for old font commands
-        packages.extend([
+        pkgs.extend([
             "\\DeclareOldFontCommand{\\rm}{\\normalfont\\rmfamily}{\\mathrm}",
             "\\DeclareOldFontCommand{\\bf}{\\normalfont\\bfseries}{\\mathbf}",
             "\\DeclareOldFontCommand{\\it}{\\normalfont\\itshape}{\\mathit}",
@@ -189,36 +144,42 @@ class LaTeXDocumentTemplate:
             "\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}",
         ])
 
-        return "\n".join(packages)
-    
-    def _build_geometry(self) -> str:
-        """Build geometry package configuration."""
-        options = ["a4paper"] + self.config.margins.to_latex_options()
-        return f"\\geometry{{{','.join(options)}}}"
-    
-    def _build_typography_section(self) -> str:
-        """Build typography settings section."""
-        settings = []
-        
-        # Paragraph settings
-        settings.append(f"\\setlength{{\\parindent}}{{{self.config.typography.paragraph_indent}}}")
-        settings.append(f"\\setlength{{\\parskip}}{{{self.config.typography.paragraph_skip}}}")
-        
-        # Column separation for two-column layout
-        if self.config.two_column:
-            settings.append(f"\\setlength{{\\columnsep}}{{{self.config.column_sep}}}")
-        
-        return "\n".join(settings)
-    
-    def _build_fancy_headers_section(self) -> str:
-        """Build fancy header configuration section without page numbers."""
-        headers = [
-            "\\pagestyle{fancy}",
-            "\\fancyhf{}",
-            "\\fancyhead[L]{\\leftmark}",
-            "\\renewcommand{\\headrulewidth}{0.4pt}"
+        return pkgs
+
+    @property
+    def preamble_settings(self) -> list[str]:
+        """All preamble settings (geometry, typography, headers)."""
+        cfg = self.config
+        settings = [
+            f"\\geometry{{a4paper,{','.join(cfg.margins.to_latex_options())}}}",
+            f"\\setlength{{\\parindent}}{{{cfg.typography.paragraph_indent}}}",
+            f"\\setlength{{\\parskip}}{{{cfg.typography.paragraph_skip}}}",
         ]
-        return "\n".join(headers)
+
+        if cfg.two_column:
+            settings.append(f"\\setlength{{\\columnsep}}{{{cfg.column_sep}}}")
+
+        if cfg.typography.line_spacing.command:
+            settings.append(cfg.typography.line_spacing.command)
+
+        return settings
+
+    def render(self, content: str) -> str:
+        """Render complete LaTeX document."""
+        sections = [
+            self.documentclass_line,
+            "\n".join(self.packages),
+            "\n".join(self.preamble_settings),
+            "",
+            "\\begin{document}",
+            content,
+            "\\end{document}",
+        ]
+        return "\n".join(sections)
+
+    def build_document_template(self, page_content: PageContent) -> str:
+        """Build complete LaTeX document with given page content."""
+        return self.render(page_content.to_latex())
 
 
 # ========== PAGE FITTING VALIDATOR ==========

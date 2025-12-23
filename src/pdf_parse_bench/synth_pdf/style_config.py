@@ -118,7 +118,6 @@ class LaTeXConfig(BaseModel):
     
     # Content features
     include_headers: bool = True
-    use_fancy_headers: bool = False
     
     # Reproducibility
     seed: int | None = None
@@ -154,6 +153,5 @@ class LaTeXConfig(BaseModel):
             two_column=rng.choice([True, False]),
             column_sep=rng.choice(["0.8cm", "1cm", "1.2cm"]),
             include_headers=rng.choice([True, False]),
-            use_fancy_headers=rng.choice([True, False]),
             seed=seed,
         )
