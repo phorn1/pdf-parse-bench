@@ -11,10 +11,20 @@ class DocumentClass(Enum):
     ARTICLE = "article"
     REPORT = "report"
     BOOK = "book"
-    MEMOIR = "memoir"
     SCRARTCL = "scrartcl"
     SCRREPRT = "scrreprt"
     SCRBOOK = "scrbook"
+
+
+class LineSpacing(Enum):
+    """Line spacing options with LaTeX commands as values."""
+    SINGLE = ""
+    ONEHALF = "\\onehalfspacing"
+    DOUBLE = "\\doublespacing"
+
+    @property
+    def command(self) -> str:
+        return self.value
 
 
 class FontFamily(Enum):
@@ -74,7 +84,7 @@ class MarginSettings(BaseModel):
 class TypographySettings(BaseModel):
     """Typography configuration."""
     font_size: str = "11pt"
-    line_spacing: str = "single"  # single, onehalf, double
+    line_spacing: LineSpacing = LineSpacing.SINGLE
     paragraph_indent: str = "1.5em"
     paragraph_skip: str = "0pt"
 
@@ -121,7 +131,6 @@ class LaTeXConfig(BaseModel):
 
         margins = ["1.5cm", "2cm", "2.5cm", "3cm"]
         font_sizes = ["10pt", "11pt", "12pt"]
-        line_spacings = ["single", "onehalf", "double"]
         indents = ["0pt", "1em", "1.5em", "2em"]
         skips = ["0pt", "0.5em", "1em"]
 
@@ -137,7 +146,7 @@ class LaTeXConfig(BaseModel):
             ),
             typography=TypographySettings(
                 font_size=rng.choice(font_sizes),
-                line_spacing=rng.choice(line_spacings),
+                line_spacing=rng.choice(list(LineSpacing)),
                 paragraph_indent=rng.choice(indents),
                 paragraph_skip=rng.choice(skips),
             ),

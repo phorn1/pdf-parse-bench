@@ -118,18 +118,9 @@ class LaTeXDocumentTemplate:
         # Typography settings
         latex_code += self._build_typography_section() + "\n"
         
-        # Line spacing commands (must come in preamble)
-        # Handle memoir class differently as it has its own spacing commands
-        if self.config.document_class.value == "memoir":
-            if self.config.typography.line_spacing == "onehalf":
-                latex_code += "\\OnehalfSpacing\n"
-            elif self.config.typography.line_spacing == "double":
-                latex_code += "\\DoubleSpacing\n"
-        else:
-            if self.config.typography.line_spacing == "onehalf":
-                latex_code += "\\onehalfspacing\n"
-            elif self.config.typography.line_spacing == "double":
-                latex_code += "\\doublespacing\n"
+        # Line spacing command
+        if self.config.typography.line_spacing.command:
+            latex_code += self.config.typography.line_spacing.command + "\n"
         
         # Header/footer setup
         if self.config.use_fancy_headers:
@@ -171,11 +162,8 @@ class LaTeXDocumentTemplate:
             self.config.language.babel_package,
             "\\usepackage{amsmath}",
             "\\usepackage{geometry}",
+            "\\usepackage{setspace}",
         ]
-
-        # Don't load setspace with memoir class - it has its own spacing commands
-        if self.config.document_class.value != "memoir":
-            packages.append("\\usepackage{setspace}")
 
         packages.extend(self.config.font_family.packages)
 
