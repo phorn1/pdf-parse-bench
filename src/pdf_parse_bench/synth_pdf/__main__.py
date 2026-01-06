@@ -18,7 +18,7 @@ from rich.progress import (
     MofNCompleteColumn,
 )
 
-from .pdf_generator import ParallelLaTeXPDFGenerator, LaTeXPDFJob
+from .pipeline import ParallelPDFGenerator, PDFJob
 from .style_config import LaTeXConfig
 
 console = Console()
@@ -114,7 +114,7 @@ def generate(
         else:
             doc_formulas_dir = None
 
-        task = LaTeXPDFJob(
+        task = PDFJob(
             config=LaTeXConfig.random(seed=task_seed),
             latex_path=latex_dir / f"{doc_name}.tex" if latex_dir else None,
             pdf_path=pdf_dir / f"{doc_name}.pdf",
@@ -125,7 +125,7 @@ def generate(
 
     # Generate PDFs in parallel with rich progress bar
     console.print(f"\n[bold green]🚀 Starting parallel PDF generation into directory {output_dir}[/]")
-    generator = ParallelLaTeXPDFGenerator(max_workers=max_workers)
+    generator = ParallelPDFGenerator(max_workers=max_workers)
 
     with Progress(
         SpinnerColumn(),
@@ -136,10 +136,10 @@ def generate(
         TimeElapsedColumn(),
         console=console
     ) as progress:
-        task = progress.add_task("[cyan]Generating PDFs...", total=len(tasks))
+        progress_task = progress.add_task("[cyan]Generating PDFs...", total=len(tasks))
 
         for _ in generator.generate_pdfs_parallel(tasks):
-            progress.update(task, advance=1)
+            progress.update(progress_task, advance=1)
 
     console.print(f"\n[bold green]✅ Successfully generated {num_pdfs} PDFs[/]")
 

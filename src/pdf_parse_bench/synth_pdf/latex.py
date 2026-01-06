@@ -1,97 +1,45 @@
-"""LaTeX content generation utilities."""
+"""LaTeX document assembly, compilation, and validation."""
 
 import random
-import tempfile
 import re
-from typing import Callable
+import subprocess
+import tempfile
 from pathlib import Path
-from abc import ABC, abstractmethod
-
-from pydantic import BaseModel, Field
+from typing import Callable
 
 from .style_config import LaTeXConfig
-from .compiler import LaTeXCompiler
+from .content import ContentBlock, ParagraphBlock, FormulaBlock, MixedTextBlock, PageContent
 
 
-# ========== DATA MODELS ==========
+# ========== COMPILER ==========
 
-class ContentBlock(BaseModel, ABC):
-    """Base class for all content blocks."""
+def compile_latex(tex_path: Path, output_pdf_path: Path | None, timeout: int = 30) -> None:
+    """Compile LaTeX file with optional PDF output."""
+    cmd = ["pdflatex", "-halt-on-error"]
+    if output_pdf_path is None:
+        cmd.append("-draftmode")
+    cmd.append(tex_path.name)
 
-    @abstractmethod
-    def to_latex(self) -> str:
-        """Convert this block to LaTeX format."""
-        pass
+    result = subprocess.run(
+        cmd,
+        cwd=tex_path.parent,
+        capture_output=True,
+        text=True,
+        encoding='utf-8',
+        errors='replace',
+        timeout=timeout
+    )
 
-    @abstractmethod
-    def to_ground_truth(self) -> dict[str, str] | list[dict[str, str]]:
-        """Convert this block to ground truth format."""
-        pass
+    if result.returncode != 0:
+        error_msg = f"PDFlatex failed with exit code {result.returncode}"
+        if result.stderr:
+            error_msg += f"\nSTDERR: {result.stderr}"
+        if result.stdout:
+            error_msg += f"\nSTDOUT: {result.stdout}"
+        raise RuntimeError(error_msg)
 
-
-class ParagraphBlock(ContentBlock):
-    """Text paragraph content block."""
-    text: str
-
-    def to_latex(self) -> str:
-        return self.text + "\n"
-
-    def to_ground_truth(self) -> dict[str, str]:
-        return {"type": "text", "data": self.text}
-
-
-class FormulaBlock(ContentBlock):
-    """Mathematical formula content block."""
-    latex_formula: str
-
-    def to_latex(self) -> str:
-        return f"$${self.latex_formula}$$\n"
-
-    def to_ground_truth(self) -> dict[str, str]:
-        return {"type": "display-formula", "data": f"$${self.latex_formula}$$"}
-
-
-class MixedTextBlock(ContentBlock):
-    """Mixed text block with inline formulas between text segments."""
-    text_segments: list[str]
-    inline_formulas: list[str]
-
-    def to_latex(self) -> str:
-        # First text, then alternating: formula as separator, next text
-        result = self.text_segments[0]
-        for formula, text in zip(self.inline_formulas, self.text_segments[1:]):
-            result += f" \\mbox{{${formula}$}} " + text
-        return result + "\n"
-
-    def to_ground_truth(self) -> list[dict[str, str]]:
-        # First text, then alternating: formula, text
-        result = [{"type": "text", "data": self.text_segments[0]}]
-        for formula, text in zip(self.inline_formulas, self.text_segments[1:]):
-            result.append({"type": "inline-formula", "data": f"${formula}$"})
-            result.append({"type": "text", "data": text})
-        return result
-
-
-class PageContent(BaseModel):
-    """Content structure for a single page."""
-    content_blocks: list[ContentBlock] = Field(default_factory=list)
-
-    def to_latex(self) -> str:
-        """Convert all content blocks to LaTeX format."""
-        return "\n".join(block.to_latex() for block in self.content_blocks)
-
-    def to_ground_truth(self) -> list[dict[str, str]]:
-        """Convert all content blocks to flattened ground truth format."""
-        gt_data = []
-        for block in self.content_blocks:
-            block_gt = block.to_ground_truth()
-            if isinstance(block_gt, list):
-                # MixedTextBlock returns a list - extend to flatten
-                gt_data.extend(block_gt)
-            else:
-                # Other blocks return single dict - append
-                gt_data.append(block_gt)
-        return gt_data
+    if output_pdf_path is not None:
+        tex_path.with_suffix('.pdf').rename(output_pdf_path)
 
 
 # ========== DOCUMENT ASSEMBLY ==========
@@ -100,15 +48,15 @@ class LaTeXDocument:
     """LaTeX document with preamble and content rendering."""
 
     def __init__(self, config: LaTeXConfig):
-        self.config = config
+        self._config = config
 
     @property
     def documentclass_line(self) -> str:
         """Document class declaration with options."""
-        options = [self.config.typography.font_size, "a4paper"]
-        if self.config.two_column:
+        options = [self._config.typography.font_size, "a4paper"]
+        if self._config.two_column:
             options.append("twocolumn")
-        return f"\\documentclass[{','.join(options)}]{{{self.config.document_class.value}}}"
+        return f"\\documentclass[{','.join(options)}]{{{self._config.document_class.value}}}"
 
     @property
     def packages(self) -> list[str]:
@@ -116,19 +64,19 @@ class LaTeXDocument:
         pkgs = [
             "\\usepackage[utf8]{inputenc}",
             "\\usepackage[T1]{fontenc}",
-            self.config.language.babel_package,
+            self._config.language.babel_package,
             "\\usepackage{amsmath}",
             "\\usepackage{geometry}",
             "\\usepackage{setspace}",
-            *self.config.font_family.packages,
+            *self._config.font_family.packages,
             "\\usepackage[version=4]{mhchem}",
             "\\usepackage{xcolor}",
         ]
 
-        if not self.config.font_family.conflicts_with_amsfonts:
+        if not self._config.font_family.conflicts_with_amsfonts:
             pkgs.extend(["\\usepackage{amsfonts}", "\\usepackage{amssymb}"])
 
-        if self.config.two_column:
+        if self._config.two_column:
             pkgs.append("\\usepackage{multicol}")
 
         return pkgs
@@ -136,7 +84,7 @@ class LaTeXDocument:
     @property
     def preamble_settings(self) -> list[str]:
         """All preamble settings (geometry, typography, font commands)."""
-        cfg = self.config
+        cfg = self._config
         settings = [
             f"\\geometry{{a4paper,{','.join(cfg.margins.to_latex_options())}}}",
             f"\\setlength{{\\parindent}}{{{cfg.typography.paragraph_indent}}}",
@@ -174,23 +122,16 @@ class LaTeXDocument:
         ]
         return "\n".join(sections)
 
-
-# ========== VALIDATION ==========
-
-class PageFittingValidator:
-    """Validates content fits within page bounds."""
-
-    def __init__(self, document: LaTeXDocument):
-        self.document = document
+    # ========== VALIDATION ==========
 
     def check_fits_one_page(self, page_content: PageContent) -> bool:
         """Check if page content fits on one page."""
-        latex_content = self.document.assemble(page_content)
+        latex_content = self.assemble(page_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(latex_content, encoding='utf-8')
-            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=tex_file.with_suffix('.pdf'), timeout=30)
+            compile_latex(tex_file, output_pdf_path=tex_file.with_suffix('.pdf'), timeout=30)
 
             # Pattern: "Output written on test.pdf (1 page, ...)"
             log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
@@ -201,12 +142,12 @@ class PageFittingValidator:
 
     def check_block_fits_bounds(self, block: ContentBlock) -> bool:
         """Check if a single content block fits within page bounds."""
-        latex_content = self.document.assemble(PageContent(content_blocks=[block]))
+        latex_content = self.assemble(PageContent(content_blocks=[block]))
 
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(latex_content, encoding='utf-8')
-            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None, timeout=30)
+            compile_latex(tex_file, output_pdf_path=None, timeout=30)
 
             log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
 
@@ -223,8 +164,8 @@ class PageFittingValidator:
 
     def check_inline_formula_height(self, formula: str, max_height_pt: float = 10.0) -> bool:
         """Check if formula is flat enough for inline use."""
-        test_latex = f"""{self.document.documentclass_line}
-{"\n".join(self.document.packages)}
+        test_latex = f"""{self.documentclass_line}
+{"\n".join(self.packages)}
 \\begin{{document}}
 \\setbox0=\\hbox{{${formula}$}}
 \\typeout{{FORMULA_HEIGHT_PT:\\the\\ht0}}
@@ -234,7 +175,7 @@ class PageFittingValidator:
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(test_latex, encoding='utf-8')
-            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None, timeout=30)
+            compile_latex(tex_file, output_pdf_path=None, timeout=30)
 
             # Pattern: "FORMULA_HEIGHT_PT:6.94444pt"
             log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
@@ -252,12 +193,15 @@ class LaTeXContentGenerator:
     def __init__(self, config: LaTeXConfig,
                  text_generator: Callable[[int], str],
                  formula_generator: Callable[[], str]):
-        self.config = config
-        self.document = LaTeXDocument(config)
-        self.validator = PageFittingValidator(self.document)
-        self.text_generator = text_generator
-        self.formula_generator = formula_generator
-        self.rng = random.Random(config.seed)
+        self._config = config
+        self._document = LaTeXDocument(config)
+        self._text_generator = text_generator
+        self._formula_generator = formula_generator
+        self._rng = random.Random(config.seed)
+
+    def assemble_latex(self, page_content: PageContent) -> str:
+        """Assemble complete LaTeX document from page content."""
+        return self._document.assemble(page_content)
 
     def generate_page(self) -> PageContent:
         """Generate random page content that fills exactly one page."""
@@ -265,7 +209,7 @@ class LaTeXContentGenerator:
 
         # Add blocks iteratively until page is full
         while True:
-            block = self.rng.choice([
+            block = self._rng.choice([
                 self._generate_paragraph,
                 self._generate_formula,
                 self._generate_mixed_text,
@@ -273,53 +217,53 @@ class LaTeXContentGenerator:
 
             # Test if adding this block would exceed one page
             page_content.content_blocks.append(block)
-            if not self.validator.check_fits_one_page(page_content):
+            if not self._document.check_fits_one_page(page_content):
                 # Adding this block would exceed one page, remove it
                 page_content.content_blocks.pop()
                 break
 
         return page_content
-    
+
     def _generate_paragraph(self) -> ParagraphBlock:
         """Generate a text paragraph with random length."""
-        paragraph_length = self.rng.randint(
-            self.config.content.paragraph_min_chars,
-            self.config.content.paragraph_max_chars
+        paragraph_length = self._rng.randint(
+            self._config.content.paragraph_min_chars,
+            self._config.content.paragraph_max_chars
         )
-        content = self.text_generator(paragraph_length)
+        content = self._text_generator(paragraph_length)
         return ParagraphBlock(text=content)
-    
+
     def _generate_formula(self) -> FormulaBlock:
         """Generate a display formula that fits within bounds."""
         while True:
-            formula = self.formula_generator()
+            formula = self._formula_generator()
             block = FormulaBlock(latex_formula=formula)
-            if self.validator.check_block_fits_bounds(block):
+            if self._document.check_block_fits_bounds(block):
                 return block
 
     def _get_inline_formula(self) -> str:
         """Generate a formula suitable for inline use (not too tall)."""
         while True:
-            formula = self.formula_generator()
-            if self.validator.check_inline_formula_height(formula):
+            formula = self._formula_generator()
+            if self._document.check_inline_formula_height(formula):
                 return formula
 
     def _generate_mixed_text(self) -> MixedTextBlock:
         """Generate a mixed text block with inline formulas that fits within bounds."""
         while True:
             # Generate random number of text segments based on config
-            num_segments = self.rng.randint(2, self.config.content.mixed_segments_max_count)
+            num_segments = self._rng.randint(2, self._config.content.mixed_segments_max_count)
 
             text_segments = []
             inline_formulas = []
 
             for i in range(num_segments):
                 # Generate text segment with variable length
-                segment_length = self.rng.randint(
-                    self.config.content.mixed_segment_min_chars,
-                    self.config.content.mixed_segment_max_chars
+                segment_length = self._rng.randint(
+                    self._config.content.mixed_segment_min_chars,
+                    self._config.content.mixed_segment_max_chars
                 )
-                segment_text = self.text_generator(segment_length)
+                segment_text = self._text_generator(segment_length)
                 text_segments.append(segment_text)
 
                 # Add inline formula between segments (except for the last one)
@@ -330,7 +274,6 @@ class LaTeXContentGenerator:
             block = MixedTextBlock(text_segments=text_segments, inline_formulas=inline_formulas)
 
             # Check if mixed text block fits bounds by testing compilation
-            if self.validator.check_block_fits_bounds(block):
+            if self._document.check_block_fits_bounds(block):
                 return block
             # If not, skip this block and try again
-    

@@ -6,7 +6,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from pdf_parse_bench.synth_pdf import LaTeXConfig, LaTeXSinglePagePDFGenerator
+from pdf_parse_bench.synth_pdf import LaTeXConfig, SinglePagePDFGenerator
 
 
 def reproduce_error_from_debug_file(debug_file: Path) -> None:
@@ -45,8 +45,8 @@ def reproduce_error_from_debug_file(debug_file: Path) -> None:
         
         # Try to reproduce the error
         try:
-            generator = LaTeXSinglePagePDFGenerator(config)
-            generator.generate_single_page_pdf(latex_path, pdf_path, gt_path)
+            generator = SinglePagePDFGenerator(config)
+            generator.generate(latex_path, pdf_path, gt_path)
             print("✓ Generation succeeded - error might be fixed!")
             
         except Exception as e:
