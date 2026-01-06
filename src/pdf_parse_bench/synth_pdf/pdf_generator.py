@@ -51,7 +51,8 @@ class LaTeXSinglePagePDFGenerator:
         )
 
         # Generate page content and LaTeX document
-        page_content, latex_content = builder.generate_page()
+        page_content = builder.generate_page()
+        latex_content = builder.document.assemble(page_content)
         
         # Use temporary directory for compilation
         with tempfile.TemporaryDirectory() as temp_dir:
