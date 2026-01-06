@@ -13,7 +13,7 @@ from .style_config import LaTeXConfig
 from .compiler import LaTeXCompiler
 
 
-# ========== CONTENT BLOCK TYPES ==========
+# ========== DATA MODELS ==========
 
 class ContentBlock(BaseModel, ABC):
     """Base class for all content blocks."""
@@ -72,8 +72,6 @@ class MixedTextBlock(ContentBlock):
         return result
 
 
-# ========== PAGE CONTENT ==========
-
 class PageContent(BaseModel):
     """Content structure for a single page."""
     content_blocks: list[ContentBlock] = Field(default_factory=list)
@@ -95,6 +93,8 @@ class PageContent(BaseModel):
                 gt_data.append(block_gt)
         return gt_data
 
+
+# ========== DOCUMENT ASSEMBLY ==========
 
 class LaTeXDocument:
     """LaTeX document with preamble and content rendering."""
@@ -121,15 +121,12 @@ class LaTeXDocument:
             "\\usepackage{geometry}",
             "\\usepackage{setspace}",
             *self.config.font_family.packages,
+            "\\usepackage[version=4]{mhchem}",
+            "\\usepackage{xcolor}",
         ]
 
         if not self.config.font_family.conflicts_with_amsfonts:
             pkgs.extend(["\\usepackage{amsfonts}", "\\usepackage{amssymb}"])
-
-        pkgs.extend([
-            "\\usepackage[version=4]{mhchem}",
-            "\\usepackage{xcolor}",
-        ])
 
         if self.config.two_column:
             pkgs.append("\\usepackage{multicol}")
@@ -178,7 +175,7 @@ class LaTeXDocument:
         return "\n".join(sections)
 
 
-# ========== PAGE FITTING VALIDATOR ==========
+# ========== VALIDATION ==========
 
 class PageFittingValidator:
     """Validates content fits within page bounds."""
@@ -191,78 +188,63 @@ class PageFittingValidator:
         latex_content = self.document.assemble(page_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            tex_file = temp_path / "test.tex"
-
+            tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(latex_content, encoding='utf-8')
-            
-            temp_pdf = temp_path / "test.pdf"
-            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=temp_pdf, timeout=30)
+            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=tex_file.with_suffix('.pdf'), timeout=30)
 
-            log_file = temp_path / "test.log"
-            page_count = LaTeXCompiler.get_page_count_from_log(log_file)
-            return page_count == 1
-    
+            # Pattern: "Output written on test.pdf (1 page, ...)"
+            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
+            if match := re.search(r'Output written on.*?\((\d+) page', log_content):
+                return int(match.group(1)) == 1
+
+            raise RuntimeError(f"Could not extract page count from LaTeX log: {log_content}")
+
     def check_block_fits_bounds(self, block: ContentBlock) -> bool:
         """Check if a single content block fits within page bounds."""
-        single_block_content = PageContent(content_blocks=[block])
-        latex_content = self.document.assemble(single_block_content)
+        latex_content = self.document.assemble(PageContent(content_blocks=[block]))
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            tex_file = temp_path / "test_block.tex"
-
+            tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(latex_content, encoding='utf-8')
-
             LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None, timeout=30)
-            log_path = tex_file.with_suffix('.log')
-            return LaTeXCompiler.check_bounds_from_log(log_path)
+
+            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
+
+            # Content exceeds box dimensions
+            if "Overfull \\hbox" in log_content or "Overfull \\vbox" in log_content:
+                return False
+
+            # Severe spacing issues (badness >= 5000 indicates poor line breaking)
+            if (match := re.search(r"Underfull \\hbox.*badness (\d+)", log_content)) \
+                    and int(match.group(1)) >= 5000:
+                return False
+
+            return True
 
     def check_inline_formula_height(self, formula: str, max_height_pt: float = 10.0) -> bool:
-        """Check if formula is flat enough for inline use.
-
-        Args:
-            formula: LaTeX formula string (without $ delimiters)
-            max_height_pt: Maximum allowed height in points
-
-        Returns:
-            True if formula height is within bounds, False otherwise
-        """
-        # Create minimal test document that measures formula height
-        packages = "\n".join(self.document.packages)
+        """Check if formula is flat enough for inline use."""
         test_latex = f"""{self.document.documentclass_line}
-{packages}
+{"\n".join(self.document.packages)}
 \\begin{{document}}
 \\setbox0=\\hbox{{${formula}$}}
 \\typeout{{FORMULA_HEIGHT_PT:\\the\\ht0}}
 \\end{{document}}
 """
 
-        try:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = Path(temp_dir)
-                tex_file = temp_path / "height_test.tex"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tex_file = Path(temp_dir) / "test.tex"
+            tex_file.write_text(test_latex, encoding='utf-8')
+            LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None, timeout=30)
 
-                tex_file.write_text(test_latex, encoding='utf-8')
+            # Pattern: "FORMULA_HEIGHT_PT:6.94444pt"
+            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
+            if match := re.search(r'FORMULA_HEIGHT_PT:([\d.]+)pt', log_content):
+                return float(match.group(1)) <= max_height_pt
 
-                LaTeXCompiler.compile_latex(tex_file, output_pdf_path=None)
-
-                # Extract height from log file
-                log_path = tex_file.with_suffix('.log')
-                log_content = log_path.read_text(encoding='utf-8', errors='ignore')
-
-                # Search for our typeout message
-                height_match = re.search(r'FORMULA_HEIGHT_PT:([\d.]+)pt', log_content)
-
-                if height_match:
-                    height_pt = float(height_match.group(1))
-                    return height_pt <= max_height_pt
-                raise RuntimeError(f"Could not extract formula height from LaTeX log: {log_content}")
-        except Exception as e:
-            raise RuntimeError(f"Failed to measure formula height for: {formula}") from e
+            raise RuntimeError(f"Could not extract formula height from LaTeX log: {log_content}")
 
 
-# ========== CONTENT GENERATOR ==========
+# ========== CONTENT GENERATION ==========
 
 class LaTeXContentGenerator:
     """Generates random content that fits within page bounds."""
@@ -315,29 +297,19 @@ class LaTeXContentGenerator:
         return ParagraphBlock(text=content)
     
     def _generate_formula(self) -> FormulaBlock:
-        """Generate a mathematical formula that fits within bounds."""
+        """Generate a display formula that fits within bounds."""
         while True:
             formula = self.formula_generator()
             block = FormulaBlock(latex_formula=formula)
-
-            # Check if formula fits bounds by testing compilation
             if self.validator.check_block_fits_bounds(block):
                 return block
-            # If not, skip this formula and try the next one
 
     def _get_inline_formula(self) -> str:
-        """Get a formula suitable for inline use (not too tall).
-
-        Returns:
-            Formula string that is flat enough for inline use
-        """
+        """Generate a formula suitable for inline use (not too tall)."""
         while True:
             formula = self.formula_generator()
-
-            # Check if formula height is suitable for inline use
             if self.validator.check_inline_formula_height(formula):
                 return formula
-            # If not, skip this formula and try the next one
 
     def _generate_mixed_text(self) -> MixedTextBlock:
         """Generate a mixed text block with inline formulas that fits within bounds."""

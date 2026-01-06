@@ -1,7 +1,6 @@
 """LaTeX compilation utilities."""
 
 import subprocess
-import re
 from pathlib import Path
 
 
@@ -54,35 +53,3 @@ class LaTeXCompiler:
             
             # Copy to desired output location
             generated_pdf_path.rename(output_pdf_path)
-    
-    @staticmethod
-    def get_page_count_from_log(log_path: Path) -> int:
-        """Extract page count from LaTeX log file."""
-        log_content = log_path.read_text(encoding='utf-8', errors='ignore')
-        
-        # Search pattern for page count
-        page_match = re.search(r'Output written on.*?\((\d+) page', log_content)
-        if page_match:
-            return int(page_match.group(1))
-
-        raise RuntimeError(f"Could not extract page count from LaTeX log: {log_content}")
-
-
-    @staticmethod
-    def check_bounds_from_log(log_path: Path) -> bool:
-        """Check if content fits within page bounds by analyzing log warnings."""
-        if not log_path.exists():
-            return False
-            
-        log_content = log_path.read_text(encoding='utf-8', errors='ignore')
-        
-        # Check for overfull hbox/vbox warnings indicating out-of-bounds content
-        if "Overfull \\hbox" in log_content or "Overfull \\vbox" in log_content:
-            return False
-        
-        # Check for severe badness warnings that indicate formatting issues
-        badness_match = re.search(r"Underfull \\hbox.*badness (\d+)", log_content)
-        if badness_match and int(badness_match.group(1)) >= 5000:
-            return False
-        
-        return True
