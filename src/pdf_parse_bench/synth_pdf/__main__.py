@@ -19,7 +19,7 @@ from rich.progress import (
 )
 
 from .pipeline import ParallelPDFGenerator, PDFJob
-from .style_config import LaTeXConfig
+from .latex_config import LaTeXConfig
 
 console = Console()
 
@@ -99,13 +99,13 @@ def generate(
     else:
         formulas_dir = None
 
-    # Prepare PDF generation tasks with deterministic seeds
-    tasks = []
+    # Prepare PDF generation jobs with deterministic seeds
+    jobs = []
     for i in range(num_pdfs):
         doc_name = f"{i:03d}"
 
         # Create deterministic seed from doc name and timestamp
-        task_seed = hash(f"{doc_name}_{timestamp}")
+        seed = hash(f"{doc_name}_{timestamp}")
 
         # Create individual formula rendering directory if enabled
         if formulas_dir:
@@ -114,14 +114,14 @@ def generate(
         else:
             doc_formulas_dir = None
 
-        task = PDFJob(
-            config=LaTeXConfig.random(seed=task_seed),
+        job = PDFJob(
+            config=LaTeXConfig.random(seed=seed),
             latex_path=latex_dir / f"{doc_name}.tex" if latex_dir else None,
             pdf_path=pdf_dir / f"{doc_name}.pdf",
             gt_path=gt_dir / f"{doc_name}.json",
             rendered_formulas_dir=doc_formulas_dir
         )
-        tasks.append(task)
+        jobs.append(job)
 
     # Generate PDFs in parallel with rich progress bar
     console.print(f"\n[bold green]🚀 Starting parallel PDF generation into directory {output_dir}[/]")
@@ -136,9 +136,9 @@ def generate(
         TimeElapsedColumn(),
         console=console
     ) as progress:
-        progress_task = progress.add_task("[cyan]Generating PDFs...", total=len(tasks))
+        progress_task = progress.add_task("[cyan]Generating PDFs...", total=len(jobs))
 
-        for _ in generator.generate_pdfs_parallel(tasks):
+        for _ in generator.generate_pdfs_parallel(jobs):
             progress.update(progress_task, advance=1)
 
     console.print(f"\n[bold green]✅ Successfully generated {num_pdfs} PDFs[/]")

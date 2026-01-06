@@ -1,6 +1,6 @@
 """LaTeX-based PDF generation module."""
 
-from .style_config import LaTeXConfig
+from .latex_config import LaTeXConfig
 from .pipeline import ParallelPDFGenerator, PDFJob, SinglePagePDFGenerator
 
 __all__ = [

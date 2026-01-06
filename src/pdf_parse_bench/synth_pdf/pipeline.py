@@ -10,9 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
-from .style_config import LaTeXConfig
+from .latex_config import LaTeXConfig
 from .content import create_text_generator, create_formula_generator, load_formulas_from_dataset
-from .latex import LaTeXContentGenerator, compile_latex
+from .latex import PageBuilder, compile_latex
 from pdf_parse_bench.utilities import FormulaRenderer
 
 logger = logging.getLogger(__name__)
@@ -25,20 +25,20 @@ class SinglePagePDFGenerator:
 
     def __init__(self, config: LaTeXConfig, formulas: list[str] | None = None):
         """If formulas is None, will download ~35MB dataset."""
-        self.formula_generator = create_formula_generator(seed=config.seed, formulas=formulas)
-        self.text_generator = create_text_generator(language=config.language.locale_code, seed=config.seed)
-        self.config = config
+        self._config = config
+        self._formula_generator = create_formula_generator(seed=config.seed, formulas=formulas)
+        self._text_generator = create_text_generator(language=config.language.locale_code, seed=config.seed)
 
     def generate(self, output_latex_path: Path | None, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
         """Generate PDF, ground truth JSON, and optionally save LaTeX source and rendered formulas."""
-        content_generator = LaTeXContentGenerator(
-            config=self.config,
-            text_generator=self.text_generator,
-            formula_generator=self.formula_generator
+        page_builder = PageBuilder(
+            latex_config=self._config,
+            text_generator=self._text_generator,
+            formula_generator=self._formula_generator
         )
 
-        page_content = content_generator.generate_page()
-        latex_content = content_generator.assemble_latex(page_content)
+        page_content = page_builder.generate_page()
+        latex_content = page_builder.assemble_latex(page_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_tex_file = Path(temp_dir) / "document.tex"
@@ -67,7 +67,7 @@ class SinglePagePDFGenerator:
 
 @dataclass
 class PDFJob:
-    """Task configuration for parallel PDF generation."""
+    """Job configuration for parallel PDF generation."""
     config: LaTeXConfig
     latex_path: Path | None
     pdf_path: Path
@@ -75,11 +75,11 @@ class PDFJob:
     rendered_formulas_dir: Path | None = None
     retry_count: int = 0
 
-def _generate_single_pdf_task(task: PDFJob, formulas: list[str]) -> None:
+def _run_pdf_job(job: PDFJob, formulas: list[str]) -> None:
     """Worker function for parallel PDF generation (module-level for pickle)."""
-    config = task.config.model_copy(update={"seed": task.config.seed + task.retry_count})
+    config = job.config.model_copy(update={"seed": job.config.seed + job.retry_count})
     generator = SinglePagePDFGenerator(config, formulas=formulas)
-    generator.generate(task.latex_path, task.pdf_path, task.gt_path, task.rendered_formulas_dir)
+    generator.generate(job.latex_path, job.pdf_path, job.gt_path, job.rendered_formulas_dir)
 
 
 class ParallelPDFGenerator:
@@ -90,46 +90,46 @@ class ParallelPDFGenerator:
 
         self.formulas = load_formulas_from_dataset()
 
-    def generate_pdfs_parallel(self, tasks: list[PDFJob]) -> Iterator[None]:
-        """Yields None for each completed task (for progress tracking). Retries failed tasks."""
+    def generate_pdfs_parallel(self, jobs: list[PDFJob]) -> Iterator[None]:
+        """Yields None for each completed job (for progress tracking). Retries failed jobs."""
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
-            pending_tasks = tasks.copy()
+            pending_jobs = jobs.copy()
 
-            while pending_tasks:
-                future_to_task = {
-                    executor.submit(_generate_single_pdf_task, task, self.formulas): task
-                    for task in pending_tasks
+            while pending_jobs:
+                future_to_job = {
+                    executor.submit(_run_pdf_job, job, self.formulas): job
+                    for job in pending_jobs
                 }
-                failed_tasks = []
+                failed_jobs = []
 
-                for future in as_completed(future_to_task):
-                    task = future_to_task[future]
+                for future in as_completed(future_to_job):
+                    job = future_to_job[future]
                     try:
                         future.result()
-                        if task.retry_count > 0:
-                            logger.info(f"Task succeeded on retry {task.retry_count} with seed {task.config.seed}")
+                        if job.retry_count > 0:
+                            logger.info(f"Job succeeded on retry {job.retry_count} with seed {job.config.seed}")
                         yield None
                     except Exception as e:
-                        task.retry_count += 1
-                        self._save_failed_config(task, e)
-                        logger.warning(f"Task failed with seed {task.config.seed} (attempt {task.retry_count}): {e}")
-                        failed_tasks.append(task)
+                        job.retry_count += 1
+                        self._save_failed_config(job, e)
+                        logger.warning(f"Job failed with seed {job.config.seed} (attempt {job.retry_count}): {e}")
+                        failed_jobs.append(job)
 
-                if failed_tasks:
-                    logger.info(f"Retrying {len(failed_tasks)} failed tasks...")
-                pending_tasks = failed_tasks
+                if failed_jobs:
+                    logger.info(f"Retrying {len(failed_jobs)} failed jobs...")
+                pending_jobs = failed_jobs
 
     @staticmethod
-    def _save_failed_config(task: PDFJob, error: Exception) -> None:
+    def _save_failed_config(job: PDFJob, error: Exception) -> None:
         """Save failed configuration for debugging and reproduction."""
         debug_dir = Path("debug")
         debug_dir.mkdir(exist_ok=True)
-        error_file = debug_dir / f"failed_config_seed_{task.config.seed}.json"
+        error_file = debug_dir / f"failed_config_seed_{job.config.seed}.json"
 
-        config_dict = task.config.model_dump(mode='json') | {
-            "latex_path": str(task.latex_path) if task.latex_path else None,
-            "pdf_path": str(task.pdf_path),
-            "gt_path": str(task.gt_path)
+        config_dict = job.config.model_dump(mode='json') | {
+            "latex_path": str(job.latex_path) if job.latex_path else None,
+            "pdf_path": str(job.pdf_path),
+            "gt_path": str(job.gt_path)
         }
 
         error_info = {

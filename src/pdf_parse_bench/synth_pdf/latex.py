@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 from typing import Callable
 
-from .style_config import LaTeXConfig
+from .latex_config import LaTeXConfig
 from .content import ContentBlock, ParagraphBlock, FormulaBlock, MixedTextBlock, PageContent
 
 
@@ -109,7 +109,7 @@ class LaTeXDocument:
 
         return settings
 
-    def assemble(self, page_content: PageContent) -> str:
+    def assemble_latex(self, page_content: PageContent) -> str:
         """Assemble complete LaTeX document from page content."""
         sections = [
             self.documentclass_line,
@@ -126,7 +126,7 @@ class LaTeXDocument:
 
     def check_fits_one_page(self, page_content: PageContent) -> bool:
         """Check if page content fits on one page."""
-        latex_content = self.assemble(page_content)
+        latex_content = self.assemble_latex(page_content)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
@@ -142,7 +142,7 @@ class LaTeXDocument:
 
     def check_block_fits_bounds(self, block: ContentBlock) -> bool:
         """Check if a single content block fits within page bounds."""
-        latex_content = self.assemble(PageContent(content_blocks=[block]))
+        latex_content = self.assemble_latex(PageContent(content_blocks=[block]))
 
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
@@ -185,23 +185,23 @@ class LaTeXDocument:
             raise RuntimeError(f"Could not extract formula height from LaTeX log: {log_content}")
 
 
-# ========== CONTENT GENERATION ==========
+# ========== PAGE BUILDING ==========
 
-class LaTeXContentGenerator:
+class PageBuilder:
     """Generates random content that fits within page bounds."""
 
-    def __init__(self, config: LaTeXConfig,
+    def __init__(self, latex_config: LaTeXConfig,
                  text_generator: Callable[[int], str],
                  formula_generator: Callable[[], str]):
-        self._config = config
-        self._document = LaTeXDocument(config)
+        self._latex_config = latex_config
+        self._document = LaTeXDocument(latex_config)
         self._text_generator = text_generator
         self._formula_generator = formula_generator
-        self._rng = random.Random(config.seed)
+        self._rng = random.Random(latex_config.seed)
 
     def assemble_latex(self, page_content: PageContent) -> str:
         """Assemble complete LaTeX document from page content."""
-        return self._document.assemble(page_content)
+        return self._document.assemble_latex(page_content)
 
     def generate_page(self) -> PageContent:
         """Generate random page content that fills exactly one page."""
@@ -227,8 +227,8 @@ class LaTeXContentGenerator:
     def _generate_paragraph(self) -> ParagraphBlock:
         """Generate a text paragraph with random length."""
         paragraph_length = self._rng.randint(
-            self._config.content.paragraph_min_chars,
-            self._config.content.paragraph_max_chars
+            self._latex_config.content.paragraph_min_chars,
+            self._latex_config.content.paragraph_max_chars
         )
         content = self._text_generator(paragraph_length)
         return ParagraphBlock(text=content)
@@ -241,7 +241,7 @@ class LaTeXContentGenerator:
             if self._document.check_block_fits_bounds(block):
                 return block
 
-    def _get_inline_formula(self) -> str:
+    def _generate_inline_formula(self) -> str:
         """Generate a formula suitable for inline use (not too tall)."""
         while True:
             formula = self._formula_generator()
@@ -252,7 +252,7 @@ class LaTeXContentGenerator:
         """Generate a mixed text block with inline formulas that fits within bounds."""
         while True:
             # Generate random number of text segments based on config
-            num_segments = self._rng.randint(2, self._config.content.mixed_segments_max_count)
+            num_segments = self._rng.randint(2, self._latex_config.content.mixed_segments_max_count)
 
             text_segments = []
             inline_formulas = []
@@ -260,16 +260,15 @@ class LaTeXContentGenerator:
             for i in range(num_segments):
                 # Generate text segment with variable length
                 segment_length = self._rng.randint(
-                    self._config.content.mixed_segment_min_chars,
-                    self._config.content.mixed_segment_max_chars
+                    self._latex_config.content.mixed_segment_min_chars,
+                    self._latex_config.content.mixed_segment_max_chars
                 )
                 segment_text = self._text_generator(segment_length)
                 text_segments.append(segment_text)
 
                 # Add inline formula between segments (except for the last one)
                 if i < num_segments - 1:
-                    # Use height-validated formula for inline use
-                    inline_formulas.append(self._get_inline_formula())
+                    inline_formulas.append(self._generate_inline_formula())
 
             block = MixedTextBlock(text_segments=text_segments, inline_formulas=inline_formulas)
 

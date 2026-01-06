@@ -98,12 +98,11 @@ class ContentSettings(BaseModel):
     # Paragraph block settings
     paragraph_min_chars: int = 120
     paragraph_max_chars: int = 200
-    
 
 
 class LaTeXConfig(BaseModel):
     """Complete LaTeX document configuration."""
-    
+
     # Document structure
     document_class: DocumentClass
     font_family: FontFamily
@@ -111,18 +110,17 @@ class LaTeXConfig(BaseModel):
     margins: MarginSettings
     typography: TypographySettings
     content: ContentSettings
-    
+
     # Layout options
     two_column: bool = False
     column_sep: str = "1cm"
-    
+
     # Content features
     include_headers: bool = True
-    
+
     # Reproducibility
     seed: int | None = None
-    
-    
+
     @classmethod
     def random(cls, seed: int | None = None) -> 'LaTeXConfig':
         """Generate random LaTeX configuration."""
