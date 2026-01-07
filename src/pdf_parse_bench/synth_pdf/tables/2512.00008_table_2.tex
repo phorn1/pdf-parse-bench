@@ -1,0 +1,23 @@
+\begin{table}
+\centering
+
+
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l|cc|cc|cc|cc}
+\hline
+\textbf{Gesture Class} & \multicolumn{2}{c|}{\textbf{PME*}} & \multicolumn{2}{c|}{\textbf{RF*}} & \multicolumn{2}{c|}{\textbf{Bonsai}} & \multicolumn{2}{c}{\textbf{NN*}} \\
+\cline{2-9}
+ & \textbf{Recall} & \textbf{Prec.} & \textbf{Recall} & \textbf{Prec.} & \textbf{Recall} & \textbf{Prec.} & \textbf{Recall} & \textbf{Prec.} \\
+\hline \hline
+O Gesture     & 99.1 & 98.2 & 95.2 & 95.2 & 95.2 & 97.5 & 99.1 & 96.5 \\
+X Gesture     & 99.5 & 93.3 & 96.8 & 96.8 & 98.9 & 93.1 & 99.5 & 98.6 \\
+Random Motion & 96.5 & 99.7 & 98.1 & 98.1 & 96.4 & 100 & 97.1 & 100 \\
+\hline
+Total Accuracy      & \multicolumn{2}{c|}{97.7} & \multicolumn{2}{c|}{97.6} & \multicolumn{2}{c|}{97.1} & \multicolumn{2}{c}{98.1} \\
+Macro F1-score      & \multicolumn{2}{c|}{97.7} & \multicolumn{2}{c|}{96.8} & \multicolumn{2}{c|}{96.8} & \multicolumn{2}{c}{98.6} \\
+\hline
+\end{tabular}%
+}
+\\[4pt]
+\footnotesize{*~PME = Pattern Matching Engine, RF = Random Forest, NN = Neural Network. Prec. = Precision, Recall = Recall (Precision)}
+\end{table}

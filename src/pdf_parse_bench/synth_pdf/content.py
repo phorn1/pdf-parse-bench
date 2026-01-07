@@ -1,7 +1,6 @@
 """Content models and random content generators."""
 
 import logging
-import random
 from abc import ABC, abstractmethod
 from typing import Callable
 
@@ -71,6 +70,17 @@ class MixedTextBlock(ContentBlock):
             result.append({"type": "inline-formula", "data": f"${formula}$"})
             result.append({"type": "text", "data": text})
         return result
+
+
+class TableBlock(ContentBlock):
+    """Table content block."""
+    latex_table: str
+
+    def to_latex(self) -> str:
+        return self.latex_table + "\n"
+
+    def to_ground_truth(self) -> dict[str, str]:
+        return {"type": "table", "data": self.latex_table}
 
 
 class PageContent(BaseModel):
@@ -147,28 +157,8 @@ def load_formulas_from_dataset() -> list[str]:
     return [formula for (formula,) in result]
 
 
-def create_formula_generator(seed: int | None = None, formulas: list[str] | None = None) -> Callable[[], str]:
-    """
-    Create a formula generator function.
-
-    Args:
-        seed: Random seed for reproducible formula selection
-        formulas: Pre-loaded formula list. If None, formulas will be downloaded.
-
-    Returns:
-        A function that returns a random formula on each call.
-
-    Usage:
-        get_formula = create_formula_generator()
-        formula = get_formula()  # Get random formula
-    """
-    # Load formulas if not provided
-    if formulas is None:
-        formulas = load_formulas_from_dataset()
-
-    rng = random.Random(seed)
-
-    def generate() -> str:
-        return rng.choice(formulas)
-
-    return generate
+def load_tables_from_directory() -> list[str]:
+    """Load all LaTeX table files from the tables directory."""
+    from pathlib import Path
+    tables_dir = Path(__file__).parent / "tables"
+    return [f.read_text(encoding='utf-8') for f in sorted(tables_dir.glob("*.tex"))]

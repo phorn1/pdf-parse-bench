@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Callable
 
 from .latex_config import LaTeXConfig
-from .content import ContentBlock, ParagraphBlock, FormulaBlock, MixedTextBlock, PageContent
+from .content import ContentBlock, ParagraphBlock, FormulaBlock, MixedTextBlock, TableBlock, PageContent
 
 
 # ========== COMPILER ==========
@@ -70,7 +70,11 @@ class LaTeXDocument:
             "\\usepackage{setspace}",
             *self._config.font_family.packages,
             "\\usepackage[version=4]{mhchem}",
-            "\\usepackage{xcolor}",
+            "\\usepackage[table]{xcolor}",
+            # Table packages
+            "\\usepackage{booktabs,multirow,makecell,graphicx,array}",
+            "\\usepackage{colortbl}",
+            "\\usepackage{adjustbox,caption,diagbox}",
         ]
 
         if not self._config.font_family.conflicts_with_amsfonts:
@@ -192,11 +196,13 @@ class PageBuilder:
 
     def __init__(self, latex_config: LaTeXConfig,
                  text_generator: Callable[[int], str],
-                 formula_generator: Callable[[], str]):
+                 formulas: list[str],
+                 tables: list[str]):
         self._latex_config = latex_config
         self._document = LaTeXDocument(latex_config)
         self._text_generator = text_generator
-        self._formula_generator = formula_generator
+        self._formulas = formulas
+        self._tables = tables
         self._rng = random.Random(latex_config.seed)
 
     def assemble_latex(self, page_content: PageContent) -> str:
@@ -213,6 +219,7 @@ class PageBuilder:
                 self._generate_paragraph,
                 self._generate_formula,
                 self._generate_mixed_text,
+                self._generate_table,
             ])()
 
             # Test if adding this block would exceed one page
@@ -236,7 +243,7 @@ class PageBuilder:
     def _generate_formula(self) -> FormulaBlock:
         """Generate a display formula that fits within bounds."""
         while True:
-            formula = self._formula_generator()
+            formula = self._rng.choice(self._formulas)
             block = FormulaBlock(latex_formula=formula)
             if self._document.check_block_fits_bounds(block):
                 return block
@@ -244,7 +251,7 @@ class PageBuilder:
     def _generate_inline_formula(self) -> str:
         """Generate a formula suitable for inline use (not too tall)."""
         while True:
-            formula = self._formula_generator()
+            formula = self._rng.choice(self._formulas)
             if self._document.check_inline_formula_height(formula):
                 return formula
 
@@ -276,3 +283,11 @@ class PageBuilder:
             if self._document.check_block_fits_bounds(block):
                 return block
             # If not, skip this block and try again
+
+    def _generate_table(self) -> TableBlock:
+        """Generate a table that fits within bounds."""
+        while True:
+            table_latex = self._rng.choice(self._tables)
+            block = TableBlock(latex_table=table_latex)
+            if self._document.check_block_fits_bounds(block):
+                return block

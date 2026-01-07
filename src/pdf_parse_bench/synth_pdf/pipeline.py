@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterator
 
 from .latex_config import LaTeXConfig
-from .content import create_text_generator, create_formula_generator, load_formulas_from_dataset
+from .content import create_text_generator, load_formulas_from_dataset, load_tables_from_directory
 from .latex import PageBuilder, compile_latex
 from pdf_parse_bench.utilities import FormulaRenderer
 
@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 class SinglePagePDFGenerator:
     """Generates single-page PDFs using LaTeX."""
 
-    def __init__(self, config: LaTeXConfig, formulas: list[str] | None = None):
-        """If formulas is None, will download ~35MB dataset."""
+    def __init__(self, config: LaTeXConfig, formulas: list[str], tables: list[str]):
         self._config = config
-        self._formula_generator = create_formula_generator(seed=config.seed, formulas=formulas)
+        self._formulas = formulas
+        self._tables = tables
         self._text_generator = create_text_generator(language=config.language.locale_code, seed=config.seed)
 
     def generate(self, output_latex_path: Path | None, output_pdf_path: Path, output_gt_json: Path, rendered_formulas_dir: Path | None = None):
@@ -34,7 +34,8 @@ class SinglePagePDFGenerator:
         page_builder = PageBuilder(
             latex_config=self._config,
             text_generator=self._text_generator,
-            formula_generator=self._formula_generator
+            formulas=self._formulas,
+            tables=self._tables,
         )
 
         page_content = page_builder.generate_page()
@@ -75,11 +76,25 @@ class PDFJob:
     rendered_formulas_dir: Path | None = None
     retry_count: int = 0
 
-def _run_pdf_job(job: PDFJob, formulas: list[str]) -> None:
+
+# ----- Worker process infrastructure -----
+_worker_formulas: list[str] = []
+_worker_tables: list[str] = []
+
+
+def _init_worker(formulas: list[str], tables: list[str]) -> None:
+    """Initialize worker process with shared data."""
+    global _worker_formulas, _worker_tables
+    _worker_formulas = formulas
+    _worker_tables = tables
+
+
+def _run_pdf_job(job: PDFJob) -> None:
     """Worker function for parallel PDF generation (module-level for pickle)."""
     config = job.config.model_copy(update={"seed": job.config.seed + job.retry_count})
-    generator = SinglePagePDFGenerator(config, formulas=formulas)
+    generator = SinglePagePDFGenerator(config, _worker_formulas, _worker_tables)
     generator.generate(job.latex_path, job.pdf_path, job.gt_path, job.rendered_formulas_dir)
+# -----------------------------------------
 
 
 class ParallelPDFGenerator:
@@ -87,17 +102,21 @@ class ParallelPDFGenerator:
 
     def __init__(self, max_workers: int | None = None):
         self.max_workers = max_workers or max(1, multiprocessing.cpu_count() - 1)
-
         self.formulas = load_formulas_from_dataset()
+        self.tables = load_tables_from_directory()
 
     def generate_pdfs_parallel(self, jobs: list[PDFJob]) -> Iterator[None]:
         """Yields None for each completed job (for progress tracking). Retries failed jobs."""
-        with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
+        with ProcessPoolExecutor(
+            max_workers=self.max_workers,
+            initializer=_init_worker,
+            initargs=(self.formulas, self.tables)
+        ) as executor:
             pending_jobs = jobs.copy()
 
             while pending_jobs:
                 future_to_job = {
-                    executor.submit(_run_pdf_job, job, self.formulas): job
+                    executor.submit(_run_pdf_job, job): job
                     for job in pending_jobs
                 }
                 failed_jobs = []

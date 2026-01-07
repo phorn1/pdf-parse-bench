@@ -1,0 +1,52 @@
+\begin{table*}
+% \small
+\footnotesize
+\centering
+% \small
+% \footnotesize
+\setlength{\tabcolsep}{0.34mm}
+% \renewcommand{\arraystretch}{1}
+% \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{C{2.3cm}|C{1.6cm}|ccc|ccc|ccc|ccc|ccc|ccc}
+\begin{tabular}{c|c|ccc|ccc|ccc|ccc|ccc|ccc}
+\toprule
+% \multirow{2}{*}{\diagbox[width=2.3cm, height=0.85cm]{\small\textbf{Method}}{\small\textbf{Metrics}}} &
+\multirow{2}{*}{{\small\textbf{Method}}} &
+\multirow{2}{*}{\textbf{Strategy}} &
+\multicolumn{3}{c|}{\textbf{Success Rate} $\uparrow$} &
+\multicolumn{3}{c|}{\textbf{Collision Rate} $\downarrow$} &
+\multicolumn{3}{c|}{\textbf{Timeout Rate} $\downarrow$} &
+\multicolumn{3}{c|}{\textbf{Final Reward} $\uparrow$} &
+\multicolumn{3}{c|}{\textbf{Avg Time} $\downarrow$} &
+\multicolumn{3}{c}{\textbf{Avg Energy} $\downarrow$} \\
+\cmidrule(lr){3-20}
+& &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} &
+\textbf{0.6} & \textbf{0.4} & \textbf{0.2} \\
+\midrule
+APF   & --       & 0.11 & 0.25 & 0.03 & 0.81 & 0.55 & 0.53 & 0.08 & \underline{0.20} & 0.44 & -- & -- & -- & 206.68 & 349.32 & 547.89 & 320.96 & 654.48 & 1071.70 \\
+\midrule
+BA    & --       & 0.22 & 0.11 & 0.26 & 0.71 & 0.46 & \textbf{0.33} & 0.07 & 0.43 & 0.41 & -- & -- & -- & 185.76 & 482.98 & 462.97 & 251.11 & 691.93 & 691.57 \\
+\midrule
+DQN   & Greedy   & 0.04 & 0.03 & 0.02 & \underline{0.57} & 0.57 & 0.57 & 0.39 & 0.40 & 0.41 & -90.30 & -90.11 & -89.54 & 541.27 & 550.35 & 560.52 & 858.39 & 779.78 & 832.67  \\
+\midrule
+\multirow{2}{*}{IQN} 
+      & Greedy   & \underline{0.37} & \underline{0.50} & \underline{0.61} & \underline{0.57} & \underline{0.45} & \underline{0.37} & \underline{0.06} & \textbf{0.04} & \underline{0.02} & \underline{-28.16} & \underline{-14.87} & \underline{13.47} & \underline{144.89} & \underline{123.75} & \underline{61.25} & \underline{196.73} & \underline{181.63} & \underline{92.18} \\
+      & Adaptive & 0.31 & 0.36 & 0.46 & 0.60 & 0.51 & 0.38 & 0.09 & 0.13 & 0.16 & -37.93 & -38.97 & -48.66 & 185.75 & 230.00 & 274.27 & 247.34 & 296.00 & 358.99 \\
+\midrule
+\multirow{2}{*}{DRIQN}
+      & Greedy   & \textbf{0.42} & \textbf{0.55} & \textbf{0.63} & 0.55 & \textbf{0.42} & \underline{0.37} & \textbf{0.02} & \textbf{0.04} & \textbf{0.01} & \textbf{-17.11} & \textbf{3.14} & \textbf{26.87} & \textbf{93.51} & \textbf{90.11} & \textbf{31.82} & \textbf{141.67} & \textbf{114.15} & \textbf{53.61} \\
+      & Adaptive & 0.30 & 0.39 & 0.33 & \textbf{0.50} & 0.46 & 0.49 & 0.20 & 0.15 & 0.18 & -50.84 & -36.16 & -45.90 & 283.85 & 226.07 & 272.25 & 392.90 & 257.17 & 401.26 \\
+\midrule
+\multicolumn{2}{c|}{\textbf{Improvement (\%)}} &
+\textbf{13.51} & \textbf{10.00} & \textbf{3.28} & \textbf{12.28} & \textbf{6.67} & -12.12 & \textbf{66.67} & -- & \textbf{50.00} & \textbf{39.24} & \textbf{121.12} & \textbf{99.48} & \textbf{35.46} & \textbf{27.18} & \textbf{48.05} & \textbf{27.99} & \textbf{37.15} & \textbf{41.84} \\
+\bottomrule
+\end{tabular}
+
+
+\end{table*}

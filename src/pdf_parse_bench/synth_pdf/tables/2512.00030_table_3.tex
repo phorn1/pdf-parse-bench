@@ -1,0 +1,19 @@
+\begin{table}
+\centering
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Model & Strategy & SR $\uparrow$ & CR $\downarrow$ & AT $\downarrow$ \\
+\midrule
+\multirow{2}{*}{DRIQN}
+ & Greedy   & $\mathbf{0.42}$ & $0.55$ & $\mathbf{93.51}$ \\
+ & Adaptive & $0.30$ & $\mathbf{0.50}$ & $283.85$ \\
+\midrule
+\multirow{2}{*}{DRIQN-W}
+ & Greedy   & $\underline{0.22}$ & $\underline{0.54}$ & $\underline{357.87}$ \\
+ & Adaptive & $0.20$ & $0.55$ & $379.50$ \\
+\bottomrule
+\end{tabular*}
+
+
+\end{table}

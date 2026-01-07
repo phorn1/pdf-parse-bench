@@ -1,0 +1,30 @@
+\begin{table*}
+\centering
+
+\footnotesize
+\begin{tabular}{@{\extracolsep{4pt}}cccrrr@{}}
+\toprule
+\multirow{2}{*}{Device $k$} & \multirow{2}{*}{$\mathrm{e}$/$\mathrm{h}$/$\mathrm{c}$} & \multirow{2}{*}{Processor} & \multicolumn{3}{c}{Budgets} \\
+\cline{4-6}
+  & & & \multicolumn{1}{c}{Memory $M_{k}^{\mathrm{bgt}}$} & \multicolumn{1}{c}{Storage $S_{k}^{\mathrm{bgt}}$} & Energy $E_{k}^{\mathrm{bgt}}$\\
+ %& & & & & (Battery Capacity)\\
+\hline
+Jetson TX2 & $\mathrm{e}$ & Cortex-A57\,/\,NVIDIA Denver2 @ 2\,GHz &  8\,GiB \hspace{10pt}   & 32\,GiB \hspace{6pt}   & 129.96\,Wh*\\
+%\hline
+%Odroid XU4 & e & Exynos 5422 Cortex-A15 @ 2\,GHz /  Cortex-A7 Octacore  & 2\,GiB & 16\,GiB & 129.96\,Wh* \\
+Odroid XU4 & $\mathrm{e}$ & Exynos 5422 Cortex-A15\,/\,Cortex-A7 @ 2\,GHz       & 2\,GiB \hspace{10pt}   & 16\,GiB \hspace{6pt}    & 129.96\,Wh*\\
+%\hline
+Raspberry Pi 3 Model B & $\mathrm{e}$ & Broadcom Cortex-A53 @ 1.4\,GHz         & 1\,GiB \hspace{10pt}   & 16\,GiB \hspace{6pt}    & 129.96\,Wh*\\
+%\hline
+Mi Notebook Pro & $\mathrm{h}$ & Intel i5 8250U @ 1.6\,GHz                     & 8\,GiB \hspace{10pt}   & 512\,GiB \hspace{6pt}   & 60.00\,Wh\dag\\
+%\hline
+HPE ProLiant  DL580 Gen10 & $\mathrm{c}$ & Intel Xeon Gold 6240 @ 2.6\,GHz     & 400\,GiB \hspace{10pt} & 10\,TiB \hspace{6pt}    & \multicolumn{1}{c}{-}\\
+
+\bottomrule
+
+\multicolumn{6}{l}{\scriptsize{*Battery capacity of UAV where device is attached as payload. \hspace{2mm} \dag Battery capacity of device.}}\\
+
+\end{tabular}
+
+%\vspace{-3mm}
+\end{table*}

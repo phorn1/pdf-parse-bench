@@ -1,0 +1,37 @@
+\begin{table}
+    \centering
+    
+    \begin{tabular}{|>{\centering\arraybackslash}p{4cm}|
+                    >{\centering\arraybackslash}p{4cm}|}
+			\hline{Functions}&{Expression}\\
+			\hline
+			
+			Addition\_V(c,a,b)&c = a + b\\
+            \hline
+			Subtraction\_V(c,a,b)&c = a - b\\
+            \hline
+			Multiplication\_V(c,a,b)&c = a * b\\
+            \hline
+			Division\_V(c,a,b)&c =  a / b\\
+            \hline
+			Power\_V(c,a,d)& $c = a^d$\\
+            \hline
+			Logarithm\_V(c,a,b)&c = log(a)b\\
+            \hline
+			Sqrt\_V(c, a)&c = sqrt(a)\\
+            \hline
+			SinCosTan\_V(sin\_r, cos\_r, tan\_r, a)&sin\_r = sin(a), cos\_r = cos(a), tan\_r = tan(a)\\
+            \hline
+			Value\_V(c, a)&c = a\\
+			\hline
+            If\_V(comp1, comp2, condition) *& if(comp1 (condition) comp2)\\
+            \hline
+        If\_V(comp1, comp2, condition, input\_array, output\_array) **&if( comp1 (condition) comp2 )\\
+    \hline
+    \multicolumn{2}{p{8cm}}{* If/else in unrolled environment ** If/else in pipelined environment. input\_array and output\_array are for input/output declaration in the if/else block, they are not used in the calculation.}
+
+    
+    \end{tabular}
+    
+    
+\end{table}
