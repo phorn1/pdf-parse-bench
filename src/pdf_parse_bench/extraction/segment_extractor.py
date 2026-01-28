@@ -2,6 +2,7 @@ import os
 import json
 import re
 from pathlib import Path
+from collections.abc import Callable
 from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from Levenshtein import distance as levenshtein_distance
@@ -17,7 +18,8 @@ from ..utilities import FormulaRenderer
 class SegmentExtractionJob:
     gt_json_path: Path
     input_md_path: Path
-    output_json_path: Path
+    output_formulas_json_path: Path
+    output_tables_json_path: Path
     stripped_parsed_text_path: Path
     rendered_formulas_dir: Path | None = None
 
@@ -39,9 +41,16 @@ class ParallelSegmentExtractor:
         job_name = f"{job.input_md_path.parent.name}/{job.input_md_path.parent.parent.name}"
 
         try:
-            # Load ground truth formulas
+            # Load ground truth segments
             with open(job.gt_json_path, 'r', encoding='utf-8') as f:
                 gt_segments = json.load(f)
+
+            gt_tables = [
+                {"gt_data": segment["data"]}
+                for segment in gt_segments
+                if segment["type"] == "table"
+            ]
+
             gt_formulas = [
                 {"gt_data": segment["data"]}
                 for segment in gt_segments
@@ -52,10 +61,37 @@ class ParallelSegmentExtractor:
             with open(job.input_md_path, 'r', encoding='utf-8') as f:
                 markdown_content = f.read()
 
-            # Extract formulas using LLM
+            remaining_text = markdown_content
+
+            # ========== TABLE EXTRACTION ==========
+
+            table_extraction_result, remaining_text = extract_tables_using_llm(
+                gt_tables,
+                remaining_text,
+                self.model,
+                console=console,
+                job_name=job_name,
+                verbose=self.verbose
+            )
+
+            failed_table_extractions = [
+                (i, pair["gt_table"])
+                for i, pair in enumerate(table_extraction_result)
+                if pair["parsed_table"] is None
+            ]
+
+            for table_pair in table_extraction_result:
+                if table_pair["parsed_table"] is None:
+                    table_pair["parsed_table"] = ""
+
+            with open(job.output_tables_json_path, 'w', encoding='utf-8') as f:
+                json.dump(table_extraction_result, f, indent=2, ensure_ascii=False)
+
+            # ========== FORMULA EXTRACTION ==========
+
             formula_extraction_result, remaining_text = extract_formulas_using_llm(
                 gt_formulas,
-                markdown_content,
+                remaining_text,
                 self.model,
                 console=console,
                 job_name=job_name,
@@ -85,8 +121,7 @@ class ParallelSegmentExtractor:
                             f"formula_{i:03d}"
                         )
 
-            # Check for failed extractions
-            failed_extractions = [
+            failed_formula_extractions = [
                 (i, pair["gt_formula"])
                 for i, pair in enumerate(formula_extraction_result)
                 if pair["parsed_formula"] is None
@@ -98,16 +133,24 @@ class ParallelSegmentExtractor:
                     formula_pair["parsed_formula"] = ""
 
             # Save result
-            with open(job.output_json_path, 'w', encoding='utf-8') as f:
+            with open(job.output_formulas_json_path, 'w', encoding='utf-8') as f:
                 json.dump(formula_extraction_result, f, indent=2, ensure_ascii=False)
+
             with open(job.stripped_parsed_text_path, 'w', encoding='utf-8') as f:
                 f.write(remaining_text)
 
-            # Log result with detailed failure information
-            if failed_extractions:
-                console.print(f"   ⚠️  {job_name} - {len(failed_extractions)} formula(s) not extracted:")
-                for idx, gt_formula in failed_extractions:
-                    console.print(f"   ⚠️  {idx} GT Formula: {gt_formula}")
+            # ========== LOG RESULTS ==========
+
+            has_failures = failed_formula_extractions or failed_table_extractions
+            if has_failures:
+                if failed_table_extractions:
+                    console.print(f"   ⚠️  {job_name} - {len(failed_table_extractions)} table(s) not extracted:")
+                    for idx, gt_table in failed_table_extractions:
+                        console.print(f"       [{idx}] GT Table: {gt_table}")
+                if failed_formula_extractions:
+                    console.print(f"   ⚠️  {job_name} - {len(failed_formula_extractions)} formula(s) not extracted:")
+                    for idx, gt_formula in failed_formula_extractions:
+                        console.print(f"       [{idx}] GT Formula: {gt_formula}")
             else:
                 console.print(f"   ✅ {job_name}")
 
@@ -216,6 +259,9 @@ def extract_formulas_using_llm(
         - Remaining text with extracted formulas removed
     """
 
+    if not gt_formulas:
+        return [], markdown_content
+
     # ========== OPENAI CLIENT SETUP ==========
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -322,9 +368,10 @@ def extract_formulas_using_llm(
                 continue
 
             # Try fuzzy matching
-            matched_formula = find_original_formula_in_markdown(
-                llm_formula=formula.data,
-                markdown_content=current_text
+            matched_formula = find_original_segment_in_markdown(
+                llm_segment=formula.data,
+                markdown_content=current_text,
+                bonus_fn=calculate_formula_delimiter_bonus
             )
 
             if matched_formula:
@@ -520,9 +567,10 @@ JSON list with {len(gt_formulas)} strings, one for each ground truth formula in 
         # Validate that the formula content exists in grouped_formula
         if raw_formula not in grouped_formula:
             # Try fuzzy matching
-            matched = find_original_formula_in_markdown(
-                llm_formula=raw_formula,
-                markdown_content=grouped_formula
+            matched = find_original_segment_in_markdown(
+                llm_segment=raw_formula,
+                markdown_content=grouped_formula,
+                bonus_fn=calculate_formula_delimiter_bonus
             )
             if matched:
                 raw_formula = matched
@@ -538,16 +586,36 @@ JSON list with {len(gt_formulas)} strings, one for each ground truth formula in 
     return result_formulas
 
 
-# ========== FORMULA NORMALIZATION ==========
+# ========== SEGMENT MATCHING ==========
 
-def find_original_formula_in_markdown(
-    llm_formula: str,
+def calculate_formula_delimiter_bonus(text: str) -> float:
+    """Calculate bonus for matching formula delimiters in case they were missing in the LLM extraction."""
+    bonus = 0.0
+
+    # Award bonus for start delimiters
+    if text.startswith('$$'):
+        bonus += 2.5
+    elif text.startswith(('$', r'\[', r'\(')):
+        bonus += 1.5
+
+    # Award bonus for end delimiters
+    if text.endswith('$$'):
+        bonus += 2.5
+    elif text.endswith(('$', r'\]', r'\)')):
+        bonus += 1.5
+
+    return bonus
+
+
+def find_original_segment_in_markdown(
+    llm_segment: str,
     markdown_content: str,
     edit_distance_ratio: float = 0.15,
-    search_radius: int = 10
+    search_radius: int = 10,
+    bonus_fn: Callable[[str], float] | None = None
 ) -> str | None:
     """
-    Find the original formula in markdown using normalized sliding window matching.
+    Find the original segment in markdown using normalized sliding window matching.
 
     Strategy:
     1. Normalize both strings (remove whitespace AND backslashes)
@@ -556,24 +624,25 @@ def find_original_formula_in_markdown(
     4. Refine by testing small boundary variations around that position
 
     Args:
-        llm_formula: Formula extracted by LLM (may have whitespace/backslash differences or errors)
+        llm_segment: Segment extracted by LLM (may have whitespace/backslash differences or errors)
         markdown_content: Original markdown content to search in
-        edit_distance_ratio: Max allowed edit distance as ratio of formula length
+        edit_distance_ratio: Max allowed edit distance as ratio of segment length
         search_radius: Characters to expand/shrink boundaries during refinement
+        bonus_fn: Optional function to calculate bonus score for candidates (e.g., delimiter matching)
 
     Returns:
-        Original formula string from markdown, or None if no match within threshold
+        Original segment string from markdown, or None if no match within threshold
     """
     # Unescape string-escaped newlines and tabs in LLM output
     # (only when they're NOT part of LaTeX commands like \theta or \text)
-    llm_formula = re.sub(r'\\n(?![a-zA-Z])', '\n', llm_formula)
-    llm_formula = re.sub(r'\\t(?![a-zA-Z])', '\t', llm_formula)
+    llm_segment = re.sub(r'\\n(?![a-zA-Z])', '\n', llm_segment)
+    llm_segment = re.sub(r'\\t(?![a-zA-Z])', '\t', llm_segment)
 
     # Normalize both strings (remove whitespace AND backslashes)
-    normalized_llm = re.sub(r'[\s\\]+', '', llm_formula)
+    normalized_llm = re.sub(r'[\s\\]+', '', llm_segment)
     normalized_markdown = re.sub(r'[\s\\]+', '', markdown_content)
 
-    # Early return: Can't match if formula is empty or longer than content
+    # Early return: Can't match if segment is empty or longer than content
     if not normalized_llm or len(normalized_llm) > len(normalized_markdown):
         return None
 
@@ -603,24 +672,6 @@ def find_original_formula_in_markdown(
     best_match, best_final_dist = None, float('inf')
     best_score = float('inf')
 
-    def calculate_delimiter_bonus(text: str) -> float:
-        """Calculate bonus for matching formula delimiters in case they were missing in the llm extraction. """
-        bonus = 0.0
-
-        # Award bonus for start delimiters
-        if text.startswith('$$'):
-            bonus += 2.5
-        elif text.startswith(('$', r'\[', r'\(')):
-            bonus += 1.5
-
-        # Award bonus for end delimiters
-        if text.endswith('$$'):
-            bonus += 2.5
-        elif text.endswith(('$', r'\]', r'\)')):
-            bonus += 1.5
-
-        return bonus
-
     for start_delta in range(-search_radius, search_radius + 1):
         for end_delta in range(-search_radius, search_radius + 1):
             s = max(0, orig_start + start_delta)
@@ -633,9 +684,190 @@ def find_original_formula_in_markdown(
             candidate_norm = re.sub(r'[\s\\]+', '', candidate)
             dist = levenshtein_distance(normalized_llm, candidate_norm)
 
-            score = dist - calculate_delimiter_bonus(candidate)
+            bonus = bonus_fn(candidate) if bonus_fn else 0.0
+            score = dist - bonus
 
             if score < best_score:
                 best_match, best_final_dist, best_score = candidate, dist, score
 
     return best_match if best_final_dist <= threshold else None
+
+
+# ========== LLM TABLE EXTRACTION ==========
+
+def create_table_extraction_prompt(gt_tables_segments: list[dict[str, str]], markdown_content: str) -> str:
+    """Create a focused prompt for extracting table segments."""
+
+    gt_table_structure = [
+        f"[{idx}] {table['gt_data']}"
+        for idx, table in enumerate(gt_tables_segments)
+    ]
+
+    prompt = f"""You are a table extraction specialist.
+
+SCENARIO:
+You are given two inputs:
+1. A reference list of {len(gt_table_structure)} LaTeX tables (GROUND TRUTH)
+2. A markdown document containing text with embedded tables (PARSED MARKDOWN)
+
+The tables from the ground truth list appear in the markdown document, but may be represented in various formats (e.g. markdown, HTML, LaTeX, lists, or other representations) and are likely to be significantly modified in content and structure.
+
+YOUR TASK:
+Extract the tables from the markdown document and return them as a JSON list. The output list must follow the same order and structure as the ground truth list. For each table in the ground truth list, find and extract the corresponding table from the markdown.
+
+GROUND TRUTH TABLES ({len(gt_table_structure)} total):
+{"\n".join(gt_table_structure)}
+
+PARSED MARKDOWN CONTENT:
+```markdown
+{markdown_content}
+```
+
+INSTRUCTIONS:
+
+1. For each ground truth table, find its match in the markdown
+2. EXTRACT EXACTLY, DON'T TRANSFORM: Copy tables character-by-character as they appear in markdown
+   - Extract the COMPLETE table including ALL formatting
+   - Preserve ALL whitespace using actual newline and tab characters in JSON
+   - Do NOT add, remove, or normalize anything
+4. Only use empty string "" if the table content is truly absent from the document (very rare)
+
+OUTPUT:
+JSON list with {len(gt_table_structure)} objects:
+- index: Sequential index from 0 to {len(gt_table_structure)-1}
+- data: Extracted table from markdown, or "" if missing
+"""
+
+    return prompt
+
+
+def extract_tables_using_llm(
+    gt_tables: list[dict[str, str]],
+    markdown_content: str,
+    model: str,
+    console=None,
+    job_name: str = "",
+    max_retries: int = 1,
+    verbose: bool = False
+) -> tuple[list[dict[str, str]], str]:
+    """Extract table segments using LLM with structured output and post-validation.
+
+    Returns:
+        Tuple of:
+        - List of dicts with format: [{"gt_table": "...", "parsed_table": "..."}, ...]
+        - Remaining text with extracted tables removed
+    """
+
+    # Early return if no tables to extract
+    if not gt_tables:
+        return [], markdown_content
+
+    # ========== OPENAI CLIENT SETUP ==========
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # ========== EXTRACTION STATE ==========
+
+    current_text = markdown_content
+    tables_dict = {
+        i: {"gt_data": gt["gt_data"], "parsed_table": None}
+        for i, gt in enumerate(gt_tables)
+    }
+
+    for attempt in range(max_retries + 1):
+        to_extract = {idx: data for idx, data in tables_dict.items() if data["parsed_table"] is None}
+
+        if not to_extract:
+            break
+
+        tables_for_prompt = [{"gt_data": data["gt_data"]} for data in to_extract.values()]
+
+        # Define Pydantic models dynamically
+        class TableExtraction(BaseModel):
+            index: int = Field(description=f"Sequential index (0 to {len(tables_for_prompt)-1})")
+            data: str = Field(description="Exact table from markdown, verbatim. Empty string if not found.")
+
+        class ExtractedTables(BaseModel):
+            tables: list[TableExtraction] = Field(
+                min_length=len(tables_for_prompt),
+                max_length=len(tables_for_prompt)
+            )
+
+        # ========== LLM CALL ==========
+
+        prompt = create_table_extraction_prompt(tables_for_prompt, current_text)
+
+        response = client.responses.parse(
+            model=model,
+            input=[{"role": "user", "content": prompt}],
+            text_format=ExtractedTables
+        )
+
+        extraction_batch = response.output_parsed
+
+        # ========== VALIDATE INDICES ==========
+
+        expected_indices = list(range(len(tables_for_prompt)))
+        actual_indices = [t.index for t in extraction_batch.tables]
+
+        if expected_indices != actual_indices:
+            is_last_attempt = attempt == max_retries
+            retry_status = f" (giving up after {max_retries + 1} attempts)" if is_last_attempt else " (retrying...)"
+
+            if console:
+                console.print(f"   ⚠️  {job_name}: Table index mismatch - expected {expected_indices}, got {actual_indices}{retry_status}")
+
+            if not is_last_attempt:
+                continue
+
+        # ========== POST-VALIDATION ==========
+
+        original_indices = list(to_extract.keys())
+
+        for local_idx, table in enumerate(extraction_batch.tables):
+            original_idx = original_indices[local_idx]
+
+            if not table.data:
+                tables_dict[original_idx]["parsed_table"] = ""
+                continue
+
+            # Try exact match first
+            if table.data in current_text:
+                tables_dict[original_idx]["parsed_table"] = table.data
+                current_text = current_text.replace(table.data, "", 1)
+                continue
+
+            # Try fuzzy matching for tables
+            matched_table = find_original_segment_in_markdown(
+                llm_segment=table.data,
+                markdown_content=current_text
+            )
+
+            if matched_table:
+                if matched_table not in current_text:
+                    raise Exception(f"Unexpected: matched table not in text: {matched_table[:100]!r}...")
+                tables_dict[original_idx]["parsed_table"] = matched_table
+                current_text = current_text.replace(matched_table, "", 1)
+                if console and verbose:
+                    console.print(f"   🔧 {job_name}: Matched table [{table.index}] via normalization")
+
+        # ========== CHECK IF RETRY NEEDED ==========
+
+        failed_indices = [idx for idx, data in tables_dict.items() if data["parsed_table"] is None]
+        if not failed_indices or attempt == max_retries:
+            break
+        if console:
+            failed_indices_str = ", ".join(f"[{idx}]" for idx in failed_indices)
+            console.print(f"   🔄 {job_name}: Retrying {len(failed_indices)} failed table(s): {failed_indices_str}")
+
+    # ========== COMBINE RESULTS ==========
+
+    result = [
+        {
+            "gt_table": tables_dict[i]["gt_data"],
+            "parsed_table": tables_dict[i]["parsed_table"],
+        }
+        for i in range(len(gt_tables))
+    ]
+
+    return result, current_text
