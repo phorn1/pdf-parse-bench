@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterator
 
 from .latex_config import LaTeXConfig
-from .content import create_text_generator, load_formulas_from_dataset, load_tables_from_directory
+from .content import create_text_generator, load_formulas, load_tables, TableBlock
 from .latex import PageBuilder, compile_latex
 from pdf_parse_bench.utilities import FormulaRenderer
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class SinglePagePDFGenerator:
     """Generates single-page PDFs using LaTeX."""
 
-    def __init__(self, config: LaTeXConfig, formulas: list[str], tables: list[str]):
+    def __init__(self, config: LaTeXConfig, formulas: list[str], tables: list[TableBlock]):
         self._config = config
         self._formulas = formulas
         self._tables = tables
@@ -79,10 +79,10 @@ class PDFJob:
 
 # ----- Worker process infrastructure -----
 _worker_formulas: list[str] = []
-_worker_tables: list[str] = []
+_worker_tables: list[TableBlock] = []
 
 
-def _init_worker(formulas: list[str], tables: list[str]) -> None:
+def _init_worker(formulas: list[str], tables: list[TableBlock]) -> None:
     """Initialize worker process with shared data."""
     global _worker_formulas, _worker_tables
     _worker_formulas = formulas
@@ -102,8 +102,8 @@ class ParallelPDFGenerator:
 
     def __init__(self, max_workers: int | None = None):
         self.max_workers = max_workers or max(1, multiprocessing.cpu_count() - 1)
-        self.formulas = load_formulas_from_dataset()
-        self.tables = load_tables_from_directory()
+        self.formulas = load_formulas()
+        self.tables = load_tables()
 
     def generate_pdfs_parallel(self, jobs: list[PDFJob]) -> Iterator[None]:
         """Yields None for each completed job (for progress tracking). Retries failed jobs."""

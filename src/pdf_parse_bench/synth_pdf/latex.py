@@ -5,7 +5,7 @@ import re
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Callable
+from typing import Callable, NamedTuple
 
 from .latex_config import LaTeXConfig
 from .content import ContentBlock, ParagraphBlock, FormulaBlock, MixedTextBlock, TableBlock, PageContent
@@ -46,6 +46,10 @@ def compile_latex(tex_path: Path, output_pdf_path: Path | None, timeout: int = 3
 
 class LaTeXDocument:
     """LaTeX document with preamble and content rendering."""
+
+    class PageFitResult(NamedTuple):
+        fits: bool
+        remaining_space_pt: float | None
 
     def __init__(self, config: LaTeXConfig):
         self._config = config
@@ -111,6 +115,22 @@ class LaTeXDocument:
             "\\DeclareOldFontCommand{\\sc}{\\normalfont\\scshape}{\\mathsc}",
         ])
 
+        # Macro to output raw LaTeX register values (calculations done in Python)
+        settings.extend([
+            "\\makeatletter",
+            "\\newcommand{\\dumpregisters}{%",
+            "  \\par%",
+            "  \\typeout{TEXTHEIGHT_PT:\\strip@pt\\textheight}%",
+            "  \\typeout{PAGETOTAL_PT:\\strip@pt\\pagetotal}%",
+            "  \\if@twocolumn",
+            "    \\if@firstcolumn\\typeout{COLUMN:first}\\else\\typeout{COLUMN:second}\\fi",
+            "  \\else",
+            "    \\typeout{COLUMN:single}%",
+            "  \\fi",
+            "}",
+            "\\makeatother",
+        ])
+
         return settings
 
     def assemble_latex(self, page_content: PageContent) -> str:
@@ -122,71 +142,76 @@ class LaTeXDocument:
             "",
             "\\begin{document}",
             page_content.to_latex(),
+            "\\dumpregisters",
             "\\end{document}",
         ]
         return "\n".join(sections)
 
     # ========== VALIDATION ==========
 
-    def check_fits_one_page(self, page_content: PageContent) -> bool:
-        """Check if page content fits on one page."""
-        latex_content = self.assemble_latex(page_content)
-
+    def compile_and_measure(self, page_content: PageContent) -> PageFitResult:
+        """Compile document and measure page usage."""
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
-            tex_file.write_text(latex_content, encoding='utf-8')
+            tex_file.write_text(self.assemble_latex(page_content), encoding='utf-8')
             compile_latex(tex_file, output_pdf_path=tex_file.with_suffix('.pdf'), timeout=30)
+            log = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
 
-            # Pattern: "Output written on test.pdf (1 page, ...)"
-            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
-            if match := re.search(r'Output written on.*?\((\d+) page', log_content):
-                return int(match.group(1)) == 1
+        # Extract page count
+        if not (match := re.search(r'Output written on.*?\((\d+) page', log)):
+            raise RuntimeError("Could not extract page count from LaTeX log")
+        if int(match.group(1)) != 1:
+            return self.PageFitResult(fits=False, remaining_space_pt=None)
 
-            raise RuntimeError(f"Could not extract page count from LaTeX log: {log_content}")
+        # Parse registers and calculate remaining space
+        textheight = float(re.search(r'TEXTHEIGHT_PT:([\d.]+)', log).group(1))
+        pagetotal = float(re.search(r'PAGETOTAL_PT:([\d.]+)', log).group(1))
+        column = re.search(r'COLUMN:(\w+)', log).group(1)
+
+        remaining = textheight - pagetotal
+        if column == "first":
+            remaining = 2 * textheight - pagetotal
+        elif column == "second":
+            remaining = textheight - pagetotal
+
+        return self.PageFitResult(fits=True, remaining_space_pt=remaining)
 
     def check_block_fits_bounds(self, block: ContentBlock) -> bool:
         """Check if a single content block fits within page bounds."""
-        latex_content = self.assemble_latex(PageContent(content_blocks=[block]))
-
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
-            tex_file.write_text(latex_content, encoding='utf-8')
+            tex_file.write_text(self.assemble_latex(PageContent(content_blocks=[block])), encoding='utf-8')
             compile_latex(tex_file, output_pdf_path=None, timeout=30)
+            log = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
 
-            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
-
-            # Content exceeds box dimensions
-            if "Overfull \\hbox" in log_content or "Overfull \\vbox" in log_content:
-                return False
-
-            # Severe spacing issues (badness >= 5000 indicates poor line breaking)
-            if (match := re.search(r"Underfull \\hbox.*badness (\d+)", log_content)) \
-                    and int(match.group(1)) >= 5000:
-                return False
-
-            return True
+        # Content exceeds box dimensions
+        if "Overfull \\hbox" in log or "Overfull \\vbox" in log:
+            return False
+        # Severe spacing issues (badness >= 5000 indicates poor line breaking)
+        if (match := re.search(r"Underfull \\hbox.*badness (\d+)", log)) and int(match.group(1)) >= 5000:
+            return False
+        return True
 
     def check_inline_formula_height(self, formula: str, max_height_pt: float = 10.0) -> bool:
         """Check if formula is flat enough for inline use."""
         test_latex = f"""{self.documentclass_line}
 {"\n".join(self.packages)}
+{"\n".join(self.preamble_settings)}
 \\begin{{document}}
 \\setbox0=\\hbox{{${formula}$}}
 \\typeout{{FORMULA_HEIGHT_PT:\\the\\ht0}}
 \\end{{document}}
 """
-
         with tempfile.TemporaryDirectory() as temp_dir:
             tex_file = Path(temp_dir) / "test.tex"
             tex_file.write_text(test_latex, encoding='utf-8')
             compile_latex(tex_file, output_pdf_path=None, timeout=30)
+            log = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
 
-            # Pattern: "FORMULA_HEIGHT_PT:6.94444pt"
-            log_content = tex_file.with_suffix('.log').read_text(encoding='utf-8', errors='ignore')
-            if match := re.search(r'FORMULA_HEIGHT_PT:([\d.]+)pt', log_content):
-                return float(match.group(1)) <= max_height_pt
-
-            raise RuntimeError(f"Could not extract formula height from LaTeX log: {log_content}")
+        # Pattern: "FORMULA_HEIGHT_PT:6.94444pt"
+        if match := re.search(r'FORMULA_HEIGHT_PT:([\d.]+)pt', log):
+            return float(match.group(1)) <= max_height_pt
+        raise RuntimeError("Could not extract formula height from LaTeX log")
 
 
 # ========== PAGE BUILDING ==========
@@ -197,13 +222,33 @@ class PageBuilder:
     def __init__(self, latex_config: LaTeXConfig,
                  text_generator: Callable[[int], str],
                  formulas: list[str],
-                 tables: list[str]):
+                 tables: list[TableBlock]):
         self._latex_config = latex_config
         self._document = LaTeXDocument(latex_config)
         self._text_generator = text_generator
         self._formulas = formulas
         self._tables = tables
         self._rng = random.Random(latex_config.seed)
+        self._column_width_pt = self._calculate_column_width()
+        self._remaining_space_pt: float | None = None
+
+    def _calculate_column_width(self) -> float:
+        """Calculate the width of a single column in pt."""
+        # A4 width in pt
+        a4_width_pt = 595.276
+
+        # Parse margin values (format: "45pt", "55pt", etc.)
+        def parse_pt(value: str) -> float:
+            return float(value.replace("pt", ""))
+
+        left = parse_pt(self._latex_config.margins.left)
+        right = parse_pt(self._latex_config.margins.right)
+        text_width = a4_width_pt - left - right
+
+        if self._latex_config.two_column:
+            columnsep = parse_pt(self._latex_config.column_sep)
+            return (text_width - columnsep) / 2
+        return text_width
 
     def assemble_latex(self, page_content: PageContent) -> str:
         """Assemble complete LaTeX document from page content."""
@@ -212,24 +257,57 @@ class PageBuilder:
     def generate_page(self) -> PageContent:
         """Generate random page content that fills exactly one page."""
         page_content = PageContent()
+        self._remaining_space_pt = None
+        generators = [
+            self._generate_paragraph,
+            self._generate_formula,
+            self._generate_mixed_text,
+            self._generate_table,
+        ]
 
-        # Add blocks iteratively until page is full
         while True:
-            block = self._rng.choice([
-                self._generate_paragraph,
-                self._generate_formula,
-                self._generate_mixed_text,
-                self._generate_table,
-            ])()
+            # Retry if _generate_table returns None (not enough space)
+            block = None
+            while block is None:
+                block = self._rng.choice(generators)()
 
-            # Test if adding this block would exceed one page
             page_content.content_blocks.append(block)
-            if not self._document.check_fits_one_page(page_content):
-                # Adding this block would exceed one page, remove it
+            result = self._document.compile_and_measure(page_content)
+
+            if not result.fits:
                 page_content.content_blocks.pop()
                 break
 
+            self._remaining_space_pt = result.remaining_space_pt
+
         return page_content
+
+    def _generate_table(self) -> TableBlock | None:
+        """Generate a table that fits, or None if conditions don't allow."""
+        # Skip tables if less than 100pt remaining (prefer text/formulas for small gaps)
+        if self._remaining_space_pt is not None and self._remaining_space_pt < 100:
+            return None
+        return self._select_fitting_table()
+
+    def _select_fitting_table(self) -> TableBlock | None:
+        """Select a table that fits in the available space, or None if no table fits."""
+        candidates = self._tables.copy()
+        self._rng.shuffle(candidates)
+
+        for table in candidates:
+            # Skip tables that are too tall for remaining space (+ 20pt for addvspace above/below)
+            if self._remaining_space_pt is not None and table.height_pt + 20 > self._remaining_space_pt:
+                continue
+
+            # Skip tables wider than 130% of column width (adjustbox can shrink to fit)
+            if table.width_pt > 1.3 * self._column_width_pt:
+                continue
+
+            # Verify it compiles without overflow
+            if self._document.check_block_fits_bounds(table):
+                return table
+
+        return None
 
     def _generate_paragraph(self) -> ParagraphBlock:
         """Generate a text paragraph with random length."""
@@ -283,11 +361,3 @@ class PageBuilder:
             if self._document.check_block_fits_bounds(block):
                 return block
             # If not, skip this block and try again
-
-    def _generate_table(self) -> TableBlock:
-        """Generate a table that fits within bounds."""
-        while True:
-            table_latex = self._rng.choice(self._tables)
-            block = TableBlock(latex_table=table_latex)
-            if self._document.check_block_fits_bounds(block):
-                return block

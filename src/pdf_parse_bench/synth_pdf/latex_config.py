@@ -113,7 +113,7 @@ class LaTeXConfig(BaseModel):
 
     # Layout options
     two_column: bool = False
-    column_sep: str = "1cm"
+    column_sep: str = "30pt"
 
     # Content features
     include_headers: bool = True
@@ -126,10 +126,13 @@ class LaTeXConfig(BaseModel):
         """Generate random LaTeX configuration."""
         rng = random.Random(seed)
 
-        margins = ["1.5cm", "2cm", "2.5cm", "3cm"]
+        # Margin options in pt (~1.5cm, ~2cm, ~2.5cm, ~3cm)
+        margins = ["45pt", "55pt", "70pt", "85pt"]
         font_sizes = ["10pt", "11pt", "12pt"]
         indents = ["0pt", "1em", "1.5em", "2em"]
         skips = ["0pt", "0.5em", "1em"]
+        # Column separation options in pt (~0.8cm, ~1cm, ~1.2cm)
+        column_seps = ["25pt", "30pt", "35pt"]
 
         return cls(
             document_class=rng.choice(list(DocumentClass)),
@@ -149,7 +152,7 @@ class LaTeXConfig(BaseModel):
             ),
             content=ContentSettings(),
             two_column=rng.choice([True, False]),
-            column_sep=rng.choice(["0.8cm", "1cm", "1.2cm"]),
+            column_sep=rng.choice(column_seps),
             include_headers=rng.choice([True, False]),
             seed=seed,
         )

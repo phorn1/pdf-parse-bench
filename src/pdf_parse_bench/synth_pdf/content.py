@@ -73,11 +73,13 @@ class MixedTextBlock(ContentBlock):
 
 
 class TableBlock(ContentBlock):
-    """Table content block."""
+    """Table content block with pre-computed dimensions."""
     latex_table: str
+    width_pt: float
+    height_pt: float
 
     def to_latex(self) -> str:
-        return self.latex_table + "\n"
+        return f"\\addvspace{{10pt}}\n{{\\centering\n\\adjustbox{{max width=\\columnwidth}}{{{self.latex_table}}}\n\\par}}\n\\addvspace{{10pt}}\n"
 
     def to_ground_truth(self) -> dict[str, str]:
         return {"type": "table", "data": self.latex_table}
@@ -86,6 +88,7 @@ class TableBlock(ContentBlock):
 class PageContent(BaseModel):
     """Content structure for a single page."""
     content_blocks: list[ContentBlock] = Field(default_factory=list)
+
 
     def to_latex(self) -> str:
         """Convert all content blocks to LaTeX format."""
@@ -131,7 +134,7 @@ def create_text_generator(language: str = "en_US", seed: int | None = None) -> C
     return generate
 
 
-def load_formulas_from_dataset() -> list[str]:
+def load_formulas() -> list[str]:
     """
     Load formulas from Hugging Face dataset.
     Uses DuckDB with HTTP range requests to efficiently fetch only the 'formula' column
@@ -157,8 +160,20 @@ def load_formulas_from_dataset() -> list[str]:
     return [formula for (formula,) in result]
 
 
-def load_tables_from_directory() -> list[str]:
-    """Load all LaTeX table files from the tables directory."""
+def load_tables() -> list[TableBlock]:
+    """Load all LaTeX tables from the tables.jsonl file."""
+    import json
     from pathlib import Path
-    tables_dir = Path(__file__).parent / "tables"
-    return [f.read_text(encoding='utf-8') for f in sorted(tables_dir.glob("*.tex"))]
+    tables_file = Path(__file__).parents[3] / "tables.jsonl"
+    tables = []
+    with open(tables_file, encoding='utf-8') as f:
+        for line in f:
+            record = json.loads(line)
+            if record.get("complexity") == "SIMPLE":
+                continue
+            tables.append(TableBlock(
+                latex_table=record["tabular"],
+                width_pt=record["width_pt"],
+                height_pt=record["height_pt"],
+            ))
+    return tables
