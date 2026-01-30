@@ -77,12 +77,13 @@ class TableBlock(ContentBlock):
     latex_table: str
     width_pt: float
     height_pt: float
+    complexity: str
 
     def to_latex(self) -> str:
         return f"\\addvspace{{10pt}}\n{{\\centering\n\\adjustbox{{max width=\\columnwidth}}{{{self.latex_table}}}\n\\par}}\n\\addvspace{{10pt}}\n"
 
     def to_ground_truth(self) -> dict[str, str]:
-        return {"type": "table", "data": self.latex_table}
+        return {"type": "table", "data": self.latex_table, "complexity": self.complexity}
 
 
 class PageContent(BaseModel):
@@ -160,20 +161,25 @@ def load_formulas() -> list[str]:
     return [formula for (formula,) in result]
 
 
-def load_tables() -> list[TableBlock]:
-    """Load all LaTeX tables from the tables.jsonl file."""
+def load_tables() -> dict[str, list[TableBlock]]:
+    """Load all LaTeX tables from the tables jsonl files, grouped by complexity."""
     import json
     from pathlib import Path
-    tables_file = Path(__file__).parents[3] / "tables.jsonl"
-    tables = []
-    with open(tables_file, encoding='utf-8') as f:
-        for line in f:
-            record = json.loads(line)
-            if record.get("complexity") == "SIMPLE":
-                continue
-            tables.append(TableBlock(
-                latex_table=record["tabular"],
-                width_pt=record["width_pt"],
-                height_pt=record["height_pt"],
-            ))
+    base_path = Path(__file__).parents[3]
+    tables_files = {
+        "simple": base_path / "tables_simple.jsonl",
+        "moderate": base_path / "tables_moderate.jsonl",
+        "complex": base_path / "tables_complex.jsonl",
+    }
+    tables = {"simple": [], "moderate": [], "complex": []}
+    for complexity, tables_file in tables_files.items():
+        with open(tables_file, encoding='utf-8') as f:
+            for line in f:
+                record = json.loads(line)
+                tables[complexity].append(TableBlock(
+                    latex_table=record["tabular"],
+                    width_pt=record["width_pt"],
+                    height_pt=record["height_pt"],
+                    complexity=complexity,
+                ))
     return tables

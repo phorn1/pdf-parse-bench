@@ -222,7 +222,7 @@ class PageBuilder:
     def __init__(self, latex_config: LaTeXConfig,
                  text_generator: Callable[[int], str],
                  formulas: list[str],
-                 tables: list[TableBlock]):
+                 tables: dict[str, list[TableBlock]]):
         self._latex_config = latex_config
         self._document = LaTeXDocument(latex_config)
         self._text_generator = text_generator
@@ -291,7 +291,8 @@ class PageBuilder:
 
     def _select_fitting_table(self) -> TableBlock | None:
         """Select a table that fits in the available space, or None if no table fits."""
-        candidates = self._tables.copy()
+        complexity = self._rng.choice(list(self._tables.keys()))
+        candidates = self._tables[complexity].copy()
         self._rng.shuffle(candidates)
 
         for table in candidates:

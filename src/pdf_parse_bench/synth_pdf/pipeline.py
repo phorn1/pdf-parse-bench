@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class SinglePagePDFGenerator:
     """Generates single-page PDFs using LaTeX."""
 
-    def __init__(self, config: LaTeXConfig, formulas: list[str], tables: list[TableBlock]):
+    def __init__(self, config: LaTeXConfig, formulas: list[str], tables: dict[str, list[TableBlock]]):
         self._config = config
         self._formulas = formulas
         self._tables = tables
@@ -79,10 +79,10 @@ class PDFJob:
 
 # ----- Worker process infrastructure -----
 _worker_formulas: list[str] = []
-_worker_tables: list[TableBlock] = []
+_worker_tables: dict[str, list[TableBlock]] = {}
 
 
-def _init_worker(formulas: list[str], tables: list[TableBlock]) -> None:
+def _init_worker(formulas: list[str], tables: dict[str, list[TableBlock]]) -> None:
     """Initialize worker process with shared data."""
     global _worker_formulas, _worker_tables
     _worker_formulas = formulas
