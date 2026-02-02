@@ -12,7 +12,6 @@ import requests
 from dotenv import load_dotenv
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
-from google.genai import types
 from google import genai
 from mistralai import Mistral
 from pydantic import BaseModel, Field
@@ -53,13 +52,26 @@ Evaluate the extracted formula using the following criteria:
 2. Completeness: Are all parts of the formula present without omissions?
 3. Semantic equivalence: Does the extracted formula convey the same mathematical meaning?
 
-In case there is no extracted formula, assign a score of 0 and is_correct as false.
+Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No other text.
+"""
 
-Provide your evaluation STRICTLY in JSON format, starting with {{ and ending with }}:
-{{
-    "is_correct": true/false,
-    "score": (0-10 scale, where 10 is perfect match)
-}}
+TABLE_EVALUATION_PROMPT_TEMPLATE = """
+You are a table evaluator. Your task is to determine if the extracted table correctly represents the ground truth table, focusing on both content accuracy AND structural preservation.
+
+Ground Truth Table (LaTeX):
+{gt_table}
+
+Extracted Table:
+{extracted_table}
+
+Evaluate the extracted table using the following criteria:
+1. Content accuracy: Are all cell values, headers, and data correctly preserved?
+2. Structure preservation: Is the row/column structure maintained (even if format differs)?
+3. Completeness: Are all rows and columns present without omissions or additions?
+
+Note: The extracted table may be in a different format (markdown, HTML, list, plain text) than the ground truth LaTeX. Focus on semantic equivalence, not syntactic matching.
+
+Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No other text.
 """
 
 
@@ -69,7 +81,6 @@ Provide your evaluation STRICTLY in JSON format, starting with {{ and ending wit
 class LLMJudgeEval(BaseModel):
     type: str = "llm_judge"
     judge_model: str
-    is_correct: bool
     score: int
 
 
@@ -104,8 +115,6 @@ class CDMStatistics(BaseModel):
 
 class LLMJudgeStatistics(BaseModel):
     judge_model: str
-    correct_formulas: int
-    accuracy_percentage: float
     average_score: float
     average_inline_score: float
     average_display_score: float
@@ -117,13 +126,45 @@ class FormulaStatistics(BaseModel):
     cdm: CDMStatistics | None
 
 
+class TableEvaluationSummary(BaseModel):
+    table_number: int
+    ground_truth_table: str
+    extracted_table: str
+    complexity: Literal['simple', 'moderate', 'complex']
+    llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
+
+    @property
+    def llm_evals_by_model(self) -> dict[str, LLMJudgeEval]:
+        """Get LLM evaluations as dict by judge model for easier UI access."""
+        return {eval.judge_model: eval for eval in self.llm_evals}
+
+
+class TableLLMJudgeStatistics(BaseModel):
+    judge_model: str
+    average_score: float
+    average_simple_score: float
+    average_moderate_score: float
+    average_complex_score: float
+
+
+class TableStatistics(BaseModel):
+    total_tables: int
+    llm_judge: list[TableLLMJudgeStatistics]
+
+
 class SummaryStatistics(BaseModel):
     formula_statistics: FormulaStatistics
+    table_statistics: TableStatistics
 
     @property
     def llm_judge_stats_by_model(self) -> dict[str, LLMJudgeStatistics]:
         """Get LLM judge statistics as dict by judge model for easier access."""
         return {stat.judge_model: stat for stat in self.formula_statistics.llm_judge}
+
+    @property
+    def table_llm_judge_stats_by_model(self) -> dict[str, TableLLMJudgeStatistics]:
+        """Get table LLM judge statistics as dict by judge model for easier access."""
+        return {stat.judge_model: stat for stat in self.table_statistics.llm_judge}
 
 
 # ========== EVALUATION CLASSES ==========
@@ -228,16 +269,12 @@ class NaiveEvaluator:
 
 
 class LLMEvaluator:
-    """Evaluates formulas using LLM judges."""
+    """Evaluates formulas and tables using LLM judges."""
 
     # Shared client instances (initialized lazily)
     _openai_client = None
     _gemini_client = None
     _mistral_client = None
-
-    class FormulaResponse(BaseModel):
-        is_correct: bool
-        score: int
 
     @classmethod
     def _get_openai_client(cls):
@@ -274,194 +311,199 @@ class LLMEvaluator:
     def _retry_on_failure(max_retries: int = 10):
         def decorator(func):
             @wraps(func)
-            def wrapper(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+            def wrapper(*args, **kwargs) -> LLMJudgeEval:
                 last_error = None
                 for attempt in range(max_retries):
                     try:
-                        return func(model, gt_formula, extracted_formula)
+                        return func(*args, **kwargs)
                     except Exception as e:
                         last_error = e
                         if attempt < max_retries - 1:
                             print(f"Attempt {attempt + 1} failed: {e}. Retrying...")
-
-                # If we reach here, all attempts failed
                 raise last_error
             return wrapper
         return decorator
 
+    # ========== CORE EVALUATION METHODS ==========
 
     @staticmethod
-    @_retry_on_failure()
-    def evaluate_openai(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        openai_client = LLMEvaluator._get_openai_client()
-
-        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
-        response = openai_client.responses.parse(
-            model=model, input=prompt, text_format=LLMEvaluator.FormulaResponse
-        )
-
-        data = response.output_parsed
-        return LLMJudgeEval(
-            judge_model=model,
-            is_correct=data.is_correct,
-            score=data.score
-        )
+    def _parse_score(text: str) -> int:
+        """Parse integer score from LLM response text."""
+        # Extract first integer found in the response
+        match = re.search(r'\b(\d+)\b', text.strip())
+        if match:
+            score = int(match.group(1))
+            return max(0, min(10, score))  # Clamp to 0-10
+        raise ValueError(f"Could not parse score from response: {text}")
 
     @staticmethod
-    @_retry_on_failure()
-    def evaluate_gemini(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        gemini_client = LLMEvaluator._get_gemini_client()
-
-        prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(gt_formula=gt_formula, extracted_formula=extracted_formula)
-        response = gemini_client.models.generate_content(
-            model=model,
-            contents=[prompt],
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=LLMEvaluator.FormulaResponse
+    def _evaluate(model: str, prompt: str) -> LLMJudgeEval:
+        """Evaluate using the appropriate client based on model."""
+        client_type = SUPPORTED_MODELS[model]
+        if client_type == "openai":
+            client = LLMEvaluator._get_openai_client()
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0
             )
-        )
-
-        parsed_data = json.loads(response.text)
-        data = LLMEvaluator.FormulaResponse(**parsed_data)
-        return LLMJudgeEval(
-            judge_model=model,
-            is_correct=data.is_correct,
-            score=data.score
-        )
+            text = response.choices[0].message.content
+        elif client_type == "gemini":
+            client = LLMEvaluator._get_gemini_client()
+            response = client.models.generate_content(
+                model=model,
+                contents=[prompt]
+            )
+            text = response.text
+        else:  # mistral
+            client = LLMEvaluator._get_mistral_client()
+            chat_response = client.chat.complete(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0
+            )
+            text = chat_response.choices[0].message.content
+        score = LLMEvaluator._parse_score(text)
+        return LLMJudgeEval(judge_model=model, score=score)
 
     @staticmethod
     @_retry_on_failure()
-    def evaluate_mistral(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
-        mistral_client = LLMEvaluator._get_mistral_client()
-
-        # Escape the formulas for safe JSON inclusion
-        gt_formula_escaped = json.dumps(gt_formula)[1:-1]  # Remove outer quotes
-        extracted_formula_escaped = json.dumps(extracted_formula)[1:-1]  # Remove outer quotes
-
+    def evaluate_formula(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+        """Evaluate a formula pair."""
+        if SUPPORTED_MODELS[model] == "mistral":
+            gt_formula = json.dumps(gt_formula)[1:-1]
+            extracted_formula = json.dumps(extracted_formula)[1:-1]
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(
-            gt_formula=gt_formula_escaped,
-            extracted_formula=extracted_formula_escaped
+            gt_formula=gt_formula, extracted_formula=extracted_formula
         )
+        return LLMEvaluator._evaluate(model, prompt)
 
-        messages = [
-            {
-                "role": "user",
-                "content": prompt,
-            },
-        ]
-
-        chat_response = mistral_client.chat.parse(
-            model=model,
-            messages=messages,
-            response_format=LLMEvaluator.FormulaResponse,
-            temperature=0
-        )
-
-        data = chat_response.choices[0].message.parsed
-        return LLMJudgeEval(
-            judge_model=model,
-            is_correct=data.is_correct,
-            score=data.score
-        )
-    
-
-
-# ========== STATISTICS CALCULATOR ==========
-
-class LLMStatisticsCalculator:
-    """Calculates LLM evaluation statistics."""
-    
     @staticmethod
-    def calculate(summaries: list[FormulaEvaluationSummary]) -> list[LLMJudgeStatistics]:
-        # Group by model
-        model_evals = {}
-        for summary in summaries:
-            for llm_eval in summary.llm_evals:
-                model = llm_eval.judge_model
-                if model not in model_evals:
-                    model_evals[model] = []
-                model_evals[model].append((llm_eval, summary))
-        
-        stats = []
-        for model, evals in model_evals.items():
-            scores = [e.score for e, _ in evals]
-            correct = sum(1 for e, _ in evals if e.is_correct is True)
-            total = len(evals)
-            
-            # Calculate inline/display scores
-            inline_scores = [e.score for e, s in evals if s.formula_type == 'inline-formula']
-            display_scores = [e.score for e, s in evals if s.formula_type == 'display-formula']
-            
-            stats.append(LLMJudgeStatistics(
-                judge_model=model,
-                correct_formulas=correct,
-                accuracy_percentage=correct / total * 100 if total else 0,
-                average_score=sum(scores) / len(scores) if scores else 0,
-                average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
-                average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
-            ))
-        
-        return stats
+    @_retry_on_failure()
+    def evaluate_table(model: str, gt_table: str, extracted_table: str) -> LLMJudgeEval:
+        """Evaluate a table pair."""
+        if SUPPORTED_MODELS[model] == "mistral":
+            gt_table = json.dumps(gt_table)[1:-1]
+            extracted_table = json.dumps(extracted_table)[1:-1]
+        prompt = TABLE_EVALUATION_PROMPT_TEMPLATE.format(
+            gt_table=gt_table, extracted_table=extracted_table
+        )
+        return LLMEvaluator._evaluate(model, prompt)
 
 
-class CDMStatisticsCalculator:
-    """Calculates CDM evaluation statistics."""
-    
-    @staticmethod
-    def calculate(summaries: list[FormulaEvaluationSummary]) -> CDMStatistics | None:
-        cdm_evals = [(summary.cdm_eval, summary) for summary in summaries if summary.cdm_eval is not None]
-        
-        if not cdm_evals:
-            return None
-        
-        scores = [e.score for e, _ in cdm_evals]
-        
+# ========== STATISTICS FUNCTIONS ==========
+
+def calculate_llm_stats(summaries: list[FormulaEvaluationSummary]) -> list[LLMJudgeStatistics]:
+    """Calculate LLM evaluation statistics for formulas."""
+    # Group by model
+    model_evals = {}
+    for summary in summaries:
+        for llm_eval in summary.llm_evals:
+            model = llm_eval.judge_model
+            if model not in model_evals:
+                model_evals[model] = []
+            model_evals[model].append((llm_eval, summary))
+
+    stats = []
+    for model, evals in model_evals.items():
+        scores = [e.score for e, _ in evals]
+
         # Calculate inline/display scores
-        inline_scores = [e.score for e, s in cdm_evals if s.formula_type == 'inline-formula']
-        display_scores = [e.score for e, s in cdm_evals if s.formula_type == 'display-formula']
-        
-        return CDMStatistics(
-            total_formulas=len(cdm_evals),
+        inline_scores = [e.score for e, s in evals if s.formula_type == 'inline-formula']
+        display_scores = [e.score for e, s in evals if s.formula_type == 'display-formula']
+
+        stats.append(LLMJudgeStatistics(
+            judge_model=model,
             average_score=sum(scores) / len(scores) if scores else 0,
             average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
             average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
+        ))
+
+    return stats
+
+
+def calculate_cdm_stats(summaries: list[FormulaEvaluationSummary]) -> CDMStatistics | None:
+    """Calculate CDM evaluation statistics."""
+    cdm_evals = [(summary.cdm_eval, summary) for summary in summaries if summary.cdm_eval is not None]
+
+    if not cdm_evals:
+        return None
+
+    scores = [e.score for e, _ in cdm_evals]
+
+    # Calculate inline/display scores
+    inline_scores = [e.score for e, s in cdm_evals if s.formula_type == 'inline-formula']
+    display_scores = [e.score for e, s in cdm_evals if s.formula_type == 'display-formula']
+
+    return CDMStatistics(
+        total_formulas=len(cdm_evals),
+        average_score=sum(scores) / len(scores) if scores else 0,
+        average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
+        average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
+    )
+
+
+def calculate_table_llm_stats(summaries: list[TableEvaluationSummary]) -> list[TableLLMJudgeStatistics]:
+    """Calculate table LLM evaluation statistics."""
+    if not summaries:
+        return []
+
+    # Group by model
+    model_evals: dict[str, list[tuple[LLMJudgeEval, TableEvaluationSummary]]] = {}
+    for summary in summaries:
+        for llm_eval in summary.llm_evals:
+            model = llm_eval.judge_model
+            if model not in model_evals:
+                model_evals[model] = []
+            model_evals[model].append((llm_eval, summary))
+
+    stats = []
+    for model, evals in model_evals.items():
+        scores = [e.score for e, _ in evals]
+
+        # Calculate scores by complexity
+        simple_scores = [e.score for e, s in evals if s.complexity == 'simple']
+        moderate_scores = [e.score for e, s in evals if s.complexity == 'moderate']
+        complex_scores = [e.score for e, s in evals if s.complexity == 'complex']
+
+        stats.append(TableLLMJudgeStatistics(
+            judge_model=model,
+            average_score=sum(scores) / len(scores) if scores else 0,
+            average_simple_score=sum(simple_scores) / len(simple_scores) if simple_scores else 0,
+            average_moderate_score=sum(moderate_scores) / len(moderate_scores) if moderate_scores else 0,
+            average_complex_score=sum(complex_scores) / len(complex_scores) if complex_scores else 0
+        ))
+
+    return stats
+
+
+def calculate_statistics(
+    formula_summaries: list[FormulaEvaluationSummary],
+    table_summaries: list[TableEvaluationSummary]
+) -> SummaryStatistics:
+    """Calculate all evaluation statistics."""
+    return SummaryStatistics(
+        formula_statistics=FormulaStatistics(
+            total_formulas=len(formula_summaries),
+            llm_judge=calculate_llm_stats(formula_summaries),
+            cdm=calculate_cdm_stats(formula_summaries)
+        ),
+        table_statistics=TableStatistics(
+            total_tables=len(table_summaries),
+            llm_judge=calculate_table_llm_stats(table_summaries)
         )
-
-
-class StatisticsCalculator:
-    """Main statistics calculator that coordinates all evaluation types."""
-
-    @staticmethod
-    def calculate(formula_summaries: list[FormulaEvaluationSummary]) -> SummaryStatistics:
-        llm_judge_stats = LLMStatisticsCalculator.calculate(formula_summaries)
-        cdm_stats = CDMStatisticsCalculator.calculate(formula_summaries)
-
-        return SummaryStatistics(
-            formula_statistics=FormulaStatistics(
-                total_formulas=len(formula_summaries),
-                llm_judge=llm_judge_stats,
-                cdm=cdm_stats
-            )
-        )
+    )
     
 
 
 # ========== FILE I/O HELPERS ==========
 
-def load_formula_summaries(file_path: Path) -> list[FormulaEvaluationSummary]:
-    """Load formula summaries from JSON file, return empty list if file doesn't exist."""
-    if file_path.exists():
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            return [FormulaEvaluationSummary(**item) for item in data]
-    return []
-
-def save_formula_summaries(file_path: Path, summaries: list[FormulaEvaluationSummary]) -> None:
-    """Save formula summaries to JSON file."""
+def save_summaries(file_path: Path, summaries: list[BaseModel]) -> None:
+    """Save summaries to JSON file."""
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump([s.model_dump() for s in summaries], f, indent=2, ensure_ascii=False)
+
 
 def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
     """Save statistics to JSON file."""
@@ -477,54 +519,93 @@ def run_evaluation(
     enable_cdm: bool = False,
     skip_existing: bool = True,
     extracted_formulas_path: Path = None,
+    extracted_tables_path: Path = None,
     result_stats_path: Path = None,
     result_formula_evals_path: Path = None,
+    result_table_evals_path: Path = None,
     cdm_output_dir: Path = None,
 ) -> None:
     """
     Complete evaluation pipeline with incremental saving.
 
     Args:
-        llm_judge_models: Model(s) for formula evaluation
-        enable_cdm: Whether to enable CDM scoring
+        llm_judge_models: Model(s) for formula/table evaluation
+        enable_cdm: Whether to enable CDM scoring for formulas
         skip_existing: If True, skip models that already have results. If False, re-evaluate and overwrite existing results
         extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
+        extracted_tables_path: Path to JSON with paired tables (gt_table, parsed_table)
         result_stats_path: Output path for statistics
         result_formula_evals_path: Output path for formula evaluations
+        result_table_evals_path: Output path for table evaluations
         cdm_output_dir: CDM visualization output directory
     """
     # Normalize to list
     if isinstance(llm_judge_models, str):
         llm_judge_models = [llm_judge_models]
 
-    # ========== LOAD AND PREPARE DATA ==========
+    # ========== LOAD AND PREPARE FORMULA DATA ==========
     with open(extracted_formulas_path, 'r', encoding='utf-8') as f:
         formula_pairs_data = json.load(f)
 
     # Load existing results or initialize new ones
-    formula_summaries = load_formula_summaries(result_formula_evals_path) or [
-        FormulaEvaluationSummary(
-            formula_number=i,
-            ground_truth_formula=pair['gt_formula'],
-            extracted_formula=pair['parsed_formula'],
-            formula_type='display-formula' if pair['gt_formula'].startswith('$$') else 'inline-formula'
-        )
-        for i, pair in enumerate(formula_pairs_data)
-    ]
+    formula_summaries = []
+    if result_formula_evals_path and result_formula_evals_path.exists():
+        with open(result_formula_evals_path, 'r', encoding='utf-8') as f:
+            formula_summaries = [FormulaEvaluationSummary(**item) for item in json.load(f)]
 
-    # ========== LLM FORMULA EVALUATIONS ==========
-    # Determine which models to evaluate
+    if not formula_summaries:
+        formula_summaries = [
+            FormulaEvaluationSummary(
+                formula_number=i,
+                ground_truth_formula=pair['gt_formula'],
+                extracted_formula=pair['parsed_formula'],
+                formula_type='display-formula' if pair['gt_formula'].startswith('$$') else 'inline-formula'
+            )
+            for i, pair in enumerate(formula_pairs_data)
+        ]
+
+    # ========== LOAD AND PREPARE TABLE DATA ==========
+    table_pairs_data = []
+    if extracted_tables_path and extracted_tables_path.exists():
+        with open(extracted_tables_path, 'r', encoding='utf-8') as f:
+            table_pairs_data = json.load(f)
+
+    # Load existing results or initialize new ones
+    table_summaries = []
+    if result_table_evals_path and result_table_evals_path.exists():
+        with open(result_table_evals_path, 'r', encoding='utf-8') as f:
+            table_summaries = [TableEvaluationSummary(**item) for item in json.load(f)]
+
+    if not table_summaries:
+        table_summaries = [
+            TableEvaluationSummary(
+                table_number=i,
+                ground_truth_table=pair['gt_table'],
+                extracted_table=pair['parsed_table'],
+                complexity=pair['complexity']
+            )
+            for i, pair in enumerate(table_pairs_data)
+        ]
+
+    # ========== DETERMINE MODELS TO EVALUATE ==========
     if skip_existing:
         # Skip models that already have results
-        existing_models = {
+        existing_formula_models = {
             eval_result.judge_model
             for summary in formula_summaries
             for eval_result in summary.llm_evals
         }
-        models_to_evaluate = [m for m in llm_judge_models if m not in existing_models]
+        existing_table_models = {
+            eval_result.judge_model
+            for summary in table_summaries
+            for eval_result in summary.llm_evals
+        }
+        formula_models_to_evaluate = [m for m in llm_judge_models if m not in existing_formula_models]
+        table_models_to_evaluate = [m for m in llm_judge_models if m not in existing_table_models]
     else:
         # Reprocess: remove old results for requested models and re-evaluate
-        models_to_evaluate = llm_judge_models
+        formula_models_to_evaluate = llm_judge_models
+        table_models_to_evaluate = llm_judge_models
         models_to_reprocess = set(llm_judge_models)
 
         # Remove existing evaluations for models being reprocessed
@@ -533,25 +614,21 @@ def run_evaluation(
                 eval_result for eval_result in summary.llm_evals
                 if eval_result.judge_model not in models_to_reprocess
             ]
+        for summary in table_summaries:
+            summary.llm_evals = [
+                eval_result for eval_result in summary.llm_evals
+                if eval_result.judge_model not in models_to_reprocess
+            ]
 
-    for model in models_to_evaluate:
-        # Validate model is supported
+    # ========== LLM FORMULA EVALUATIONS ==========
+    for model in formula_models_to_evaluate:
         if model not in SUPPORTED_MODELS:
             raise ValueError(f"Unsupported model: {model}")
-
-        client_type = SUPPORTED_MODELS[model]
-
-        if client_type == "gemini":
-            evaluate_func = LLMEvaluator.evaluate_gemini
-        elif client_type == "mistral":
-            evaluate_func = LLMEvaluator.evaluate_mistral
-        else:  # openai
-            evaluate_func = LLMEvaluator.evaluate_openai
 
         # Parallel evaluation with results tracking
         with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
             future_to_index = {
-                executor.submit(evaluate_func, model, pair['gt_formula'], pair['parsed_formula']): i
+                executor.submit(LLMEvaluator.evaluate_formula, model, pair['gt_formula'], pair['parsed_formula']): i
                 for i, pair in enumerate(formula_pairs_data)
             }
 
@@ -559,15 +636,44 @@ def run_evaluation(
             results = [(future.result(), future_to_index[future])
                       for future in tqdm(as_completed(future_to_index),
                                        total=len(future_to_index),
-                                       desc=f"Evaluating with {model}")]
+                                       desc=f"Evaluating formulas with {model}")]
             results.sort(key=lambda x: x[1])
 
         # Apply results and save incrementally
         for (result, index) in results:
             formula_summaries[index].llm_evals.append(result)
 
-        save_formula_summaries(result_formula_evals_path, formula_summaries)
-        save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries))
+        save_summaries(result_formula_evals_path, formula_summaries)
+        save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))
+
+    # ========== LLM TABLE EVALUATIONS ==========
+    for model in table_models_to_evaluate:
+        if not table_pairs_data:
+            break
+
+        if model not in SUPPORTED_MODELS:
+            raise ValueError(f"Unsupported model: {model}")
+
+        # Parallel evaluation with results tracking
+        with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
+            future_to_index = {
+                executor.submit(LLMEvaluator.evaluate_table, model, pair['gt_table'], pair['parsed_table']): i
+                for i, pair in enumerate(table_pairs_data)
+            }
+
+            # Collect and sort results
+            results = [(future.result(), future_to_index[future])
+                      for future in tqdm(as_completed(future_to_index),
+                                       total=len(future_to_index),
+                                       desc=f"Evaluating tables with {model}")]
+            results.sort(key=lambda x: x[1])
+
+        # Apply results and save incrementally
+        for (result, index) in results:
+            table_summaries[index].llm_evals.append(result)
+
+        save_summaries(result_table_evals_path, table_summaries)
+        save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))
 
     # ========== NAIVE FORMULA SIMILARITY EVALUATION ==========
     if any(summary.bleu_score is None or summary.levenshtein_similarity is None for summary in formula_summaries):
@@ -579,7 +685,7 @@ def run_evaluation(
             formula_summaries[i].bleu_score = bleu_score
             formula_summaries[i].levenshtein_similarity = levenshtein_similarity
 
-        save_formula_summaries(result_formula_evals_path, formula_summaries)
+        save_summaries(result_formula_evals_path, formula_summaries)
 
     # ========== CDM EVALUATION ==========
     if enable_cdm:
@@ -590,7 +696,7 @@ def run_evaluation(
         for i, cdm_result in enumerate(cdm_results):
             formula_summaries[i].cdm_eval = cdm_result
 
-        save_formula_summaries(result_formula_evals_path, formula_summaries)
+        save_summaries(result_formula_evals_path, formula_summaries)
 
     # ========== FINALIZE ==========
-    save_statistics(result_stats_path, StatisticsCalculator.calculate(formula_summaries))
+    save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))

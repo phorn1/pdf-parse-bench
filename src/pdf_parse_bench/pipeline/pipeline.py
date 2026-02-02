@@ -153,11 +153,12 @@ class Benchmark:
             # Path to files
             parsed_md_path = result_dir / "parsed.md"
             gt_json_path = self.ground_truth_dir / f"{result_dir.name}.json"
-            output_json_path = result_dir / "formulas.json"
+            output_formulas_json_path = result_dir / "formulas.json"
+            output_tables_json_path = result_dir / "tables.json"
             stripped_parsed_text_path = result_dir / "stripped_parsed_text.md"
 
             # Skip if output already exists and skip_existing is True
-            if skip_existing and output_json_path.exists():
+            if skip_existing and output_formulas_json_path.exists():
                 logger.info(f"   ⏩ Formulas JSON already exists for {result_dir.name} - skipping")
                 continue
 
@@ -165,7 +166,8 @@ class Benchmark:
             jobs.append(SegmentExtractionJob(
                 gt_json_path=gt_json_path,
                 input_md_path=parsed_md_path,
-                output_json_path=output_json_path,
+                output_formulas_json_path=output_formulas_json_path,
+                output_tables_json_path=output_tables_json_path,
                 stripped_parsed_text_path=stripped_parsed_text_path,
                 rendered_formulas_dir=None
             ))

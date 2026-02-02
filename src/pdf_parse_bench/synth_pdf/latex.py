@@ -258,12 +258,11 @@ class PageBuilder:
         """Generate random page content that fills exactly one page."""
         page_content = PageContent()
         self._remaining_space_pt = None
-        generators = [
-            self._generate_paragraph,
-            self._generate_formula,
-            self._generate_mixed_text,
-            self._generate_table,
-        ]
+        generators: list[Callable[[], ContentBlock | None]] = [self._generate_paragraph]
+        if self._latex_config.include_formulas:
+            generators.extend([self._generate_formula, self._generate_mixed_text])
+        if self._latex_config.include_tables:
+            generators.append(self._generate_table)
 
         while True:
             # Retry if _generate_table returns None (not enough space)

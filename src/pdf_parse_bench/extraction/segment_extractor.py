@@ -46,7 +46,7 @@ class ParallelSegmentExtractor:
                 gt_segments = json.load(f)
 
             gt_tables = [
-                {"gt_data": segment["data"]}
+                {"gt_data": segment["data"], "complexity": segment["complexity"]}
                 for segment in gt_segments
                 if segment["type"] == "table"
             ]
@@ -770,7 +770,7 @@ def extract_tables_using_llm(
 
     current_text = markdown_content
     tables_dict = {
-        i: {"gt_data": gt["gt_data"], "parsed_table": None}
+        i: {"gt_data": gt["gt_data"], "complexity": gt["complexity"], "parsed_table": None}
         for i, gt in enumerate(gt_tables)
     }
 
@@ -866,6 +866,7 @@ def extract_tables_using_llm(
         {
             "gt_table": tables_dict[i]["gt_data"],
             "parsed_table": tables_dict[i]["parsed_table"],
+            "complexity": tables_dict[i]["complexity"],
         }
         for i in range(len(gt_tables))
     ]

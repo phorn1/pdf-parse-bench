@@ -1,6 +1,6 @@
 [project]
 name = "pdf-parse-bench"
-version = "0.2.0"
+version = "0.3.0"
 description = "Benchmark suite for evaluating PDF parser quality on mathematical formulas"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -38,13 +38,12 @@ dependencies = [
     "nltk>=3.9.1",
     # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
-
     "pymupdf>=1.24.0",
     "pillow>=10.0.0",
-
     # Synthetic PDF generation - for creating test documents
     "faker>=37.11.0",
     "duckdb>=1.4.1",
+    "notebook>=7.5.0",
 ]
 
 [project.urls]

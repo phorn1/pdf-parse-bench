@@ -117,6 +117,9 @@ class LaTeXConfig(BaseModel):
 
     # Content features
     include_headers: bool = True
+    
+    include_tables: bool = True
+    include_formulas: bool = False  # affects FormulaBlock and MixedTextBlock
 
     # Reproducibility
     seed: int | None = None

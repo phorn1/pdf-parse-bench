@@ -181,21 +181,18 @@ def create_summary_html(stats: SummaryStatistics, judge_model: str | None = None
     if judge_model == 'N/A' or judge_model not in judge_stats_dict:
         formula_stats = LLMJudgeStatistics(
             judge_model='N/A',
-            correct_formulas=0,
-            accuracy_percentage=0.0,
             average_score=0.0,
             average_inline_score=0.0,
             average_display_score=0.0
         )
     else:
         formula_stats = judge_stats_dict[judge_model]
-    
+
     # Format numbers
-    accuracy_str = f"{formula_stats.accuracy_percentage:.1f}" if formula_stats.accuracy_percentage != int(formula_stats.accuracy_percentage) else str(int(formula_stats.accuracy_percentage))
     score_str = f"{formula_stats.average_score:.1f}" if formula_stats.average_score != int(formula_stats.average_score) else str(int(formula_stats.average_score))
     lev_sim = stats.text_statistics.average_levenshtein_similarity
     lev_sim_str = f"{lev_sim:.3f}" if lev_sim else "N/A"
-    
+
     return f"""
     <div class="summary-stats">
         <div style="display: inline-block; margin: 0 15px;">
@@ -205,14 +202,6 @@ def create_summary_html(stats: SummaryStatistics, judge_model: str | None = None
         <div style="display: inline-block; margin: 0 15px;">
             <div>Total Formulas</div>
             <div class="summary-value">{stats.formula_statistics.total_formulas}</div>
-        </div>
-        <div style="display: inline-block; margin: 0 15px;">
-            <div>Correct Formulas</div>
-            <div class="summary-value">{formula_stats.correct_formulas}</div>
-        </div>
-        <div style="display: inline-block; margin: 0 15px;">
-            <div>Accuracy</div>
-            <div class="summary-value">{accuracy_str}%</div>
         </div>
         <div style="display: inline-block; margin: 0 15px;">
             <div>Average Score</div>
@@ -226,7 +215,7 @@ def create_summary_html(stats: SummaryStatistics, judge_model: str | None = None
     """
 
 
-def create_display_html(formula_number: int, total_formulas: int, is_correct: bool, score: float) -> tuple[str, str]:
+def create_display_html(formula_number: int, total_formulas: int, score: float) -> tuple[str, str]:
     """Create HTML for progress and result display."""
     # Progress HTML
     progress_percentage = (formula_number / total_formulas) * 100 if total_formulas > 0 else 0
@@ -240,26 +229,27 @@ def create_display_html(formula_number: int, total_formulas: int, is_correct: bo
         </div>
     </div>
     """
-    
-    # Result HTML
-    bg_color = 'rgba(46, 204, 113, 0.2)' if is_correct else 'rgba(231, 76, 60, 0.2)'
-    border_color = '#2ecc71' if is_correct else '#e74c3c'
-    status_text = "Correct" if is_correct else "Incorrect"
-    status_icon = "✓" if is_correct else "✗"
-    
+
+    # Result HTML - color based on score (0-10 scale)
+    if score >= 8:
+        bg_color = 'rgba(46, 204, 113, 0.2)'
+        border_color = '#2ecc71'
+    elif score >= 5:
+        bg_color = 'rgba(241, 196, 15, 0.2)'
+        border_color = '#f1c40f'
+    else:
+        bg_color = 'rgba(231, 76, 60, 0.2)'
+        border_color = '#e74c3c'
+
     result_html = f"""
-    <div style="padding: 10px; border-radius: 5px; background-color: {bg_color}; 
-                border: 1px solid {border_color}; display: flex; flex-direction: column; 
+    <div style="padding: 10px; border-radius: 5px; background-color: {bg_color};
+                border: 1px solid {border_color}; display: flex; flex-direction: column;
                 align-items: center; justify-content: center; margin: 0; width: 100%;">
-        <span style="font-size: 24px; margin-bottom: 5px;">{status_icon}</span>
-        <span style="font-weight: bold; margin-bottom: 10px;">{status_text}</span>
-        <div style="display: flex; align-items: center;">
-            <span style="font-weight: bold; margin-right: 5px;">Score:</span>
-            <span>{score}</span>
-        </div>
+        <span style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">{score}</span>
+        <span style="font-weight: bold;">Score</span>
     </div>
     """
-    
+
     return progress_html, result_html
 
 
@@ -381,8 +371,7 @@ def update_display_from_state(state: ViewerState) -> tuple:
 
     # Create HTML components
     progress_html, result_html = create_display_html(
-        formula_number, total_formulas, 
-        evaluation.is_correct,
+        formula_number, total_formulas,
         evaluation.score
     )
     errors_html = create_errors_html(evaluation.errors)
