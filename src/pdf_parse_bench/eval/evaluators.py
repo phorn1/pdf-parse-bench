@@ -12,8 +12,6 @@ import requests
 from dotenv import load_dotenv
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
-from google import genai
-from mistralai import Mistral
 from pydantic import BaseModel, Field
 from tqdm import tqdm
 
@@ -22,21 +20,8 @@ load_dotenv()
 
 # ========== CONSTANTS ==========
 
-SUPPORTED_MODELS = {
-    "gemini-2.5-flash": "gemini",
-    "mistral-medium-2508": "mistral", 
-    "gpt-5-nano": "openai",
-    "gpt-5-mini": "openai",
-    "gpt-5": "openai"
-}
-
-MODEL_MAX_WORKERS = {
-    "gemini-2.5-flash": 8,
-    "mistral-medium-2508": 2,
-    "gpt-5-nano": 16,
-    "gpt-5-mini": 12,
-    "gpt-5": 8
-}
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+DEFAULT_MAX_WORKERS = 8
 
 FORMULA_EVALUATION_PROMPT_TEMPLATE = """
 You are a mathematical formula evaluator. Your task is to determine if the extracted formula correctly represents the ground truth formula, focusing on both semantic meaning AND proper mathematical notation.
@@ -56,7 +41,7 @@ Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No
 """
 
 TABLE_EVALUATION_PROMPT_TEMPLATE = """
-You are a table evaluator. Your task is to determine if the extracted table correctly represents the ground truth table, focusing on both content accuracy AND structural preservation.
+You are a table evaluator. Your task is to determine if the extracted table correctly represents the ground truth table, focusing on content accuracy, structural preservation, and information completeness. The extracted table was parsed from the rendered table, so LaTeX-specific elements that do not affect structure or content (e.g., comments, styling commands, font formatting) should be disregarded.
 
 Ground Truth Table (LaTeX):
 {gt_table}
@@ -66,10 +51,9 @@ Extracted Table:
 
 Evaluate the extracted table using the following criteria:
 1. Content accuracy: Are all cell values, headers, and data correctly preserved?
-2. Structure preservation: Is the row/column structure maintained (even if format differs)?
-3. Completeness: Are all rows and columns present without omissions or additions?
+2. Structure preservation: Are all rows and columns present, and can each value be unambiguously mapped to its row/column headers? Broken associations count as information loss.
 
-Note: The extracted table may be in a different format (markdown, HTML, list, plain text) than the ground truth LaTeX. Focus on semantic equivalence, not syntactic matching.
+Note: The extracted table may be in a different format (markdown, HTML, list, plain text) than the ground truth LaTeX. This is expected and acceptable. Focus on semantic equivalence.
 
 Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No other text.
 """
@@ -142,9 +126,9 @@ class TableEvaluationSummary(BaseModel):
 class TableLLMJudgeStatistics(BaseModel):
     judge_model: str
     average_score: float
-    average_simple_score: float
-    average_moderate_score: float
-    average_complex_score: float
+    average_simple_score: float | None = None
+    average_moderate_score: float | None = None
+    average_complex_score: float | None = None
 
 
 class TableStatistics(BaseModel):
@@ -269,43 +253,19 @@ class NaiveEvaluator:
 
 
 class LLMEvaluator:
-    """Evaluates formulas and tables using LLM judges."""
+    """Evaluates formulas and tables using LLM judges via OpenRouter."""
 
-    # Shared client instances (initialized lazily)
-    _openai_client = None
-    _gemini_client = None
-    _mistral_client = None
+    _client = None
 
     @classmethod
-    def _get_openai_client(cls):
-        """Get or create the shared OpenAI client."""
-        if cls._openai_client is None:
-            if os.getenv("LLM_PROXY_URL"):
-                cls._openai_client = OpenAI(
-                    base_url=os.getenv("LLM_PROXY_URL"),
-                    api_key=os.getenv("LLM_PROXY_API_KEY")
-                )
-            else:
-                cls._openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        return cls._openai_client
-
-    @classmethod
-    def _get_gemini_client(cls):
-        """Get or create the shared Gemini client."""
-        if cls._gemini_client is None:
-            if not os.getenv("GEMINI_API_KEY"):
-                raise ValueError("GEMINI_API_KEY required for Gemini models")
-            cls._gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        return cls._gemini_client
-
-    @classmethod
-    def _get_mistral_client(cls):
-        """Get or create the shared Mistral client."""
-        if cls._mistral_client is None:
-            if not os.getenv("MISTRAL_API_KEY"):
-                raise ValueError("MISTRAL_API_KEY required for Mistral models")
-            cls._mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
-        return cls._mistral_client
+    def _get_client(cls) -> OpenAI:
+        """Get or create the shared OpenRouter client."""
+        if cls._client is None:
+            api_key = os.getenv("OPENROUTER_API_KEY")
+            if not api_key:
+                raise ValueError("OPENROUTER_API_KEY environment variable is required for LLM evaluation.")
+            cls._client = OpenAI(base_url=OPENROUTER_BASE_URL, api_key=api_key)
+        return cls._client
 
     @staticmethod
     def _retry_on_failure(max_retries: int = 10):
@@ -329,50 +289,27 @@ class LLMEvaluator:
     @staticmethod
     def _parse_score(text: str) -> int:
         """Parse integer score from LLM response text."""
-        # Extract first integer found in the response
         match = re.search(r'\b(\d+)\b', text.strip())
         if match:
             score = int(match.group(1))
-            return max(0, min(10, score))  # Clamp to 0-10
+            return max(0, min(10, score))
         raise ValueError(f"Could not parse score from response: {text}")
 
     @staticmethod
     def _evaluate(model: str, prompt: str) -> LLMJudgeEval:
-        """Evaluate using the appropriate client based on model."""
-        client_type = SUPPORTED_MODELS[model]
-        if client_type == "openai":
-            client = LLMEvaluator._get_openai_client()
-            response = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0
-            )
-            text = response.choices[0].message.content
-        elif client_type == "gemini":
-            client = LLMEvaluator._get_gemini_client()
-            response = client.models.generate_content(
-                model=model,
-                contents=[prompt]
-            )
-            text = response.text
-        else:  # mistral
-            client = LLMEvaluator._get_mistral_client()
-            chat_response = client.chat.complete(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0
-            )
-            text = chat_response.choices[0].message.content
-        score = LLMEvaluator._parse_score(text)
+        """Evaluate using OpenRouter."""
+        client = LLMEvaluator._get_client()
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        score = LLMEvaluator._parse_score(response.choices[0].message.content)
         return LLMJudgeEval(judge_model=model, score=score)
 
     @staticmethod
     @_retry_on_failure()
     def evaluate_formula(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
         """Evaluate a formula pair."""
-        if SUPPORTED_MODELS[model] == "mistral":
-            gt_formula = json.dumps(gt_formula)[1:-1]
-            extracted_formula = json.dumps(extracted_formula)[1:-1]
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(
             gt_formula=gt_formula, extracted_formula=extracted_formula
         )
@@ -382,9 +319,6 @@ class LLMEvaluator:
     @_retry_on_failure()
     def evaluate_table(model: str, gt_table: str, extracted_table: str) -> LLMJudgeEval:
         """Evaluate a table pair."""
-        if SUPPORTED_MODELS[model] == "mistral":
-            gt_table = json.dumps(gt_table)[1:-1]
-            extracted_table = json.dumps(extracted_table)[1:-1]
         prompt = TABLE_EVALUATION_PROMPT_TEMPLATE.format(
             gt_table=gt_table, extracted_table=extracted_table
         )
@@ -469,9 +403,9 @@ def calculate_table_llm_stats(summaries: list[TableEvaluationSummary]) -> list[T
         stats.append(TableLLMJudgeStatistics(
             judge_model=model,
             average_score=sum(scores) / len(scores) if scores else 0,
-            average_simple_score=sum(simple_scores) / len(simple_scores) if simple_scores else 0,
-            average_moderate_score=sum(moderate_scores) / len(moderate_scores) if moderate_scores else 0,
-            average_complex_score=sum(complex_scores) / len(complex_scores) if complex_scores else 0
+            average_simple_score=sum(simple_scores) / len(simple_scores) if simple_scores else None,
+            average_moderate_score=sum(moderate_scores) / len(moderate_scores) if moderate_scores else None,
+            average_complex_score=sum(complex_scores) / len(complex_scores) if complex_scores else None,
         ))
 
     return stats
@@ -515,9 +449,10 @@ def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
 # ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
-    llm_judge_models: str | list[str] = "gpt-5-mini",
+    llm_judge_models: str | list[str],
     enable_cdm: bool = False,
     skip_existing: bool = True,
+    max_workers: int = DEFAULT_MAX_WORKERS,
     extracted_formulas_path: Path = None,
     extracted_tables_path: Path = None,
     result_stats_path: Path = None,
@@ -529,9 +464,10 @@ def run_evaluation(
     Complete evaluation pipeline with incremental saving.
 
     Args:
-        llm_judge_models: Model(s) for formula/table evaluation
+        llm_judge_models: Model(s) for evaluation
         enable_cdm: Whether to enable CDM scoring for formulas
         skip_existing: If True, skip models that already have results. If False, re-evaluate and overwrite existing results
+        max_workers: Maximum number of parallel workers for LLM evaluation
         extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
         extracted_tables_path: Path to JSON with paired tables (gt_table, parsed_table)
         result_stats_path: Output path for statistics
@@ -622,11 +558,8 @@ def run_evaluation(
 
     # ========== LLM FORMULA EVALUATIONS ==========
     for model in formula_models_to_evaluate:
-        if model not in SUPPORTED_MODELS:
-            raise ValueError(f"Unsupported model: {model}")
-
         # Parallel evaluation with results tracking
-        with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_index = {
                 executor.submit(LLMEvaluator.evaluate_formula, model, pair['gt_formula'], pair['parsed_formula']): i
                 for i, pair in enumerate(formula_pairs_data)
@@ -651,11 +584,8 @@ def run_evaluation(
         if not table_pairs_data:
             break
 
-        if model not in SUPPORTED_MODELS:
-            raise ValueError(f"Unsupported model: {model}")
-
         # Parallel evaluation with results tracking
-        with ThreadPoolExecutor(max_workers=MODEL_MAX_WORKERS[model]) as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_index = {
                 executor.submit(LLMEvaluator.evaluate_table, model, pair['gt_table'], pair['parsed_table']): i
                 for i, pair in enumerate(table_pairs_data)

@@ -30,9 +30,14 @@ class BenchmarkResults(BaseModel):
     num_pdfs: int = Field(ge=0, description="Number of PDFs evaluated")
     total_inline_formulas: int = Field(ge=0, description="Total number of inline formulas")
     total_display_formulas: int = Field(ge=0, description="Total number of display formulas")
+    total_tables: int = Field(ge=0, default=0, description="Total number of tables")
     average_scores: dict[str, float] = Field(description="Average scores by LLM judge model")
     average_inline_scores: dict[str, float] = Field(description="Average inline formula scores by LLM judge model")
     average_display_scores: dict[str, float] = Field(description="Average display formula scores by LLM judge model")
+    average_table_scores: dict[str, float] = Field(default_factory=dict, description="Average table scores by LLM judge model")
+    average_simple_table_scores: dict[str, float] = Field(default_factory=dict, description="Average simple table scores by LLM judge model")
+    average_moderate_table_scores: dict[str, float] = Field(default_factory=dict, description="Average moderate table scores by LLM judge model")
+    average_complex_table_scores: dict[str, float] = Field(default_factory=dict, description="Average complex table scores by LLM judge model")
     average_cdm_score: float | None = Field(default=None, description="Average CDM score if available")
 
     def save_to_file(self, path: Path) -> None:
@@ -187,7 +192,7 @@ class Benchmark:
 
     def evaluate(
         self,
-        llm_judge_models: str | list[str] = "gpt-5-mini",
+        llm_judge_models: str | list[str],
         enable_cdm: bool = False,
         skip_existing: bool = True
     ) -> "Benchmark":
@@ -232,8 +237,10 @@ class Benchmark:
 
             # Define paths
             extracted_formulas_path = result_dir / "formulas.json"
+            extracted_tables_path = result_dir / "tables.json"
             eval_stats_path = result_dir / "eval_stats.json"
             eval_formula_results_path = result_dir / "eval_formula_results.json"
+            eval_table_results_path = result_dir / "eval_table_results.json"
             cdm_output_dir = result_dir / "cdm"
 
             try:
@@ -242,8 +249,10 @@ class Benchmark:
                     enable_cdm=enable_cdm,
                     skip_existing=skip_existing,
                     extracted_formulas_path=extracted_formulas_path,
+                    extracted_tables_path=extracted_tables_path,
                     result_stats_path=eval_stats_path,
                     result_formula_evals_path=eval_formula_results_path,
+                    result_table_evals_path=eval_table_results_path,
                     cdm_output_dir=cdm_output_dir
                 )
                 logger.info(f"   ✅ {result_dir.name} evaluation completed")
@@ -271,9 +280,14 @@ class Benchmark:
         num_pdfs = 0
         total_inline_formulas = 0
         total_display_formulas = 0
+        total_tables = 0
         llm_scores = defaultdict(list)
         llm_inline_scores = defaultdict(list)
         llm_display_scores = defaultdict(list)
+        llm_table_scores = defaultdict(list)
+        llm_simple_table_scores = defaultdict(list)
+        llm_moderate_table_scores = defaultdict(list)
+        llm_complex_table_scores = defaultdict(list)
         cdm_scores = []
 
         for result_dir in sorted(self.parser_output_dir.iterdir()):
@@ -282,6 +296,7 @@ class Benchmark:
 
             eval_stats_path = result_dir / "eval_stats.json"
             formulas_path = result_dir / "formulas.json"
+            tables_path = result_dir / "tables.json"
 
             if not eval_stats_path.exists() or not formulas_path.exists():
                 continue
@@ -298,6 +313,12 @@ class Benchmark:
                     elif gt_formula.startswith("$") and gt_formula.endswith("$"):
                         total_inline_formulas += 1
 
+            # Count tables from tables.json
+            if tables_path.exists():
+                with open(tables_path, 'r', encoding='utf-8') as f:
+                    tables = json.load(f)
+                    total_tables += len(tables)
+
             # Aggregate scores from eval_stats.json
             with open(eval_stats_path, 'r', encoding='utf-8') as f:
                 eval_stats = json.load(f)
@@ -306,6 +327,17 @@ class Benchmark:
                     llm_scores[model].append(judge["average_score"])
                     llm_inline_scores[model].append(judge["average_inline_score"])
                     llm_display_scores[model].append(judge["average_display_score"])
+
+                # Aggregate table scores (skip None values from PDFs without tables of that complexity)
+                for judge in eval_stats["table_statistics"]["llm_judge"]:
+                    model = judge["judge_model"]
+                    llm_table_scores[model].append(judge["average_score"])
+                    if judge["average_simple_score"] is not None:
+                        llm_simple_table_scores[model].append(judge["average_simple_score"])
+                    if judge["average_moderate_score"] is not None:
+                        llm_moderate_table_scores[model].append(judge["average_moderate_score"])
+                    if judge["average_complex_score"] is not None:
+                        llm_complex_table_scores[model].append(judge["average_complex_score"])
 
                 # Aggregate CDM scores if available
                 cdm_stats = eval_stats["formula_statistics"].get("cdm")
@@ -327,9 +359,14 @@ class Benchmark:
             num_pdfs=num_pdfs,
             total_inline_formulas=total_inline_formulas,
             total_display_formulas=total_display_formulas,
+            total_tables=total_tables,
             average_scores=avg_scores(llm_scores),
             average_inline_scores=avg_scores(llm_inline_scores),
             average_display_scores=avg_scores(llm_display_scores),
+            average_table_scores=avg_scores(llm_table_scores),
+            average_simple_table_scores=avg_scores(llm_simple_table_scores),
+            average_moderate_table_scores=avg_scores(llm_moderate_table_scores),
+            average_complex_table_scores=avg_scores(llm_complex_table_scores),
             average_cdm_score=sum(cdm_scores) / len(cdm_scores) if cdm_scores else None
         )
 

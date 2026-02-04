@@ -84,9 +84,8 @@ def run_cli(parser: PDFParser) -> None:
     )
     @click.option(
         "--llm-judge-models",
-        default="gpt-5-mini",
+        default="google/gemini-3-flash-preview",
         show_default=True,
-        help="Comma-separated list of LLM models for evaluation (e.g., 'gpt-5-mini,gemini-2.5-flash')"
     )
     @click.option(
         "--enable-cdm/--no-enable-cdm",
