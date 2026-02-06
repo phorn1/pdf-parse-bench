@@ -31,9 +31,9 @@ class BenchmarkResults(BaseModel):
     total_inline_formulas: int = Field(ge=0, description="Total number of inline formulas")
     total_display_formulas: int = Field(ge=0, description="Total number of display formulas")
     total_tables: int = Field(ge=0, default=0, description="Total number of tables")
-    average_scores: dict[str, float] = Field(description="Average scores by LLM judge model")
-    average_inline_scores: dict[str, float] = Field(description="Average inline formula scores by LLM judge model")
-    average_display_scores: dict[str, float] = Field(description="Average display formula scores by LLM judge model")
+    average_formula_scores: dict[str, float] = Field(description="Average formula scores by LLM judge model")
+    average_inline_formula_scores: dict[str, float] = Field(description="Average inline formula scores by LLM judge model")
+    average_display_formula_scores: dict[str, float] = Field(description="Average display formula scores by LLM judge model")
     average_table_scores: dict[str, float] = Field(default_factory=dict, description="Average table scores by LLM judge model")
     average_simple_table_scores: dict[str, float] = Field(default_factory=dict, description="Average simple table scores by LLM judge model")
     average_moderate_table_scores: dict[str, float] = Field(default_factory=dict, description="Average moderate table scores by LLM judge model")
@@ -139,7 +139,7 @@ class Benchmark:
 
     def extract(self, skip_existing: bool = True) -> "Benchmark":
         """
-        Extract formula segments from parsed markdown files.
+        Extract formula and table segments from parsed markdown files.
 
         Args:
             skip_existing: If True, skip extraction for files that already have results
@@ -162,10 +162,20 @@ class Benchmark:
             output_tables_json_path = result_dir / "tables.json"
             stripped_parsed_text_path = result_dir / "stripped_parsed_text.md"
 
-            # Skip if output already exists and skip_existing is True
-            if skip_existing and output_formulas_json_path.exists():
-                logger.info(f"   ⏩ Formulas JSON already exists for {result_dir.name} - skipping")
-                continue
+            if skip_existing:
+                with open(gt_json_path, 'r', encoding='utf-8') as f:
+                    gt_segments = json.load(f)
+
+                gt_has_formulas = any(s["type"] in ["inline-formula", "display-formula"] for s in gt_segments)
+                gt_has_tables = any(s["type"] == "table" for s in gt_segments)
+
+                # Skip if all expected outputs already exist
+                formulas_done = not gt_has_formulas or output_formulas_json_path.exists()
+                tables_done = not gt_has_tables or output_tables_json_path.exists()
+
+                if formulas_done and tables_done:
+                    logger.info(f"   ⏩ Extraction already complete for {result_dir.name} - skipping")
+                    continue
 
             # Create extraction job
             jobs.append(SegmentExtractionJob(
@@ -209,51 +219,32 @@ class Benchmark:
         """
         logger.info(f"\n📈 EVALUATION")
 
-        # Collect all result directories
+        # Collect all result directories that have extraction outputs
         result_dirs = []
         for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
                 continue
 
-            # Check if formulas.json exists (required for evaluation)
             formulas_path = result_dir / "formulas.json"
-            if not formulas_path.exists():
-                logger.warning(f"   ⚠️  Formulas file not found for {result_dir.name} - skipping")
-                continue
+            tables_path = result_dir / "tables.json"
 
-            # Check if evaluation already exists
-            eval_stats_path = result_dir / "eval_stats.json"
-            if skip_existing and eval_stats_path.exists():
-                logger.info(f"   ⏩ Evaluation already exists for {result_dir.name} - skipping")
-                continue
-
-            result_dirs.append(result_dir)
+            if formulas_path.exists() or tables_path.exists():
+                result_dirs.append(result_dir)
 
         logger.info(f"   Processing {len(result_dirs)} PDFs")
 
-        # Evaluate each PDF
+        # Evaluate each PDF (run_evaluation handles skip_existing internally)
         for result_dir in result_dirs:
             logger.info(f"   📊 Evaluating {result_dir.name}...")
-
-            # Define paths
-            extracted_formulas_path = result_dir / "formulas.json"
-            extracted_tables_path = result_dir / "tables.json"
-            eval_stats_path = result_dir / "eval_stats.json"
-            eval_formula_results_path = result_dir / "eval_formula_results.json"
-            eval_table_results_path = result_dir / "eval_table_results.json"
-            cdm_output_dir = result_dir / "cdm"
 
             try:
                 run_evaluation(
                     llm_judge_models=llm_judge_models,
+                    formulas_path=result_dir / "formulas.json",
+                    tables_path=result_dir / "tables.json",
+                    cdm_output_dir=result_dir / "cdm",
                     enable_cdm=enable_cdm,
                     skip_existing=skip_existing,
-                    extracted_formulas_path=extracted_formulas_path,
-                    extracted_tables_path=extracted_tables_path,
-                    result_stats_path=eval_stats_path,
-                    result_formula_evals_path=eval_formula_results_path,
-                    result_table_evals_path=eval_table_results_path,
-                    cdm_output_dir=cdm_output_dir
                 )
                 logger.info(f"   ✅ {result_dir.name} evaluation completed")
             except Exception as e:
@@ -265,6 +256,9 @@ class Benchmark:
     def save_benchmark_summary(self) -> "Benchmark":
         """
         Save benchmark summary to JSON file.
+
+        Aggregates individual scores from formulas.json/tables.json files
+        to compute correct global averages (not average of averages).
         """
         logger.info(f"\n💾 SAVING BENCHMARK SUMMARY")
 
@@ -278,78 +272,72 @@ class Benchmark:
         benchmark_name = self.ground_truth_dir.parent.name
 
         num_pdfs = 0
-        total_inline_formulas = 0
-        total_display_formulas = 0
-        total_tables = 0
-        llm_scores = defaultdict(list)
-        llm_inline_scores = defaultdict(list)
-        llm_display_scores = defaultdict(list)
-        llm_table_scores = defaultdict(list)
-        llm_simple_table_scores = defaultdict(list)
-        llm_moderate_table_scores = defaultdict(list)
-        llm_complex_table_scores = defaultdict(list)
-        cdm_scores = []
+
+        # Collect individual scores (not per-PDF averages)
+        formula_scores: dict[str, list[int]] = defaultdict(list)
+        inline_scores: dict[str, list[int]] = defaultdict(list)
+        display_scores: dict[str, list[int]] = defaultdict(list)
+        table_scores: dict[str, list[int]] = defaultdict(list)
+        simple_table_scores: dict[str, list[int]] = defaultdict(list)
+        moderate_table_scores: dict[str, list[int]] = defaultdict(list)
+        complex_table_scores: dict[str, list[int]] = defaultdict(list)
+        cdm_scores: list[float] = []
 
         for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
                 continue
 
-            eval_stats_path = result_dir / "eval_stats.json"
             formulas_path = result_dir / "formulas.json"
             tables_path = result_dir / "tables.json"
 
-            if not eval_stats_path.exists() or not formulas_path.exists():
+            if not formulas_path.exists() and not tables_path.exists():
                 continue
 
             num_pdfs += 1
 
-            # Count inline and display formulas from formulas.json
-            with open(formulas_path, 'r', encoding='utf-8') as f:
-                formulas = json.load(f)
-                for formula in formulas:
-                    gt_formula = formula["gt_formula"]
-                    if gt_formula.startswith("$$") and gt_formula.endswith("$$"):
-                        total_display_formulas += 1
-                    elif gt_formula.startswith("$") and gt_formula.endswith("$"):
-                        total_inline_formulas += 1
+            # Aggregate formula scores
+            if formulas_path.exists():
+                with open(formulas_path, 'r', encoding='utf-8') as f:
+                    for formula in json.load(f):
+                        is_display = formula["formula_type"] == "display-formula"
 
-            # Count tables from tables.json
+                        for llm_score in formula.get("llm_scores", []):
+                            model = llm_score["judge_model"]
+                            score = llm_score["score"]
+                            formula_scores[model].append(score)
+                            if is_display:
+                                display_scores[model].append(score)
+                            else:
+                                inline_scores[model].append(score)
+
+                        cdm = formula.get("cdm_score")
+                        if cdm:
+                            cdm_scores.append(cdm["score"])
+
+            # Aggregate table scores
             if tables_path.exists():
                 with open(tables_path, 'r', encoding='utf-8') as f:
-                    tables = json.load(f)
-                    total_tables += len(tables)
+                    for table in json.load(f):
+                        complexity = table["complexity"]
 
-            # Aggregate scores from eval_stats.json
-            with open(eval_stats_path, 'r', encoding='utf-8') as f:
-                eval_stats = json.load(f)
-                for judge in eval_stats["formula_statistics"]["llm_judge"]:
-                    model = judge["judge_model"]
-                    llm_scores[model].append(judge["average_score"])
-                    llm_inline_scores[model].append(judge["average_inline_score"])
-                    llm_display_scores[model].append(judge["average_display_score"])
+                        for llm_score in table.get("llm_scores", []):
+                            model = llm_score["judge_model"]
+                            score = llm_score["score"]
+                            table_scores[model].append(score)
 
-                # Aggregate table scores (skip None values from PDFs without tables of that complexity)
-                for judge in eval_stats["table_statistics"]["llm_judge"]:
-                    model = judge["judge_model"]
-                    llm_table_scores[model].append(judge["average_score"])
-                    if judge["average_simple_score"] is not None:
-                        llm_simple_table_scores[model].append(judge["average_simple_score"])
-                    if judge["average_moderate_score"] is not None:
-                        llm_moderate_table_scores[model].append(judge["average_moderate_score"])
-                    if judge["average_complex_score"] is not None:
-                        llm_complex_table_scores[model].append(judge["average_complex_score"])
+                            if complexity == "simple":
+                                simple_table_scores[model].append(score)
+                            elif complexity == "moderate":
+                                moderate_table_scores[model].append(score)
+                            elif complexity == "complex":
+                                complex_table_scores[model].append(score)
 
-                # Aggregate CDM scores if available
-                cdm_stats = eval_stats["formula_statistics"].get("cdm")
-                if cdm_stats:
-                    cdm_scores.append(cdm_stats["average_score"])
+        # Calculate average scores
+        def avg(scores: list) -> float:
+            return sum(scores) / len(scores) if scores else 0.0
 
-        # Calculate average scores using helper function
-        def avg_scores(score_dict: dict[str, list[float]]) -> dict[str, float]:
-            return {
-                model: sum(scores) / len(scores) if scores else 0.0
-                for model, scores in score_dict.items()
-            }
+        def avg_by_model(score_dict: dict[str, list[int]]) -> dict[str, float]:
+            return {model: avg(scores) for model, scores in score_dict.items()}
 
         # Build BenchmarkResults model
         results = BenchmarkResults(
@@ -357,17 +345,17 @@ class Benchmark:
             parser_name=parser_name,
             benchmark_name=benchmark_name,
             num_pdfs=num_pdfs,
-            total_inline_formulas=total_inline_formulas,
-            total_display_formulas=total_display_formulas,
-            total_tables=total_tables,
-            average_scores=avg_scores(llm_scores),
-            average_inline_scores=avg_scores(llm_inline_scores),
-            average_display_scores=avg_scores(llm_display_scores),
-            average_table_scores=avg_scores(llm_table_scores),
-            average_simple_table_scores=avg_scores(llm_simple_table_scores),
-            average_moderate_table_scores=avg_scores(llm_moderate_table_scores),
-            average_complex_table_scores=avg_scores(llm_complex_table_scores),
-            average_cdm_score=sum(cdm_scores) / len(cdm_scores) if cdm_scores else None
+            total_inline_formulas=sum(len(scores) for scores in inline_scores.values()) // max(len(inline_scores), 1),
+            total_display_formulas=sum(len(scores) for scores in display_scores.values()) // max(len(display_scores), 1),
+            total_tables=sum(len(scores) for scores in table_scores.values()) // max(len(table_scores), 1),
+            average_formula_scores=avg_by_model(formula_scores),
+            average_inline_formula_scores=avg_by_model(inline_scores),
+            average_display_formula_scores=avg_by_model(display_scores),
+            average_table_scores=avg_by_model(table_scores),
+            average_simple_table_scores=avg_by_model(simple_table_scores),
+            average_moderate_table_scores=avg_by_model(moderate_table_scores),
+            average_complex_table_scores=avg_by_model(complex_table_scores),
+            average_cdm_score=avg(cdm_scores) if cdm_scores else None
         )
 
         # Save to JSON file

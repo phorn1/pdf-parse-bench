@@ -53,7 +53,7 @@ def generate_markdown_table(results: list[BenchmarkResults]) -> str:
     # Sort by average score (descending)
     sorted_results = sorted(
         results,
-        key=lambda x: x.average_scores[model],
+        key=lambda x: x.average_formula_scores[model],
         reverse=True
     )
 
@@ -65,9 +65,9 @@ def generate_markdown_table(results: list[BenchmarkResults]) -> str:
 
     # Build table rows
     for rank, result in enumerate(sorted_results, start=1):
-        avg_score = result.average_scores.get(model, 0.0)
-        inline_score = result.average_inline_scores.get(model, 0.0)
-        display_score = result.average_display_scores.get(model, 0.0)
+        avg_score = result.average_formula_scores.get(model, 0.0)
+        inline_score = result.average_inline_formula_scores.get(model, 0.0)
+        display_score = result.average_display_formula_scores.get(model, 0.0)
         cdm_score = result.average_cdm_score if result.average_cdm_score is not None else "N/A"
 
         # Format CDM score

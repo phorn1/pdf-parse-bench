@@ -11,6 +11,7 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, MofNCompleteColumn
 
+from ..eval.results import FormulaResult, TableResult, save_results
 from ..utilities import FormulaRenderer
 
 
@@ -52,7 +53,7 @@ class ParallelSegmentExtractor:
             ]
 
             gt_formulas = [
-                {"gt_data": segment["data"]}
+                {"gt_data": segment["data"], "formula_type": segment["type"]}
                 for segment in gt_segments
                 if segment["type"] in ["inline-formula", "display-formula"]
             ]
@@ -77,15 +78,24 @@ class ParallelSegmentExtractor:
             failed_table_extractions = [
                 (i, pair["gt_table"])
                 for i, pair in enumerate(table_extraction_result)
-                if pair["parsed_table"] is None
+                if pair["extracted_table"] is None
             ]
 
             for table_pair in table_extraction_result:
-                if table_pair["parsed_table"] is None:
-                    table_pair["parsed_table"] = ""
+                if table_pair["extracted_table"] is None:
+                    table_pair["extracted_table"] = ""
 
-            with open(job.output_tables_json_path, 'w', encoding='utf-8') as f:
-                json.dump(table_extraction_result, f, indent=2, ensure_ascii=False)
+            if table_extraction_result:
+                table_results = [
+                    TableResult(
+                        index=i,
+                        gt_table=pair["gt_table"],
+                        extracted_table=pair["extracted_table"],
+                        complexity=pair["complexity"],
+                    )
+                    for i, pair in enumerate(table_extraction_result)
+                ]
+                save_results(job.output_tables_json_path, table_results)
 
             # ========== FORMULA EXTRACTION ==========
 
@@ -114,9 +124,9 @@ class ParallelSegmentExtractor:
             if job.rendered_formulas_dir is not None:
                 renderer = FormulaRenderer()
                 for i, formula_pair in enumerate(formula_extraction_result):
-                    if formula_pair["parsed_formula"]:  # Only render non-empty formulas
+                    if formula_pair["extracted_formula"]:  # Only render non-empty formulas
                         formula_pair["rendered_png"] = renderer.render_formula(
-                            formula_pair["parsed_formula"],
+                            formula_pair["extracted_formula"],
                             job.rendered_formulas_dir,
                             f"formula_{i:03d}"
                         )
@@ -124,17 +134,25 @@ class ParallelSegmentExtractor:
             failed_formula_extractions = [
                 (i, pair["gt_formula"])
                 for i, pair in enumerate(formula_extraction_result)
-                if pair["parsed_formula"] is None
+                if pair["extracted_formula"] is None
             ]
 
             # Convert None to empty string for failed extractions
             for formula_pair in formula_extraction_result:
-                if formula_pair["parsed_formula"] is None:
-                    formula_pair["parsed_formula"] = ""
+                if formula_pair["extracted_formula"] is None:
+                    formula_pair["extracted_formula"] = ""
 
-            # Save result
-            with open(job.output_formulas_json_path, 'w', encoding='utf-8') as f:
-                json.dump(formula_extraction_result, f, indent=2, ensure_ascii=False)
+            if formula_extraction_result:
+                formula_results = [
+                    FormulaResult(
+                        index=i,
+                        gt_formula=pair["gt_formula"],
+                        extracted_formula=pair["extracted_formula"],
+                        formula_type=pair["formula_type"],
+                    )
+                    for i, pair in enumerate(formula_extraction_result)
+                ]
+                save_results(job.output_formulas_json_path, formula_results)
 
             with open(job.stripped_parsed_text_path, 'w', encoding='utf-8') as f:
                 f.write(remaining_text)
@@ -255,7 +273,7 @@ def extract_formulas_using_llm(
 
     Returns:
         Tuple of:
-        - List of dicts with format: [{"gt_formula": "...", "parsed_formula": "..."}, ...]
+        - List of dicts with format: [{"gt_formula": "...", "extracted_formula": "..."}, ...]
         - Remaining text with extracted formulas removed
     """
 
@@ -270,13 +288,13 @@ def extract_formulas_using_llm(
 
     current_text = markdown_content
     formulas_dict = {
-        i: {"gt_data": gt["gt_data"], "parsed_formula": None, "is_grouped": False}
+        i: {"gt_data": gt["gt_data"], "formula_type": gt["formula_type"], "extracted_formula": None, "is_grouped": False}
         for i, gt in enumerate(gt_formulas)
     }
 
     for attempt in range(max_retries + 1):
-        # Get formulas that still need extraction (parsed_formula is None)
-        to_extract = {idx: data for idx, data in formulas_dict.items() if data["parsed_formula"] is None}
+        # Get formulas that still need extraction (extracted_formula is None)
+        to_extract = {idx: data for idx, data in formulas_dict.items() if data["extracted_formula"] is None}
 
         if not to_extract:
             break  # All formulas extracted
@@ -353,7 +371,7 @@ def extract_formulas_using_llm(
 
             # Skip empty formulas (intentionally not found or grouped)
             if not formula.data:
-                formulas_dict[original_idx]["parsed_formula"] = ""
+                formulas_dict[original_idx]["extracted_formula"] = ""
                 formulas_dict[original_idx]["is_grouped"] = formula.is_grouped
                 continue
 
@@ -363,7 +381,7 @@ def extract_formulas_using_llm(
                 for start, end in [('$$', '$$'), ('$', '$'), (r'\[', r'\]'), (r'\(', r'\)')]
             )
             if has_delimiters and formula.data in current_text:
-                formulas_dict[original_idx]["parsed_formula"] = formula.data
+                formulas_dict[original_idx]["extracted_formula"] = formula.data
                 current_text = current_text.replace(formula.data, "", 1)
                 continue
 
@@ -377,7 +395,7 @@ def extract_formulas_using_llm(
             if matched_formula:
                 if matched_formula not in current_text:
                     raise Exception(f"Unexpected: matched formula not in text: {matched_formula!r}")
-                formulas_dict[original_idx]["parsed_formula"] = matched_formula
+                formulas_dict[original_idx]["extracted_formula"] = matched_formula
                 current_text = current_text.replace(matched_formula, "", 1)
                 if console and verbose:
                     console.print(f"   🔧 {job_name}: Matched formula [{formula.index}] via normalization:\n"
@@ -389,7 +407,7 @@ def extract_formulas_using_llm(
 
         # ========== CHECK IF RETRY NEEDED ==========
 
-        failed_indices = [idx for idx, data in formulas_dict.items() if data["parsed_formula"] is None]
+        failed_indices = [idx for idx, data in formulas_dict.items() if data["extracted_formula"] is None]
         if not failed_indices or attempt == max_retries:
             break
         if console:
@@ -401,8 +419,9 @@ def extract_formulas_using_llm(
     result = [
         {
             "gt_formula": formulas_dict[i]["gt_data"],
-            "parsed_formula": formulas_dict[i]["parsed_formula"],
-            "is_grouped": formulas_dict[i]["is_grouped"]
+            "extracted_formula": formulas_dict[i]["extracted_formula"],
+            "formula_type": formulas_dict[i]["formula_type"],
+            "is_grouped": formulas_dict[i]["is_grouped"],
         }
         for i in range(len(gt_formulas))
     ]
@@ -440,7 +459,7 @@ def process_grouped_formulas(
                 j += 1
 
             # Split the grouped formula using LLM
-            grouped_formula = formula_results[i]["parsed_formula"]
+            grouped_formula = formula_results[i]["extracted_formula"]
             gt_formulas_for_split = [formula_results[i]["gt_formula"]] + [
                 formula_results[idx]["gt_formula"] for idx in group_members
             ]
@@ -455,10 +474,10 @@ def process_grouped_formulas(
                 )
 
                 # Assign split formulas back to results
-                formula_results[i]["parsed_formula"] = split_formulas[0]
+                formula_results[i]["extracted_formula"] = split_formulas[0]
                 formula_results[i]["is_grouped"] = False
                 for idx, member_idx in enumerate(group_members):
-                    formula_results[member_idx]["parsed_formula"] = split_formulas[idx + 1]
+                    formula_results[member_idx]["extracted_formula"] = split_formulas[idx + 1]
                     formula_results[member_idx]["is_grouped"] = False
 
             except Exception as e:
@@ -754,7 +773,7 @@ def extract_tables_using_llm(
 
     Returns:
         Tuple of:
-        - List of dicts with format: [{"gt_table": "...", "parsed_table": "..."}, ...]
+        - List of dicts with format: [{"gt_table": "...", "extracted_table": "..."}, ...]
         - Remaining text with extracted tables removed
     """
 
@@ -770,12 +789,12 @@ def extract_tables_using_llm(
 
     current_text = markdown_content
     tables_dict = {
-        i: {"gt_data": gt["gt_data"], "complexity": gt["complexity"], "parsed_table": None}
+        i: {"gt_data": gt["gt_data"], "complexity": gt["complexity"], "extracted_table": None}
         for i, gt in enumerate(gt_tables)
     }
 
     for attempt in range(max_retries + 1):
-        to_extract = {idx: data for idx, data in tables_dict.items() if data["parsed_table"] is None}
+        to_extract = {idx: data for idx, data in tables_dict.items() if data["extracted_table"] is None}
 
         if not to_extract:
             break
@@ -828,12 +847,12 @@ def extract_tables_using_llm(
             original_idx = original_indices[local_idx]
 
             if not table.data:
-                tables_dict[original_idx]["parsed_table"] = ""
+                tables_dict[original_idx]["extracted_table"] = ""
                 continue
 
             # Try exact match first
             if table.data in current_text:
-                tables_dict[original_idx]["parsed_table"] = table.data
+                tables_dict[original_idx]["extracted_table"] = table.data
                 current_text = current_text.replace(table.data, "", 1)
                 continue
 
@@ -846,14 +865,14 @@ def extract_tables_using_llm(
             if matched_table:
                 if matched_table not in current_text:
                     raise Exception(f"Unexpected: matched table not in text: {matched_table[:100]!r}...")
-                tables_dict[original_idx]["parsed_table"] = matched_table
+                tables_dict[original_idx]["extracted_table"] = matched_table
                 current_text = current_text.replace(matched_table, "", 1)
                 if console and verbose:
                     console.print(f"   🔧 {job_name}: Matched table [{table.index}] via normalization")
 
         # ========== CHECK IF RETRY NEEDED ==========
 
-        failed_indices = [idx for idx, data in tables_dict.items() if data["parsed_table"] is None]
+        failed_indices = [idx for idx, data in tables_dict.items() if data["extracted_table"] is None]
         if not failed_indices or attempt == max_retries:
             break
         if console:
@@ -865,7 +884,7 @@ def extract_tables_using_llm(
     result = [
         {
             "gt_table": tables_dict[i]["gt_data"],
-            "parsed_table": tables_dict[i]["parsed_table"],
+            "extracted_table": tables_dict[i]["extracted_table"],
             "complexity": tables_dict[i]["complexity"],
         }
         for i in range(len(gt_tables))

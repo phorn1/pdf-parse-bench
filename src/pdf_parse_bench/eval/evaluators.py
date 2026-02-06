@@ -5,23 +5,20 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import wraps
 from pathlib import Path
-from typing import Literal
 
 import Levenshtein
 import requests
 from dotenv import load_dotenv
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
-from pydantic import BaseModel, Field
 from tqdm import tqdm
+
+from .results import LLMScore, CDMScore, FormulaResult, TableResult, save_results
 
 load_dotenv()
 
 
 # ========== CONSTANTS ==========
-
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-DEFAULT_MAX_WORKERS = 8
 
 FORMULA_EVALUATION_PROMPT_TEMPLATE = """
 You are a mathematical formula evaluator. Your task is to determine if the extracted formula correctly represents the ground truth formula, focusing on both semantic meaning AND proper mathematical notation.
@@ -59,106 +56,14 @@ Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No
 """
 
 
-
-# ========== DATA MODELS ==========
-
-class LLMJudgeEval(BaseModel):
-    type: str = "llm_judge"
-    judge_model: str
-    score: int
-
-
-class CDMEval(BaseModel):
-    type: str = "cdm"
-    score: float
-    image_name: str | None = None
-
-
-class FormulaEvaluationSummary(BaseModel):
-    formula_number: int
-    ground_truth_formula: str
-    extracted_formula: str
-    formula_type: Literal['inline-formula', 'display-formula']
-    llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
-    cdm_eval: CDMEval | None = None
-    bleu_score: float | None = None
-    levenshtein_similarity: float | None = None
-    
-    @property
-    def llm_evals_by_model(self) -> dict[str, LLMJudgeEval]:
-        """Get LLM evaluations as dict by judge model for easier UI access."""
-        return {eval.judge_model: eval for eval in self.llm_evals}
-
-
-class CDMStatistics(BaseModel):
-    total_formulas: int
-    average_score: float
-    average_inline_score: float
-    average_display_score: float
-
-
-class LLMJudgeStatistics(BaseModel):
-    judge_model: str
-    average_score: float
-    average_inline_score: float
-    average_display_score: float
-
-
-class FormulaStatistics(BaseModel):
-    total_formulas: int
-    llm_judge: list[LLMJudgeStatistics]
-    cdm: CDMStatistics | None
-
-
-class TableEvaluationSummary(BaseModel):
-    table_number: int
-    ground_truth_table: str
-    extracted_table: str
-    complexity: Literal['simple', 'moderate', 'complex']
-    llm_evals: list[LLMJudgeEval] = Field(default_factory=list)
-
-    @property
-    def llm_evals_by_model(self) -> dict[str, LLMJudgeEval]:
-        """Get LLM evaluations as dict by judge model for easier UI access."""
-        return {eval.judge_model: eval for eval in self.llm_evals}
-
-
-class TableLLMJudgeStatistics(BaseModel):
-    judge_model: str
-    average_score: float
-    average_simple_score: float | None = None
-    average_moderate_score: float | None = None
-    average_complex_score: float | None = None
-
-
-class TableStatistics(BaseModel):
-    total_tables: int
-    llm_judge: list[TableLLMJudgeStatistics]
-
-
-class SummaryStatistics(BaseModel):
-    formula_statistics: FormulaStatistics
-    table_statistics: TableStatistics
-
-    @property
-    def llm_judge_stats_by_model(self) -> dict[str, LLMJudgeStatistics]:
-        """Get LLM judge statistics as dict by judge model for easier access."""
-        return {stat.judge_model: stat for stat in self.formula_statistics.llm_judge}
-
-    @property
-    def table_llm_judge_stats_by_model(self) -> dict[str, TableLLMJudgeStatistics]:
-        """Get table LLM judge statistics as dict by judge model for easier access."""
-        return {stat.judge_model: stat for stat in self.table_statistics.llm_judge}
-
-
 # ========== EVALUATION CLASSES ==========
 
-class CDMEvaluator:
+class FormulaCDMEvaluator:
     """Evaluates formulas using CDM service."""
-    
+
     def __init__(self, output_dir: Path):
         self.output_dir = output_dir
-        
+
         # Check CDM service URL availability at initialization
         cdm_service_url = os.getenv("CDM_SERVICE_URL")
         if not cdm_service_url:
@@ -166,14 +71,14 @@ class CDMEvaluator:
                              "Note: CDM evaluation is an experimental feature that requires a separate local service installation. "
                              "This component is not part of the core benchmarking suite and does not work out-of-the-box.")
         self.cdm_service_url = cdm_service_url
-    
-    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMEval]:
+
+    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMScore]:
         results = []
         for i, (gt_formula, extracted_formula) in enumerate(tqdm(pairs, desc="Evaluating CDM")):
             results.append(self._evaluate_single(gt_formula, extracted_formula, i))
         return results
-    
-    def _evaluate_single(self, gt_formula: str, extracted_formula: str, index: int) -> CDMEval:
+
+    def _evaluate_single(self, gt_formula: str, extracted_formula: str, index: int) -> CDMScore:
         # Call CDM service to evaluate formula similarity and get visualization
         response = requests.post(self.cdm_service_url, json={
             'gt_formula': gt_formula,
@@ -183,12 +88,12 @@ class CDMEvaluator:
         response.raise_for_status()
 
         result = response.json()
-        
+
         # Save visualization if available
         self.output_dir.mkdir(parents=True, exist_ok=True)
         image_name = f"formula_{index:03}.png"
         image_path = self.output_dir / image_name
-        
+
         # Check if visualization_base64 exists and is not None
         visualization_b64 = result.get('visualization_base64')
         if visualization_b64:
@@ -197,25 +102,25 @@ class CDMEvaluator:
         else:
             image_name = None
 
-        return CDMEval(score=result['cdm_f1'], image_name=image_name)
+        return CDMScore(score=result['cdm_f1'], image_name=image_name)
 
 
-class NaiveEvaluator:
+class FormulaNaiveEvaluator:
     """Evaluates formulas using naive text similarity metrics (BLEU and Levenshtein)."""
-    
+
     @staticmethod
     def _clean_formula(formula: str) -> str:
         """Clean LaTeX formula by removing $$ delimiters and normalizing whitespace."""
         cleaned = re.sub(r'\$+', '', formula)
         cleaned = ' '.join(cleaned.split())
         return cleaned.strip()
-    
+
     @staticmethod
     def _tokenize_formula(formula: str) -> list[str]:
         """Tokenize formula into meaningful parts for BLEU calculation."""
         tokens = re.findall(r'\\[a-zA-Z]+|[a-zA-Z0-9]+|[{}()\[\]|_^=+\-*/\\,.<>]|\'', formula)
         return [token for token in tokens if token.strip()]
-    
+
     def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[tuple[float, float]]:
         """
         Calculate BLEU and Levenshtein similarity for formula pairs.
@@ -226,7 +131,7 @@ class NaiveEvaluator:
             # Clean formulas
             gt_clean = self._clean_formula(gt_formula)
             ext_clean = self._clean_formula(extracted_formula)
-            
+
             # Calculate BLEU score
             try:
                 tokens_gt = self._tokenize_formula(gt_clean)
@@ -236,19 +141,19 @@ class NaiveEvaluator:
                 bleu_score = round(bleu_score, 4)
             except:
                 bleu_score = 0.0
-            
+
             # Calculate Levenshtein similarity
             distance = Levenshtein.distance(gt_clean, ext_clean)
             max_length = max(len(gt_clean), len(ext_clean))
-            
+
             if max_length == 0:
                 levenshtein_similarity = 1.0
             else:
                 similarity = 1 - (distance / max_length)
                 levenshtein_similarity = round(similarity, 4)
-            
+
             results.append((bleu_score, levenshtein_similarity))
-        
+
         return results
 
 
@@ -264,14 +169,14 @@ class LLMEvaluator:
             api_key = os.getenv("OPENROUTER_API_KEY")
             if not api_key:
                 raise ValueError("OPENROUTER_API_KEY environment variable is required for LLM evaluation.")
-            cls._client = OpenAI(base_url=OPENROUTER_BASE_URL, api_key=api_key)
+            cls._client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
         return cls._client
 
     @staticmethod
     def _retry_on_failure(max_retries: int = 10):
         def decorator(func):
             @wraps(func)
-            def wrapper(*args, **kwargs) -> LLMJudgeEval:
+            def wrapper(*args, **kwargs) -> LLMScore:
                 last_error = None
                 for attempt in range(max_retries):
                     try:
@@ -296,7 +201,7 @@ class LLMEvaluator:
         raise ValueError(f"Could not parse score from response: {text}")
 
     @staticmethod
-    def _evaluate(model: str, prompt: str) -> LLMJudgeEval:
+    def _evaluate(model: str, prompt: str) -> LLMScore:
         """Evaluate using OpenRouter."""
         client = LLMEvaluator._get_client()
         response = client.chat.completions.create(
@@ -304,11 +209,11 @@ class LLMEvaluator:
             messages=[{"role": "user", "content": prompt}]
         )
         score = LLMEvaluator._parse_score(response.choices[0].message.content)
-        return LLMJudgeEval(judge_model=model, score=score)
+        return LLMScore(judge_model=model, score=score)
 
     @staticmethod
     @_retry_on_failure()
-    def evaluate_formula(model: str, gt_formula: str, extracted_formula: str) -> LLMJudgeEval:
+    def evaluate_formula(model: str, gt_formula: str, extracted_formula: str) -> LLMScore:
         """Evaluate a formula pair."""
         prompt = FORMULA_EVALUATION_PROMPT_TEMPLATE.format(
             gt_formula=gt_formula, extracted_formula=extracted_formula
@@ -317,7 +222,7 @@ class LLMEvaluator:
 
     @staticmethod
     @_retry_on_failure()
-    def evaluate_table(model: str, gt_table: str, extracted_table: str) -> LLMJudgeEval:
+    def evaluate_table(model: str, gt_table: str, extracted_table: str) -> LLMScore:
         """Evaluate a table pair."""
         prompt = TABLE_EVALUATION_PROMPT_TEMPLATE.format(
             gt_table=gt_table, extracted_table=extracted_table
@@ -325,216 +230,56 @@ class LLMEvaluator:
         return LLMEvaluator._evaluate(model, prompt)
 
 
-# ========== STATISTICS FUNCTIONS ==========
-
-def calculate_llm_stats(summaries: list[FormulaEvaluationSummary]) -> list[LLMJudgeStatistics]:
-    """Calculate LLM evaluation statistics for formulas."""
-    # Group by model
-    model_evals = {}
-    for summary in summaries:
-        for llm_eval in summary.llm_evals:
-            model = llm_eval.judge_model
-            if model not in model_evals:
-                model_evals[model] = []
-            model_evals[model].append((llm_eval, summary))
-
-    stats = []
-    for model, evals in model_evals.items():
-        scores = [e.score for e, _ in evals]
-
-        # Calculate inline/display scores
-        inline_scores = [e.score for e, s in evals if s.formula_type == 'inline-formula']
-        display_scores = [e.score for e, s in evals if s.formula_type == 'display-formula']
-
-        stats.append(LLMJudgeStatistics(
-            judge_model=model,
-            average_score=sum(scores) / len(scores) if scores else 0,
-            average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
-            average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
-        ))
-
-    return stats
-
-
-def calculate_cdm_stats(summaries: list[FormulaEvaluationSummary]) -> CDMStatistics | None:
-    """Calculate CDM evaluation statistics."""
-    cdm_evals = [(summary.cdm_eval, summary) for summary in summaries if summary.cdm_eval is not None]
-
-    if not cdm_evals:
-        return None
-
-    scores = [e.score for e, _ in cdm_evals]
-
-    # Calculate inline/display scores
-    inline_scores = [e.score for e, s in cdm_evals if s.formula_type == 'inline-formula']
-    display_scores = [e.score for e, s in cdm_evals if s.formula_type == 'display-formula']
-
-    return CDMStatistics(
-        total_formulas=len(cdm_evals),
-        average_score=sum(scores) / len(scores) if scores else 0,
-        average_inline_score=sum(inline_scores) / len(inline_scores) if inline_scores else 0,
-        average_display_score=sum(display_scores) / len(display_scores) if display_scores else 0
-    )
-
-
-def calculate_table_llm_stats(summaries: list[TableEvaluationSummary]) -> list[TableLLMJudgeStatistics]:
-    """Calculate table LLM evaluation statistics."""
-    if not summaries:
-        return []
-
-    # Group by model
-    model_evals: dict[str, list[tuple[LLMJudgeEval, TableEvaluationSummary]]] = {}
-    for summary in summaries:
-        for llm_eval in summary.llm_evals:
-            model = llm_eval.judge_model
-            if model not in model_evals:
-                model_evals[model] = []
-            model_evals[model].append((llm_eval, summary))
-
-    stats = []
-    for model, evals in model_evals.items():
-        scores = [e.score for e, _ in evals]
-
-        # Calculate scores by complexity
-        simple_scores = [e.score for e, s in evals if s.complexity == 'simple']
-        moderate_scores = [e.score for e, s in evals if s.complexity == 'moderate']
-        complex_scores = [e.score for e, s in evals if s.complexity == 'complex']
-
-        stats.append(TableLLMJudgeStatistics(
-            judge_model=model,
-            average_score=sum(scores) / len(scores) if scores else 0,
-            average_simple_score=sum(simple_scores) / len(simple_scores) if simple_scores else None,
-            average_moderate_score=sum(moderate_scores) / len(moderate_scores) if moderate_scores else None,
-            average_complex_score=sum(complex_scores) / len(complex_scores) if complex_scores else None,
-        ))
-
-    return stats
-
-
-def calculate_statistics(
-    formula_summaries: list[FormulaEvaluationSummary],
-    table_summaries: list[TableEvaluationSummary]
-) -> SummaryStatistics:
-    """Calculate all evaluation statistics."""
-    return SummaryStatistics(
-        formula_statistics=FormulaStatistics(
-            total_formulas=len(formula_summaries),
-            llm_judge=calculate_llm_stats(formula_summaries),
-            cdm=calculate_cdm_stats(formula_summaries)
-        ),
-        table_statistics=TableStatistics(
-            total_tables=len(table_summaries),
-            llm_judge=calculate_table_llm_stats(table_summaries)
-        )
-    )
-    
-
-
-# ========== FILE I/O HELPERS ==========
-
-def save_summaries(file_path: Path, summaries: list[BaseModel]) -> None:
-    """Save summaries to JSON file."""
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump([s.model_dump() for s in summaries], f, indent=2, ensure_ascii=False)
-
-
-def save_statistics(file_path: Path, stats: SummaryStatistics) -> None:
-    """Save statistics to JSON file."""
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(stats.model_dump(), f, indent=2, ensure_ascii=False)
-
-
 # ========== MAIN EVALUATION PIPELINE ==========
 
 def run_evaluation(
     llm_judge_models: str | list[str],
+    formulas_path: Path,
+    tables_path: Path,
+    cdm_output_dir: Path,
     enable_cdm: bool = False,
     skip_existing: bool = True,
-    max_workers: int = DEFAULT_MAX_WORKERS,
-    extracted_formulas_path: Path = None,
-    extracted_tables_path: Path = None,
-    result_stats_path: Path = None,
-    result_formula_evals_path: Path = None,
-    result_table_evals_path: Path = None,
-    cdm_output_dir: Path = None,
+    max_workers: int = 8,
 ) -> None:
     """
     Complete evaluation pipeline with incremental saving.
 
     Args:
         llm_judge_models: Model(s) for evaluation
+        formulas_path: Path to formulas.json (FormulaResult objects, read and written)
+        tables_path: Path to tables.json (TableResult objects, read and written)
+        cdm_output_dir: CDM visualization output directory
         enable_cdm: Whether to enable CDM scoring for formulas
         skip_existing: If True, skip models that already have results. If False, re-evaluate and overwrite existing results
         max_workers: Maximum number of parallel workers for LLM evaluation
-        extracted_formulas_path: Path to JSON with paired formulas (gt_formula, parsed_formula)
-        extracted_tables_path: Path to JSON with paired tables (gt_table, parsed_table)
-        result_stats_path: Output path for statistics
-        result_formula_evals_path: Output path for formula evaluations
-        result_table_evals_path: Output path for table evaluations
-        cdm_output_dir: CDM visualization output directory
     """
     # Normalize to list
     if isinstance(llm_judge_models, str):
         llm_judge_models = [llm_judge_models]
 
-    # ========== LOAD AND PREPARE FORMULA DATA ==========
-    with open(extracted_formulas_path, 'r', encoding='utf-8') as f:
-        formula_pairs_data = json.load(f)
+    # ========== LOAD DATA ==========
+    formula_results = []
+    if formulas_path.exists():
+        with open(formulas_path, 'r', encoding='utf-8') as f:
+            formula_results = [FormulaResult(**item) for item in json.load(f)]
 
-    # Load existing results or initialize new ones
-    formula_summaries = []
-    if result_formula_evals_path and result_formula_evals_path.exists():
-        with open(result_formula_evals_path, 'r', encoding='utf-8') as f:
-            formula_summaries = [FormulaEvaluationSummary(**item) for item in json.load(f)]
-
-    if not formula_summaries:
-        formula_summaries = [
-            FormulaEvaluationSummary(
-                formula_number=i,
-                ground_truth_formula=pair['gt_formula'],
-                extracted_formula=pair['parsed_formula'],
-                formula_type='display-formula' if pair['gt_formula'].startswith('$$') else 'inline-formula'
-            )
-            for i, pair in enumerate(formula_pairs_data)
-        ]
-
-    # ========== LOAD AND PREPARE TABLE DATA ==========
-    table_pairs_data = []
-    if extracted_tables_path and extracted_tables_path.exists():
-        with open(extracted_tables_path, 'r', encoding='utf-8') as f:
-            table_pairs_data = json.load(f)
-
-    # Load existing results or initialize new ones
-    table_summaries = []
-    if result_table_evals_path and result_table_evals_path.exists():
-        with open(result_table_evals_path, 'r', encoding='utf-8') as f:
-            table_summaries = [TableEvaluationSummary(**item) for item in json.load(f)]
-
-    if not table_summaries:
-        table_summaries = [
-            TableEvaluationSummary(
-                table_number=i,
-                ground_truth_table=pair['gt_table'],
-                extracted_table=pair['parsed_table'],
-                complexity=pair['complexity']
-            )
-            for i, pair in enumerate(table_pairs_data)
-        ]
+    table_results = []
+    if tables_path.exists():
+        with open(tables_path, 'r', encoding='utf-8') as f:
+            table_results = [TableResult(**item) for item in json.load(f)]
 
     # ========== DETERMINE MODELS TO EVALUATE ==========
     if skip_existing:
         # Skip models that already have results
         existing_formula_models = {
-            eval_result.judge_model
-            for summary in formula_summaries
-            for eval_result in summary.llm_evals
+            s.judge_model
+            for r in formula_results
+            for s in r.llm_scores
         }
         existing_table_models = {
-            eval_result.judge_model
-            for summary in table_summaries
-            for eval_result in summary.llm_evals
+            s.judge_model
+            for r in table_results
+            for s in r.llm_scores
         }
         formula_models_to_evaluate = [m for m in llm_judge_models if m not in existing_formula_models]
         table_models_to_evaluate = [m for m in llm_judge_models if m not in existing_table_models]
@@ -544,25 +289,21 @@ def run_evaluation(
         table_models_to_evaluate = llm_judge_models
         models_to_reprocess = set(llm_judge_models)
 
-        # Remove existing evaluations for models being reprocessed
-        for summary in formula_summaries:
-            summary.llm_evals = [
-                eval_result for eval_result in summary.llm_evals
-                if eval_result.judge_model not in models_to_reprocess
-            ]
-        for summary in table_summaries:
-            summary.llm_evals = [
-                eval_result for eval_result in summary.llm_evals
-                if eval_result.judge_model not in models_to_reprocess
-            ]
+        for r in formula_results:
+            r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
+        for r in table_results:
+            r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
 
     # ========== LLM FORMULA EVALUATIONS ==========
     for model in formula_models_to_evaluate:
+        if not formula_results:
+            break
+
         # Parallel evaluation with results tracking
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_index = {
-                executor.submit(LLMEvaluator.evaluate_formula, model, pair['gt_formula'], pair['parsed_formula']): i
-                for i, pair in enumerate(formula_pairs_data)
+                executor.submit(LLMEvaluator.evaluate_formula, model, r.gt_formula, r.extracted_formula): i
+                for i, r in enumerate(formula_results)
             }
 
             # Collect and sort results
@@ -574,21 +315,20 @@ def run_evaluation(
 
         # Apply results and save incrementally
         for (result, index) in results:
-            formula_summaries[index].llm_evals.append(result)
+            formula_results[index].llm_scores.append(result)
 
-        save_summaries(result_formula_evals_path, formula_summaries)
-        save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))
+        save_results(formulas_path, formula_results)
 
     # ========== LLM TABLE EVALUATIONS ==========
     for model in table_models_to_evaluate:
-        if not table_pairs_data:
+        if not table_results:
             break
 
         # Parallel evaluation with results tracking
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_index = {
-                executor.submit(LLMEvaluator.evaluate_table, model, pair['gt_table'], pair['parsed_table']): i
-                for i, pair in enumerate(table_pairs_data)
+                executor.submit(LLMEvaluator.evaluate_table, model, r.gt_table, r.extracted_table): i
+                for i, r in enumerate(table_results)
             }
 
             # Collect and sort results
@@ -600,33 +340,29 @@ def run_evaluation(
 
         # Apply results and save incrementally
         for (result, index) in results:
-            table_summaries[index].llm_evals.append(result)
+            table_results[index].llm_scores.append(result)
 
-        save_summaries(result_table_evals_path, table_summaries)
-        save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))
+        save_results(tables_path, table_results)
 
     # ========== NAIVE FORMULA SIMILARITY EVALUATION ==========
-    if any(summary.bleu_score is None or summary.levenshtein_similarity is None for summary in formula_summaries):
-        naive_evaluator = NaiveEvaluator()
-        formula_pairs = [(pair['gt_formula'], pair['parsed_formula']) for pair in formula_pairs_data]
+    if formula_results and any(r.bleu_score is None or r.levenshtein_similarity is None for r in formula_results):
+        naive_evaluator = FormulaNaiveEvaluator()
+        formula_pairs = [(r.gt_formula, r.extracted_formula) for r in formula_results]
         naive_results = naive_evaluator.evaluate_batch(formula_pairs)
 
         for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
-            formula_summaries[i].bleu_score = bleu_score
-            formula_summaries[i].levenshtein_similarity = levenshtein_similarity
+            formula_results[i].bleu_score = bleu_score
+            formula_results[i].levenshtein_similarity = levenshtein_similarity
 
-        save_summaries(result_formula_evals_path, formula_summaries)
+        save_results(formulas_path, formula_results)
 
     # ========== CDM EVALUATION ==========
-    if enable_cdm:
-        cdm_evaluator = CDMEvaluator(cdm_output_dir)
-        formula_pairs = [(pair['gt_formula'], pair['parsed_formula']) for pair in formula_pairs_data]
+    if enable_cdm and formula_results:
+        cdm_evaluator = FormulaCDMEvaluator(cdm_output_dir)
+        formula_pairs = [(r.gt_formula, r.extracted_formula) for r in formula_results]
         cdm_results = cdm_evaluator.evaluate_batch(formula_pairs)
 
         for i, cdm_result in enumerate(cdm_results):
-            formula_summaries[i].cdm_eval = cdm_result
+            formula_results[i].cdm_score = cdm_result
 
-        save_summaries(result_formula_evals_path, formula_summaries)
-
-    # ========== FINALIZE ==========
-    save_statistics(result_stats_path, calculate_statistics(formula_summaries, table_summaries))
+        save_results(formulas_path, formula_results)
