@@ -153,13 +153,14 @@ results/my_parser/
 Run the benchmark evaluation on your parsed results:
 
 ```python
-from pdf_parse_bench import run_benchmark, get_benchmark_ground_truth_dir
+from pdf_parse_bench import Benchmark, get_benchmark_ground_truth_dir
 
 # Run evaluation on your parsed results
-run_benchmark(
+Benchmark(
     parser_output_dir="results/my_parser",
-    ground_truth_dir=get_benchmark_ground_truth_dir()
-)
+    ground_truth_dir=get_benchmark_ground_truth_dir(),
+    llm_judge_models="openai/gpt-5-mini",
+).extract().evaluate().save_benchmark_summary()
 ```
 
 ---
@@ -227,20 +228,15 @@ The benchmark CLI provides several options to customize execution:
 
 ```bash
 # Run only specific steps
-uv run -m parsers.my_parser --only parse
-uv run -m parsers.my_parser --only extract
-uv run -m parsers.my_parser --only evaluate
-
-# Skip specific steps
-uv run -m parsers.my_parser --skip-parse
-uv run -m parsers.my_parser --skip-extract
+uv run -m parsers.my_parser --step parse
+uv run -m parsers.my_parser --step extract --step evaluate
 
 # Reprocess existing results
 uv run -m parsers.my_parser --reprocess all
 uv run -m parsers.my_parser --reprocess parse --reprocess extract
 
-# Use different LLM judges for evaluation
-uv run -m parsers.my_parser --llm-judge-models "gpt-5-mini,gemini-2.5-flash"
+# Use a different LLM judge for evaluation (OpenRouter model format)
+uv run -m parsers.my_parser --llm-judge-model openai/gpt-5-mini
 
 # Enable Character Detection Metrics (CDM)
 # Note: Requires CDM service installation (https://github.com/opendatalab/UniMERNet/tree/main/cdm)

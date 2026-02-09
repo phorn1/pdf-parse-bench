@@ -53,28 +53,10 @@ def run_cli(parser: PDFParser) -> None:
         help="Output directory for benchmark results (default: results/{dataset}/{parser})"
     )
     @click.option(
-        "--only",
+        "--step", "steps",
+        multiple=True,
         type=click.Choice(["parse", "extract", "evaluate"], case_sensitive=False),
-        default=None,
-        help="Run only this step"
-    )
-    @click.option(
-        "--skip-parse",
-        is_flag=True,
-        default=False,
-        help="Skip PDF parsing step"
-    )
-    @click.option(
-        "--skip-extract",
-        is_flag=True,
-        default=False,
-        help="Skip formula extraction step"
-    )
-    @click.option(
-        "--skip-evaluate",
-        is_flag=True,
-        default=False,
-        help="Skip evaluation step"
+        help="Steps to run (default: all)"
     )
     @click.option(
         "--reprocess",
@@ -83,8 +65,9 @@ def run_cli(parser: PDFParser) -> None:
         help="Reprocess specific steps (use 'all' for all steps, or specify individual steps)"
     )
     @click.option(
-        "--llm-judge-models",
-        default="google/gemini-3-flash-preview",
+        "--llm-judge-model", "llm_judge_models",
+        multiple=True,
+        default=("google/gemini-3-flash-preview",),
         show_default=True,
     )
     @click.option(
@@ -96,12 +79,9 @@ def run_cli(parser: PDFParser) -> None:
     def benchmark(
         input_dir: Path,
         output_dir: Path,
-        only: str | None,
-        skip_parse: bool,
-        skip_extract: bool,
-        skip_evaluate: bool,
+        steps: tuple[str, ...],
         reprocess: tuple[str, ...],
-        llm_judge_models: str,
+        llm_judge_models: tuple[str, ...],
         enable_cdm: bool,
     ) -> None:
         f"""Run benchmark pipeline with {parser.display_name()}."""
@@ -112,73 +92,43 @@ def run_cli(parser: PDFParser) -> None:
             output_dir = Path("results") / dataset_name / parser.parser_id()
             console.print(f"[dim]Output directory: {output_dir}[/dim]")
 
-        # Determine which steps to run
-        if only:
-            # --only overrides everything: run only the specified step
-            run_parse = only == "parse"
-            run_extract = only == "extract"
-            run_evaluate = only == "evaluate"
-        else:
-            # Default: run all steps, unless explicitly skipped
-            run_parse = not skip_parse
-            run_extract = not skip_extract
-            run_evaluate = not skip_evaluate
+        # Determine which steps to run (default: all)
+        all_steps = {"parse", "extract", "evaluate"}
+        active_steps = set(steps) if steps else all_steps
 
         # Determine which steps to reprocess
-        if reprocess:
-            if "all" in reprocess:
-                steps_to_reprocess = {"parse", "extract", "evaluate"}
-            else:
-                steps_to_reprocess = {s.lower() for s in reprocess}
-        else:
-            steps_to_reprocess = set()
+        steps_to_reprocess = all_steps if "all" in reprocess else {s.lower() for s in reprocess}
 
         # Display active steps
-        steps = []
-        if run_parse:
-            steps.append("parse")
-        if run_extract:
-            steps.append("extract")
-        if run_evaluate:
-            steps.append("evaluate")
-        console.print(" → ".join(steps) if steps else "none")
+        console.print(" → ".join(s for s in ["parse", "extract", "evaluate"] if s in active_steps) or "none")
 
         # Create benchmark
         pdfs_dir = input_dir / "pdfs"
         ground_truth_dir = input_dir / "ground_truth"
 
-        benchmark = Benchmark(
+        bench = Benchmark(
             parser_output_dir=output_dir,
             ground_truth_dir=ground_truth_dir,
-            parser=parser
+            llm_judge_models=list(llm_judge_models),
+            parser=parser,
         )
 
-        if run_parse:
-            benchmark.parse(
+        if "parse" in active_steps:
+            bench.parse(
                 pdfs_dir=pdfs_dir,
                 skip_existing="parse" not in steps_to_reprocess
             )
 
-        if run_extract:
-            benchmark.extract(skip_existing="extract" not in steps_to_reprocess)
+        if "extract" in active_steps:
+            bench.extract(skip_existing="extract" not in steps_to_reprocess)
 
-        if run_evaluate:
-            # Parse LLM judge models
-            if llm_judge_models.strip() == "":
-                # Empty string means no LLM models
-                llm_models = []
-            elif "," in llm_judge_models:
-                llm_models = [m.strip() for m in llm_judge_models.split(",") if m.strip()]
-            else:
-                llm_models = llm_judge_models
-
-            benchmark.evaluate(
-                llm_judge_models=llm_models,
+        if "evaluate" in active_steps:
+            bench.evaluate(
                 enable_cdm=enable_cdm,
                 skip_existing="evaluate" not in steps_to_reprocess
             )
 
-        benchmark.save_benchmark_summary()
+        bench.save_benchmark_summary()
 
         console.print(f"\n[bold green]✅ Pipeline completed successfully![/]\n")
 

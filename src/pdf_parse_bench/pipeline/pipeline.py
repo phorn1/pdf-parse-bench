@@ -6,9 +6,9 @@ from datetime import date as date_type
 from collections import defaultdict
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from ..eval import run_evaluation
+from ..eval import run_batch_evaluation, EvalPaths
 from ..extraction import ParallelSegmentExtractor, SegmentExtractionJob
 from ..utilities.base_parser import PDFParser
 
@@ -24,32 +24,23 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 class BenchmarkResults(BaseModel):
     """Benchmark evaluation results for a parser."""
 
-    date: date_type = Field(description="Date of benchmark run")
-    parser_name: str = Field(description="Name of the parser")
-    benchmark_name: str = Field(description="Name of the benchmark dataset")
-    num_pdfs: int = Field(ge=0, description="Number of PDFs evaluated")
-    total_inline_formulas: int = Field(ge=0, description="Total number of inline formulas")
-    total_display_formulas: int = Field(ge=0, description="Total number of display formulas")
-    total_tables: int = Field(ge=0, default=0, description="Total number of tables")
-    average_formula_scores: dict[str, float] = Field(description="Average formula scores by LLM judge model")
-    average_inline_formula_scores: dict[str, float] = Field(description="Average inline formula scores by LLM judge model")
-    average_display_formula_scores: dict[str, float] = Field(description="Average display formula scores by LLM judge model")
-    average_table_scores: dict[str, float] = Field(default_factory=dict, description="Average table scores by LLM judge model")
-    average_simple_table_scores: dict[str, float] = Field(default_factory=dict, description="Average simple table scores by LLM judge model")
-    average_moderate_table_scores: dict[str, float] = Field(default_factory=dict, description="Average moderate table scores by LLM judge model")
-    average_complex_table_scores: dict[str, float] = Field(default_factory=dict, description="Average complex table scores by LLM judge model")
-    average_cdm_score: float | None = Field(default=None, description="Average CDM score if available")
-
-    def save_to_file(self, path: Path) -> None:
-        """Save model to JSON file with default formatting."""
-        with open(path, 'w', encoding='utf-8') as f:
-            f.write(self.model_dump_json(indent=2))
-
-    @classmethod
-    def load_from_file(cls, path: Path) -> "BenchmarkResults":
-        """Load model from JSON file."""
-        with open(path, 'r', encoding='utf-8') as f:
-            return cls.model_validate_json(f.read())
+    date: date_type
+    parser_name: str
+    benchmark_name: str
+    num_pdfs: int
+    total_inline_formulas: int
+    total_display_formulas: int
+    total_tables: int
+    # Scores keyed by LLM judge model name
+    average_formula_scores: dict[str, float]
+    average_inline_formula_scores: dict[str, float]
+    average_display_formula_scores: dict[str, float]
+    average_table_scores: dict[str, float]
+    average_simple_table_scores: dict[str, float]
+    average_moderate_table_scores: dict[str, float]
+    average_complex_table_scores: dict[str, float]
+    # CDM = Character Detection Metrics
+    average_cdm_score: float | None = None
 
 
 # ========== BENCHMARK PIPELINE ==========
@@ -60,62 +51,20 @@ class Benchmark:
     # ========== INITIALIZATION & CONFIGURATION ==========
     def __init__(
         self,
-        parser_output_dir: Path | str,
-        ground_truth_dir: Path | str,
-        parser: PDFParser | None = None,
+        parser_output_dir: Path,
+        ground_truth_dir: Path,
+        llm_judge_models: list[str],
+        parser: PDFParser,
     ):
-        """
-        Initialize benchmark.
+        self.parser_output_dir = parser_output_dir
+        self.ground_truth_dir = ground_truth_dir
+        self.llm_judge_models = llm_judge_models
+        self.parser = parser
 
-        Args:
-            parser_output_dir: Directory containing parsed markdown files (or where they will be saved)
-            ground_truth_dir: Directory containing ground truth JSON files
-            parser: Optional PDF parser to use for parsing PDFs
-
-        Example (extract and evaluate already parsed results):
-            >>> benchmark = Benchmark(
-            ...     parser_output_dir="results/my_parser",
-            ...     ground_truth_dir="data/2025-10-small/ground_truth"
-            ... )
-            >>> benchmark.extract().evaluate()
-
-        Example (full pipeline with parsing):
-            >>> benchmark = Benchmark(
-            ...     parser_output_dir="results/my_parser",
-            ...     ground_truth_dir="data/2025-10-small/ground_truth",
-            ...     parser=my_parser
-            ... )
-            >>> benchmark.parse(pdfs_dir="data/2025-10-small/pdfs")
-            >>> benchmark.extract().evaluate()
-        """
-        self.parser_output_dir = Path(parser_output_dir)
-        self.ground_truth_dir = Path(ground_truth_dir)
-        self._parser = parser
-
-    def parse(
-        self,
-        pdfs_dir: Path | str,
-        skip_existing: bool = True
-    ) -> "Benchmark":
-        """
-        Parse all PDFs in the specified directory.
-
-        Args:
-            pdfs_dir: Directory containing PDF files to parse
-            skip_existing: If True, skip PDFs that already have parsed results
-
-        Returns:
-            Self for method chaining
-
-        Raises:
-            ValueError: If no parser was provided during initialization
-        """
-        if self._parser is None:
-            raise ValueError("No parser provided. Pass a parser to the Benchmark constructor.")
-
+    def parse(self, pdfs_dir: Path, skip_existing: bool = True) -> None:
+        """Parse all PDFs in the specified directory."""
         logger.info("\n🔍 PDF PARSING")
 
-        pdfs_dir = Path(pdfs_dir)
         pdf_files = sorted(pdfs_dir.glob("*.pdf"))
 
         logger.info(f"   Processing {len(pdf_files)} PDFs")
@@ -129,24 +78,15 @@ class Benchmark:
                 continue
 
             try:
-                self._parser.parse(pdf_path, output_path)
+                self.parser.parse(pdf_path, output_path)
                 logger.info(f"   ✅ {pdf_path.name}")
             except Exception as e:
                 logger.warning(f"   ❌ {pdf_path.name}: {e}")
 
         logger.info("   ✅ Parsing completed")
-        return self
 
-    def extract(self, skip_existing: bool = True) -> "Benchmark":
-        """
-        Extract formula and table segments from parsed markdown files.
-
-        Args:
-            skip_existing: If True, skip extraction for files that already have results
-
-        Returns:
-            Self for method chaining
-        """
+    def extract(self, skip_existing: bool = True) -> None:
+        """Extract formula and table segments from parsed markdown files."""
         logger.info(f"\n🧩 SEGMENT EXTRACTION")
 
         # Collect extraction jobs
@@ -189,38 +129,21 @@ class Benchmark:
 
         if not jobs:
             logger.warning("   ⚠️  No segment extraction jobs to process")
-            return self
+            return
 
         logger.info(f"   Processing {len(jobs)} extraction jobs in parallel")
 
-        # Run parallel extraction
         extractor = ParallelSegmentExtractor(max_workers=20)
         extractor.extract_segments_parallel(jobs)
 
         logger.info(f"   ✅ Segment extraction completed")
-        return self
 
-    def evaluate(
-        self,
-        llm_judge_models: str | list[str],
-        enable_cdm: bool = False,
-        skip_existing: bool = True
-    ) -> "Benchmark":
-        """
-        Evaluate parsing results against ground truth.
-
-        Args:
-            llm_judge_models: Single model name or list of model names for evaluation
-            enable_cdm: If True, enable CDM (Character Detection Metrics) evaluation
-            skip_existing: If True, skip evaluation for files that already have results
-
-        Returns:
-            Self for method chaining
-        """
+    def evaluate(self, enable_cdm: bool = False, skip_existing: bool = True) -> None:
+        """Evaluate parsing results against ground truth."""
         logger.info(f"\n📈 EVALUATION")
 
-        # Collect all result directories that have extraction outputs
-        result_dirs = []
+        # Collect evaluation jobs for all PDFs with extraction outputs
+        jobs = []
         for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
                 continue
@@ -229,58 +152,36 @@ class Benchmark:
             tables_path = result_dir / "tables.json"
 
             if formulas_path.exists() or tables_path.exists():
-                result_dirs.append(result_dir)
-
-        logger.info(f"   Processing {len(result_dirs)} PDFs")
-
-        # Evaluate each PDF (run_evaluation handles skip_existing internally)
-        for result_dir in result_dirs:
-            logger.info(f"   📊 Evaluating {result_dir.name}...")
-
-            try:
-                run_evaluation(
-                    llm_judge_models=llm_judge_models,
-                    formulas_path=result_dir / "formulas.json",
-                    tables_path=result_dir / "tables.json",
+                jobs.append(EvalPaths(
+                    formulas_path=formulas_path,
+                    tables_path=tables_path,
                     cdm_output_dir=result_dir / "cdm",
-                    enable_cdm=enable_cdm,
-                    skip_existing=skip_existing,
-                )
-                logger.info(f"   ✅ {result_dir.name} evaluation completed")
-            except Exception as e:
-                logger.error(f"   ❌ {result_dir.name} evaluation failed: {e}")
+                ))
+
+        logger.info(f"   Processing {len(jobs)} PDFs")
+
+        run_batch_evaluation(
+            llm_judge_models=self.llm_judge_models,
+            jobs=jobs,
+            enable_cdm=enable_cdm,
+            skip_existing=skip_existing,
+        )
 
         logger.info(f"   ✅ Evaluation completed for all PDFs")
-        return self
 
-    def save_benchmark_summary(self) -> "Benchmark":
-        """
-        Save benchmark summary to JSON file.
-
-        Aggregates individual scores from formulas.json/tables.json files
-        to compute correct global averages (not average of averages).
-        """
+    def save_benchmark_summary(self) -> None:
+        """Save benchmark summary with aggregated scores to JSON file."""
         logger.info(f"\n💾 SAVING BENCHMARK SUMMARY")
 
-        # Determine parser name
-        if self._parser is not None:
-            parser_name = self._parser.display_name()
-        else:
-            parser_name = self.parser_output_dir.name
-
-        # Extract benchmark name from ground_truth_dir
         benchmark_name = self.ground_truth_dir.parent.name
-
         num_pdfs = 0
 
-        # Collect individual scores (not per-PDF averages)
-        formula_scores: dict[str, list[int]] = defaultdict(list)
-        inline_scores: dict[str, list[int]] = defaultdict(list)
-        display_scores: dict[str, list[int]] = defaultdict(list)
-        table_scores: dict[str, list[int]] = defaultdict(list)
-        simple_table_scores: dict[str, list[int]] = defaultdict(list)
-        moderate_table_scores: dict[str, list[int]] = defaultdict(list)
-        complex_table_scores: dict[str, list[int]] = defaultdict(list)
+        total_inline_formulas = 0
+        total_display_formulas = 0
+        total_tables = 0
+
+        # scores[category][model] = [score1, score2, ...]
+        scores: dict[str, dict[str, list[int]]] = defaultdict(lambda: defaultdict(list))
         cdm_scores: list[float] = []
 
         for result_dir in sorted(self.parser_output_dir.iterdir()):
@@ -295,91 +196,63 @@ class Benchmark:
 
             num_pdfs += 1
 
-            # Aggregate formula scores
             if formulas_path.exists():
                 with open(formulas_path, 'r', encoding='utf-8') as f:
                     for formula in json.load(f):
-                        is_display = formula["formula_type"] == "display-formula"
+                        formula_type = formula["formula_type"]
+                        if formula_type == "display-formula":
+                            total_display_formulas += 1
+                        else:
+                            total_inline_formulas += 1
 
                         for llm_score in formula.get("llm_scores", []):
                             model = llm_score["judge_model"]
                             score = llm_score["score"]
-                            formula_scores[model].append(score)
-                            if is_display:
-                                display_scores[model].append(score)
-                            else:
-                                inline_scores[model].append(score)
+                            scores["formula"][model].append(score)
+                            scores[formula_type][model].append(score)
 
                         cdm = formula.get("cdm_score")
-                        if cdm:
+                        if cdm is not None:
                             cdm_scores.append(cdm["score"])
 
-            # Aggregate table scores
             if tables_path.exists():
                 with open(tables_path, 'r', encoding='utf-8') as f:
                     for table in json.load(f):
+                        total_tables += 1
                         complexity = table["complexity"]
 
                         for llm_score in table.get("llm_scores", []):
                             model = llm_score["judge_model"]
                             score = llm_score["score"]
-                            table_scores[model].append(score)
+                            scores["table"][model].append(score)
+                            scores[complexity][model].append(score)
 
-                            if complexity == "simple":
-                                simple_table_scores[model].append(score)
-                            elif complexity == "moderate":
-                                moderate_table_scores[model].append(score)
-                            elif complexity == "complex":
-                                complex_table_scores[model].append(score)
+        def avg(vals: list) -> float:
+            return sum(vals) / len(vals) if vals else 0.0
 
-        # Calculate average scores
-        def avg(scores: list) -> float:
-            return sum(scores) / len(scores) if scores else 0.0
+        def avg_by_model(category: str) -> dict[str, float]:
+            return {m: avg(vals) for m, vals in scores[category].items()}
 
-        def avg_by_model(score_dict: dict[str, list[int]]) -> dict[str, float]:
-            return {model: avg(scores) for model, scores in score_dict.items()}
-
-        # Build BenchmarkResults model
         results = BenchmarkResults(
             date=datetime.now().date(),
-            parser_name=parser_name,
+            parser_name=self.parser.display_name(),
             benchmark_name=benchmark_name,
             num_pdfs=num_pdfs,
-            total_inline_formulas=sum(len(scores) for scores in inline_scores.values()) // max(len(inline_scores), 1),
-            total_display_formulas=sum(len(scores) for scores in display_scores.values()) // max(len(display_scores), 1),
-            total_tables=sum(len(scores) for scores in table_scores.values()) // max(len(table_scores), 1),
-            average_formula_scores=avg_by_model(formula_scores),
-            average_inline_formula_scores=avg_by_model(inline_scores),
-            average_display_formula_scores=avg_by_model(display_scores),
-            average_table_scores=avg_by_model(table_scores),
-            average_simple_table_scores=avg_by_model(simple_table_scores),
-            average_moderate_table_scores=avg_by_model(moderate_table_scores),
-            average_complex_table_scores=avg_by_model(complex_table_scores),
-            average_cdm_score=avg(cdm_scores) if cdm_scores else None
+            total_inline_formulas=total_inline_formulas,
+            total_display_formulas=total_display_formulas,
+            total_tables=total_tables,
+            average_formula_scores=avg_by_model("formula"),
+            average_inline_formula_scores=avg_by_model("inline-formula"),
+            average_display_formula_scores=avg_by_model("display-formula"),
+            average_table_scores=avg_by_model("table"),
+            average_simple_table_scores=avg_by_model("simple"),
+            average_moderate_table_scores=avg_by_model("moderate"),
+            average_complex_table_scores=avg_by_model("complex"),
+            average_cdm_score=avg(cdm_scores) if cdm_scores else None,
         )
 
-        # Save to JSON file
         results_path = self.parser_output_dir / "benchmark_results.json"
-        results.save_to_file(results_path)
+        results_path.write_text(results.model_dump_json(indent=2))
 
         logger.info(f"   ✅ Benchmark summary saved to {results_path}")
-        return self
 
-
-# ========== CONVENIENCE FUNCTION ==========
-
-def run_benchmark(
-    parser_output_dir: Path | str,
-    ground_truth_dir: Path | str,
-) -> Benchmark:
-    """
-    Quick benchmark runner - runs extract, evaluate and save summary on already parsed results.
-
-    Args:
-        parser_output_dir: Directory containing parsed markdown files
-        ground_truth_dir: Directory containing ground truth JSON files
-    """
-    return Benchmark(parser_output_dir, ground_truth_dir) \
-        .extract() \
-        .evaluate() \
-        .save_benchmark_summary()

@@ -3,6 +3,7 @@ import json
 import os
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from functools import wraps
 from pathlib import Path
 
@@ -230,139 +231,109 @@ class LLMEvaluator:
         return LLMEvaluator._evaluate(model, prompt)
 
 
-# ========== MAIN EVALUATION PIPELINE ==========
+# ========== BATCH EVALUATION ==========
 
-def run_evaluation(
+@dataclass
+class EvalPaths:
+    """Paths for a single PDF's evaluation files."""
+    formulas_path: Path
+    tables_path: Path
+    cdm_output_dir: Path
+
+
+def run_batch_evaluation(
     llm_judge_models: str | list[str],
-    formulas_path: Path,
-    tables_path: Path,
-    cdm_output_dir: Path,
+    jobs: list[EvalPaths],
     enable_cdm: bool = False,
     skip_existing: bool = True,
     max_workers: int = 8,
 ) -> None:
     """
-    Complete evaluation pipeline with incremental saving.
+    Evaluate multiple PDFs in a single batched pass.
 
-    Args:
-        llm_judge_models: Model(s) for evaluation
-        formulas_path: Path to formulas.json (FormulaResult objects, read and written)
-        tables_path: Path to tables.json (TableResult objects, read and written)
-        cdm_output_dir: CDM visualization output directory
-        enable_cdm: Whether to enable CDM scoring for formulas
-        skip_existing: If True, skip models that already have results. If False, re-evaluate and overwrite existing results
-        max_workers: Maximum number of parallel workers for LLM evaluation
+    Batches all LLM calls across PDFs into shared thread pools for efficiency.
+    Naive and CDM evaluations are run per-PDF afterwards.
     """
-    # Normalize to list
     if isinstance(llm_judge_models, str):
         llm_judge_models = [llm_judge_models]
 
-    # ========== LOAD DATA ==========
-    formula_results = []
-    if formulas_path.exists():
-        with open(formulas_path, 'r', encoding='utf-8') as f:
-            formula_results = [FormulaResult(**item) for item in json.load(f)]
+    # Load all results, grouped by source file
+    formula_groups: list[tuple[Path, list[FormulaResult]]] = []
+    table_groups: list[tuple[Path, list[TableResult]]] = []
 
-    table_results = []
-    if tables_path.exists():
-        with open(tables_path, 'r', encoding='utf-8') as f:
-            table_results = [TableResult(**item) for item in json.load(f)]
+    for job in jobs:
+        if job.formulas_path.exists():
+            with open(job.formulas_path, 'r', encoding='utf-8') as f:
+                formula_groups.append((job.formulas_path, [FormulaResult(**item) for item in json.load(f)]))
+        if job.tables_path.exists():
+            with open(job.tables_path, 'r', encoding='utf-8') as f:
+                table_groups.append((job.tables_path, [TableResult(**item) for item in json.load(f)]))
 
-    # ========== DETERMINE MODELS TO EVALUATE ==========
-    if skip_existing:
-        # Skip models that already have results
-        existing_formula_models = {
-            s.judge_model
-            for r in formula_results
-            for s in r.llm_scores
-        }
-        existing_table_models = {
-            s.judge_model
-            for r in table_results
-            for s in r.llm_scores
-        }
-        formula_models_to_evaluate = [m for m in llm_judge_models if m not in existing_formula_models]
-        table_models_to_evaluate = [m for m in llm_judge_models if m not in existing_table_models]
-    else:
-        # Reprocess: remove old results for requested models and re-evaluate
-        formula_models_to_evaluate = llm_judge_models
-        table_models_to_evaluate = llm_judge_models
+    # Remove old scores if reprocessing
+    if not skip_existing:
         models_to_reprocess = set(llm_judge_models)
+        for _, results in formula_groups:
+            for r in results:
+                r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
+        for _, results in table_groups:
+            for r in results:
+                r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
 
-        for r in formula_results:
-            r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
-        for r in table_results:
-            r.llm_scores = [s for s in r.llm_scores if s.judge_model not in models_to_reprocess]
+    # ========== BATCHED LLM EVALUATION ==========
+    llm_eval_configs = [
+        (formula_groups, lambda m, r: LLMEvaluator.evaluate_formula(m, r.gt_formula, r.extracted_formula), "formulas"),
+        (table_groups, lambda m, r: LLMEvaluator.evaluate_table(m, r.gt_table, r.extracted_table), "tables"),
+    ]
 
-    # ========== LLM FORMULA EVALUATIONS ==========
-    for model in formula_models_to_evaluate:
-        if not formula_results:
-            break
+    for groups, eval_fn, type_name in llm_eval_configs:
+        for model in llm_judge_models:
+            # Collect all (group_idx, result_idx) pairs that need evaluation
+            tasks = [
+                (gi, ri)
+                for gi, (_, results) in enumerate(groups)
+                for ri, r in enumerate(results)
+                if not any(s.judge_model == model for s in r.llm_scores)
+            ]
+            if not tasks:
+                continue
 
-        # Parallel evaluation with results tracking
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_index = {
-                executor.submit(LLMEvaluator.evaluate_formula, model, r.gt_formula, r.extracted_formula): i
-                for i, r in enumerate(formula_results)
-            }
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                future_to_task = {
+                    executor.submit(eval_fn, model, groups[gi][1][ri]): (gi, ri)
+                    for gi, ri in tasks
+                }
+                for future in tqdm(as_completed(future_to_task), total=len(future_to_task),
+                                   desc=f"Evaluating {type_name} with {model}"):
+                    gi, ri = future_to_task[future]
+                    groups[gi][1][ri].llm_scores.append(future.result())
 
-            # Collect and sort results
-            results = [(future.result(), future_to_index[future])
-                      for future in tqdm(as_completed(future_to_index),
-                                       total=len(future_to_index),
-                                       desc=f"Evaluating formulas with {model}")]
-            results.sort(key=lambda x: x[1])
+            # Save all affected groups after each model
+            for save_path, results in groups:
+                save_results(save_path, results)
 
-        # Apply results and save incrementally
-        for (result, index) in results:
-            formula_results[index].llm_scores.append(result)
+    # ========== NAIVE FORMULA SIMILARITY (per group) ==========
+    for save_path, results in formula_groups:
+        if results and any(r.bleu_score is None or r.levenshtein_similarity is None for r in results):
+            naive_evaluator = FormulaNaiveEvaluator()
+            pairs = [(r.gt_formula, r.extracted_formula) for r in results]
+            naive_results = naive_evaluator.evaluate_batch(pairs)
 
-        save_results(formulas_path, formula_results)
+            for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
+                results[i].bleu_score = bleu_score
+                results[i].levenshtein_similarity = levenshtein_similarity
 
-    # ========== LLM TABLE EVALUATIONS ==========
-    for model in table_models_to_evaluate:
-        if not table_results:
-            break
+            save_results(save_path, results)
 
-        # Parallel evaluation with results tracking
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_index = {
-                executor.submit(LLMEvaluator.evaluate_table, model, r.gt_table, r.extracted_table): i
-                for i, r in enumerate(table_results)
-            }
+    # ========== CDM EVALUATION (per group) ==========
+    if enable_cdm:
+        cdm_dirs = {job.formulas_path: job.cdm_output_dir for job in jobs}
+        for save_path, results in formula_groups:
+            if results and save_path in cdm_dirs:
+                cdm_evaluator = FormulaCDMEvaluator(cdm_dirs[save_path])
+                pairs = [(r.gt_formula, r.extracted_formula) for r in results]
+                cdm_results = cdm_evaluator.evaluate_batch(pairs)
 
-            # Collect and sort results
-            results = [(future.result(), future_to_index[future])
-                      for future in tqdm(as_completed(future_to_index),
-                                       total=len(future_to_index),
-                                       desc=f"Evaluating tables with {model}")]
-            results.sort(key=lambda x: x[1])
+                for i, cdm_result in enumerate(cdm_results):
+                    results[i].cdm_score = cdm_result
 
-        # Apply results and save incrementally
-        for (result, index) in results:
-            table_results[index].llm_scores.append(result)
-
-        save_results(tables_path, table_results)
-
-    # ========== NAIVE FORMULA SIMILARITY EVALUATION ==========
-    if formula_results and any(r.bleu_score is None or r.levenshtein_similarity is None for r in formula_results):
-        naive_evaluator = FormulaNaiveEvaluator()
-        formula_pairs = [(r.gt_formula, r.extracted_formula) for r in formula_results]
-        naive_results = naive_evaluator.evaluate_batch(formula_pairs)
-
-        for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
-            formula_results[i].bleu_score = bleu_score
-            formula_results[i].levenshtein_similarity = levenshtein_similarity
-
-        save_results(formulas_path, formula_results)
-
-    # ========== CDM EVALUATION ==========
-    if enable_cdm and formula_results:
-        cdm_evaluator = FormulaCDMEvaluator(cdm_output_dir)
-        formula_pairs = [(r.gt_formula, r.extracted_formula) for r in formula_results]
-        cdm_results = cdm_evaluator.evaluate_batch(formula_pairs)
-
-        for i, cdm_result in enumerate(cdm_results):
-            formula_results[i].cdm_score = cdm_result
-
-        save_results(formulas_path, formula_results)
+                save_results(save_path, results)

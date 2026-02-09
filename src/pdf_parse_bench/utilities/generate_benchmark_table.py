@@ -32,8 +32,7 @@ def collect_benchmark_results(results_dir: Path) -> list[BenchmarkResults]:
             print(f"Warning: benchmark_results.json not found for {parser_dir.name}")
             continue
 
-        # Load using Pydantic model
-        results.append(BenchmarkResults.load_from_file(benchmark_results_path))
+        results.append(BenchmarkResults.model_validate_json(benchmark_results_path.read_text()))
 
     return results
 
