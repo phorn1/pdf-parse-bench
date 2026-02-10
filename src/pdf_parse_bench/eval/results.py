@@ -10,6 +10,7 @@ from pydantic import BaseModel
 class LLMScore(BaseModel):
     judge_model: str
     score: int
+    errors: list[str] = []
 
 
 class CDMScore(BaseModel):

@@ -48,9 +48,9 @@ class FontFamily(Enum):
 class Language(Enum):
     """Available document languages."""
     ENGLISH = ("english", "en_US")
-    GERMAN = ("german", "de_DE")
-    SPANISH = ("spanish", "es_ES")
-    FRENCH = ("french", "fr_FR")
+    # GERMAN = ("german", "de_DE")
+    # SPANISH = ("spanish", "es_ES")
+    # FRENCH = ("french", "fr_FR")
 
     def __init__(self, babel_name: str, locale_code: str):
         self.babel_name = babel_name

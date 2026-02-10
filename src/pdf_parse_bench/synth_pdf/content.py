@@ -93,7 +93,13 @@ class PageContent(BaseModel):
 
     def to_latex(self) -> str:
         """Convert all content blocks to LaTeX format."""
-        return "\n".join(block.to_latex() for block in self.content_blocks)
+        parts = []
+        for i, block in enumerate(self.content_blocks):
+            # Add extra vertical space between consecutive tables
+            if i > 0 and isinstance(block, TableBlock) and isinstance(self.content_blocks[i - 1], TableBlock):
+                parts.append("\\vspace{15pt}")
+            parts.append(block.to_latex())
+        return "\n".join(parts)
 
     def to_ground_truth(self) -> list[dict[str, str]]:
         """Convert all content blocks to flattened ground truth format."""

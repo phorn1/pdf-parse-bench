@@ -6,13 +6,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from functools import wraps
 from pathlib import Path
+from typing import TypeVar
 
 import Levenshtein
 import requests
 from dotenv import load_dotenv
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
+from pydantic import BaseModel
 from tqdm import tqdm
+
+T = TypeVar("T", bound=BaseModel)
 
 from .results import LLMScore, CDMScore, FormulaResult, TableResult, save_results
 
@@ -39,7 +43,7 @@ Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No
 """
 
 TABLE_EVALUATION_PROMPT_TEMPLATE = """
-You are a table evaluator. Your task is to determine if the extracted table correctly represents the ground truth table, focusing on content accuracy, structural preservation, and information completeness. The extracted table was parsed from the rendered table, so LaTeX-specific elements that do not affect structure or content (e.g., comments, styling commands, font formatting) should be disregarded.
+You are a strict table evaluator. Your task is to determine if the extracted table correctly represents the ground truth table, focusing on content accuracy, structural preservation, and information completeness. The extracted table was parsed from the rendered table. Disregard LaTeX-specific elements in the ground truth (e.g., comments, styling commands, font formatting) that have no effect on content or structure.
 
 Ground Truth Table (LaTeX):
 {gt_table}
@@ -49,12 +53,17 @@ Extracted Table:
 
 Evaluate the extracted table using the following criteria:
 1. Content accuracy: Are all cell values, headers, and data correctly preserved?
-2. Structure preservation: Are all rows and columns present, and can each value be unambiguously mapped to its row/column headers? Broken associations count as information loss.
+2. Structure preservation: Are all rows and columns present, and can each value be unambiguously mapped to its row/column headers? Broken or ambiguous associations count as errors.
 
-Note: The extracted table may be in a different format (markdown, HTML, list, plain text) than the ground truth LaTeX. This is expected and acceptable. Focus on semantic equivalence.
+Note: Different output formats (markdown, HTML, plain text) are acceptable as long as no information is lost. Apply this key test: Could a reader who sees ONLY the extracted table — without access to the ground truth — unambiguously reconstruct every cell-to-header mapping and all content of the original table? If not, consider the parsing as failed and assign a low score.
 
-Respond with ONLY a single integer from 0 to 10, where 10 is a perfect match. No other text.
+First, enumerate all errors and ambiguities found. Then assign a score from 0 to 10, where 10 is a perfect match.
 """
+
+
+class TableEvaluation(BaseModel):
+    errors: list[str]
+    score: int
 
 
 # ========== EVALUATION CLASSES ==========
@@ -203,7 +212,7 @@ class LLMEvaluator:
 
     @staticmethod
     def _evaluate(model: str, prompt: str) -> LLMScore:
-        """Evaluate using OpenRouter."""
+        """Evaluate using OpenRouter (unstructured, returns score only)."""
         client = LLMEvaluator._get_client()
         response = client.chat.completions.create(
             model=model,
@@ -211,6 +220,24 @@ class LLMEvaluator:
         )
         score = LLMEvaluator._parse_score(response.choices[0].message.content)
         return LLMScore(judge_model=model, score=score)
+
+    @staticmethod
+    def _evaluate_structured(model: str, prompt: str, response_model: type[T]) -> T:
+        """Evaluate using OpenRouter with structured JSON output."""
+        client = LLMEvaluator._get_client()
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": response_model.__name__,
+                    "strict": True,
+                    "schema": response_model.model_json_schema(),
+                },
+            },
+        )
+        return response_model.model_validate_json(response.choices[0].message.content)
 
     @staticmethod
     @_retry_on_failure()
@@ -224,11 +251,12 @@ class LLMEvaluator:
     @staticmethod
     @_retry_on_failure()
     def evaluate_table(model: str, gt_table: str, extracted_table: str) -> LLMScore:
-        """Evaluate a table pair."""
+        """Evaluate a table pair using structured output with chain-of-thought."""
         prompt = TABLE_EVALUATION_PROMPT_TEMPLATE.format(
             gt_table=gt_table, extracted_table=extracted_table
         )
-        return LLMEvaluator._evaluate(model, prompt)
+        result = LLMEvaluator._evaluate_structured(model, prompt, TableEvaluation)
+        return LLMScore(judge_model=model, score=max(0, min(10, result.score)), errors=result.errors)
 
 
 # ========== BATCH EVALUATION ==========

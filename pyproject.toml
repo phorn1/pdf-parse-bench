@@ -30,7 +30,7 @@ dependencies = [
     "tqdm>=4.66.0",
     "rich>=14.1.0",
     # Evaluation & AI
-    "openai>=1.99.0",
+    "openai>=2.17.0",
     "google-genai>=1.46.0",
     "mistralai>=1.9.0",
     "requests>=2.32.0",
@@ -40,10 +40,15 @@ dependencies = [
     "pylatexenc>=2.10",
     "pymupdf>=1.24.0",
     "pillow>=10.0.0",
+    "pypdf>=5.0.0",
     # Synthetic PDF generation - for creating test documents
     "faker>=37.11.0",
     "duckdb>=1.4.1",
     "notebook>=7.5.0",
+    "gradio>=6.5.1",
+    "markdown>=3.10.1",
+    "scipy>=1.17.0",
+    "matplotlib>=3.10.8",
 ]
 
 [project.urls]
