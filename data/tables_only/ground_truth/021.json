@@ -1,0 +1,67 @@
+[
+    {
+        "type": "text",
+        "data": "Production know soldier price amount parent. Drop way gas radio. Former significant interest inside read manager. Religious stop throughout nature develop work space."
+    },
+    {
+        "type": "text",
+        "data": "Business as recognize else begin. View along present attention."
+    },
+    {
+        "type": "text",
+        "data": "Inside dark my. Relate want pattern difference. Training car camera result southern resource."
+    },
+    {
+        "type": "text",
+        "data": "That Mr theory television specific. Someone my leader. That open into."
+    },
+    {
+        "type": "text",
+        "data": "A member investment fund picture career light. Reflect road sign benefit reduce Mrs. Drop attack role nothing."
+    },
+    {
+        "type": "text",
+        "data": "Very appear information less edge. Travel agree statement knowledge yeah view. Live girl control time. Cell deep vote beautiful staff personal."
+    },
+    {
+        "type": "text",
+        "data": "Direction until be ask. White a evidence at one nor cultural interesting. Actually court tree personal writer size."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}c|c|c|c@{}}\n\\toprule\nMethod & Comp. Rate & TTFT (sec) & Speedup \\\\ \\midrule\nDense & - & 1.14 & - \\\\ \\midrule\n\\multirow{4}{*}{SkipCat} & 20\\% & 0.99 & 1.15x \\\\\n & 40\\% & 0.79 & 1.44x \\\\\n & 60\\% & 0.57 & 2.00x \\\\\n & 80\\% & 0.35 & 3.26x \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\t\t\t\\toprule\n\t\t\t\\multirow{2}{*}{\\textbf{Choice of Loss}} &\\multicolumn{3}{c}{\\textbf{MME-RealWorld-Lite}} \\\\\n\t\t\t&Perception &Reasoning &Overall\\\\ \n\t\t\t\\midrule\n\t\t\tcosine similarity loss &56.1 &48.5&53.1\\\\\n\t\t\tmean squared error loss &56.6 &50.2 &54.1 \\\\\n\t\t\t\\bottomrule\n\t\t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Including time feeling learn remember. Specific continue they series girl receive. She lawyer risk. Provide effort suffer fight audience little choose research."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llrr}\n    \\toprule\n        \\textbf{Verification} & \\textbf{Comparison} & $q$ & \\textbf{95\\% CI} \\\\\n        \\midrule\n        \\multirow{3}{*}{Business} & L-N & ***0.182 & [0.088, 0.276] \\\\\n         & L-R & 0.035 & [-0.089, 0.159] \\\\\n         & N-R & **-0.147 & [-0.247, -0.047] \\\\\n         \\midrule\n         \\multirow{3}{*}{Government} & L-N & *0.238 & [0.039, 0.438] \\\\\n         & L-R & 0.175 & [-0.073, 0.424] \\\\\n         & N-R & -0.063 & [-0.299, 0.173] \\\\\n         \\midrule\n         \\multirow{3}{*}{Not verified} & L-N & ***0.247 & [0.193, 0.301] \\\\\n         & L-R & -0.009 & [-0.074, 0.057] \\\\\n         & N-R & ***-0.256 & [-0.314, -0.197] \\\\\n         \\midrule\n         \\multirow{3}{*}{Twitter Blue} & L-N & ***0.263 & [0.179, 0.346] \\\\\n         & L-R & -0.086 & [-0.181, 0.009] \\\\\n         & N-R & ***-0.349 & [-0.427, -0.270] \\\\\n         \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Interesting night shake story television year clear. Pass ago evening test. Power list improve develop college."
+    },
+    {
+        "type": "text",
+        "data": "Successful capital service American class water tax. Window able yourself agreement protect team training. Most religious anything bad significant town you."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n        \\toprule\n        \\multirow{2}[3]{*}{$\\beta$}  &\n        \\multicolumn{3}{c}{CIFAR-100} & \\multicolumn{3}{c}{CUB}\\\\\n        \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n         & All & Old & New & All & Old & New \\\\\n        \\midrule\n        0.3 & 82.8 & 84.3  & 79.9  & 67.9 & 68.3  & 67.6 \\\\\n        0.5  & 83.0 & 84.0  & 80.9 & \\textbf{69.0} & 69.1 & \\textbf{68.9} \\\\\n        0.6 & 83.4 & 84.2 & 81.7 & 68.3 & \\textbf{70.5} & 67.2 \\\\\n        0.8  & \\textbf{83.7} & \\textbf{84.6} & \\textbf{82.0}  & 67.6 & 69.2 & 66.8 \\\\\n        1.0 & 83.3 & 84.1 & 81.7  & 67.3  & 69.1 & 66.4 \\\\\n        \\bottomrule\n      \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c c}\n\\toprule\n\\textbf{Edited Files} & \\textbf{Resolve Rate (Pass@1)} & \\textbf{\\# Samples} \\\\\n\\midrule\n1--2 files  & 57.8 & 294 \\\\\n3--4 files  & 49.2 & 203 \\\\\n5--6 files  & 44.1 & 86  \\\\\n7--10 files & 52.6 & 38  \\\\\n10+ files   & 44.4 & 18  \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

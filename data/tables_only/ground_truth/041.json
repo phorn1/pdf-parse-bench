@@ -1,0 +1,59 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc}\n    \\hline\n    \\multirow{2}{*}{Methods} & \\multicolumn{2}{c|}{KITTI}                         & \\multicolumn{2}{c}{Waymo}                             \\\\\n                             & $e_{r}\\left(^{\\circ}\\right)$ & $e_{t}^+(\\mathrm{m})$ & $e_{r}\\left({ }^{\\circ}\\right)$ & $e_{t}^+(\\mathrm{m})$ \\\\ \\hline\n    CLAIM-S0                 & 17.321                       & 0.346               & 17.321                          & 0.346               \\\\\n    CLAIM-S1                 & 1.252                        & 0.346               & 1.750                           & 0.346               \\\\\n    CLAIM-S2                 & 0.513                        & 0.115               & 0.323                           & 0.113               \\\\\n    CLAIM                    & \\textbf{0.472}               & \\textbf{0.114}      & \\textbf{0.253}                  & \\textbf{0.099}      \\\\\n    CLAIM-Structure          & 0.482                        & 0.122               & 0.337                           & 0.130               \\\\\n    CLAIM-Texture            & 2.196                        & 0.391               & 0.710                           & 0.176               \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l@{\\hspace{20pt}}l@{}}\n\t\t\\hline\n\t\t\\textbf{Space Group} & \\textbf{Symmetry Operations} \\\\\n\t\t\n\t\t\n\t\t\\( R\\overline{3} \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\t\\( (-y, x - y, z) \\) \\\\\n\t\t\t\\( (-x + y, -x, z) \\) \\\\\n\t\t\t\\( (-x, -y, -z) \\) \\\\\n\t\t\t\\( (y, -x + y, -z) \\) \\\\\n\t\t\t\\( (x - y, x, -z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\n\t\t\n\t\t\n\t\t\\( P\\overline{1} \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\t\\( (-x, -y, -z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\n\t\t\n\t\t\n\t\t\\( P1 \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\\hline\n\t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lcc@{}}\n\\toprule\n\\textbf{Metric} & \\textbf{Sequential} & \\textbf{Parallel ($P$ processors)} \\\\\n\\midrule\nTime & $O(N)$ & $O(N/P)$ \\\\\nWork & $O(N)$ & $O(N)$ \\\\\nSpeedup & --- & $\\Theta(P)$ \\\\\nSpace & $O(n)$ & $O(n \\cdot P)$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Many article policy technology play machine add. Toward tonight six draw. Government style mind lot."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\hline\n & \\multicolumn{2}{c}{Predicted (System)} \\\\\n\\cline{2-3}\nActual (Professional) & Qualified (+) & Not qualified (--) \\\\\n\\hline\nQualified (+)      &  % TP: put your number here\n                    16&  % FN: put your number here\n                    5\\\\\nNot qualified (--) &  % FP: put your number here\n                    2&  % TN: put your number here\n                    41\\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Report huge speech couple. Attorney care pick during. Add force senior animal. Improve tough pattern put. Difference man although affect."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n        \\toprule\n        & \\multicolumn{2}{c}{ISIC-2018} \n        & \\multicolumn{2}{c}{CVC-Clinic} \n        & \\multicolumn{2}{c}{LIDC-IDRI} \\\\\n        \\cmidrule(lr){2-3} \\cmidrule(lr){4-5} \\cmidrule(lr){6-7}\n        Model\n        & Dice & IoU \n        & Dice & IoU \n        & Dice & IoU \\\\\n        \\midrule\n        UNet~        & 85.6 & 78.5 & 82.3 & 72.5 & 81.0 & 70.0 \\\\\n        UNet++~    & 81.0 & 72.9 & 79.4 & 70.9 & 79.9 & 68.9 \\\\\n        ResUNet~  & 87.1 & 78.2 & 81.5 & 71.6 & 82.1 & 70.6 \\\\\n        nnUNet~    & 87.5 & 79.5 & 81.3 & 71.3 & 82.8 & 71.0 \\\\\n        \\midrule\n        MedSegLatDiff \n                    & \\textbf{88.0} & \\textbf{80.5} & \\textbf{84.5} & \\textbf{73.1} & \\textbf{83.4} & \\textbf{71.8} \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Four institution financial after. Despite research nature contain cause family. Picture issue any job control soldier head."
+    },
+    {
+        "type": "text",
+        "data": "Notice along agency. Fill stay I trouble crime idea street. Success must think evening check good."
+    },
+    {
+        "type": "text",
+        "data": "Under until health shake. Morning late plan attorney least top. Money director southern main receive pick this."
+    },
+    {
+        "type": "text",
+        "data": "Oil education try others tax. Full tonight break address."
+    },
+    {
+        "type": "text",
+        "data": "Safe like land themselves officer. Course identify item different effect teach. While example red tend."
+    },
+    {
+        "type": "text",
+        "data": "Around blood about growth foreign. That policy market total. Senior by approach move concern wear threat."
+    }
+]

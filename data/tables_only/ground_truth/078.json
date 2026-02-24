@@ -1,0 +1,61 @@
+[
+    {
+        "type": "text",
+        "data": "Friend arm beat similar compare group perform. Million movement short ask. Beautiful local look here."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\toprule\n\\textbf{Scheme} &\n\\textbf{Data Gen. [s]} &\n\\textbf{Training [s]} &\n% \\textbf{Offline Total [s]} &\n\\textbf{Online Cost [s]} &\n\\textbf{Total Cost [s]} \\\\\n\\midrule\nMH\n& $0$ & $0$ %& $0$\n& $91181 \\pm 12115$\n& $91181 \\pm 12115$ \\\\\n\nMLDA\n& $0$ & $0$ %& $0$\n& $62591 \\pm 12066$\n& $62591 \\pm 12066$ \\\\\n\nMFDA\n& $14615$\n& $13200$\n%& $27815$\n& $9220\\pm 2753$\n& $38035 \\pm 2753$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Effort cup figure. According base end poor. Measure show according sound fear. Oil office argue town first onto we boy."
+    },
+    {
+        "type": "text",
+        "data": "Part simple form front letter. Church fill above admit the. Standard ever market piece serve part best. Before yet process for."
+    },
+    {
+        "type": "text",
+        "data": "Some interview significant. Positive region every election. Position relate start strong expert thus teach. Sing rule purpose people development. Central religious her provide."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c c|}  \n        \\hline \n        Parameter  & Best Fit $\\pm 1 \\sigma$ \\\\ \\hline\n        $\\Delta m_{21}^2 \\left(\\times 10^{-5} \\ \\text{eV}^2\\right)$ \\; \\; & $7.50^{+0.22}_{-0.20}$  \\\\\n        $\\left|\\Delta m_{31}^2\\right| \\left(\\times 10^{-3}  \\ \\text{eV}^2\\right)[\\text{NO}]$ \\; \\; & $2.55^{+0.02}_{-0.03}$  \\\\\n        $\\left|\\Delta m_{31}^2\\right| \\left(\\times 10^{-3} \\ \\text{eV}^2\\right)[\\text{IO}]$ \\; \\; & $2.45^{+0.02}_{-0.03}$ \\\\\n        $\\theta_{12}^\\ell (^\\circ)$ \\; \\; & $34.3\\pm1.0$ \\\\\n        $\\theta_{23}^\\ell (^\\circ) [\\text{NO}]$ \\; \\; & $49.26\\pm0.79$ \\\\\n        $\\theta_{23}^\\ell (^\\circ) [\\text{IO}]$ \\; \\; & $49.46^{+0.60}_{-0.97}$ \\\\\n        $\\theta_{13}^\\ell (^\\circ) [\\text{NO}]$ \\; \\; & $8.53^{+0.13}_{-0.12}$ \\\\\n        $\\theta_{13}^\\ell (^\\circ) [\\text{IO}]$ \\; \\; & $8.58^{+0.12}_{-0.14}$ \\\\\n        $\\delta^\\ell  (^\\circ) [\\text{NO}]$ \\; \\; & $194^{+24}_{-22}$ \\\\\n        $\\delta^\\ell  (^\\circ) [\\text{IO}]$ \\; \\; & $284^{+26}_{-28}$ \\\\\n        \\hline \n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Direction how better society training husband. Customer agent again."
+    },
+    {
+        "type": "text",
+        "data": "Catch them appear bed watch call too born. Movement parent reduce ability TV. Well paper according chance. Agent most like war again tell popular than."
+    },
+    {
+        "type": "text",
+        "data": "Without where head station room. Practice treat interesting executive eye most attention. Cell worker woman factor yard long."
+    },
+    {
+        "type": "text",
+        "data": "Capital amount each medical. Eye deal explain nearly level."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrr}\n\\toprule\n\\textbf{Algorithm} & \\textbf{10 Readings} & \\textbf{360 Readings} \\\\\n\\midrule\nDreamerV3~ & 4{,}163{,}089 & 4{,}521{,}839 \\\\\nSAC~ & 635{,}508 & 1{,}335{,}508 \\\\\nDDPG~ & 514{,}406 & 1{,}074{,}406 \\\\\nTD3~ & 763{,}408 & 1{,}603{,}408 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Thank father sound. Film final condition upon officer owner seem."
+    },
+    {
+        "type": "text",
+        "data": "Key direction the key outside together speech. Present president very reach wrong course. Father join almost allow."
+    },
+    {
+        "type": "text",
+        "data": "Particular music likely modern amount material alone. On history section expect bad. Start return music majority."
+    }
+]

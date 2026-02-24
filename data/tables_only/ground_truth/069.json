@@ -1,0 +1,75 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{\n|c|c|c|}\n\\hline\n $\\alpha$=0.90 & Confidence interval & Exact confidence \\\\ \\hline \nGANN & [1,800 , 27,450] & 0.9008\\\\ \\hline \nETSA & [-124,800 , -13,300] & 0.9008\\\\ \\hline \nGSACO & [-2,750 , 41,000] & 0.9008\\\\ \\hline \nHGSA & [2,800 , 26,950] & 0.9008\\\\ \\hline \nmGWOA & [-128,500 , -9,000] & 0.9008\\\\ \\hline \nMA & [3,450 , 76,650] & 0.9008\\\\ \\hline \nMILPN & [4,200 , 51,650] & 0.9008\\\\ \\hline \nMILP & [6,100 , 83,000] & 0.9008\\\\ \\hline \nAEDGA & [5,100 , 76,500] & 0.9008\\\\ \\hline \n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\textbf{Configuration} & \\textbf{Vocab} & \\textbf{Fertility} & \\textbf{Comp.} \\\\\n\\midrule\nsp\\_drop\\_norm & 150K & 1.199 & 5.03 \\\\\nsp\\_drop\\_norm\\_0.99 & 76K & 1.229 & 4.91 \\\\\nsp\\_drop\\_norm\\_0.95 & 42K & 1.293 & 4.66 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Law admit garden certain. Decision just less politics relate commercial. Strategy stuff democratic film."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc}\n        \\begin{tabular}[t]{c} \n            Behnaz Arzani \\\\ \n            \\small Microsoft Research \n        \\end{tabular} & \n        \\begin{tabular}[t]{c} \n            Vincent Liu \\\\ \n            \\small University of Pennsylvania \n        \\end{tabular}\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Career investment turn allow. Program seem so whose. Election bag activity town detail rest."
+    },
+    {
+        "type": "text",
+        "data": "Party enough because wear. Figure now several others difference accept. Protect wall too structure party pretty."
+    },
+    {
+        "type": "text",
+        "data": "Office miss rich great across. Do science house region expect message. Newspaper ahead value bit machine. Military pick social friend. Return blue arrive."
+    },
+    {
+        "type": "text",
+        "data": "Necessary establish debate practice measure lay day. Place claim become financial least decision ok. Easy by bed. Work population red foreign. Nor his energy region."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|}\n\\cline{2-4}\n & $\\rho_{12}$ & $\\rho_{13}$ & $\\rho_{23}$ \\\\ \\hline\n\\multicolumn{1}{|c|}{No correlations} & 0 & 0 & 0 \\\\ \\hline\n\\multicolumn{1}{|c|}{Moderate correlations} & 0.3 & 0.4 & 0.5 \\\\ \\hline\n\\multicolumn{1}{|c|}{Strong correlations} & 0.6 & 0.7 & 0.8 \\\\ \\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccccccc}\n&\\multicolumn{3}{c}{Half-sibling at $\\alpha = 0.002$}\\\\\n Statistic & Thai & Singaporean & Malaysian \\\\ \\hline\n $\\Lambda_{LAF}$ & 0.984 & 0.934 & 0.607 \\\\\n $\\Lambda_{AVG}$  & 0.973 & 0.989 & 0.632 \\\\\n $\\Lambda_{MAX}$ & 0.948 & 0.968 & 0.548 \\\\\n $\\Lambda_{MIN}$ & 0.986 & 0.993 & 0.636 \\\\\n  $\\Lambda_{RMAX}$ & 0.582 & 0.556 & 0.175  \\\\\n   $\\Lambda_{RMIN}$ & 0.522 & 0.554 & 0.188  \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Figure everyone guy form. Media property here cover and left fact."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc|cc}\n\\multicolumn{2}{c}{} & \\multicolumn{2}{c}{\\textbf{Predicted Class}} \\\\\n& & Official & Unofficial \\\\ \\hline\n\\multirow{2}{*}{\\textbf{Actual Class}} & Official & \\textbf{92 (TP)} & 8 (FN) \\\\\n& Unofficial & 7 (FP) & \\textbf{93 (TN)} \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Theory eye region Mrs mention remain during. Vote member nature special. Do very from shake pull."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lllll}\n\t\t\t\\hline\n\t\t\t\\textbf{Data set}  & \\textbf{NN Model} &\\textbf{$ K_p $} &\\textbf{$ K_i $} &\\textbf{$ K_d $}\\\\\n\t\t\t\\hline\n\t\t\tDMA 1 & GRUN & $ 0.4 $ & $0.01 $ & $0.001$\\\\\n\t\t\tDMA 2 & GRUN & $ 0.5 $ & $ 0.001 $ & $ 0.001$\\\\\n\t\t\tDMA 1 & DCGRU & $ 0.2 $ & $ 0.01 $ & $ 0.001$\\\\\n\t\t\tDMA 2 & DCGRU & $ 0.22 $ & $ 0.001 $ & $ 0.001$\\\\\n\t\t\tDAYTON & CNN-LSTM & $ 0.1$ & $ 0.0001 $ & $ 0.001$\\\\\n\t\t\tFirstEnergy & CNN-LSTM & $ 0.13 $ & $ 0.001 $ & $ 0.001$\\\\\n\t\t\t\\hline\n\t\t\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|clc|}\n\\hline\nMagnetic space group                                                                          & \\multicolumn{2}{c|}{$P6_3'/m'm'c$}                                                         & $Cm'cm'$                                                                               \\\\ \\hline\nSpace group                                                                      & \\multicolumn{3}{c|}{$P6_3/mmc$ (No. 194)}                                                                                                                             \\\\ \\hline\n$a$                                                                                & \\multicolumn{3}{c|}{4.130(2)}                                                                                                                                     \\\\ \\hline\n$c$                                                                                & \\multicolumn{3}{c|}{6.666(2)}                                                                                                                                     \\\\ \\hline\n$V$                                                                                & \\multicolumn{3}{c|}{98.48(7)}                                                                                                                                   \\\\ \\hline\nIndex range                                                                      & \\multicolumn{3}{c|}{\\begin{tabular}[c]{@{}c@{}}-9\\textless{}$H$\\textless{}9\\\\ -7\\textless{}$K$\\textless{}8\\\\ -13\\textless{}$L$\\textless{}14\\end{tabular}}                \\\\ \\hline\n\\begin{tabular}[c]{@{}c@{}}Reflections collected\\\\ ($N$(obs)/$N$(all))\\end{tabular}  & \\multicolumn{3}{c|}{3215/3261}                                                                                                                                     \\\\ \\hline\n\\begin{tabular}[c]{@{}c@{}}$R$ indices \\\\ ($I$ \\textgreater 3$\\sigma(I)$)\\end{tabular} & \\multicolumn{2}{c|}{\\begin{tabular}[c]{@{}c@{}}$R$=4.65\\\\ $wR2$=16.04\\end{tabular}} & \\begin{tabular}[c]{@{}c@{}}$R$=4.71\\\\ $wR2$ = 16.14\\end{tabular}                     \\\\ \\hline\n$R$ indices (all data)                                                             & \\multicolumn{2}{c|}{\\begin{tabular}[c]{@{}c@{}}$R$=4.71\\\\ $wR2$=16.06\\end{tabular}}   & \\begin{tabular}[c]{@{}c@{}}$R$ = 4.76\\\\ $wR2$=16.16\\end{tabular}                     \\\\ \\hline\nGoodness-of-fit                                                                  & \\multicolumn{2}{c|}{4.27}                                                       & 4.30                                                                             \\\\ \\hline\n\nMoment size ($\\mu_\\mathrm{B}$)                                                                  & \\multicolumn{2}{c|}{4.29(3)}                                                       & 4.30(10)                                                                             \\\\ \\hline\n\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n            \\hline\n            Method & \\multicolumn{2}{c}{americano} \\\\\n            \\cline{2-3}\n            & Acc(\\%) & vIoU(\\%)  \\\\\n            \\hline\n            4D-LangSplat*~ & 53.84 & 27.55\\\\\n            \\hline\n            DynamicGen & \\textbf{64.42} & \\textbf{51.65} \\\\\n            \\hline\n            \\end{tabular}",
+        "complexity": "moderate"
+    }
+]

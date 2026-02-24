@@ -1,0 +1,24 @@
+[
+    {
+        "type": "text",
+        "data": "Dream keep small particular. Better discover if size."
+    },
+    {
+        "type": "text",
+        "data": "Require a show interest. Short onto let use modern share. Guy beautiful risk assume catch show concern doctor. International which recent fight heart they."
+    },
+    {
+        "type": "text",
+        "data": "Speak beautiful must stop response matter mention. Score Democrat cost land economy thousand. Officer garden never material social. Understand institution dog."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c}\n    \\shortstack{D x N \\\\ (Truth)} \\\\\n    \\midrule\n    \\shortstack{1600 x 14 \\\\ (27)} \\\\\n    \\shortstack{428 x 10 \\\\ (1)} \\\\\n    \\shortstack{44 x 12 \\\\ (2)} \\\\\n    \\shortstack{132 x 16 \\\\ (1)} \\\\ \\hline\n    \\shortstack{181 x 57 \\\\ (10)} \\\\ \\hline\n    \\shortstack{29 x 95 \\\\ (23)} \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|l|c|c|c|}\n        \\hline\n        Scenario & Dataset & Input length & Output length & \\#Prompts \\\\\n        \\hline\n        Chat       & ShareGPT-V3 (\\texttt{sharegpt})        & variable (from dataset) & 128  & 16 \\\\ \\hline\n        Summary    & Sonnet (\\texttt{sonnet})               & 8192                     & 256  & 8  \\\\ \\hline\n        Translate  & Synthetic (\\texttt{random})            & 512                      & 512  & 16 \\\\ \\hline\n        Code       & InstructCoder (HF, \\texttt{hf})        & variable (from dataset) & 2048 & 8  \\\\ \\hline\n        Story      & Synthetic (\\texttt{random})            & 256                      & 3072 & 4  \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    }
+]

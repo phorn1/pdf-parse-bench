@@ -1,0 +1,58 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|l|l|l}\n    authblk & babel & cjk & dvips \\\\\n    epsf & epsfig & euler & float \\\\\n    fullpage & geometry & graphics & hyperref \\\\\n    layout & linespread & lmodern & maltepaper \\\\\n    navigator & pdfcomment & pgfplots & psfig \\\\\n    pstricks & t1enc & titlesec & tocbind \\\\\n    ulem\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Party half seek our soldier need. Statement eat enjoy leader. Though try else cost money."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|l|l|l}\n    authblk & babel & cjk & dvips \\\\\n    epsf & epsfig & euler & float \\\\\n    fullpage & geometry & graphics & hyperref \\\\\n    layout & linespread & lmodern & maltepaper \\\\\n    navigator & pdfcomment & pgfplots & psfig \\\\\n    pstricks & t1enc & titlesec & tocbind \\\\\n    ulem\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Someone most night case bank. Site pretty indicate collection need why."
+    },
+    {
+        "type": "text",
+        "data": "Spring real later lot group act if. Most support not development evening wife."
+    },
+    {
+        "type": "text",
+        "data": "Whether ahead arrive wrong hold car. Father movement energy federal create."
+    },
+    {
+        "type": "text",
+        "data": "Account true project first defense economy available. Firm series but inside. Technology use him analysis agree here myself hard. Big national technology image. Stock away keep."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\\hline\n\\textbf{}       & \\textbf{\\begin{tabular}[c]{@{}c@{}}Hypervolume \\\\ (HV)\\end{tabular}} & \\textbf{\\begin{tabular}[c]{@{}c@{}}Generational \\\\ Distance (GD)\\end{tabular}} & \\textbf{\\begin{tabular}[c]{@{}c@{}}Time \\\\ (Sec.)\\end{tabular}} \\\\\n\\hline\n\\textbf{lhs}    & 0.056336                                                             & 0.462394                                                                       & 1501.79                                                         \\\\\n\\textbf{random} & 0.056773                                                             & 0.005563                                                                       & 1501.79                                                         \\\\\n\\textbf{sobol}  & 0.059255                                                             & 0.003757                                                                       & 1562.11                                                         \\\\\n\\textbf{oasi}   & 0.062748                                                        & 0                                                                              & 1934.88                                                        \\\\\n\\hline\n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Not serious significant hand compare. Result training recently low never goal conference no."
+    },
+    {
+        "type": "text",
+        "data": "Provide ability another exactly. Join seven writer recently foot. Movie me argue should. Network entire again. Mind billion cause raise. Modern international all happy join big Republican."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|ccc}\n\\toprule\nBackbones &PSNR$\\uparrow$ & SSIM$\\uparrow$ & LPIPS$\\downarrow$ \\\\\n\\midrule\nVGGT~ &\\textbf{22.387}&\\textbf{0.713}& \\textbf{0.259}\\\\\nDINOv3~ &20.292&0.631& 0.313\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Something very sit commercial doctor. Very within well. Rich do ago purpose. Key use dark. Outside commercial skill this visit deep. Degree another issue economic."
+    },
+    {
+        "type": "text",
+        "data": "Somebody one finish step relationship sure arrive. Somebody move five certain under."
+    }
+]

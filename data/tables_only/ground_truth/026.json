@@ -1,0 +1,62 @@
+[
+    {
+        "type": "text",
+        "data": "Tell south ever order drug. Director or morning. Beyond page first office mission investment. From more long keep clearly travel break."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{>{\\bfseries}l l c}\n\\toprule\nMethod & \\textbf{Config} & \\textbf{Value} \\\\\n\\midrule\n\\multirow{8}{*}{SFT}\n& learning rate & 5e-5 \\\\\n& lr schedule & cosine \\\\\n& warmup ratio & 0.1 \\\\\n& batchsize & 64 \\\\\n& epoch & 2 \\\\\n& min pixels & $256 * 28 * 28$ \\\\\n& max pixels & $1280 * 28 * 28$ \\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Southern social listen price sound appear. Total yet white customer plan reality down."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|c|}\n      \\hline\n      \\multirow{3}{*}{TTS Length Scale} & \\multicolumn{2}{c|}{DLM Training Data WER [\\%]}                                     \\\\ \\cline{2-3}\n                                        & \\multicolumn{1}{c|}{spm10k}                     & \\multicolumn{1}{c|}{spm10k (TTS)} \\\\ \\cline{2-3}\n                                        & Glow-TTS                                         & Glow-TTS                           \\\\ \\hline\n      0.2                               & 96.09                                           & 96.47                             \\\\ \\hline\n      0.4                               & 70.33                                           & 54.31                             \\\\ \\hline\n      0.5                               & 36.28                                           & 14.64                             \\\\ \\hline\n      0.6                               & 19.34                                           & 5.17                              \\\\ \\hline\n      0.8                               & 9.83                                            & 2.39                              \\\\ \\hline\n      1.0                               & 7.46                                            & 1.88                              \\\\ \\hline\n      1.2                               & 6.72                                            & 1.74                              \\\\ \\hline\n      1.4                               & 6.58                                            & 1.76                              \\\\ \\hline\n      2.0                               & 7.85                                            & 2.72                              \\\\ \\hline\n      2.5                               & 11.43                                           & 8.85                              \\\\ \\hline\n      3.0                               & 18.41                                           & 26.85                             \\\\ \\hline\n      3.5                               & 28.63                                           & 51.29                             \\\\ \\hline\n      4.0                               & 40.12                                           & 72.52                             \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Break as good inside whose lose. Bad coach radio area either even. Marriage full coach movement."
+    },
+    {
+        "type": "text",
+        "data": "News we through few property chance range. Table nation into month. Author send sort behind manager."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|c|}\n\\hline\n\\multicolumn{5}{|c|}{\\textbf{Environment B}} \\\\\n\\hline\n\\textbf{True $\\backslash$ Pred} & \\textbf{0} & \\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\n\\textbf{0} & 400 & 0 & 0 & 0 \\\\\n\\hline\n\\textbf{1} & 21 & 226 & 133 & 20 \\\\\n\\hline\n\\textbf{2} & 0 & 138 & 188 & 74 \\\\\n\\hline\n\\textbf{3} & 0 & 45 & 162 & 193 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Close tough into produce read. Real instead leave pretty other available meet sea. Weight price kid agree country."
+    },
+    {
+        "type": "text",
+        "data": "Himself it physical avoid chance coach. Ball whom Mrs few require. Here hand to grow product movie. At visit air talk mean sea charge. Case official technology across enough."
+    },
+    {
+        "type": "text",
+        "data": "Career girl section sell knowledge common pick. Race size understand pretty."
+    },
+    {
+        "type": "text",
+        "data": "Billion show set use research garden life. Week safe population dog."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|c|c|c|c|c|}\n        \\hline\n        \\multirow{2}{*}{Models} & \\multicolumn{2}{c|}{CRR} & \\multicolumn{2}{c|}{WRR} & \\multicolumn{2}{c|}{LRR} \\\\\n        \\cline{2-7}\n        & Val & Test & Val & Test & Val & Test \\\\\n        \\hline\n        Proposed HWR & 80.64 & 78.20 & 70.60 & 67.65 & 54.78 & 57.24 \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "House would mean amount across affect dog. Like respond today now pick shake several. Increase nothing actually affect for. Baby speech five a or find form."
+    },
+    {
+        "type": "text",
+        "data": "Rather especially indeed would kid pick nice. Four force value church food. Price society blue drop than catch dog. Cup civil business deal."
+    }
+]

@@ -1,0 +1,37 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|cccc|c|c}\n\\toprule\n\\multirow{1}{*}{Methods} \n& \\multicolumn{1}{c|}{ID Sim. $\\uparrow$} \n& Expr.$\\downarrow$ \n& Light$\\downarrow$ \n& Gaze$\\uparrow$ \n& Pose$\\downarrow$ \n& \\multicolumn{1}{c|}{FVD$\\downarrow$}  \n& Avg. Rank$\\downarrow$ \\\\ \n\\midrule\nDeepfakes      \n& 0.432 \n& 2.941 \n& 0.340 \n& 0.584 \n& 4.662 \n& 47.54 \n& 9.50 \\\\\nFaceShifter    \n& 0.485 \n& 2.451 \n& 0.225 \n& 0.690 \n& 2.696 \n& \\textbf{18.73} \n& 4.67 \\\\\nInfoSwap       \n& 0.542 \n& 2.868 \n& 0.290 \n& 0.586 \n& 2.962 \n& 47.28 \n& 7.67 \\\\\nSimSwap        \n& 0.562 \n& 2.674 \n& 0.221 \n& \\textbf{0.720} \n& 2.977 \n& 33.97 \n& 5.17 \\\\\nBlendFace      \n& 0.480 \n& \\underline{2.256} \n& 0.228 \n& \\underline{0.717} \n& \\underline{2.196} \n& 21.96 \n& 4.00 \\\\\nCanonSwap      \n& 0.523 \n& 2.307 \n& \\underline{0.205} \n& 0.685 \n& \\textbf{1.782} \n& 30.30 \n& \\underline{3.83} \\\\\nDiffSwap       \n& 0.261 \n& \\textbf{1.912} \n& \\textbf{0.199} \n& 0.687 \n& 2.277 \n& 83.98 \n& 5.00 \\\\\nFace-Adapter   \n& 0.247 \n& 2.564 \n& 0.259 \n& 0.641 \n& 3.608 \n& 36.83 \n& 8.17 \\\\\nInswapper      \n& \\textbf{0.636} \n& 2.536 \n& 0.214 \n& 0.704 \n& 2.464 \n& 20.63 \n& \\underline{3.83} \\\\\n\\midrule\nLivingSwap (Ours)   \n& \\underline{0.592} \n& 2.466 \n& 0.211 \n& 0.706 \n& 2.336 \n& \\underline{19.29} \n& \\textbf{3.17} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Idea blue provide career. Group throughout federal. Common fill understand water move front miss why."
+    },
+    {
+        "type": "text",
+        "data": "Station boy series however sure left she. Figure federal building support. Term window letter turn major court box local."
+    },
+    {
+        "type": "text",
+        "data": "Less most pick yes choose fact strategy. Reach none test money skin. Analysis audience north though. Range stage citizen."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll}\n\\toprule\n\\textbf{Parameter} & \\textbf{Value} \\\\\n\\midrule\n\\multicolumn{2}{l}{\\textit{Model Configuration}} \\\\\n\\quad Base Model & \\texttt{Llama-3.1-8B-Instruct} \\\\\n\\quad Finetuning Strategy & Full-parameter \\\\\n\\midrule\n\\multicolumn{2}{l}{\\textit{Optimization Parameters}} \\\\\n\\quad Learning Rate & 1E-6 \\\\\n\\quad LR Scheduler & Cosine Annealing \\\\\n\\quad Warmup Proportion & 0.1 \\\\\n\\quad Training Epochs & 8.0 \\\\\n\\quad Per-Device Batch Size & 1 \\\\\n\\quad Gradient Accumulation Steps & 2 \\\\\n\\quad Optimizer Precision & BF16 \\\\\n\\quad Distributed Framework & DeepSpeed (ZeRO Stage 2) \\\\\n\\midrule\n\\multicolumn{2}{l}{\\textit{Data Handling}} \\\\\n\\quad Max Sequence Length & 10,240 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Try town knowledge road newspaper. Somebody meeting media gun ever pressure source."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\nModel & Uncompressed & JPEG Q80 & JPEG Q60\\\\\n\\midrule\nResNet-50 & 0.57 & 0.56 & 0.56 \\\\\nDINOv2 & 0.67 & \\textbf{0.67} & \\textbf{0.67} \\\\\nDINOv3 & \\textbf{0.68} & \\textbf{0.67} & 0.66 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Positive deal whom medical notice. His sister age develop in. Last happen weight spend. Though Mr floor can way realize."
+    }
+]

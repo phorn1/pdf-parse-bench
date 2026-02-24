@@ -1,0 +1,21 @@
+[
+    {
+        "type": "text",
+        "data": "We how president wind five form talk green. Clearly scientist travel kind water different. Point hand bill computer low section. Seat book recent three leave watch."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\\hline\n\t\t\t\t&PBB&BPB&BHB&PBP\\\\\\hline\n\t\t\t\t \\# master integrals&$316$&$367$&$431$&$734$\\\\\\hline\n\t \\makecell[c]{\\# genuine \\\\five-point integrals}&$120$&$164$&$169$&$342$\\\\\\hline\n\t\\makecell[c]{\\# independent \\\\five-point topologies}&$17$ &$19$ &$23$ &$22$\\\\\\hline\n    \\makecell[c]{\\# $10^3$ CPU hour \\\\ for IBP}\n    & $\\sim 0.5$ & $\\sim 1$ & $\\sim 3$ & $\\sim 7$\\\\\\hline\n\t\t\t\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cll}\n    \\toprule\n    \\textbf{Method} & \\textbf{Parameter} & \\textbf{Value} \\\\\n    \\hline\n    \\multirow{5}{*}{2D-CNN~} & Batch size    & 64 \\\\\n                        & Epochs        & 20 \\\\\n                        & Learning rate & $1 \\times 10^{-3}$\\\\\n                        & Weight decay  & 0.05 \\\\\n                        & Convolution kernels  & 5\\\\\n    \\hline\n    \\multirow{5}{*}{DP-CNN~} & Batch size    & 64 \\\\\n                            & Epochs        & 100 \\\\\n                            & Learning rate & $1 \\times 10^{-3}$\\\\\n                            & Dropout       & 0.05 \\\\\n                            & Convolution kernels  & 4\\\\\n    \\hline\n    \\multirow{4}{*}{DP-SAE~} & Batch size    & 64  \\\\\n                            & Epochs        & 100 \\\\\n                            & Learning rate & $1 \\times 10^{-3}$\\\\\n                            & Dropout       & 0.05 \\\\\n    \\hline\n    \\multirow{5}{*}{RBLJAN~} & Batch size    & 64   \\\\\n                            & Epochs        & 100  \\\\\n                            & Learning rate & $1 \\times 10^{-3}$\\\\\n                            & Dropout       & 0.5 \\\\\n                            & Convolution kernels  & 8\\\\\n    \\hline\n    \\multirow{5}{*}{\\makecell{MTC-MAE~\\\\[4pt]Pre-training}} & Batch size & 64  \\\\\n        & Epochs             & 300                \\\\\n        & Learning rate      & $1 \\times 10^{-4}$ \\\\\n        & Weight decay       & 0.05               \\\\\n        & The masking ratio  & 0.6                \\\\\n    \\hline\n    \\multirow{4}{*}{\\makecell{MTC-MAE~\\\\[4pt]Fine-tuning}}        & Batch size & 64  \\\\\n        &Epochs              & 50                 \\\\\n        & Learning rate      & $5 \\times 10^{-4}$ \\\\\n        & Weight decay       & 0.05                \\\\\n    \\hline\n    \\multirow{5}{*}{\\makecell{YaTC~\\\\[4pt]Pre-training}} & Batch size & 64  \\\\\n        & Total step    & 150000             \\\\\n        & Learning rate & $1 \\times 10^{-3}$ \\\\\n        & Weight decay  & 0.05               \\\\\n        & The masking ratio  & 0.9           \\\\\n    \\hline\n    \\multirow{4}{*}{\\makecell{YaTC~\\\\[4pt]Fine-tuning}}        & Batch size & 64 \\\\\n        & Epochs             & 200                \\\\\n        & Learning rate      & $2 \\times 10^{-3}$ \\\\\n        & Weight decay       & 0.05               \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|}\n\\hline \n    Affine group schemes & Compact groups \\\\\n    Ind-finite group ind-schemes & Discrete groups \\\\\n    Cartier duality & Pontryagin duality \\\\ \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

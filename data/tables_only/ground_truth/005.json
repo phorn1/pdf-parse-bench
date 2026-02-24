@@ -1,0 +1,46 @@
+[
+    {
+        "type": "text",
+        "data": "As long push or. Send fish cover politics believe people thousand professor. Over myself ready blood."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n      $Ra$  & $Ri_b$   &   $Re_\\tau$ & $Nu$ &$ETT$ &$N_x\\times N_y\\times N_z$ \\\\[3pt]\n$1\\times10^5$\t&$1.7\\times10^{-2}$\t&187.80\t&5.22\t&499.42\t&$200\\times128\\times104$\\\\\n$3\\times10^5$\t&$5.2\\times10^{-2}$\t&194.94\t&6.29\t&301.40\t&$200\\times128\\times104$\\\\\n$1\\times10^6$\t&$1.7\\times10^{-1}$\t&201.90\t&8.33\t&209.44\t&$200\\times128\\times104$\\\\\n$3\\times10^6$\t&$5.2\\times10^{-1}$\t&232.72\t&11.59\t&175.36\t&$264\\times160\\times144$\\\\\n$1\\times10^7$\t&$1.7\\times10^0$\t&276.65\t&17.37\t&126.55\t&$312\\times192\\times168$\\\\\n$3\\times10^7$\t&$5.2\\times10^0$\t&319.64\t&25.71\t&43.39\t&$360\\times232\\times192$\\\\\n$1\\times10^8$\t&$1.7\\times10^1$\t&379.09\t&39.66\t&34.39\t&$408\\times256\\times216$\\\\\n  \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|}\n\\hline\ncolliding & $\\sqrt{s_{\\rm NN}}$ & \\multicolumn{2}{|c|}{total cross sections (b)}  \\\\\n\\cline{3-4}\nnuclei & TeV &  hadronic & EMD \\\\\n\\hline\n$^{16}$O--$^{16}$O & 5.36  & 1.3  & 0.12        \\\\\n\\hline\n$^{20}$Ne--$^{20}$Ne & 5.36  & 1.7  & 0.3   \\\\\n\\hline\n$^{208}$Pb--$^{208}$Pb &  5.36 & 7.6 & 206.5 \\\\\n\\hline\n$^{124}$Xe--$^{124}$Xe &  0.0095 & 6 &  5.3 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Issue be citizen. Magazine several class entire. Product political instead activity hope."
+    },
+    {
+        "type": "text",
+        "data": "Main their when coach their lead history. Organization mouth detail back unit."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|r|r}\n\\hline\n\\textbf{Input features} & \\textbf{\\textit{AUC}}& \\textbf{\\textit{Accuracy}} \\\\\n\\hline\nSource Spreader (Baseline)& 0.7673 & 0.6992\\\\\nBroker (Baseline)& 0.8039 & 0.7414 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Task nor guy soldier later provide. Whole write myself phone. Television control reveal."
+    },
+    {
+        "type": "text",
+        "data": "Size tax hand peace international. Popular teacher act. Budget teacher parent would thousand rest above. Current interest fish sister. Record month road share."
+    },
+    {
+        "type": "text",
+        "data": "Hand serious itself resource. Fall kitchen almost officer attention moment other. Wind option show kind really evening. Require affect because administration face own."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|cccc|cccc|}\n\t\t\\hline\n\t\t& \\multicolumn{4}{c|}{$k=2$} & \\multicolumn{4}{c|}{$k=3$} \\\\ \\cline{2-9}\n\t\t$d$ & \\multicolumn{1}{c|}{$\\beta$} & \\multicolumn{1}{c|}{$\\binom{d}{2}$} & \\multicolumn{1}{c|}{$\\log \\binom{d}{2}$} & $\\varepsilon^{-{2k}/{(2\\sigma+k)}}$ & \\multicolumn{1}{c|}{$\\beta$} & \\multicolumn{1}{c|}{$\\binom{d}{3}$} & \\multicolumn{1}{c|}{$\\log \\binom{d}{3}$} & $\\varepsilon^{-{2k}/{(2\\sigma+k)}}$ \\\\ \\hline\n\t\t10 & \\multicolumn{1}{c|}{0.5293} & \\multicolumn{1}{c|}{45} & \\multicolumn{1}{c|}{3.8067} & 10000 & \\multicolumn{1}{c|}{0.6257} & \\multicolumn{1}{c|}{120} & \\multicolumn{1}{c|}{4.7875} & 63096 \\\\\n\t\t50 & \\multicolumn{1}{c|}{0.7480} & \\multicolumn{1}{c|}{1225} & \\multicolumn{1}{c|}{7.1107} & 10000 & \\multicolumn{1}{c|}{0.8187} & \\multicolumn{1}{c|}{19600} & \\multicolumn{1}{c|}{9.8833} & 63096 \\\\\n\t\t100 & \\multicolumn{1}{c|}{0.7894} & \\multicolumn{1}{c|}{4950} & \\multicolumn{1}{c|}{8.5071} & 10000 & \\multicolumn{1}{c|}{0.8506} & \\multicolumn{1}{c|}{161700} & \\multicolumn{1}{c|}{11.9935} & 63096 \\\\\n\t\t200 & \\multicolumn{1}{c|}{0.8190} & \\multicolumn{1}{c|}{19900} & \\multicolumn{1}{c|}{9.8984} & 10000 & \\multicolumn{1}{c|}{0.8728} & \\multicolumn{1}{c|}{1313400} & \\multicolumn{1}{c|}{14.0881} & 63096 \\\\ \\hline\n\t\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\hline\n\\multicolumn{2}{c}{CA-PAG} & \\multicolumn{2}{c}{DARM} & \\multirow{2}{*}{AUC(\\%)} \\\\\n\\cmidrule(lr){1-2}\\cmidrule(lr){3-4}\nInitial & Refine & DA & Update & \\\\\n\\midrule\n\\checkmark &  &  &  & 94.9 \\\\\n\\checkmark & \\checkmark &  &  & 96.0 \\\\\n\\checkmark &  &  & \\checkmark & 97.6 \\\\\n\\checkmark & \\checkmark &  & \\checkmark & 97.7 \\\\\n\\checkmark &            & \\checkmark &  & 96.0 \\\\\n\\checkmark & \\checkmark & \\checkmark &  & 96.8 \\\\\n\\rowcolor{gray!12}\n\\checkmark & \\checkmark & \\checkmark & \\checkmark & \\textbf{98.2} \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccc@{}}\n\\toprule\n\\multirow{2}{*}{\\textbf{Model}} &\n  \\multicolumn{3}{c}{\\textbf{FSA Ablation Set Baseline}} (\\%)  \\\\\n\\cmidrule(l){2-4}\n& \\textbf{CR} & \\textbf{CR (S$\\rightarrow$S)} & \\textbf{CR (S$\\rightarrow$F)} \\\\ \\midrule\nBitAgent Bounty 8B & 18.3      & 12.2 (n=115)    & 37.8 (n=37)          \\\\\nQwen3 32B (FC)     & \\textbf{41.1} & \\textbf{26.8 (n=56)} & 56.9 (n=51) \\\\\nQwen3 14B (FC)     & 40.1      & 15.0 (n=40)     & \\textbf{52.6 (n=57)} \\\\\nQwen3 8B (FC)      & 27.9      & 12.5 (n=48)     & 42.9 (n=42)          \\\\\nxLAM 2 70B FC r    & 22.3      & 13.5 (n=141)    & \\textbf{80.0 (n=15)} \\\\\nxLAM 2 32B FC r    & 29.9      & 13.7 (n=117)    & 70.0 (n=40)          \\\\\nxLAM 2 8B FC r     & 21.8      & 13.0 (n=131)    & 54.5 (n=22)          \\\\\nxLAM 2 3B FC r     & 23.4      & 9.9 (n=111)     & 59.3 (n=27)          \\\\\nWatt Tool 70B      & 32.0      & 15.5 (n=110)    & 65.6 (n=32)          \\\\\nWatt Tool 8B       & 17.3      & 12.2 (n=74)     & 31.2 (n=16)          \\\\\nToolACE 2 8B       & 32.0      & 14.8 (n=54)     & 76.9 (n=39)          \\\\ \\midrule\n\\textbf{Avg.}      & 27.8      & 14.5            & 57.1                 \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Police or wide figure trial health class. Place between establish deep mean require bag. Reflect series put notice around from someone."
+    },
+    {
+        "type": "text",
+        "data": "Contain enter window finish back cause. Class while single seat. Voice however anything expert gun."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lr}\n        \\hline \\hline\n        \\textbf{Hyperparameter / Component} & \\textbf{Value / Count} \\\\\n        \\hline\n        \\multicolumn{2}{c}{\\textit{Global Configuration}} \\\\\n        Embedding Dimension ($d_{\\text{model}}$) & 768 \\\\\n        Feed-Forward Dimension ($d_{\\text{ff}}$) & 2,048 \\\\\n        Attention Heads ($h$) & 8 \\\\\n        Head Dimension ($d_k$) & 96 \\\\\n        Context Window & 768 \\\\\n        \\hline\n        \\multicolumn{2}{c}{\\textit{Attention Mechanism}} \\\\\n        Attention Heads per Layer ($h$) & 8 \\\\\n        Head Dimension ($d_k$) & 96 \\\\\n        Total Attention Heads (Encoder) & 48 \\\\\n        Total Attention Heads (Decoder) & 48 \\\\\n        \\hline\n        \\multicolumn{2}{c}{\\textit{Encoder Stack (6 Layers)}} \\\\\n        Self-Attention Parameters (per layer) & 2,362,368 \\\\\n        Feed-Forward Network (per layer) & 3,150,080 \\\\\n        Layer Normalization (per layer) & 1,536 \\\\\n        \\textbf{Total per Encoder Layer} & \\textbf{5,513,984} \\\\\n        \\hline\n        \\multicolumn{2}{c}{\\textit{Decoder Stack (6 Layers)}} \\\\\n        Self-Attention Parameters (per layer) & 2,362,368 \\\\\n        Cross-Attention Parameters (per layer) & 2,362,368 \\\\\n        Feed-Forward Network (per layer) & 3,150,080 \\\\\n        Layer Normalization (per layer) & 3,072 \\\\\n        \\textbf{Total per Decoder Layer} & \\textbf{7,877,888} \\\\\n        \\hline\n        \\multicolumn{2}{c}{\\textit{Total Model Size}} \\\\\n        Trainable Parameters & 80,358,915 \\\\\n        Non-Trainable Parameters & 0 \\\\\n        \\textbf{Total Parameters} & \\textbf{80.36 M} \\\\\n        \\hline \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Although food put. Measure high the. Account skin wall hand edge face join. Security wait sea return general. Significant book collection reduce themselves pass lose report."
+    },
+    {
+        "type": "text",
+        "data": "Bank right party summer girl. Scientist do cost radio score front girl. Home hour green line. Firm program strong build pick couple fund."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n\\toprule\n\\textbf{Model} & \n\\begin{tabular}[c]{@{}c@{}}\\textbf{Refusal}\\\\\\textbf{Failure (\\%)}\\end{tabular} &\n% \\textbf{Refusal Failure Rate (\\%)} & \n\\textbf{ \\( \\mathcal{V} \\)(\\%)} \\\\\n\\midrule\nMeditron-7B (teacher)   & 14 & 66 \\\\\nLLaMA-3 8B (base)       & 78 & 46 \\\\\nSurrogate (LoRA-tuned)  & \\textbf{94} & \\textbf{86} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Watch first attack clearly art social. Take during improve move."
+    },
+    {
+        "type": "text",
+        "data": "National book wind hotel successful. Draw product somebody."
+    }
+]

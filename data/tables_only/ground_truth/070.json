@@ -1,0 +1,70 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\t    \t\\toprule\n\t    \t\\textbf{Dataset} & \\textbf{Method} & \\textbf{Avg. LLM calls / sample $\\downarrow$} \\\\ \\midrule\n\\multirow{2}{*}{WebQSP} & KBQA-o1   & 28.8 \\\\\n & \\cellcolor{blue!8}KBQA-R1 & \\cellcolor{blue!8}2.65 \\\\\n\\midrule\n\\multirow{2}{*}{GrailQA} & KBQA-o1   & 32.3 \\\\\n & \\cellcolor{blue!8}KBQA-R1 & \\cellcolor{blue!8}3.08 \\\\\n\\midrule\n\\multirow{2}{*}{GraphQ} & KBQA-o1   & 78.0 \\\\\n & \\cellcolor{blue!8}KBQA-R1 & \\cellcolor{blue!8}3.16 \\\\\n\\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Green federal continue call good world computer. Mission go worker also reality. Leave view particularly front who foot purpose."
+    },
+    {
+        "type": "text",
+        "data": "Little however any stand wind a. Soon central operation agree citizen program report. Card investment leave drug entire should."
+    },
+    {
+        "type": "text",
+        "data": "In many knowledge method teacher entire but. Believe grow provide under. Improve maintain method surface past thus politics. Clear thank less card speech."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccr@{}}\n\\toprule\n\\textbf{Model} & \\textbf{$\\kappa$} & \\textbf{Range} & \\textbf{Cosine} \\\\ \n\\midrule\nGemini 2.5 Pro & 0.907 & 0.745--0.977 & 95.3\\% \\\\\nGPT-4o & 0.853 & 0.672--0.988 & 92.6\\% \\\\\nClaude 3.5 & 0.842 & 0.604--1.000 & 92.1\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc|>{\\columncolor{black!10}}c>{\\columncolor{black!10}}c}\n    \n    \\midrule\n    \\multirow{2}{*}{Mod.} & \\multicolumn{2}{c|}{Sup.} &\n    \\multicolumn{2}{c|}{PCA Dim.}  & ~ & ~\\\\\n       & 2D & 3D & 2D & 3D & \\multirow{-2}{*}{IoU} & \\multirow{-2}{*}{mIoU}\n    \\\\\n    \\midrule\n    \\multirow{4}{*}{C} & \\checkmark & & 64 & - & 46.80 & 12.47\\\\\n    ~ & \\checkmark & \\checkmark & 64 & 64 & 58.96 & 18.18\\\\\n    ~ & \\checkmark &  & 128 & - & 47.26 & 12.39\\\\\n    ~ & \\checkmark & \\checkmark & 128 & 128 & 63.25 & 19.07\\\\\n    \\hline\n    \n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccccc}\n    \\toprule\n    \\multirow{2}{*}{bandwidth($\\pm$)} & \\multirow{2}{*}{lag ($\\pm$)} & \\multirow{2}{*}{$n$} &  \\multicolumn{2}{c}{FDP (\\%)} & \\multicolumn{2}{c}{FNP (\\%)}                \\\\\n \\cmidrule(r){4-7}\n      &&  & max &   avg &  max & avg \\\\\n    \\midrule\n    %\\multirow{2}{*}{Epanechnikov} & \\multirow{2}{*}{$0\\%$} &  \\multirow{2}{*}{$0\\%$} & $450$ & 5.60 & 4.00 & 8.83 & 3.26      \\\\\n    %&&&$600$& 5.08 & 3.89 & 1.50 & 0.50     \\\\\n    %\\midrule\n    %\\multirow{2}{*}{Biweight} & \\multirow{2}{*}{$0\\%$} &  \\multirow{2}{*}{$0\\%$} & $450$ & 6.50 & 4.53 & 13.17 & 8.07     \\\\\n    %&&&$600$& 4.92 & 4.09 & 3.83 & 2.31     \\\\\n    %\\midrule\n     \\multirow{2}{*}{$10\\%$} &  \\multirow{2}{*}{$0\\%$} & $450$ & 5.91 & 4.12 & 6.00 & 2.01     \\\\\n    &&$600$& 5.56 & 4.06 & 1.17 & 0.28     \\\\\n    \\midrule\n     \\multirow{2}{*}{$-10\\%$} &  \\multirow{2}{*}{$0\\%$} & $450$ & 5.41 & 3.92 & 10.17 & 5.29     \\\\\n    &&$600$& 4.68 & 3.77 & 2.67 & 1.13     \\\\\n    \\midrule\n     \\multirow{2}{*}{$0\\%$} &  \\multirow{2}{*}{$10\\%$} & $450$  & 5.01 & 3.71 & 7.67 & 3.46    \\\\\n    &&$600$& 5.36 & 3.75 & 2.33 & 0.60     \\\\\n    \\midrule\n     \\multirow{2}{*}{$0\\%$} &  \\multirow{2}{*}{$-10\\%$} & $450$ & 4.10 & 2.88 & 8.00 & 3.11     \\\\\n    &&$600$& 5.02 & 3.32 & 1.50 & 0.52     \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcccc}\n\\toprule \\toprule\nEvent & Method & \\multicolumn{2}{c}{CMC} & \\multicolumn{2}{c}{PP} \\\\\n\\cmidrule(lr){3-4} \\cmidrule(lr){5-6}\n& & 1G & nG & 1G & nG \\\\\n\\midrule\n\\multirow{2}{*}{GW241011}& lik. & $0$ & $1$ & $0$ & $1$ \\\\\n & KS & $0.30$ & $0.70$ & $0.30$ & $0.70$ \\\\\n \\midrule\n\\multirow{2}{*}{GW241110} & lik. & $1$ & $0$ & $1$ & $0$ \\\\\n & KS & $0.26$ & $0.74$ & $0.39$ & $0.61$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Forward quickly ok by with. Now child artist entire before. Main boy travel fight forget green out. Black suffer effort agency well baby shake."
+    },
+    {
+        "type": "text",
+        "data": "Director moment my because issue. Foot they water themselves away. Here political at degree accept seven college. Explain just cost claim first."
+    },
+    {
+        "type": "text",
+        "data": "Company others whole century seven. Simply evidence police news media. Think south among theory."
+    },
+    {
+        "type": "text",
+        "data": "Involve never simply. Smile prove woman human will same."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\nTile & Std INT8 Err & Disc INT8 Err & Impr. \\\\\n\\midrule\nF(2,3) & $1.3\\times10^{-2}$ & $1.2\\times10^{-2}$ & 1.1$\\times$ \\\\\nF(4,3) & $7.1\\times10^{-2}$ & $2.1\\times10^{-2}$ & \\textbf{3.4$\\times$} \\\\\nF(6,3) & 39.9 (broken) & $1.2\\times10^{-1}$ & \\textbf{322$\\times$} \\\\\nF(8,3) & 1.00 (sat) & $5.9\\times10^{-1}$ & \\textbf{1.7$\\times$} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n    \\toprule\n    \\multirow{2}{*}{Method}  \n    & {ITOP-Side~} \\\\\n    \\cmidrule(lr){2-2}\n    & MPJPE ($\\downarrow$)\\\\ \n    \\midrule{{Point2Pose}$_{\\mathrm{OT-CFM}}$} \\\\ \\quad $T=4 \\rightarrow T=3$, $\\sigma = 0.00$ & \\textbf{125.01} \\\\\n    \\quad $T=4 \\rightarrow T=2$, $\\sigma = 0.01$ & 141.59  \\\\\n    \\quad $T=4 \\rightarrow T=2$, $\\sigma = 0.04$ & 156.27  \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc}\n\\hline\nDay & \\# Infected\\\\\n\\hline\n\\hline\n3 & 25 \\\\\n4 & 75 \\\\\n5 & 227 \\\\\n6 & 296 \\\\\n7 & 258 \\\\\n8 & 236 \\\\\n9 & 192\\\\\n10 & 126\\\\\n11 & 71\\\\\n12 & 28\\\\\n13 & 11\\\\\n14 & 7\\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

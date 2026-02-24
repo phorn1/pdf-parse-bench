@@ -1,0 +1,20 @@
+[
+    {
+        "type": "text",
+        "data": "Development leader meeting ability organization wonder although. Whom want along late ever strategy. Produce cut prove ever. More article dinner leave social run road."
+    },
+    {
+        "type": "text",
+        "data": "Appear church room professional so hope. Statement interest near close alone particularly yeah."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccccc}\n\\toprule\n\\multirow{2}{*}{\\textbf{Method}} & \\multicolumn{3}{c}{\\textbf{Attribute Binding}} & \\multicolumn{2}{c}{\\textbf{Object Relationship}} & \\multirow{2}{*}{\\textbf{Complex ↑}} & \\multirow{2}{*}{\\textbf{AVG ↑}} \\\\\n\\cmidrule(lr){2-4} \\cmidrule(lr){5-6}\n& \\textbf{Color ↑} & \\textbf{Shape ↑} & \\textbf{Texture ↑} & \\textbf{Spatial ↑} & \\textbf{Non-Spatial ↑} & & \\\\\n\\midrule\n% T2I-CB Score \\\\\nDPO-Diff~  & 0.4405 & 0.4381 & 0.4949 & 0.1445 & 0.3182 & 0.4119 & 0.3746 \\\\ \n\\rowcolor{blue!10}{\\textbf{NPC$_{\\text{SDXL}}$}}            & \\textbf{0.7950} & \\textbf{0.5681} & \\textbf{0.6889} & \\textbf{0.2545} & \\textbf{0.3191} & \\textbf{0.5171} & \\textbf{0.5237} \\\\ \n\\bottomrule\n\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n\\toprule\n\\textbf{Train \\textbackslash\\ Test} & \\textbf{MNIST} & \\textbf{FMNIST} & \\textbf{SVHN} & \\textbf{CIFAR-10} & \\textbf{CIFAR-100} & \\textbf{TinyImageNet-200} \\\\\n\\midrule\nMNIST          & \\textbf{99.1 / 97.5} & 89.5 / 23.4 & 99.1 / 31.7 & 99.4 / 36.2 & 98.6 / 28.9 & 98.3 / 25.6 \\\\\nFMNIST         & 85.2 / 37.8 & \\textbf{92.6 / 91.3} & 96.3 / 39.4 & 95.7 / 35.7 & 94.8 / 30.8 & 93.5 / 27.2 \\\\\nSVHN           & 93.6 / 40.5 & 94.9 / 23.1 & \\textbf{89.4 / 87.9} & 87.6 / 38.4 & 86.9 / 36.1 & 84.2 / 33.7 \\\\\nCIFAR-10       & 97.8 / 46.9 & 95.7 / 36.8 & 88.2 / 25.1 & \\textbf{85.5 / 84.7} & 83.6 / 39.2 & 81.4 / 37.0 \\\\\nCIFAR-100      & 98.1 / 35.8 & 96.8 / 22.7 & 88.9 / 38.3 & 80.1 / 35.6 & \\textbf{78.1 / 77.5} & 83.1 / 30.8 \\\\\nTinyImageNet-200 & 94.2 / 32.5 & 91.9 / 28.4 & 87.4 / 37.6 & 82.9 / 36.1 & 81.7 / 24.5 & \\textbf{54.8 / 52.2} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

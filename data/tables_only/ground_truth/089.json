@@ -1,0 +1,49 @@
+[
+    {
+        "type": "text",
+        "data": "About visit woman data up interest throw. Month through ground on. Doctor wish grow college. Serve president discuss heavy. Exactly improve popular positive get."
+    },
+    {
+        "type": "text",
+        "data": "Figure commercial reason apply light guess. Somebody ahead realize go now. Almost attention work writer fast nation Democrat."
+    },
+    {
+        "type": "text",
+        "data": "Enter service second society ball."
+    },
+    {
+        "type": "text",
+        "data": "Season shoulder per foreign always war resource. Cultural here week this political direction. Way force maybe I long."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n\\toprule[1pt]\n                     & \\textbf{Error Identification} & \\textbf{Rationale} \\\\ \\midrule\nGround Truth         & 27.08                         & 65.70                \\\\ \\midrule\nQwen2.5-VL-7B       & 6.40                          & 7.69                 \\\\\nQwen2.5-VL-32B      & 6.76                          & 9.96                 \\\\\nQwen2.5-VL-72B      & 11.03                         & 14.95                \\\\\nInternVL3-8B         & 6.25                          & 7.11                 \\\\\nGLM-4.1V-9B-Thinking & 9.96                          & 16.02                \\\\\nMiMo-VL-7B-RL        & 7.83                          & 9.61                 \\\\\nOurs                 & \\textbf{13.52}                         & \\textbf{16.25}                \\\\ \\midrule[1pt]\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Once PM house. Phone listen generation both west argue."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\textbf{$\\lambda$} & \\textbf{Overall Acc} & \\textbf{MaxAccGap} & \\textbf{Gap Reduction vs Vanilla} \\\\\n\\midrule\n0.0 (Vanilla) & 53.50 & 3.80 & -- \\\\\n0.1           & 53.75 & 2.10 & +44.74\\% \\\\\n0.5           & 53.55 & 6.04 & -58.95\\% \\\\\n1.0           & 53.35 & 2.01 & +47.11\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Think environmental necessary garden money task role. Campaign environment stock should consider old really."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcccccccccc}\n\\toprule\n\\multirow{2}{*}{\\textbf{Activity}} & \\multirow{2}{*}{\\textbf{Gen. Type}} & \\multicolumn{2}{c}{\\textbf{Task 01}} & \\multicolumn{2}{c}{\\textbf{Task 02}} & \\multicolumn{2}{c}{\\textbf{Task 03}} & \\multicolumn{2}{c}{\\textbf{Task 04}} & \\multicolumn{2}{c}{\\textbf{Task 05}} \\\\\n\\cmidrule(lr){3-4} \\cmidrule(lr){5-6} \\cmidrule(lr){7-8} \\cmidrule(lr){9-10} \\cmidrule(lr){11-12}\n& & {\\textbf{Ant.}} & {\\textbf{Det.}} & {\\textbf{Ant.}} & {\\textbf{Det.}} & {\\textbf{Ant.}} & {\\textbf{Det.}} & {\\textbf{Ant.}} & {\\textbf{Det.}} & {\\textbf{Ant.}} & {\\textbf{Det.}} \\\\\n\\midrule\n\\multirow{2}{*}{Tying Knots}\n    & Random & 52.62 & 52.22 & 52.02 & 52.50 & 52.40 & 51.50 & 50.91 & 52.31 & 51.04 & 48.88 \\\\\n    & Task-Level & 70.18 & 74.52 & 70.65 & 74.28 & 70.30 & 74.09 & 67.91 & 71.06 & 72.82 & 74.91 \\\\\n\\midrule\n\\multirow{2}{*}{Origami}\n    & Random & 50.36 & 49.33 & 48.07 & 48.28 & 50.20 & 49.47 & 51.34 & 47.65 & {-} & {-} \\\\\n    & Task-Level & 74.46 & 75.91 & 81.53 & 83.61 & 80.22 & 82.45 & 77.80 & 79.30 & {-} & {-} \\\\\n\\midrule\n\\multirow{2}{*}{Tangram}\n    & Random & 49.44 & 49.40 & 49.86 & 49.82 & 49.43 & 49.25 & 50.55 & 50.28 & {-} & {-} \\\\\n    & Task-Level & 65.56 & 68.65 & 67.79 & 70.06 & 72.57 & 74.65 & 70.85 & 74.12 & {-} & {-} \\\\\n\\midrule\n\\multirow{2}{*}{Shuffle Cards}\n    & Random & 50.35 & 50.55 & 49.12 & 49.31 & 48.77 & 49.86 & 48.51 & 49.06 & 49.27 & 50.03 \\\\\n    & Task-Level & 56.64 & 60.04 & 64.03 & 69.02 & 54.76 & 60.49 & 57.84 & 64.26 & 69.88 & 74.38 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Event where buy easy science call. Special too image go trouble history number. Appear benefit leader writer success let."
+    },
+    {
+        "type": "text",
+        "data": "With tonight surface likely understand range. Book put wall anyone."
+    }
+]

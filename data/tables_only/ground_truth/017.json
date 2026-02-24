@@ -1,0 +1,53 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc|cc}\n    \\toprule\n    \\multicolumn{3}{c|}{Model Variations} & \\multirow{2}{*}{\\textbf{FGD} $ \\downarrow$}  & \\multirow{2}{*}{$ \\Delta_{imp}$}\\\\\n    \\cline{1-3}\n    $\\mathcal{F}$ & $\\mathcal{P}$ & $\\mathcal{N}$ & ~ & ~ \\\\\n    \\midrule\n    $\\times$ & $\\times$ & $\\times$ & $119.3$ & \\\\\n    \\checkmark & $\\times$ & $\\times$ & $97.2$ &$(-22.1)$ \\\\\n    $\\times$ & w. $\\mathcal{NP}$ & 10& $89.4$ &$(-29.9)$ \\\\\n    \\checkmark & w/o. $\\mathcal{NP}$ & 10 & $96.5$ & $(-22.8)$ \\\\\n    \\checkmark & w. $\\mathcal{NP}$ & 2 & $79.7$ &  $(-39.6)$ \\\\\n    \\checkmark & w. $\\mathcal{NP}$ & 5 & $72.5$ &  $(-46.8)$ \\\\\n    \\hline\n    \\checkmark & w. $\\mathcal{NP}$ & 10 & $\\textbf{70.9}$ & $(-48.4)$\\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|c|c}\n\\Xhline{3\\arrayrulewidth}\n  &  & \\multicolumn{2}{c|}{\\makecell[c]{Unseen damage\\\\severities}} & \\multicolumn{2}{c}{\\makecell[c]{Out-of-sample\\\\line sets}} \\\\ \\cline{3-6}\n  & & NN & PCNN & NN & PCNN \\\\ \\hline\n\\multirow{3}{*}{{\\makecell[c]{Optimality\\\\ Gap (\\%)}}}  & min &  0\\%    &  0\\%     & 0\\%    &   0\\% \\\\\n& avg &  13.3\\%    &  \\textbf{6.5\\%}     & 17.5\\%    &  \\textbf{11.2\\%} \\\\\n& max &  39.4\\%    &  19.2\\%     & 49.5\\%    &  37.4\\% \\\\ \\hline\n\\multirow{3}{*}{{\\makecell[c]{Computation\\\\Time (s)}}} & min  & 1.57 s   &  12.7 s    & 1.89 s   &  17.5 s \\\\\n& avg  & \\textbf{1.73 s}   &  14.5 s    & \\textbf{2.03 s}   &  18.4 s \\\\\n& max  & 2.02 s   &  16.3 s    & 2.25 s   &  19.3 s \\\\\n\\Xhline{3\\arrayrulewidth}\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c}\n        \\hline\n                       & Hyperparameter          & Value     \\\\\n        \\hline\n                            &Optimizer            &Adam        \\\\\n         &Q learning rate      &0.0003     \\\\\n                            &V learning rate      &0.0003     \\\\\n        IQL Hyperparameters                    &Mini-batch size      &256        \\\\\n                            &Discount factor      &0.99       \\\\\n                            &Temperature           &3.0        \\\\\n                            &Expectile value      &0.7        \\\\\n                            &Target update rate   &0.005      \\\\\n                            % &Number of iterations &1e6        \\\\\n        \\hline   \n        &Q hidden dim         &256        \\\\\n                            &Q hidden layers      &2          \\\\\n        Network Architecture                    &Q activation         &ReLU       \\\\\n                            &V hidden dim         &256        \\\\\n                            &V hidden layers      &2          \\\\\n                            &V activation         &ReLU       \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Save wonder whether find price. Employee grow last boy. Fill available include become reveal above any begin."
+    },
+    {
+        "type": "text",
+        "data": "Bed month agency source. Night plan hair benefit market. Name Congress threat letter seem mouth."
+    },
+    {
+        "type": "text",
+        "data": "Industry feel author president. Better western future read doctor. Opportunity our yeah radio daughter guess safe big."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular*}{0.65\\linewidth}{@{\\extracolsep{\\fill}}lc}\n\\toprule\nModel & mIoU \\\\\n\\midrule\nIdefics2          & 0.000 \\\\\nQwen2.5-VL (7B)   & 0.000 \\\\\nQwen2.5-VL (32B)  & 0.000 \\\\\nInternVL3 (14B)   & 0.000 \\\\\nUnified-IO 2              & 0.092 \\\\\nGroundingDINO     & \\textbf{0.245} \\\\\n\\midrule\n\\textcolor{gray}{YOLOv8n} & \\textcolor{gray}{0.773} \\\\\n\\bottomrule\n\\end{tabular*}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Model structure someone school. Choose might increase pull despite. Set arm message these brother although rest summer."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n        \\toprule\n        Equation & \\textbf{SWE} & \\textbf{DR} \\\\\n        \\midrule\n        Rel. $L_2$ Err.  & 0.0053 & 0.0218 \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lr}\n    \\toprule\n           \\bfseries Element Type & \\bfseries Raw Count \\\\\n    \\midrule\n           \\underline{Actor Nodes}   & 141 \\\\\n         - \\emph{Courts} (J) & 8  \\\\\n          - \\emph{Panels} (J) & 133  \\\\\n\n         \\underline{Document Nodes}    & 3,709,831\\\\\n           - \\emph{Statutes} (L)  &  6,815 \\\\\n           - \\emph{Sections} (L) & 91,758 \\\\\n           - \\emph{Sub-sections} (L)  & 208,616  \\\\\n           - \\emph{Sub$^2$-sections} (L)  & 189,374 \\\\ \n           - \\emph{Sub$^3$-sections} (L)  & 27,571  \\\\ \n\n            - \\emph{Court Decisions} (J) & 74,214 \\\\\n           - \\emph{Text Paragraphs}  (J)  & 3,111,483\\\\\n           \\underline{Reference Edges} (J $\\to$ L)&  1,685,078\\\\\n\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc}\n\\hline\nModel   & CLIP-Sim$\\uparrow$  & DINO-Sim$\\uparrow$   & ReID-Sim$\\uparrow$    \\\\ \\hline\nDPTN    & 0.8636 & 0.6450 & 0.9023   \\\\ \nAnimateAnyone  & 0.8661  & 0.6752  & 0.9131    \\\\\nPose2Id & 0.8669  & 0.6825  & 0.9161   \\\\ \\hline\nOurs    & \\textbf{0.8697}  & \\textbf{0.8037}  & \\textbf{0.9577}   \\\\ \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

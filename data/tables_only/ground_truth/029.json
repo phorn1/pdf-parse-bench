@@ -1,0 +1,28 @@
+[
+    {
+        "type": "text",
+        "data": "Civil season born movement learn loss improve. Thus peace have carry of according. Note pretty if decision course back head field."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|l|l|l}\n\\toprule\n% subset               & panda\\_orb\\_full\\_view &              &                \\\\\n% \\midrule\nsonnet-4.5           & 1,000 tokens           & 5,000 tokens & 10,000 tokens  \\\\\n\\midrule\naverage error        & 0.416                  & 0.392        & 0.405          \\\\\naverage uncertainty  & 0.086                  & 0.09         & 0.106          \\\\\naverage within bound & 16.72\\%                & 17.49\\%      & 17.49\\%        \\\\\n\\midrule\njoint 1              & 0.678                  & 0.619        & 0.656          \\\\\njoint 2              & 0.282                  & 0.279        & 0.270          \\\\\njoint 3              & 0.361                  & 0.346        & 0.385          \\\\\njoint 4              & 0.276                  & 0.291        & 0.275          \\\\\njoint 5              & 0.490                  & 0.446        & 0.448          \\\\\njoint 6              & 0.384                  & 0.394        & 0.439          \\\\\njoint 7              & 0.441                  & 0.367        & 0.364          \\\\\njoint 8              & N/A                    & N/A          & N/A         \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc|cc}\n    \\toprule\n    Hyperparameter                                                                        & Value & Hyperparameter                  & Value   \\\\\n    \\midrule\n    Dimension of one-electron layer                                                       & 256   & Dimension of two-electron layer & 32      \\\\\n    Dimension of nuclear layer                                                            & 32    & Number of layers                & 3       \\\\\n    Number of determinants                                                                & 8     & Optimizer                       & KFAC    \\\\\n    Learning rate                                                                         & 3e-3  & Learning rate  decay            & 1       \\\\\n    Learning rate delay                                                                   & 1e4   & Damping                         & 1e-3    \\\\\n    Momentum of optimizer                                                                 & 0.0   & Batch size                      & 1024    \\\\\n    Number of training steps\\footnote{For $P2_1c$, the number of training steps is 1.2e6} & 5e5   & GBS burn in                     & 100     \\\\\n    Number of GBS blocks                                                                  & 10    & Number of GBS iterations        & 10      \\\\\n    Electron move width                                                                   & 2e-2  & Nuclear move width              & 2e-4    \\\\\n    Adapt frequency                                                                       & 100   & Precision                       & Float32 \\\\\n    Beta in Annealing                                                                     & 0.002 & Initial virtual temperature     & 0.1     \\\\\n    Annealing steps between each training steps                                           & 10    & Lattice move width              & 0.02    \\\\\n    Warmup steps                                                                          & 50000 & Lattice steps                   & 300     \\\\\n    Wavefunction steps                                                                    & 5000  & Initial $r_s$                   & 2.11    \\\\\n    \\toprule\n  \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Run music six actually cause standard. Account make middle give."
+    },
+    {
+        "type": "text",
+        "data": "Into usually new myself significant good than often."
+    },
+    {
+        "type": "text",
+        "data": "Treatment week buy enough. For development nor perform. Sometimes recognize wide enter."
+    }
+]

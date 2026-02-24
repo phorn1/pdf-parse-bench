@@ -1,0 +1,83 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cccc}\n        \\toprule\n        \\multirow{2}{*}{$\\gamma$} & \\multicolumn{4}{c}{\\# Questions with $k$ filtered answers} \\\\\n        & $k = 3$ & $k = 2$ & $k = 1$ & $k = 0$ \\\\\n        \\midrule\n        0.90 & 418 & 27 & 39 & 16 \\\\\n        0.93 & 399 & 44 & 38 & 19 \\\\\n        0.95 & 391 & 46 & 39 & 24 \\\\\n        0.97 & 383 & 50 & 41 & 26 \\\\\n        0.99 & 332 & 75 & 64 & 29 \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Talk situation idea place degree sit pattern left. Item same alone discover thus town. Dream analysis blue rise day."
+    },
+    {
+        "type": "text",
+        "data": "Participant approach thank three keep value choice authority. Care cold story offer threat sell produce. Institution only dinner something professor."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llrr}\n    \\toprule\n        \\textbf{Verification} & \\textbf{Comparison} & $q$ & \\textbf{95\\% CI} \\\\\n        \\midrule\n        \\multirow{3}{*}{Business} & L-N & ***0.182 & [0.088, 0.276] \\\\\n         & L-R & 0.035 & [-0.089, 0.159] \\\\\n         & N-R & **-0.147 & [-0.247, -0.047] \\\\\n         \\midrule\n         \\multirow{3}{*}{Government} & L-N & *0.238 & [0.039, 0.438] \\\\\n         & L-R & 0.175 & [-0.073, 0.424] \\\\\n         & N-R & -0.063 & [-0.299, 0.173] \\\\\n         \\midrule\n         \\multirow{3}{*}{Not verified} & L-N & ***0.247 & [0.193, 0.301] \\\\\n         & L-R & -0.009 & [-0.074, 0.057] \\\\\n         & N-R & ***-0.256 & [-0.314, -0.197] \\\\\n         \\midrule\n         \\multirow{3}{*}{Twitter Blue} & L-N & ***0.263 & [0.179, 0.346] \\\\\n         & L-R & -0.086 & [-0.181, 0.009] \\\\\n         & N-R & ***-0.349 & [-0.427, -0.270] \\\\\n         \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Sure budget worry. Game protect statement hospital my. Prevent increase smile relate hand source."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|cc|}\n    \\hline\n    \\rowcolor[HTML]{F3F3F3} \n    \\cellcolor[HTML]{F3F3F3} & \\cellcolor[HTML]{F3F3F3} & \\multicolumn{2}{c|}{\\cellcolor[HTML]{F3F3F3}\\textbf{EER (\\%)}} \\\\ \\cline{3-4} \n    \\rowcolor[HTML]{F3F3F3} \n    \\multirow{-2}{*}{\\cellcolor[HTML]{F3F3F3}\\textbf{System}} & \\multirow{-2}{*}{\\cellcolor[HTML]{F3F3F3}\\textbf{Param (M)}} & \\multicolumn{1}{c|}{\\cellcolor[HTML]{F3F3F3}\\textbf{Validation}} & \\textbf{Test} \\\\ \\hline \\hline\n    AASIST & 0.30 & \\multicolumn{1}{c|}{0.92} & 15.02 \\\\ \\hline\n    BEATs+AASIST & 90.73 & \\multicolumn{1}{c|}{0.10} & 13.20 \\\\ \\hline\n    ATCA & 158.91 & \\multicolumn{1}{c|}{0.10} & 11.28 \\\\ \\hline\n    ATCA-ens & 284.64 & \\multicolumn{1}{c|}{0.07} & 11.22 \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Control hotel third send dark. Hold sell listen executive. Sister prove center. Table agency system dream effort share character. Arm drop activity admit my city audience."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\\toprule\nLag & F-Statistic & p-value & Significant \\\\\n\\midrule\n1 & 1.45 & 0.229 & No \\\\\n2 & 3.22 & 0.042* & Yes \\\\\n3 & 2.16 & 0.093 & No \\\\\n4 & 2.00 & 0.095 & No \\\\\n5 & 1.75 & 0.125 & No \\\\\n\\bottomrule\n\\multicolumn{4}{l}{\\footnotesize * p < 0.05, ** p < 0.01, *** p < 0.001}\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Growth night land measure yourself. Attack fine country stuff final. Community cultural simple popular young. Gas lot firm attack. Teach wrong near something somebody least."
+    },
+    {
+        "type": "text",
+        "data": "Bit read state book. Billion structure environmental coach if skill."
+    },
+    {
+        "type": "text",
+        "data": "Whose ten should section mind military art. Successful arm hear play number event."
+    },
+    {
+        "type": "text",
+        "data": "Talk always capital. Add low majority gun open party often. Key stand participant face play. Plant develop wall happy rule care."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|c|}\n\\hline\n & \\multicolumn{2}{c|}{Different masses} & \\multicolumn{2}{c|}{Equal masses} \\\\\n\\hline\nFamily & MIs & Top-Sector & MIs  & Top-Sector \\\\\n\\hline\n$\\mathrm{RL}_1$ & 27 & 1 & 24 & 1 \\\\\n$\\mathrm{RL}_2$ & 25 & 1 & 22 & 1 \\\\\n$\\mathrm{PL}_1$ & 150 & 5 & 94 & 5 \\\\\n$\\mathrm{PL}_2$ & 143 & 3 & 84 & 3 \\\\\n$\\mathrm{PL}_3$ & 142 & 3 & 81 & 3 \\\\\n$\\mathrm{PT}_1$ & 344 & 6 & 188 & 5 \\\\\n$\\mathrm{PT}_2$ & 252 & 4 & 196 & 4 \\\\\n$\\mathrm{PT}_3$ & 240 & 4 & 181 & 4 \\\\\n$\\mathrm{PT}_4$ & 189 & 5 & 109 & 5 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Start for industry century. Entire perhaps evidence than. Race international recently black likely prove."
+    },
+    {
+        "type": "text",
+        "data": "Pass grow right oil training movement. Past final front under picture."
+    },
+    {
+        "type": "text",
+        "data": "Trial mean action collection black line buy. Coach approach ability anything lose smile. Investment region manage really."
+    },
+    {
+        "type": "text",
+        "data": "Position us lose role. Smile skill method. Feel approach other side hotel policy."
+    },
+    {
+        "type": "text",
+        "data": "Guy data stop collection follow member themselves."
+    },
+    {
+        "type": "text",
+        "data": "Name loss actually together commercial. Offer heavy her dinner experience."
+    }
+]

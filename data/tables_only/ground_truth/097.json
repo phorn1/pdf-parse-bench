@@ -1,0 +1,21 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccccc}\n        \\toprule\n        \\multirow{2}*{\\textbf{Metric}} & \\multicolumn{2}{c}{\\textbf{Image Quality}} & \\multicolumn{2}{c}{\\textbf{Image-Text Consistency}} & \\multicolumn{2}{c}{\\textbf{Overall Assessment}} \\\\\n        \\cmidrule(r){2-3} \\cmidrule(r){4-5} \\cmidrule(r){6-7}\n        ~ & \\textbf{Pearson} & \\textbf{Spearman} & \\textbf{Pearson} & \\textbf{Spearman} & \\textbf{Pearson} & \\textbf{Spearman} \\\\\n        \\midrule\n        FID & -0.223 & -0.217 & - & - & - & - \\\\\n        IS & -0.174 & -0.139 & - & - & - & - \\\\ \n        CLIP-Score  & - & - & -0.108 & -0.094 & - & - \\\\ \n        GPT4o based & 0.097 & 0.112 & 0.151 & 0.104 & 0.017 & 0.028 \\\\\n        RAG-IGBench & \\textbf{0.256} & \\textbf{0.244} & \\textbf{0.172} & \\textbf{0.145} & \\textbf{0.143} & \\textbf{0.152} \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\hline\n\\multirow{2}{*}{\\textbf{Modality}} & \\multicolumn{2}{c}{\\textbf{NTU 60} ($\\%$)} & \\multicolumn{2}{c}{\\textbf{NTU 120} ($\\%$)} \\\\\n\\cmidrule{2-3}\\cmidrule{4-5}\n& {\\textbf{X-Sub}}  & \\textbf{X-View} & \\textbf{X-Sub} & \\textbf{X-Set} \\\\\\hline\n$l_1$: HP$_J$ & 93.8 & 94.5 & 86.1 & 88.8 \\\\\n$l_2$: HP$_B$ & 92.8 & 92.8 & 85.3 & 87.4 \\\\\n$l_3$: HP$_{JM}$ & 91.5 & 93.3 & 83.2 & 85.7 \\\\\n$l_4$: HP$_{BM}$ & 90.7 & 92.8 & 82.0 & 84.3 \\\\\n$l_5$: HP+RGB+Text & 97.0 & 99.0 & 96.3 & 96.5 \\\\\\hline\n$l1$+$l5$ & 97.3 & 99.2 & 96.4 & 96.8 \\\\\n$l2$+$l5$ & 97.1 & 99.1 & 96.4 & 96.7 \\\\\n$l1$+$l2$ & 94.3 & 95.3 & 87.8 & 90.2 \\\\\n$l1$+$l2$+$l5$ & 97.5 & 99.4 & 96.5 & 97.0 \\\\\n$l1$+$l2$+$l3$+$l4$+$l5$ & \\textbf{97.9} & \\textbf{99.7} & \\textbf{96.8} & \\textbf{97.5} \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lll}\n    \\toprule\n    \\multicolumn{2}{c}{Part}                   \\\\\n    \\cmidrule(r){1-2}\n    Name     & Description     & Size ($\\mu$m) \\\\\n    \\midrule\n    Dendrite & Input terminal  & $\\sim$100     \\\\\n    Axon     & Output terminal & $\\sim$10      \\\\\n    Soma     & Cell body       & up to $10^6$  \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Few effort else pressure manager including director. Parent adult site structure. Yes better speak make leave blue."
+    }
+]

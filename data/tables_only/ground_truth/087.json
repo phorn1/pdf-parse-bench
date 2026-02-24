@@ -1,0 +1,48 @@
+[
+    {
+        "type": "text",
+        "data": "Prepare professor professional foot simple important dog. Resource number concern service resource. Enough feel letter challenge skill happy north. Pm opportunity case attorney Mrs."
+    },
+    {
+        "type": "text",
+        "data": "Chair difference everyone reduce deal film. Area reach discuss successful. Yet myself scene growth such."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|}\n\\hline\n\\textbf{Variable} & \\textbf{Value} & \\textbf{Variable} & \\textbf{Value} \\\\ \\hline\n$m$                               & 3000   & $\\lambda^0_{A,R}$                       & 2   \\\\ \\hline\n$m_A$                             & 1500   &  $\\lambda^0_{I,R}$                       & 2 \\\\ \\hline\n$m_I$                             & 1500   &  $\\lambda^0_{A,BK}$                      & 10 \\\\ \\hline\n$\\gamma_{A,R}$                    & 0.1   &  $\\lambda^0_{I,BK}$                      & 10   \\\\ \\hline\n$\\gamma_{A,BK}$ & 0.0001   &  $\\eta_D$                                & 0.00001   \\\\ \\hline\n$\\gamma_{I,R}$                    & 0.1   & $\\eta_{A,R}$                            & 0.05     \\\\ \\hline\n$\\gamma_{I,BK}$                   & 0.0001   &  $\\eta_{I,R}$                            & 0.05     \\\\ \\hline\n$\\mathcal{Z}^s_{R}$ & \\{3\\}  &  $\\eta_{A,BK}$                           & 0.5   \\\\ \\hline\n$\\mathcal{Z}^s_{BK}$ & \\{6\\}   &  $\\eta_{I,BK}$                           & 0.5  \\\\ \\hline\n $|\\mathcal{Z}^{s}_{R}|$                   & 1  & \\multicolumn{2}{l}{\\multirow{2}{*}{}} \\\\ \\cline{1-2}\n $|\\mathcal{Z}^s_{BK}|$                   & 1  & \\multicolumn{2}{l}{} \\\\ \\cline{1-2}\n\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc}\n    \\hline\n    \\multirow{2}{*}{Methods} & \\multicolumn{2}{c|}{KITTI}                         & \\multicolumn{2}{c}{Waymo}                             \\\\\n                             & $e_{r}\\left(^{\\circ}\\right)$ & $e_{t}^+(\\mathrm{m})$ & $e_{r}\\left({ }^{\\circ}\\right)$ & $e_{t}^+(\\mathrm{m})$ \\\\ \\hline\n    CLAIM-S0                 & 17.321                       & 0.346               & 17.321                          & 0.346               \\\\\n    CLAIM-S1                 & 1.252                        & 0.346               & 1.750                           & 0.346               \\\\\n    CLAIM-S2                 & 0.513                        & 0.115               & 0.323                           & 0.113               \\\\\n    CLAIM                    & \\textbf{0.472}               & \\textbf{0.114}      & \\textbf{0.253}                  & \\textbf{0.099}      \\\\\n    CLAIM-Structure          & 0.482                        & 0.122               & 0.337                           & 0.130               \\\\\n    CLAIM-Texture            & 2.196                        & 0.391               & 0.710                           & 0.176               \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc|cc}\n    % \\hline\n    & \\multicolumn{3}{c}{Parent by Period} & \\multicolumn{2}{c}{Children} \\\\\n    Utilization & 25ms & 41ms & 51ms & A & B\\\\\n    \\hline\n    50\\% & 1ms & 1ms & 5ms & 2ms & 2ms \\\\\n    70\\% & 2ms & 1ms & 12ms & 2ms & 2ms \\\\\n    90\\% & 3ms & 1ms & 12ms & 2ms & 4ms \\\\\n    % \\hline\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Catch education history high air home. Forget computer industry seek. Yeah edge religious yourself break customer travel."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[t]{c}\n            \\@author\n          \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccccc}\n\\hline \\hline\n\n$d$&2&5&10&20&30 \\\\\\hline \nPNSR $\\uparrow$&29.32&31.81&\\textbf{31.92}&32.02&30.51 \\\\ \nSSIM $\\uparrow$&0.9387&0.948&\\textbf{0.962}&0.965&0.951 \\\\\nFLOPs(G)$\\downarrow$&0.016&0.035&\\textbf{0.054}&0.102&0.149 \\\\\\hline \\hline\n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccccccc}\n &\\multicolumn{3}{c}{Thai population}\\\\\n Statistic & Threshold & Power & 95\\% CI  \\\\ \\hline\n $\\Lambda_{LAF}$ & 411.7 & 0.781 & (0.7805, 0.7821) \\\\\n $\\Lambda_{AVG}$ & 995.1 & 0.757 & (0.7561, 0.7578)  \\\\\n $\\Lambda_{MAX}$ & 2489.7 & 0.741 & (0.7401, 0.7419) \\\\\n $\\Lambda_{MIN}$ & 253.8 & 0.775 & (0.7741, 0.7757)  \\\\\n  $\\Lambda_{RMAX}$ & 705.2 & 0.662 & (0.6606, 0.6625)  \\\\\n   $\\Lambda_{RMIN}$ & 89875.2 & 0.607 & (0.6060, 0.6079)  \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Organization other tend remain marriage third itself. Mention where discuss project good that option nor. Safe significant later late effort him."
+    }
+]

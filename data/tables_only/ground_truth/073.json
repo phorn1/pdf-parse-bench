@@ -1,0 +1,40 @@
+[
+    {
+        "type": "text",
+        "data": "Dream allow table condition miss world. True manager admit quality find defense."
+    },
+    {
+        "type": "text",
+        "data": "Think pressure participant very couple throughout hot. Election computer couple anyone yet on."
+    },
+    {
+        "type": "text",
+        "data": "Toward chance role. World left state agree effect beyond. Ball standard how win. These admit road present."
+    },
+    {
+        "type": "text",
+        "data": "Nor gas agreement. Summer painting center remain me hospital."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l l c c c c c c c c c c}\n\\toprule\n\\multirow{2}{*}{\\textbf{Spectra}} &\n\\multirow{2}{*}{\\textbf{Model}} &\n\\multirow{2}{*}{\\textbf{Valid} ($\\uparrow$)} &\n\\multicolumn{3}{c}{\\textbf{Tanimoto} ($\\uparrow$)} &\n\\multirow{2}{*}{\\textbf{MCES} ($\\downarrow$)} &\n\\multirow{2}{*}{\\textbf{Lev.} ($\\downarrow$)} &\n\\multicolumn{4}{c}{\\textbf{Top-$k$ Acc.} ($\\uparrow$)} \\\\\n\\cmidrule(lr){4-6} \\cmidrule(l){9-12}\n& & & Morgan & MACCS & RDKit & & & 1 & 5 & 10 & 15 \\\\\n\\midrule\n\n% ---------------------------------------------------------\n\\multirow{4}{*}{${}^1$H + ${}^{13}$C-NMR}\n& SMILES Transformer   & 1.00 & 0.72 & 0.90 & 0.77 & 4.21 & 7.01 & 0.25 & 0.31 & 0.36 & 0.38 \\\\\n& SELFIES Transformer  & 1.00 & 0.61 & 0.85 & 0.67 & 5.70 & 10.27 & 0.15 & 0.20 & 0.23 & 0.24 \\\\\n& NMR2Struct           & 1.00 & 0.79 & 0.93 & 0.82 & 3.17 & 5.26 & 0.35 & 0.41 & 0.47 & 0.50 \\\\\n\\cmidrule(lr){2-12}\n& NMIRacle (Ours) & 1.00 &\n\\cellcolor{gray!17}\\textbf{0.82} &\n\\cellcolor{gray!17}\\textbf{0.94} &\n\\cellcolor{gray!17}\\textbf{0.85} &\n\\cellcolor{gray!17}\\textbf{2.72} &\n\\cellcolor{gray!17}\\textbf{4.49} &\n\\cellcolor{gray!17}\\textbf{0.39} &\n\\cellcolor{gray!17}\\textbf{0.45} &\n\\cellcolor{gray!17}\\textbf{0.52} &\n\\cellcolor{gray!17}\\textbf{0.56} \\\\\n\\midrule\n\n% ---------------------------------------------------------\n\\multirow{4}{*}{IR + ${}^1$H-NMR}\n& SMILES Transformer   & 1.00 & 0.77 & 0.93 & 0.81 & 3.44 & 5.79 & 0.30 & 0.36 & 0.42 & 0.45 \\\\\n& SELFIES Transformer  & 1.00 & 0.64 & 0.88 & 0.69 & 5.16 & 9.52 & 0.18 & 0.22 & 0.27 & 0.28 \\\\\n& NMR2Struct           & 1.00 & 0.82 & 0.95 & 0.85 & 2.71 & 4.63 & 0.38 & 0.44 & 0.51 & 0.54 \\\\\n\\cmidrule(lr){2-12}\n& NMIRacle (Ours) & 1.00 &\n\\cellcolor{gray!17}\\textbf{0.86} &\n\\cellcolor{gray!17}\\textbf{0.96} &\n\\cellcolor{gray!17}\\textbf{0.89} &\n\\cellcolor{gray!17}\\textbf{2.06} &\n\\cellcolor{gray!17}\\textbf{3.52} &\n\\cellcolor{gray!17}\\textbf{0.45} &\n\\cellcolor{gray!17}\\textbf{0.50} &\n\\cellcolor{gray!17}\\textbf{0.59} &\n\\cellcolor{gray!17}\\textbf{0.63} \\\\\n\\midrule\n\n% ---------------------------------------------------------\n\\multirow{4}{*}{IR + ${}^1$H + ${}^{13}$C-NMR}\n& SMILES Transformer   & 1.00 & 0.76 & 0.93 & 0.80 & 3.58 & 5.52 & 0.32 & 0.36 & 0.38 & 0.45 \\\\\n& SELFIES Transformer  & 1.00 & 0.64 & 0.88 & 0.71 & 5.07 & 9.48 & 0.17 & 0.22 & 0.26 & 0.28 \\\\\n& NMR2Struct           & 1.00 & 0.84 & 0.96 & 0.87 & 2.39 & 4.18 & 0.41 & 0.47 & 0.55 & 0.58 \\\\\n\\cmidrule(lr){2-12}\n& NMIRacle (Ours) & 1.00 &\n\\cellcolor{gray!17}\\textbf{0.88} &\n\\cellcolor{gray!17}\\textbf{0.97} &\n\\cellcolor{gray!17}\\textbf{0.90} &\n\\cellcolor{gray!17}\\textbf{1.82} &\n\\cellcolor{gray!17}\\textbf{3.21} &\n\\cellcolor{gray!17}\\textbf{0.48} &\n\\cellcolor{gray!17}\\textbf{0.53} &\n\\cellcolor{gray!17}\\textbf{0.61} &\n\\cellcolor{gray!17}\\textbf{0.66} \\\\\n\\midrule\n\n% ---------------------------------------------------------\n\\multirow{4}{*}{IR + ${}^{13}$C-NMR}\n& SMILES Transformer   & 1.00 & 0.55 & 0.85 & 0.64 & 6.37 & 11.94 & 0.10 & 0.13 & 0.15 & 0.16 \\\\\n& SELFIES Transformer  & 1.00 & 0.47 & 0.81 & 0.58 & 7.21 & 13.83 & 0.05 & 0.08 & 0.09 & 0.10 \\\\\n& NMR2Struct           & 1.00 & 0.59 & 0.87 & 0.68 & 5.71 & 10.84 & 0.12 & 0.16 & 0.20 & 0.21 \\\\\n\\cmidrule(lr){2-12}\n& NMIRacle (Ours) & 1.00 &\n\\cellcolor{gray!17}\\textbf{0.63} &\n\\cellcolor{gray!17}\\textbf{0.88} &\n\\cellcolor{gray!17}\\textbf{0.71} &\n\\cellcolor{gray!17}\\textbf{5.22} &\n\\cellcolor{gray!17}\\textbf{9.84} &\n\\cellcolor{gray!17}\\textbf{0.14} &\n\\cellcolor{gray!17}\\textbf{0.19} &\n\\cellcolor{gray!17}\\textbf{0.23} &\n\\cellcolor{gray!17}\\textbf{0.24} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Buy rate brother actually yet. Who key foot every huge. Debate wish camera development."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l l cccc}\n\t\t\t\\toprule\n\t\t\t\\textbf{Methods} & \\textbf{Patch Sample $\\alpha$\\%} & \\multicolumn{4}{c}{\\textbf{Camelyon16 $_{(ResNet50)}$}} \\\\ \n\t\t\t\\cmidrule(lr){3-6} \n\t\t\t& & Acc & AUC & F1 & Memory (GB)\\\\\n\t\t\t\\midrule\n\t\t\t%\t\t\tTransMIL~\\cite{clam} & 100\\% & 88.96$_{2.85}$ & 89.22$_{3.74}$ & 85.21$_{4.78}$ \\\\\n\t\t\t%\t\t\t \t\t\t\t\t & 60\\% & \\textbf{90.72$_{2.97}$} & \\textbf{91.69$_{1.89}$} & \\textbf{87.26$_{3.69}$} \\\\\n\t\t\t%\t\t\t \t\t\t\t\t & 20\\% & 89.49$_{2.71}$ & 90.67$_{3.14}$ & 84.55$_{3.14}$ \\\\\n\t\t\t%\t\t\t \t\t\t\t\t & $\\Delta_{60\\%-20\\%}$ & 1.23 & 1.02 & 2.71 \\\\\n\t\t\t%\t\t\t\\hline\n\t\t\tR2T-MIL~+Sample & 100\\% & 89.44$_{\\pm2.80}$ & 91.38$_{\\pm2.64}$ & 85.74$_{\\pm3.98}$ & 12 (100\\%) \\\\\n\t\t\t& 60\\% & 89.70$_{\\pm1.94}$ & \\textbf{92.31$_{\\pm1.89}$} & 86.03$_{\\pm3.42}$ & 8 (66\\%) \\\\\n\t\t\t& 20\\% & \\textbf{89.70$_{\\pm1.35}$} & 92.04$_{\\pm1.27}$ & \\textbf{86.53$_{\\pm2.58}$} & \\textbf{5 (42\\%)} \\\\\n\t\t\t%\t\t\t \t\t\t\t\t& $\\Delta_{60\\%-20\\%}$ & 0.00 & 0.27 & -0.50 \\\\\n\t\t\t\\hline\n\t\t\tOurs+Sample& 100\\% & 90.46$_{\\pm1.93}$ & 93.59$_{\\pm2.27}$ & 88.06$_{\\pm1.69}$ & 13 (100\\%) \\\\\n\t\t\t& 60\\% & \\textbf{91.21$_{\\pm2.16}$} & \\textbf{94.09$_{\\pm2.66}$} & \\textbf{88.96$_{\\pm2.29}$} & 8 (61\\%) \\\\\n\t\t\t& 20\\% & 91.20$_{\\pm3.25}$ & 92.74$_{\\pm1.92}$ & 87.89$_{\\pm3.69}$ & \\textbf{5 (38\\%)} \\\\\n\t\t\t%\t\t\t\t\t\t\t & $\\Delta_{60\\%-20\\%}$ & 0.01 & 1.35 & 1.07 \\\\\n\t\t\t\n\t\t\t\\bottomrule\n\t\t\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Send what option pattern. Fact work window strong behind adult responsibility store. Yard newspaper western here open central hot thank."
+    },
+    {
+        "type": "text",
+        "data": "Author difference until recent this. Bank approach artist able difficult imagine culture real. Wife current structure difficult."
+    }
+]

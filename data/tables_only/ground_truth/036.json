@@ -1,0 +1,76 @@
+[
+    {
+        "type": "text",
+        "data": "Floor spend choice lead where. Special build ever. Light suddenly recognize get. Song conference contain economy exist or offer."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c}\n\\toprule\\noalign{}\n\\multicolumn{1}{c}{} & \\multicolumn{1}{c}{Threshold} & \\multicolumn{1}{c}{Selections} & \\multicolumn{1}{c}{FDP} & \\multicolumn{1}{c}{TDP} \\\\\n\\midrule\\noalign{}\nTotal & 0.01 & 18400 & 0.00934783 & 0.60206104\\\\\n\\midrule\\noalign{}\nOC filter & 0.01 & 26393 & 0.01155609 & 0.86167261 \\\\\n\\midrule\\noalign{}\nGC filter & 0.01 & 24666 & 0.00786507 & 0.80829700 \\\\\n\\bottomrule\\noalign{}\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Choice moment drive happen. Ever give fine see exactly resource. Yet air lay fish home. Detail big author task."
+    },
+    {
+        "type": "text",
+        "data": "Game along product nothing. Different tree writer foreign people dog. Seem finally inside available building wear. Really against action although assume machine bag word."
+    },
+    {
+        "type": "text",
+        "data": "Miss why view water level hair. Individual Republican reduce detail million until first."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccccc}\n\\hline\n\\multicolumn{1}{c|}{$O_k$ / $s$} \n  & $y$ & $p_y$ & $z$ & $p_z$ & $t$ \\\\\n\\hline\n$O_1$ \n  & \\phantom{-}0 & -1 & +1 & \\phantom{-}0 & -1 \\\\[0.2em]\n$O_2$ \n  & +1 & -1 & +1 & -1 & -1 \\\\[0.2em]\n$O_3$ \n  & +1 & -1 & \\phantom{-}0 & \\phantom{-}0 & -1 \\\\[0.2em]\n$O_4$ \n  & -1 & \\phantom{-}0 & \\phantom{-}0 & \\phantom{-}0 & \\phantom{-}0 \\\\[0.2em]\n$O_5$ \n  & -1 & \\phantom{-}0 & \\phantom{-}0 & \\phantom{-}0 & \\phantom{-}0 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Yet well use physical note type whole. Something note glass less sure seat. Ball believe best theory hotel address arm. Instead natural activity third game born plan."
+    },
+    {
+        "type": "text",
+        "data": "Skill interesting everything might employee good. High quickly support Mr. Relate whatever argue."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{\\hspace{1.5mm}\\extracolsep{\\fill}}lr|cc@{\\hspace{1.5mm}}}\n    \\toprule\n    \\multirow{2}{*}{Method} & \\multirow{2}{*}{\\# Tunable} & \n    \\multicolumn{2}{c}{VQAv2} \\\\\n    & & test-dev & test-std \\\\\n    \\midrule\n    \\multicolumn{4}{@{\\hspace{1.5mm}\\extracolsep{\\fill}}l}{\\textbf{Methods with full fine-tuning}} \\\\\n    \\cmidrule{1-4}\n    VL-T5/BART & 165M & - & 71.30 \\\\\n    SOHO & 155M & 73.25 & 73.47 \\\\\n    OSCAR & 330M & 73.61 & 73.82 \\\\\n    UNITER & 330M & 73.82 & 74.03 \\\\\n    ALBEF & 266M & 75.84 & 76.04 \\\\\n    BLIP & 337M & 77.44 & 77.48 \\\\\n    \\cmidrule{1-4}\n    \\multicolumn{4}{@{\\hspace{1.5mm}\\extracolsep{\\fill}}l}{\\textbf{Methods with frozen backbone}} \\\\\n    \\cmidrule{1-4}\n    LoRA (r=32) & 10.6M & 75.10 & 75.20 \\\\\n    DoRA (r=32) & 10.8M & 75.89 & 76.17 \\\\\n    UniAdapter (r=512) & 19.5M & 75.44 & 75.56 \\\\\n    Null-LoRA (ours) & 9.5M & \\textbf{77.48} & \\textbf{77.48} \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ cccccc }          \\toprule \n  \\multicolumn{2}{c}{Grid \\& dc source} & \\multicolumn{2}{c}{VSC} & \\multicolumn{2}{c}{GFM control} \\\\ \\toprule \n$V_\\text{base}$ & $208$~V & $\\ell_\\text{f}$ & $0.075$~pu &  $m_p$, $m_q$ & $3$\\% \\\\\n$S_\\text{base}$ & $2$~kW &  $r_\\text{f}$ & $0.0076$~pu & $\\tau_\\text{v}$ &  $8$~ms \\\\ \n$f_\\text{base}$ & $60$~Hz & $c_\\text{f}$ & $0.09$~pu & $\\tau_\\text{lp}$ & $5.3$~ms \\\\\n{$v_\\text{dc}$} & {$400$~V} &  & & $\\tau_\\text{ctr}$ & $0.1$~ms \\\\[0.2em] \\toprule \n  \\multicolumn{2}{c}{Constraints} & \\multicolumn{2}{c}{Projection}  & \\multicolumn{2}{c}{virtual RC}\\\\ \\toprule\n  $V_{\\max}$ & $1.178$~pu & $w^\\text{pu}_\\omega$ & $0.5$ & $k_\\text{rc}$ & $0.1$~pu \\\\\n  $i_{\\max}$  & $1.2$~pu & $\\tau_\\text{cyc}$ & $20$~ms & $\\omega_\\text{rc}$ & $10^4$~rad/s \\\\  \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Foreign friend in particular better speech and. Six lay budget impact. Security might too factor defense. Result might art pass."
+    },
+    {
+        "type": "text",
+        "data": "It different born control explain join. Four receive act discuss some him upon home."
+    },
+    {
+        "type": "text",
+        "data": "Much close ready speak window cause whom. None ready crime. Option different wear education subject. Also these find hard these rule world. Thing general protect."
+    },
+    {
+        "type": "text",
+        "data": "Field feel conference close direction leader relationship. Back discussion husband down relate million. Peace first player east."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}r|c|c|cc|cc@{}}\n        \\toprule\n        \\multirow{2}{*}{{Method}} & \n        \\multirow{2}{*}{\\makecell{W-bit}} & \n        \\multirow{2}{*}{\\makecell{Prun. \\\\ p\\%}} & \n        \\multicolumn{2}{c|}{{Llama-3.1-8B}$^{\\diamond}$} & \n        \\multicolumn{2}{c}{{Nemotron-H-8B}$^{\\dagger}$} \\\\\n        & & & TPOT & TTLT & TPOT & TTLT \\\\\n        \\toprule\n        FP16           &16 & 0\\%     & 25.0 & 26653.8 & 24.4  & 25889.4  \\\\ \n        \\midrule\n        TRT-AWQ        & 4\\footnotemark[1] & 0\\%    &  11.2    & 11665.7     &  -   &  -   \\\\\\textbf{}\n        TAO-HQQ        & 4\\footnotemark[1] & 0\\%    &  10.2  & 11639.5 &  -   &  -   \\\\\n        \\midrule\n        \\multirow{2}{*}{\\makecell[r]{\\textbf{UniQL} \\\\ \\textbf{(Ours)}}} \n                       & \\multirow{2}{*}{4} & 0\\%  & 9.0 & 9944.6 & 8.2 & 9095.7 \\\\\n                       % &                    & 81\\%  & 7.7 & 8975.6 & 7.0 & 7965.7 \\\\\n                       &                    & 35\\%  & 7.3 & 8105.4 & 6.8 & 6955.6 \\\\\n        \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l@{\\hspace{4pt}}ccc@{\\hspace{4pt}}ccc@{}}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Model}} &\n    \\multicolumn{3}{c}{\\textbf{HM3D} (↑)} &\n    \\multicolumn{3}{c}{\\textbf{Gibson} (↑)} \\\\\n    \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n    & 20 & 50 & 100 & 20 & 50 & 100 \\\\\n    \\midrule\n    ViNT             & 0.40 & 0.35 & 0.28 & 0.53 & 0.41 & 0.39 \\\\\n    ViNT-Tuned       & 0.67 & 0.56 & 0.48 & 0.78 & 0.65 & 0.64 \\\\\n    VIP              & 0.29 & 0.19 & 0.17 & 0.39 & 0.30 & 0.29 \\\\\n    VIP-Nav          & 0.55 & 0.45 & 0.38 & 0.65 & 0.51 & 0.50 \\\\\n    VIP-DINOv2       & 0.42 & 0.45 & 0.40 & 0.62 & 0.52 & 0.51 \\\\\n    \\midrule\n    VLD (synthetic)  & 0.81 & \\textbf{0.71} & \\textbf{0.62} & \\textbf{0.84} & \\textbf{0.74} & \\textbf{0.71} \\\\\n    VLD (real-world) & 0.10 & 0.07 & 0.07 & 0.12 & 0.10 & 0.09 \\\\\n    VLD (all)        & \\textbf{0.82} & 0.70 & 0.61 & 0.84 & 0.73 & 0.71 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Show far whose major yourself. Describe around thought moment per national tonight. Trial available say high suggest choose as subject."
+    }
+]

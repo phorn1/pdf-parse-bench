@@ -1,0 +1,39 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\t\t\t\\toprule\n\t\t\tcentrality & vac. frag. & med.+frag. & med.+frag.+coal.\\\\\n\t\t\t\\midrule\n\t\t\t0-10\\% & $347 \\pm 148$ & $367 \\pm 116$ & $348 \\pm 108$ \\\\\n\t\t\t10-40\\% & $263 \\pm 61$ & $292 \\pm 55$ & $280 \\pm 52$ \\\\\n\t\t\t0-80\\% & $302 \\pm 65$ & $334 \\pm 55$ & $316 \\pm 51$ \\\\\n\t\t\t40-80\\% & $286 \\pm 73$ & $306 \\pm 64$ & $296 \\pm 63$ \\\\\n\t\t\t\\bottomrule\n\t\t\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Score attack region light half. Own say sort describe note. Health other because church wind scientist."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[t]{lrrrrr|}{\\bf Imports} & India & China & Vietnam & Japan & S.K. \\\\\n      Indonesia & 165,802 & 164,098 & 26,333 & 11,316 & 15,152 \\\\\n      Australia & 82,115 & 31,210 & 19,276 & 19,470 & 8,412 \\\\\n      SAFR & 52,190 & 2,297 & 4,518 & 0,909 & 0,635 \\\\\n      US & 25,635 & 5,629 & -- & 2,962 & 0,531 \\\\\n      Other & 17,443 & 17,727 & 2,521 & 2,841 & 7,082 \\\\\n      India & 15,275 & 0,768 & 0,148 & -- & -- \\\\\n      Mozambique & 13,292 & -- & 2,059 & -- & -- \\\\\n      Russia & 11,707 & 22,043 & 3,711 & 3,985 & 10,611 \\\\\n      China & 7,034 & 3,712 & 2,149 & 2,985 & 2,664 \\\\\n      Colombia & 2,805 & -- & -- & 0,823 & -- \\\\\n      Singapore & 2,726 & 2,389 & 0,420 & -- & -- \\\\\n      Philippines & -- & 6,757 & -- & -- & -- \\\\\n      Canada & -- & 2,935 & 0,469 & 2,134 & 1,716 \\\\\n      Vietnam & -- & -- & 0,501 & 0,509 & 0,215 \\\\\n      Japan & -- & -- & -- & 0,294 & -- \\\\\n      South Korea & -- & -- & -- & -- & 0,351 \\\\\n      Peru & -- & -- & -- & -- & 0,349 \\\\\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Call surface occur cause ago goal number event. Home less situation white."
+    },
+    {
+        "type": "text",
+        "data": "Memory see up rather court first great economic. Child prevent talk. Stuff who themselves tonight traditional usually."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\hline\n&  \\multicolumn{2}{c}{Within sample} &  \\multicolumn{2}{c}{Out of Sample} \\\\\n\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\nMethod    & RMSPE& LPDS & RMSPE & LPDS \\\\\n\\hline\nCAPGM       & 9.60 & -2542 & 10.38 & -8174\\\\\nCAM (Demo)  & 9.90 & -2632 & 10.53 & -8369\\\\\nCAM (Com)   & 9.71 & -2573 & 10.45 & -8203\\\\\nCAM (Ins)   & 9.82 & -2597 & 10.47 & -8312\\\\\nDP          & 9.92 & -2640 & 10.54 & -8368\\\\\nPSBP (Reg)  & 9.13 & -2487 & 10.54 & -8368\\\\\nPSBP (LGP)  & 8.90 & -2391 & 10.32 & -8612\\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|cc|}\n\\hline\\hline\n $a_1$ & $\\rho\\pi$ & $K^{\\ast}\\bar{K}$ \\\\\n \\hline\\hline\n $\\rho \\pi$ & -2 & $\\sqrt{2}$\\\\\n $K^{\\ast}\\bar{K}$ & $\\sqrt{2}$ & -1\\\\\n\\hline\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}cccccc@{}}\n\\toprule\n\\multirow{2}{*}{\\textbf{Encoder}} & \\multirow{2}{*}{\\textbf{Descriptor}} & \\multirow{2}{*}{\\textbf{Model}} & \\multicolumn{2}{c}{\\textbf{NTU RGB+D 60 }} \\\\\n& & & 55/5 & 48/12 \\\\ \\midrule\nAA  & GPT3 & Global & 62.79 & 28.09 \\\\\nAA  & GPT3 & Ours & 76.75 & 32.39 \\\\\nCTR  & GPT3 & Global & 65.16 & 34.56 \\\\\nCTR  & GPT3 & Ours & 79.97 & 39.42 \\\\\nDG  & GPT3 & Global & 64.28 & 34.04 \\\\\nDG  & GPT3 & Ours & 80.41 & 41.06 \\\\\nPoseC3D  & GPT3 & Global & 63.45 & 35.71 \\\\\nPoseC3D  & GPT3 & Ours & 81.14 & {41.60} \\\\\nShift & GPT3 & Global & 64.69 & 35.46 \\\\\nShift & GPT3 & Ours & 79.23 & 40.99 \\\\\nShift & GPT3.5 & Global & 66.49 & 38.01 \\\\\nShift & GPT3.5 & Ours & 79.17 & 40.98 \\\\\nShift & GPT4 & Global & 64.71 & 40.76 \\\\\nShift & GPT4 & Ours & \\textbf{81.53} & \\textbf{41.90} \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    }
+]

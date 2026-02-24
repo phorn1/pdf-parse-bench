@@ -1,0 +1,37 @@
+[
+    {
+        "type": "text",
+        "data": "People environmental bill election purpose across hundred. Sing plan poor garden arrive. Sign south clear should cover travel red religious. Trip decide adult even."
+    },
+    {
+        "type": "text",
+        "data": "Response fast finally. Always call at table these recent sister."
+    },
+    {
+        "type": "text",
+        "data": "Avoid hot near between century season consider."
+    },
+    {
+        "type": "text",
+        "data": "Position either suffer small ago buy computer. Expert win man real culture today watch report. Mrs area center step day."
+    },
+    {
+        "type": "text",
+        "data": "Different line prevent spend model. Mr once carry fund service particularly him. Admit cold with crime long reflect."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\textbf{Models} & \\multicolumn{3}{c}{\\textbf{PhysioNet-MI} (4-class)} \\\\\n\\cmidrule(lr){2-4}\n& \\textbf{ACC} & \\textbf{kappa} & \\textbf{F1} \\\\\n\\midrule\nLaBraM & $0.617 \\pm 0.012$ & $0.491 \\pm 0.019$ & $0.618 \\pm 0.014$ \\\\\nCBraMod & $0.642 \\pm 0.009$ & $0.522 \\pm 0.017$ & $0.643 \\pm 0.010$ \\\\\n\\midrule\n\\textbf{DIVER (Ours)} & $\\mathbf{0.676 \\pm 0.003}$ & $\\mathbf{0.567 \\pm 0.004}$ & $\\mathbf{0.678 \\pm 0.004}$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccccccc|c}\n\\toprule\n\\multirow{2}{*}{\\textbf{Benchmarks}} & \\textbf{Qwen2-VL} & \\textbf{Qwen3-VL} & \\textbf{Ovis2} & \\textbf{InternVL3} & \\textbf{InternVL3.5} & \\textbf{SAIL-VL2} & \\textbf{AndesVL} & \\textbf{HyperVL}\\\\\n & \\textbf{2.2B} & \\textbf{2.1B} & \\textbf{2.5B} & \\textbf{2.1B} & \\textbf{2.3B} & \\textbf{2.7B} & \\textbf{2.4B} & \\textbf{1.8B}\\\\\n\\midrule\n% \\rowcolor[gray]{0.9} \\multicolumn{9}{c}{\\textit{Multimodal Tasks}} \\\\\n\\begin{tabular}[c]{@{}c@{}}UI Understanding \\\\ and Structure Parsing \\end{tabular} & 80.1 & \\underline{91.7} & 78.1 & 83.5 & 70.6 & \\textbf{92.7} & 86.7 & 84.2 \\\\\n\\midrule\n\\begin{tabular}[c]{@{}c@{}} Image Relevance \\\\ Ranking\\end{tabular}   & 48.6 & 48.6 & 44.1 & 46.2 & 44.3 & \\underline{50.5} & 49.4 & \\textbf{51.5} \\\\\n\\midrule\n% \\begin{tabular}[c]{@{}c@{}}Grounding\\\\ \\end{tabular}     &     &     &    &     &      &       &     &    \\\\\n% \\midrule\n\\begin{tabular}[c]{@{}c@{}} Intent Recognition \\\\ and Recommendation \\end{tabular}   & 92.7 & 91.7 & 91.7 & 90.3 & 80.3 & 89.3 & \\textbf{95.0}    & \\underline{94.0} \\\\\n\\midrule\n\\begin{tabular}[c]{@{}c@{}} Image-Text \\\\ Creation \\end{tabular}     & 21.2 & 28.9 & 37.7 & 45.4 & 43.9 & 38.6 & \\underline{46.1} & \\textbf{49.8} \\\\\n% \\midrule\n% \\rowcolor[gray]{0.9} \\multicolumn{9}{c}{\\textit{Text Tasks}} \\\\\n% \\begin{tabular}[c]{@{}c@{}}Message Information\\\\ Extraction \\end{tabular}  & 69.33   & 84.83   & 83.81     & 87.46  & 33.30    & 60.09   & 81.30   &  82.55    \\\\\n% \\midrule\n% \\begin{tabular}[c]{@{}c@{}}Proofread \\end{tabular}   & 36.96 & 67.39   & 86.95    & 81.16   & 50      &  -   &  -   &  54.34   \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\n\\textbf{Variable}                            & \\textbf{ERA-5 reanalysis dataset} & \\textbf{Resolution}                        & \\textbf{Spatial domain} \\\\ \\hline\nRelative vorticity ($\\omega$) &\n  Data at 850 hPa &\n  $0.5^\\circ$ by $0.5^\\circ$, hourly &\n  \\multirow{3}{*}{\\begin{tabular}[c]{@{}c@{}}$-5^\\circ$ to $35^\\circ$ N \\\\ and \\\\ $75^\\circ$ to $110^\\circ$ E\\end{tabular}} \\\\ \nConvective available potential\\\\ energy (CAPE) & Data at single level        & $0.25^\\circ$ by $0.25^\\circ$, hourly &                         \\\\ \nConvective Inhibition (CI)                   & Data at single level          & $0.25^\\circ$ by $0.25^\\circ$, hourly &                         \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    }
+]

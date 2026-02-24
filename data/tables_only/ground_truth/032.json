@@ -1,0 +1,28 @@
+[
+    {
+        "type": "text",
+        "data": "Interesting commercial without herself. Painting hit listen employee name."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c}\n\nDataset & Selective & Random & ImageNet & None\\\\\n\\Xhline{2\\arrayrulewidth}\nPascal & \\textbf{0.603} & 0.566  & 0.577 & 0.4111\\\\\n\nCityscapes & \\textbf{0.608} & 0.572  & 0.591 & 0.541\\\\\n\nNassar & \\textbf{0.847} & 0.819  & 0.820 & 0.806\\\\\n\nSugarbeets & \\textbf{0.739} & 0.721  & 0.689 & 0.698\\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll|cccc|cccc}\n\\toprule\n & & \\multicolumn{4}{c|}{Safety Risks} & \\multicolumn{4}{c}{Adversarial Attacks} \\\\\n\\cmidrule(lr){3-6} \\cmidrule(lr){7-10}\nModel & Reasoning & Precision $\\uparrow$ & Recall $\\uparrow$ & F1 $\\uparrow$ & FPR $\\downarrow$ & Precision $\\uparrow$ & Recall $\\uparrow$ & F1 $\\uparrow$ & FPR $\\downarrow$ \\\\\n\\midrule\nShieldGemma-9B & Without & 0.88 & 0.52 & 0.65 & 0.07 & 0.89 & 0.24 & 0.38 & 0.06 \\\\\nLlama-guard-2-8B & Without & 0.91 & 0.71 & 0.80 & 0.07 & 0.92 & 0.23 & 0.37 & 0.04 \\\\\nLlama-guard-3-8B & Without & \\textbf{0.94} & 0.68 & 0.79 & 0.05 & 0.94 & 0.37 & 0.53 & 0.04 \\\\\nLlama-guard-4-12B & Without & 0.92 & 0.67 & 0.77 & 0.06 & 0.94 & 0.48 & 0.63 & 0.06 \\\\\nLlama-Prompt-Guard-2-86M & Without & 0.48 & 0.02 & 0.04 & \\textbf{0.02} & 0.90 & 0.77 & 0.83 & 0.17 \\\\\nIBM-Granite-Guardian-3.1-2B & Without & 0.83 & 0.86 & 0.84 & 0.17 & 0.88 & 0.87 & 0.88 & 0.23 \\\\\nIBM-Granite-Guardian-3.2-3B & Without & 0.80 & 0.86 & 0.83 & 0.21 & 0.90 & 0.76 & 0.82 & 0.16 \\\\\nIBM-Granite-Guardian-3.2-5B & Without & 0.87 & 0.86 & 0.86 & 0.13 & 0.91 & 0.81 & 0.86 & 0.16 \\\\\nIBM-Granite-Guardian-3.3-8B & Without & 0.85 & 0.90 & 0.87 & 0.15 & 0.93 & 0.81 & 0.87 & 0.12 \\\\\nQwen3Guard-8B-loose & Without & 0.91 & 0.87 & \\textbf{0.89} & 0.09 & \\textbf{1.00} & 0.33 & 0.50 & \\textbf{0.00} \\\\\nQwen3Guard-8B-strict & Without & 0.83 & \\textbf{0.94} & 0.88 & 0.18 & 0.99 & 0.41 & 0.58 & \\textbf{0.00} \\\\\nAprielGuard-8B & Without & 0.87\t& 0.89 & 0.88 & 0.11 & 0.94 & \\textbf{0.92} & \\textbf{0.93} & 0.11  \\\\\n\\midrule\nIBM-Granite-Guardian-3.3-8B & With & 0.84 & \\textbf{0.88} & 0.86 & 0.16 & 0.92 & 0.69 & 0.79 & 0.12 \\\\\ngpt-oss-safeguard-20B & With & 0.85 & 0.86 & 0.85 & 0.14 & \\textbf{0.99} & 0.44 & 0.61 & \\textbf{0.01} \\\\\nAprielGuard-8B & With & \\textbf{0.87} & 0.87 & \\textbf{0.87} & \\textbf{0.12} & 0.94 & \\textbf{0.91} & \\textbf{0.92} & 0.11 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Be send behind prove rate receive dark seat. Democratic enough role. Building detail learn board able manage. Church region sense."
+    },
+    {
+        "type": "text",
+        "data": "Tonight computer result price research control glass. Increase movement suffer yet daughter call strategy."
+    },
+    {
+        "type": "text",
+        "data": "Investment old big which. Almost future morning address second."
+    }
+]

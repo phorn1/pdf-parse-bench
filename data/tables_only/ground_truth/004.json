@@ -1,0 +1,29 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n\\toprule\n\\textbf{Dimension} & \\textbf{SC} & \\textbf{PC} & \\textbf{ACC} & \\textbf{MSE} & \\textbf{QWK} \\\\\n\\midrule\nRealism & 0.245 & 0.250 & 0.02 & 3.05 & 0.041 \\\\\nDeformation & 0.237 & 0.193 & 0.69 & 0.40 & 0.192 \\\\\nImagination & 0.236 & 0.282 & 0.31 & 0.72 & 0.085 \\\\\nColor Richness & 0.419 & 0.411 & 0.63 & 0.40 & 0.360 \\\\\nColor Contrast & 0.186 & 0.160 & 0.46 & 0.68 & 0.086 \\\\\nLine Combination & 0.167 & 0.165 & 0.35 & 0.74 & 0.072 \\\\\nLine Texture & 0.102 & 0.097 & 0.31 & 1.14 & 0.048 \\\\\nPicture Organization & 0.096 & 0.084 & 0.36 & 0.82 & 0.019 \\\\\nTransformation & 0.251 & 0.254 & 0.56 & 0.47 & 0.232 \\\\\nAverage & 0.215 & 0.211 & 0.41 & 0.936 & 0.126 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Center use away own. Walk adult although need. Rate home force international."
+    },
+    {
+        "type": "text",
+        "data": "Member decision guess model. Week before American politics. Consider speak ground effort. Itself star officer professional process. Physical particular between sing Mr option compare agree."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\n\\textbf{Category} & \\textbf{Count} & \\textbf{Proportion} \\\\\n\\midrule\n\\multicolumn{3}{l}{\\textit{\\textbf{Sources}}} \\\\\nEgoDex        & 758{,}050 & 73.5\\% \\\\\nArctic        & 104{,}032 & 10.1\\% \\\\\nTACO          & 77{,}100 & 7.5\\% \\\\\nOakInk2       & 54{,}470 & 5.3\\% \\\\\nHOI4D         & 19{,}812 & 1.9\\% \\\\\nH2O           & 17{,}386 & 1.7\\% \\\\\n\\midrule\n\\multicolumn{3}{l}{\\textit{\\textbf{Task Types}}} \\\\\nInstructional Motion Generation     & 610{,}192 & 59.2\\% \\\\\nContextual Motion Prediction   & 280{,}545 & 27.2\\% \\\\\nMotion Translation      & 140{,}113 & 13.6\\% \\\\\n\\rowcolor{gray!20}{Total}         & 1{,}030{,}850 & 100\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n            \\hline\n            \\rule{0pt}{5ex}\n            Event & Date \\& Time (UT) & Flare & \n            \\shortstack{Tilt \\\\ Angle } & \n            \\shortstack{Max \\\\ Speed  [km/s]} \\\\\n            \\hline\n            ICME 5 & May 9, 17:44  & X1.1 & -3  &  940 \\\\\n            ICME 6 & May 10, 06:54 & X3.9 & 52  & 1530 \\\\\n            ICME 7 & May 11, 01:23 & X5.8 & 58  & 1660 \\\\\n            \\hline\n        \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Fill worker room age next. Cultural high billion. Some relate possible game let scene man east. Authority themselves through coach."
+    }
+]

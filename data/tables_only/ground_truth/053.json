@@ -1,0 +1,43 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccc@{}}\n\\toprule\nMaze Size & Pure Spiral & Fixed Conv & RL Conv \\\\\n\\midrule\n16$\\times$16 & 14.2s (1.0$\\times$) & 12.8s & 11.0s \\\\\n32$\\times$32 & 60.0s (4.2$\\times$) & 45.8s & 39.6s \\\\\n64$\\times$64 & 359.2s (25.3$\\times$) & 226.6s & 160.6s \\\\\n128$\\times$128 & $\\sim$900s* (63$\\times$) & $\\sim$1000s* & $\\sim$700s* \\\\\n\\bottomrule\n\\multicolumn{4}{l}{\\small *Estimated from completed tests}\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Who both task quite show heavy. Open wall into fly. Southern list act also house space. Hundred late consider amount rate. Everybody yes service within strong. Camera go available window."
+    },
+    {
+        "type": "text",
+        "data": "Protect court example military nothing music assume beyond. Assume become alone right certainly by purpose box. Industry short matter."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l r r}\n\\toprule\n\\textbf{Tag} & \\textbf{Count} & \\textbf{Percentage (\\%)} \\\\\n\\toprule\nNOUN & 921 & 19.03\\% \\\\\nVERB & 792 & 16.37\\% \\\\\nPROPN & 711 & 14.69\\% \\\\\nPUNCT & 582 & 12.03\\% \\\\\nADP & 425 & 8.78\\% \\\\\nPART & 384 & 7.94\\% \\\\\nADJ & 314 & 6.49\\% \\\\\nNUM & 204 & 4.22\\% \\\\\nCCONJ & 168 & 3.47\\% \\\\\nPRON & 164 & 3.39\\% \\\\\nADV & 132 & 2.73\\% \\\\\nSCONJ & 41 & 0.85\\% \\\\\nDET & 1 & 0.02\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|c|}\n\t\t\t\\hline\n\t\t\t$M$ & $g$ & $u$ & $\\lambda$ & $\\mu$ \\\\ \n\t\t\t\\hline\n\t\t\t$\\mathbb{R}$\t& $dr^2$ & $u(r)=e^r$ & $-m$ & $0$  \\\\ \n\t\t\t\\hline\n\t\t\t$\\mathbb{R}$\t& $dr^2$  & $u(r)=\\cosh(r)$ & $-m$  & $-(m-1)$ \\\\ \n\t\t\t\\hline\n\t\t\t$B\\times \\mathbb{R} $ & $g_{_B}+dr^2$& $u(x,r)=e^r$ & $-m$ & $0$\\\\\n\t\t\t\\hline\n\t\t\t$B\\times\\mathbb{R}$ & $g_{_B}+dr^2$ & $u(x,r)=\\cosh(r)$ & $-m$& $-(m-1)$\\\\\n\t\t\t\\hline\n\t\t\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l | c c c c c}\n        \\hline\n          & 200k & 100k & 50k & 25k & 12.5k \\\\\n        \\hline\n        \\hline\n%         \\multicolumn{6}{l}{}\\\\[-1em]\n%         \\multicolumn{6}{l}{\\textbf{Generative Density Estimation}} \\\\\n%         \\hline\n% Participations & 0.035 & 0.064 & 0.106 & 0.149 & 0.138 \\\\\n% Transitions & 0.002 & 0.004 & 0.007 & 0.015 & 0.015 \\\\\n% Timing & 0.017 & 0.024 & 0.032 & 0.048 & 0.062 \\\\\n%         \\hline\n        \\multicolumn{6}{l}{}\\\\[-1em]\n        \\multicolumn{6}{l}{\\textbf{Joint Density Estimation}} \\\\\n        \\hline\nParticipations & 0.084 & 0.080 & 0.089 & 0.151 & 0.197 \\\\\nTransitions & 0.008 & 0.008 & 0.010 & 0.010 & 0.021 \\\\\nTiming & 0.030 & 0.030 & 0.039 & 0.049 & 0.068 \\\\\n        \\hline\n        \\multicolumn{6}{l}{}\\\\[-1em]\n\\textbf{Feasibility} & 0.011 & 0.010 & 0.022 & 0.040 & 0.108 \\\\\n        \\hline\n        \\multicolumn{6}{l}{}\\\\[-1em]\n\\textbf{Creativity} & 0.008 & 0.005 & 0.002 & 0.002 & 0.002 \\\\\n        \\hline\n        \\multicolumn{6}{l}{}\\\\[-1em]\n        \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc}\n        \\toprule\n        Optimization Method& L2 (m) $\\downarrow$ & Collision (\\%) $\\downarrow$ \\\\ \n        \\midrule\n        SFT & 0.48& 0.10\\\\\n        RFT & \\textbf{0.48}& \\textbf{0.05}\\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Drug character whose big. Subject offer now."
+    },
+    {
+        "type": "text",
+        "data": "Win black edge read. Form laugh shake treatment customer. Nearly star trip attack action father thousand seven."
+    }
+]

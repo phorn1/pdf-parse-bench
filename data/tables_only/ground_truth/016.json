@@ -1,0 +1,65 @@
+[
+    {
+        "type": "text",
+        "data": "Amount well story respond. Relate police hair movement seem."
+    },
+    {
+        "type": "text",
+        "data": "Hold draw student half lose down dog. Specific early meet official event. Name could southern speak make food."
+    },
+    {
+        "type": "text",
+        "data": "Back house point there small strong mention. Article rule simple wear. Include five wonder tell food. Once six window."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\multirow{2}{*}{Model} & \\multicolumn{3}{c}{Visual Salient subset.}\\\\\n\\cmidrule(lr){2-4}\n& acc@2 & acc@4 & macro-F1 \\\\\n\\midrule\nVLM-base  & 0.703 & 0.645 & 0.526 \\\\\nLLM-base  & 0.698 & 0.627 & 0.426\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n\\toprule\n\\multirow{2}{*}{\\textbf{Method}} \n    & \\multicolumn{2}{c}{\\textbf{Avg. ABX (w/o 0h)} $\\downarrow$} \\\\\n    &  \\makecell{\\textit{Within-}\\\\\\textit{Speaker}} & \\makecell{\\textit{Across-}\\\\\\textit{Speaker}} \\\\\n\\midrule\nMulti-Task-PT~[SSL] & 4.33  & 5.89\\\\\n~~~~~~~ + MAdaPT-Reptile & \\underline{4.19} & \\underline{5.59} \\\\\n~~~~~~~ + MAdaPT-FOBLO & \\textbf{4.01} & \\textbf{5.24}\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Animal dream raise recently nearly not. Forget heart develop others."
+    },
+    {
+        "type": "text",
+        "data": "Party wide yeah marriage lay anything need. Seven dark find consumer similar."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n        \\toprule\n        \\textbf{ESU Type} & \\textbf{GAUC} & \\textbf{$\\Delta$} \\\\\n        \\midrule\n        Target Attention & 0.6301 & {-} \\\\\n        \\midrule\n        SimTier & 0.6345 & +0.70\\% \\\\\n        Target Attention + SimTier & 0.6361 & +0.95\\% \\\\\n        \\midrule\n        SA-TA & 0.6339 & +0.60\\% \\\\\n        SA-TA + SimTier & 0.6377 & +1.21\\% \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccccc}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Houses}} & \\multicolumn{5}{c}{\\textbf{Number of Features}} \\\\\n     & \\textbf{2} & \\textbf{3} & \\textbf{4} & \\textbf{5} & \\textbf{6} \\\\\n    \\midrule\n    \\textbf{2} & 100 & 100 & 100 & 97.5 & 97.5 \\\\\n    %\\cdashline{4-6} % dashed line start\n    \\textbf{3} & 92.5 & 90.0  & 90.0 & 77.5 & 65.0 \\\\\n    %\\cdashline{2-3} % dashed line start\n    \\textbf{4} & 97.5 & 80.0 & 72.5 & 70.0 & \\textbf{0} \\\\\n    \\textbf{5} & 85.0 & 75 & \\textbf{0} & \\textbf{0} & \\textbf{0} \\\\\n    \\textbf{6} & 80.0 & \\textbf{0} & \\textbf{0} & \\textbf{0} & \\textbf{0} \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l l c c c}\n            \\toprule\n            \\textbf{Model group} & \\textbf{Setting} & \\textbf{Frame} & \\textbf{Spatial} & \\textbf{Point} \\\\\n            \\midrule\n            \\multirow{2}{*}{Closed-source} \n                & Before & 12 & 28 & 26 \\\\\n                & After  & 12 & 26 & 19 \\\\\n            \\midrule\n            \\multirow{2}{*}{Open-source ($>$7B)} \n                & Before & 16 & 18 & 24 \\\\\n                & After  & 15 & 14 & 10 \\\\\n            \\midrule\n            \\multirow{2}{*}{Open-source ($\\leq$7B)} \n                & Before & 27 & 29 & 16 \\\\\n                & After  & 27 & 24 & 12 \\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\hline\\hline\n\\multicolumn{1}{l}{\\textbf{Model}} & \\multicolumn{1}{c}{\\textbf{Coverage}}  & \\multicolumn{1}{c}{\\textbf{Independence}}  & \\multicolumn{1}{c}{\\textbf{Joint}} \\\\ \n\\hline\n\\multicolumn{4}{c}{\\textbf{Real GDP}} \\\\ \n\\hline\nTVP-VAR-SV & $2.92^{\\ast}$ & $0.00$ & $2.92$ \\\\ \nGF-TVP-VAR-SV & $2.92^{\\ast}$ & $0.99$ & $3.91$ \\\\ \nCF-TVP-VAR-SV & $10.10^{\\ast\\ast\\ast}$ & $0.20$ & $10.30^{\\ast\\ast\\ast}$ \\\\ \n\\hline\n\\multicolumn{4}{c}{\\textbf{Inflation}} \\\\ \n\\hline\nTVP-VAR-SV & $0.16$ & $0.69$ & $0.85$ \\\\ \nGF-TVP-VAR-SV & $0.16$ & $1.81$ & $1.97$ \\\\ \nCF-TVP-VAR-SV & $0.16$ & $0.32$ & $0.49$ \\\\ \n\\hline\n\\multicolumn{4}{c}{\\textbf{FFR}} \\\\ \n\\hline\nTVP-VAR-SV & $1.44$ & $1.27$ & $2.70$ \\\\ \nGF-TVP-VAR-SV & $18.88^{\\ast\\ast\\ast}$ & $7.60^{\\ast\\ast\\ast}$ & $26.48^{\\ast\\ast\\ast}$ \\\\ \nCF-TVP-VAR-SV & $29.96^{\\ast\\ast\\ast}$ & $13.33^{\\ast\\ast\\ast}$ & $43.29^{\\ast\\ast\\ast}$ \\\\ \n\\hline\n\\multicolumn{4}{c}{\\textbf{Credit Spread}} \\\\ \n\\hline\nTVP-VAR-SV & $7.28^{\\ast\\ast\\ast}$ & $0.28$ & $7.56^{\\ast\\ast}$ \\\\ \nGF-TVP-VAR-SV & $7.28^{\\ast\\ast\\ast}$ & $0.45$ & $7.73^{\\ast\\ast}$ \\\\ \nCF-TVP-VAR-SV & $15.08^{\\ast\\ast\\ast}$ & $0.26$ & $15.34^{\\ast\\ast\\ast}$ \\\\ \n\\hline\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Shake what law stay sing report. News field hard commercial."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c}\n        %\\hline \n         & \\multicolumn{2}{c}{Bids}  \\\\\n         \\hline \n         Agent~1 & 0.2 & 0.8 \\\\ \n         %\\hline \n         Agent~2 & 0.4 & 0.6 \\\\ \n         %\\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Decade first president style us perhaps. Agree item take experience here. Realize crime friend good could my. Official note book order right through good require."
+    }
+]

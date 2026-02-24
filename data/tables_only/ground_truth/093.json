@@ -1,0 +1,50 @@
+[
+    {
+        "type": "text",
+        "data": "Full stage require sometimes again benefit. Light care nation soon small better. Medical my skill remain throw same. Visit sport put free born door."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccc}\n\\toprule\nModel & Accuracy & Precision & Recall & F1 & ROC-AUC \\\\\n\\midrule\nLightGBM & 0.9108 & 0.9694 & 0.8483 & 0.9048 & 0.9651 \\\\\nRandom Forest & 0.9096 & 0.9389 & 0.8762 & 0.9064 & 0.9678 \\\\\nCatBoost & 0.9074 & 0.9596 & 0.8506 & 0.9018 & 0.9619 \\\\\nLogistic Regression & 0.7386 & 0.7257 & 0.7672 & 0.7459 & 0.8135 \\\\\nNaive Bayes & 0.7129 & 0.6683 & 0.8453 & 0.7464 & 0.7750 \\\\\nXGBoost & 0.9063 & 0.9642 & 0.8440 & 0.9001 & 0.9628 \\\\\nKNN & 0.9023 & 0.8635 & 0.9557 & 0.9072 & 0.9417 \\\\\nStacking & \\textbf{0.9482} & 0.9293 & \\textbf{0.9702} & \\textbf{0.9493} & \\textbf{0.9895} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Area both police field fine science material. Wall talk boy amount."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|c|c|cc}\n\\toprule\n\\textbf{Dataset} & \n\\textbf{Excluded Rate} & \n\\textbf{Capture Rate} & \n\\textbf{Patch Distribution (N/C/I)} \\\\\n\\midrule\nMVTec-CA   & 6.9  & 73.9 & 39.3 / 31.5 / 29.2 \\\\\nConsistAD  & 4.8  & 55.2 & 39.8 / 39.6 / 20.6 \\\\\nMVTec-IA   & 0.3  & 0.9  & 92.7 / 1.7 / 5.6   \\\\\nVisa       & 0.05 & 0.0  & 100.0 / 0.0 / 0.0  \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccccc}\n\\toprule\n\\textbf{Dataset} & \\textbf{2016 Flickr} & \\textbf{2017 Flickr} & \\textbf{2017 MSCOCO} & \\textbf{2018 Flickr} & \\textbf{Train} & \\textbf{Val} \\\\\n\\midrule\nMultiScript30k-Ar & 0.7293 & 0.7334 & 0.7213 & 0.7124 & 0.7273 & 0.7297\\\\\nMultiScript30k-Es & \\textbf{0.7721} & \\textbf{0.7811} & \\textbf{0.7446} & \\textbf{0.7593} & \\textbf{0.7666} & \\textbf{0.7591}\\\\\nMultiScript30k-Uk & 0.7193 & 0.7042 & 0.6768 & 0.6877 & 0.7050 & 0.7105\\\\\nMultiScript30k-Zh\\_Hans & 0.6567 & 0.6226 & 0.6208 & 0.5947 & 0.6435 & 0.6438\\\\\nMultiScript30k-Zh\\_Hant & 0.4737 & 0.4819 & 0.4717 & 0.4161 & 0.4609 & 0.4577\\\\\nMulti30k-Uk~ & 0.7582 & 0.7495 &\t0.7362 & 0.7273 & 0.7450 & - \\\\\nArEnMulti30k~ & - & - & - & - & 0.7318 & 0.7313 \\\\\n\\bottomrule\n\\vspace{0.1pt}\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\toprule\n    \\textbf{Selective} & \\textbf{Hierarchical} & \\textbf{Accuracy} \\\\\n    \\midrule\n    \\checkmark & $\\times$ & 0.7874 \\\\\n    $\\times$ & \\checkmark & 0.8056 \\\\\n    \\checkmark & \\checkmark & 0.8083 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Color question financial. Indeed way herself few third. Stuff nice focus fund remain evidence part. Expert gas matter nothing key. Cover real wall one."
+    },
+    {
+        "type": "text",
+        "data": "Situation up modern never people. Adult push wind send interview. Sound three life show role out free."
+    },
+    {
+        "type": "text",
+        "data": "Build right old hear since yourself her. Peace entire whose product claim. Commercial skin general crime claim page floor."
+    },
+    {
+        "type": "text",
+        "data": "Project for music energy strategy force sport. White prevent fine century decide. Reason agency manager firm contain."
+    },
+    {
+        "type": "text",
+        "data": "Baby major investment near something large. She clear majority break."
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}ll@{}}\n\\toprule\n\\multicolumn{2}{c}{\\textit{Teacher Training}} \\\\\n\\midrule\nEpisodes & 1,000 \\\\\nTeachers & 5 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n            \\toprule\n            \\textbf{Domain} & \\textbf{GP} & \\textbf{Cl} & \\textbf{Ge} & \\textbf{Gr} \\\\\n            \\midrule\n            digitalspy.co.uk & 1 & 1 & 1 & 1 \\\\\n            estadao.com.br & 1 & 1 & 1 & 1 \\\\\n            wagnerreese.com & 7 & 7 & 7 & 7 \\\\\n            hapsc.org & 3 & 3 & 3 & 3 \\\\\n            electionguide.org & 6 & 6 & 6 & 6 \\\\\n            tasteiran.net & 7 & 7 & 7 & 7 \\\\\n            capp.ca & 3 & 3 & 3 & 3 \\\\\n            iba.edu.pk & 5 & 5 & 5 & 5 \\\\\n            ballotpedia.org & 6 & 6 & 6 & 6 \\\\\n            infobae.com & 1 & 1 & 1 & 1 \\\\\n            c2es.org & 3 & 3 & 3 & 3 \\\\\n            wayne.edu & 5 & 5 & 5 & 5 \\\\\n            padidehzaban.ir & 7 & - & 5 & 7 \\\\\n            cepa.org & 3 & 3 & 3 & 3 \\\\\n            cell.com & 5 & 5 & 5 & 5 \\\\\n            \\midrule\n            \\textbf{K-Alpha} & \\multicolumn{4}{c}{\\textbf{0.982}} \\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "moderate"
+    }
+]

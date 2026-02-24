@@ -1,0 +1,60 @@
+[
+    {
+        "type": "text",
+        "data": "Energy center man they manager actually these. Significant whom situation course. That road great administration organization prevent long."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l}\n$\\tilde{T}_k = \\alpha T_{k-1} + (1 - \\alpha) \\tilde{T}_{k-1}$\\\\\n$\\tilde{T}_{k-1} = \\alpha T_{k-2} + (1 - \\alpha) \\tilde{T}_{k-2}$\\\\\n$\\vdots$\\\\\n$\\tilde{T}_3 = \\alpha T_2 + (1 - \\alpha) \\hat{T}_2$\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Meeting surface about door. Race join seat nice mission live. Person member try husband institution."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c c c c}\n    \\toprule\n    \\textbf{Method} & \\textbf{Task} & \\multicolumn{3}{c}{\\textbf{Parameters}}  \\\\\n    \\cmidrule(lr){3-5}\n                        &                 & $m$ & $T$ & $\\delta_{opt}$ \\\\\n        \\midrule\n    Average MTBO & -- & 3 & 1.058 & 0.125 \\\\\n    \\midrule\n    \\multirow{6}{*}{Single-task MTBO} \n            & Task 0 & 3 & 1.079 & 0.071 \\\\\n            & Task 1 & 4 & 1.099 & 0.153 \\\\\n            & Task 2 & 4 & 0.776 & 0.072 \\\\\n            & Task 3 & 4 & 0.798 & 0.075 \\\\\n            & Task 4 & 4 & 0.776 & 0.076 \\\\\n            & Task 5 & 4 & 1.175 & 0.025 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccc}\n        \\toprule\n        \\multirow{2}{*}{Method} &\n        \\multicolumn{4}{c}{Coffee $\\uparrow$} \\\\\n         & d0 & d1 & d2 & \\cellcolor{gray!30}Avg. \\\\\n        \\midrule\n        Ours(uf. at epoch 0) & 0.92 & 0.00 & 0.62 & \\cellcolor{gray!30} 0.51 \\\\\n        Ours(w/o shaping) & 0.92 & 0.00 & 0.00 & \\cellcolor{gray!30} 0.31 \\\\\n        Ours(dist$\\leftrightarrow$start img.) & 0.50 & 0.52 & 0.32 & \\cellcolor{gray!30} 0.45 \\\\\n        Ours(cos dist) & \\textbf{0.94} & 0.36 & 0.48 & 0.59\\cellcolor{gray!30} \\\\\n        C-BeT(w/ shaping) & 0.80 & 0.64 & \\textbf{0.64} & 0.69\\cellcolor{gray!30} \\\\\n        \\midrule\n        Ours & \\textbf{0.94} & \\textbf{0.76} & 0.62  & \\cellcolor{gray!30}\\textbf{0.77} \\\\\n        \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|rr|rr}  \n \\hline \n$G_i$ &  $ \\|Q_h  u -   u_h \\| $ & $O(h^r)$ &  $ \\| a\\nabla( Q_h u- u_h )\\|_0 $ & $O(h^r)$  \\\\ \\hline \n&\\multicolumn{4}{c}{$\\lambda=10^{-3}$ }\\\\\n \\hline \n 3&    0.444E+03 &  1.1&    0.484E+03 &  1.7\\\\\n 4&    0.137E+03 &  1.7&    0.237E+03 &  1.0\\\\\n 5&    0.364E+02 &  1.9&    0.118E+03 &  1.0\\\\  \\hline  \n &\\multicolumn{4}{c}{$\\lambda=1$ }\\\\\n  \\hline  \n 3&    0.456E+00 &  1.1&    0.152E+02 &  1.4\\\\\n 4&    0.140E+00 &  1.7&    0.753E+01 &  1.0\\\\\n 5&    0.372E-01 &  1.9&    0.377E+01 &  1.0\\\\ \\hline  \n &\\multicolumn{4}{c}{$\\lambda=10^3$ }\\\\\n  \\hline  \n 3&    0.604E-01 &  1.3&    0.305E+01 &  3.2\\\\\n 4&    0.178E-01 &  1.8&    0.954E+00 &  1.7\\\\\n 5&    0.465E-02 &  1.9&    0.461E+00 &  1.0\\\\\n  \\hline  \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\r\n            \\hline\r\n            % after \\\\: \\hline or \\cline{col1-col2} \\cline{col3-col4} ...\r\n            Unified discretization &  &  \\\\\r\n            \\hline\r\n            FEM  & $L^{2}$-norm & CPU(s) \\\\\r\n            \\hline\r\n            $P_{1}/P_{1}/P_{1}$ & $7.6426\\times10^{-3}$ & 77 \\\\\r\n            $P_{2}/P_{2}/P_{2}$ & $8.1175\\times10^{-5}$ & 219 \\\\\r\n            $P_{3}/P_{3}/P_{3}$ & $2.5152\\times10^{-6}$ & 1428 \\\\\r\n            \\hline\r\n            Mixed FEM & $L^{2}$-norm & CPU(s)  \\\\\r\n            \\hline\r\n            $P_{2}/P_{1}/P_{1}$ & $8.9647\\times10^{-5}$ &  116  \\\\\r\n            $P_{3}/P_{2}/P_{2}$ & $2.5164\\times10^{-6}$ &  482 \\\\\r\n            \\hline\r\n          \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c c c c}\n        \\toprule\n        \\multirow[c]{3}{*}{\\vspace{6pt}\\textbf{Model}} & \\multicolumn{2}{c}{\\textbf{SNR $(\\uparrow)$}} & \\multicolumn{2}{c}{\\textbf{SI-SNR $(\\uparrow)$}} \\\\\n        \\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\n        & Adam & Muon & Adam & Muon \\\\\n        \\midrule\n        ReLU MLP & $\\hphantom{0}0.02$ & $\\mathbf{\\hphantom{00}0.16}$ & $-23.52$ & $\\mathbf{-14.34}$ \\\\\n        ReLU FFN & $\\hphantom{0}8.23$ & $\\hphantom{+}\\mathbf{19.71}$ & $\\hphantom{+0}7.58$ & $\\hphantom{+}\\mathbf{19.67}$ \\\\\n        Gaussian MLP & $10.16$ & $\\hphantom{+}\\mathbf{12.98}$ & $\\hphantom{+0}9.76$ & $\\hphantom{+}\\mathbf{12.78}$ \\\\\n        Gaussian FFN & $38.73$ & $\\hphantom{+}\\mathbf{43.99}$ & \\hphantom{+}$38.73$ & $\\hphantom{+}\\mathbf{43.99}$ \\\\\n        SIREN & $38.37$ & $\\hphantom{+}\\mathbf{47.85}$ & $\\hphantom{+}38.37$ & $\\hphantom{+}\\mathbf{47.85}$ \\\\\n        WIRE & $\\hphantom{0}2.99$ & $\\hphantom{+}\\mathbf{16.65}$ & $\\hphantom{+0}0.07$ & $\\hphantom{+}\\mathbf{16.74}$ \\\\\n        FINER & $26.48$ & $\\hphantom{+}\\mathbf{36.11}$ & \\hphantom{+}$26.47$ & $\\hphantom{+}\\mathbf{36.11}$ \\\\\n        \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|lp{6cm}|}\n\\hline\n\\emph{Parameters} & \\emph{Description} \\\\ \n\\hline\n\n$c_{ij} \\in \\mathbb{R}^{+}$ & Capacity of link $(i,j)$ \\\\\n$w_{ij} \\in \\mathbb{R}^{+}$ & Cost of link $(i,j)$ \\\\\n$U_{ij} \\in [0,1]$ & Load of link $(i,j)$ \\\\\n$R^k_{ij} \\in \\mathbb{R}^{+}$ & Rate $k \\in \\mathcal{K}$ when it goes over link $(i,j)$ \\\\ \n$l_{ij}^{k} \\in \\mathbb{R}^{+}$ & Latency to transmit or process a unit of $k$ over link $(i,j)$ \\\\\n$l^{k}\\in \\mathbb{R}^{+}$ & Local latency of commodity $k$ \\\\\n$L_{T}^{k} \\in \\mathbb{R}^{+}$ & Cumulative latency of commodity $k$ \\\\\n$L^{k} \\in \\mathbb{R}^{+}$ & Maximum service latency associated with destination commodity $k$\\\\\n$\\mathbf{Z} \\in [0,1]$ & Utilization upper bound \\\\\n\\hline\n\\emph{Variables} & \\emph{Description} \\\\\n\\hline\n$f_{ij}^k \\in \\{0,1\\}$ & Virtual commodity flow \\\\\n$\\mu_{ij}^o \\in \\mathbb{R}^{+}$ & Actual information object flow \\\\\n$\\mu_{ij} \\in \\mathbb{R}^{+}$ & Actual information flow variables of MILP \\\\\n\n\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|rr|rr}\n    \\toprule\n    \\multirow{2}{*}{\\#rels}  & \\multicolumn{2}{|c|}{w/o loop} & \\multicolumn{2}{|c}{w/ loop} \\\\\n     & R@1 & R@5 & R@1 & R@5 \\\\\n    \\midrule\n    1 & 40.6 & 61.9 & - & - \\\\\n    2 & 48.9 & 69.6 & 53.9 & 76.1 \\\\\n    3 & 50.8 & 70.7 & 59.3 & 79.2 \\\\\n    4 & 51.4 & 70.8 & 60.9 & 79.1 \\\\\n    5 & 50.4 & 70.7 & 57.8 & 77.8 \\\\\n    6 & 50.0 & 69.3 & 60.0 & 78.6 \\\\\n    7 & 51.2 & 70.9 & 60.8 & 78.2 \\\\\n    8 & 46.7 & 67.0 & 53.4 & 72.0 \\\\\n    \\midrule\n    all & 45.7 & 66.3 & 58.1 & 77.6 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc}\n$B_{\\mathrm{c}}$ &  Slope & Intercept & $r$\\\\\n\\hline\n-0.2   & 0.27 & 19.48 & 0.37 \\\\\n0 & 0.00 & 25.97 & 0.00 \\\\\n0.1 & -0.14 & 29.10 & -0.19\\\\\n0.3 & -0.27& 32.3 & -0.38\\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n      \\multicolumn{3}{c}{\\textbf{Geodetic}} \\\\ \\hline\n      Method & Cost & Noise \\\\ \\hline\n      a: Proposed (mine)       & $\\bigcirc$ & $\\bigcirc$ \\\\\n      b: Bundle (triangulation) & $\\bigcirc$ & * \\\\\n      c: LiDAR                 & $\\times$   & $\\bigcirc$ \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    }
+]

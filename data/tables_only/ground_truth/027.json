@@ -1,0 +1,27 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cccc}\n        \\toprule\n        \\multirow{2}{*}{\\textbf{Method}} & \\multicolumn{3}{c}{\\textbf{Editing Quality}} \\\\\n        ~ & Quality & Adherence & Consistency & Overall \\\\\n        \\midrule\n        Gemini 2 & 3.021 & 3.387 & \t2.868 & 3.215\t\\\\\n        GPT-4o & 3.184 &\t3.450 &\t3.059 &\t\\textbf{3.503 }      \\\\\n        Ours  & \\textbf{3.712} & \\textbf{3.48}7\t& \\textbf{3.603}\t& 3.465\\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\hline\n\\multicolumn{2}{c}{CA-PAG} & \\multicolumn{2}{c}{DARM} & \\multirow{2}{*}{AUC(\\%)} \\\\\n\\cmidrule(lr){1-2}\\cmidrule(lr){3-4}\nInitial & Refine & DA & Update & \\\\\n\\midrule\n\\checkmark &  &  &  & 94.9 \\\\\n\\checkmark & \\checkmark &  &  & 96.0 \\\\\n\\checkmark &  &  & \\checkmark & 97.6 \\\\\n\\checkmark & \\checkmark &  & \\checkmark & 97.7 \\\\\n\\checkmark &            & \\checkmark &  & 96.0 \\\\\n\\checkmark & \\checkmark & \\checkmark &  & 96.8 \\\\\n\\rowcolor{gray!12}\n\\checkmark & \\checkmark & \\checkmark & \\checkmark & \\textbf{98.2} \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccc}\n\\toprule\n\\multirow{2}{*}{{Model}} & \\multicolumn{4}{c}{{FG-OVD}} \\\\\n& {Hard} & {Medium} & {Easy} & {Trivial} \\\\\n\\midrule\nCLIP & 15.4 & 25.3 & 25.7 & 38.8 \\\\\nEVA-CLIP & 18.3 & 38.4 & 35.2 & 62.7 \\\\\nLongCLIP & 9.6 & 19.7 & 16.0 & 39.8 \\\\\nFineCLIP & 22.8 & 46.0 & 46.0 & \\textbf{73.6} \\\\\n\\color{gray}FG-CLIP\\textsuperscript{\\textdaggerdbl}  & \\color{gray}{48.4} & \\color{gray}{69.5} &\\color{gray}{ 71.2} & \\color{gray}{89.7} \\\\\n\\midrule\n\\multicolumn{5}{c}{$\\beta$-CLIP \\textit{CE}} \\\\\n\\midrule\nK=6, $\\beta$=0.5 & 19.3 & 37.9 & 41.1 & 62.2 \\\\\nK=36, $\\beta$=0.5 & \\underline{28.3} &  \\underline{48.8} & \\textbf{53.3} & 70.9 \\\\\n\\midrule\nK=6, $\\beta$=0.75 & 20.3 & 41.1 & 44.3 & 67.9 \\\\\nK=36, $\\beta$=0.75 & \\textbf{28.7} & \\textbf{49.1} &  \\underline{52.1} &  \\underline{72.2} \\\\\n\n\\midrule\n\\multicolumn{5}{c}{$\\beta$-CLIP \\textit{BCE}} \\\\\n\\midrule\nK=6, $\\beta$=0.5 & 15.1 & 34.6 & 29.2 & 32.4 \\\\\nK=36, $\\beta$=0.5 & 14.4 & 29.4 & 23.7 & 45.6 \\\\\n\\midrule \nK=6, $\\beta$=0.75 & 15.0 & 36.3 & 33.1 & 36.8 \\\\\nK=36, $\\beta$=0.75 & 15.4 & 31.5 & 23.9 & 45.9 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|c|c|c|c|c|}\n        \\hline\n        \\multirow{2}{*}{Models} & \\multicolumn{2}{c|}{CRR} & \\multicolumn{2}{c|}{WRR} & \\multicolumn{2}{c|}{LRR} \\\\\n        \\cline{2-7}\n        & Val & Test & Val & Test & Val & Test \\\\\n        \\hline\n        Proposed HWR & 94.80 & 95.20 & 83.60 & 84.70 & 72.78 & 73.24 \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n        \\toprule\n        \\multirow{2}[3]{*}{Method}  &\n        \\multicolumn{3}{c}{ImageNet-100} & \\multicolumn{3}{c}{CUB}\\\\\n        \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n         & All & Old & New & All & Old & New \\\\\n        \\midrule\n        SimGCD & 83.0 & 93.1 & 77.9 & 60.3 & 65.6 & 57.7\\\\\n         + LSP & 85.4 & \\textbf{94.2} & 81.0  & 64.6 & \\textbf{71.6} & 61.1 \\\\\n         + DAS & 84.8 & 92.9 & 80.7 & 66.5 & 67.0 & 66.2 \\\\\n        + LSP + DAS (Ours)  & \\textbf{87.1} & 93.9 & \\textbf{83.7} & \\textbf{69.0} & 69.1 & \\textbf{68.9} \\\\\n        \\bottomrule\n      \\end{tabular}",
+        "complexity": "complex"
+    }
+]

@@ -1,0 +1,41 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c}\n\\hline\n& MH MCMC & HMC & SIVI \\\\\n\\hline\nRMSPE & 1.42 & 1.85 & 1.43 \\\\\nWalltime (sec) & (2741.00) & (12826.73) & (262.05) \\\\\nComputational Speedup & 10.46 & 48.95 & --- \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Actually man page role. Speak far bed pretty operation while your. Half goal green ask thought campaign."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccccccc}\n    \\toprule\n    && \\multicolumn{4}{c}{$n=250$} & \\multicolumn{4}{c}{$n=1000$}  \\\\\n    \\cmidrule[0.05em](l){3-6}  \\cmidrule[0.05em](l){7-10}\n    & $p$ & Bias & SE & RMSE & 95\\% Coverage & Bias & SE & RMSE & 95\\% Coverage\\\\\n    \\midrule\n    \\multirow{ 3}{*}{$MER^{(0,0)}$}\n    &.2& -0.017 & 0.557 & 0.771 & 0.920 & 0.018 & 0.278 & 0.377 & 0.951 \\\\\n    &.5& -0.005 & 0.240 & 0.331 & 0.930 & 0.005 & 0.119 & 0.160 & 0.951 \\\\\n    &.8& 0.008  & 0.300 & 0.420 & 0.907 & -0.008 & 0.152 & 0.210 & 0.928 \\\\\n    \\multirow{ 3}{*}{$MER^{(1,0)}$}\n    &.2& -0.014 & 0.290 & 0.412 & 0.906 & -0.012 & 0.145 & 0.200 & 0.928 \\\\\n    &.5& 0.015  & 0.362 & 0.508 & 0.923 & -0.002 & 0.185 & 0.252 & 0.934 \\\\\n    &.8& 0.043  & 0.705 & 1.005 & 0.909 & 0.008  & 0.360 & 0.486 & 0.948 \\\\\n    \\multirow{ 3}{*}{$MER^{(0,1)}$}\n    &.2& -0.004 & 0.421 & 0.579 & 0.938 & 0.001 & 0.211 & 0.286 & 0.953 \\\\\n    &.5& 0.000  & 0.194 & 0.263 & 0.937 & -0.001 & 0.097 & 0.131 & 0.962 \\\\\n    &.8& 0.004  & 0.211 & 0.292 & 0.932 & -0.003 & 0.107 & 0.144 & 0.946 \\\\\n    \\multirow{ 3}{*}{$MER^{(1,1)}$}\n    &.2& -0.004 & 0.211 & 0.292 & 0.928 & -0.004 & 0.106 & 0.146 & 0.952 \\\\\n    &.5& 0.010  & 0.244 & 0.329 & 0.947 & -0.005 & 0.122 & 0.166 & 0.945 \\\\\n    &.8& 0.024  & 0.491 & 0.668 & 0.938 & -0.006 & 0.245 & 0.334 & 0.942 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Strategy image white room. Structure shoulder police thousand radio his."
+    },
+    {
+        "type": "text",
+        "data": "Occur ahead often television brother least. Sister something remain room. War focus thousand sister impact decade since. Tell stage film yet operation campaign natural not."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|}\n\\hline\na0.wp1 \\\\ \\hline\na1.wp3 \\\\ \\hline\na2.wp0 \\\\ \\hline\na0.wp0 \\\\ \\hline\na1.wp4 \\\\ \\hline\na2.wp2 \\\\ \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Receive thing year light American. Face first interest very reach onto wall audience. Consider training happen floor."
+    },
+    {
+        "type": "text",
+        "data": "Put stop than idea than. Girl whatever test. Prove ahead around future remember."
+    },
+    {
+        "type": "text",
+        "data": "Network need third focus. Year husband structure style. Late training hot nation support suddenly expert."
+    }
+]

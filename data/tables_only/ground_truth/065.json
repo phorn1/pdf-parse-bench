@@ -1,0 +1,21 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l l ccccccc}\n\\toprule\n\\textbf{Model} & \\textbf{Student} & \\textsc{Uniform} & \\textsc{AR} & \\textsc{AR-MH} & \\textsc{MSE} & \\textsc{PPL} & \\textsc{SMART} & \\textbf{Ours} \\\\\n\\midrule\n\\multirow{2}{*}{Llama} & GDN & 0.461& 0.59& 0.5512& 0.4899& 0.5011& 0.6274& \\textbf{0.7539}\\\\\n& GLA & 0.4342& 0.5404& 0.4838& 0.4436& 0.4266& 0.5851& \\textbf{0.6927}\\\\\n\\cmidrule(lr){1-9}\n\\multirow{2}{*}{Qwen} & GDN & 0.6904& 0.6385& 0.716& 0.4421& 0.51& 0.6401& \\textbf{0.8631}\\\\\n& GLA & 0.633& 0.574& 0.6628& 0.3961& 0.4225& 0.6007& \\textbf{0.8407}\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lll@{}}\n    \\toprule\n    \\multicolumn{3}{@{}l}{{SYSTEM PROMPT}}                                                              \\\\ \\midrule\n    USER                  & \\multicolumn{2}{l}{\\textit{\\textless 0s-1s\\textgreater \\textless video\\textgreater}}                                            \\\\\n    ASSISTANT             & \\multicolumn{2}{l}{\\textit{\\textless Silence\\textgreater}}                                                  \\\\ \\midrule\n    \\multirow{2}{*}{USER} & \\multicolumn{2}{l}{\\textit{\\textless 1s-2s\\textgreater \\textless video\\textgreater}}                                            \\\\\n                          & \\multicolumn{2}{l}{{Notify me when the light turns green.}}               \\\\\n    ASSISTANT             & \\multicolumn{2}{l}{\\textit{\\textless Silence\\textgreater}}                                                  \\\\ \\midrule\n    USER                  & \\multicolumn{2}{l}{\\textit{\\textless 2s-3s\\textgreater \\textless video\\textgreater}}                                            \\\\\n    ASSISTANT             & \\multicolumn{2}{l}{\\textit{\\textless Silence\\textgreater}}                                                  \\\\ \\midrule\n    USER                  & \\multicolumn{2}{l}{\\textit{\\textless 3s-4s\\textgreater \\textless video\\textgreater}}                                            \\\\\n    ASSISTANT             & \\multicolumn{2}{l}{\\textit{\\textless Standby\\textgreater}}                                                  \\\\ \\midrule\n    USER                  & \\multicolumn{2}{l}{\\textit{\\textless 4s-5s\\textgreater \\textless video\\textgreater}}                                            \\\\\n    ASSISTANT             & \\multicolumn{2}{l}{\\textit{\\textless Response\\textgreater}{The light just turned green.}}           \\\\ \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Local control box notice they senior law. Sit two strong may concern idea treatment. Local get low myself."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc|ccc|ccc}\n\t\t\t\\toprule\n\\textbf{Method}  & \\multicolumn{3}{c}{\\textbf{Facts grounding}} & \\multicolumn{3}{c}{\\textbf{FactScore}} & \\multicolumn{3}{c}{\\textbf{LongFact}}   \\\\\n\n\n & Acc. & C. Acc. & C. Num. & Acc. & C. Acc. & C. Num.& Acc. & C. Acc. & C. Num.\\\\\n\\midrule\n\\textit{MiMo-7B-RL-0530}\\\\\n\\midrule\nBase               & 35.0 & 85.2 & 14.2 &  1.0 & 19.1 & 19.7 & 32.0 & 84.7 & 23.3 \\\\\nWithout CoT        & 82.3 & 95.4 &  6.2 &  21.2 & 32.7 &  9.6 & 43.0 & 90.5 & 15.9 \\\\\nwith Sum. CoT      & 79.4 & 94.0 &  5.4 &  10.0 & 27.2 & 11.3 & 51.5 & 91.2 & 15.9 \\\\\n\\midrule\n\\textit{Qwen3-4B}\\\\\n\\midrule\nBase               & 47.1 & 83.6 &  8.5 &  5.0 & 28.7 & 16.6 & 38.0 & 89.9 & 22.6 \\\\\nWithout CoT        & 82.4 & 92.6 &  4.5 & 44.0 & 52.2 &  5.2 & 74.7 & 96.2 & 11.2 \\\\\nwith Sum. CoT      & 79.4 & 93.1 &  4.2 & 44.2 & 75.7 &  8.0 & 73.0 & 97.3 & 14.7 \\\\\n                             \n% {'boolq': 0.6328125, 'mmlu': 0.3515625, 'piqa': 0.54296875, 'siqa': 0.52734375, 'hellaswag': 0.31640625}\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

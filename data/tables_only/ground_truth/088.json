@@ -1,0 +1,66 @@
+[
+    {
+        "type": "text",
+        "data": "Trade we water yeah. Beat on part cultural strong other open."
+    },
+    {
+        "type": "text",
+        "data": "Fight might little give. Room raise deep impact seem us. Require front southern. Hot structure organization magazine politics."
+    },
+    {
+        "type": "text",
+        "data": "Guess ago long while oil listen begin. Investment reflect air job wear. Church eight wish. Himself worker everybody."
+    },
+    {
+        "type": "text",
+        "data": "Simple affect second age. Power control out draw mother morning beautiful building. Establish effect low real want assume."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccccc}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Houses}} & \\multicolumn{5}{c}{\\textbf{Number of Features}} \\\\\n     & \\textbf{2} & \\textbf{3} & \\textbf{4} & \\textbf{5} & \\textbf{6} \\\\\n    \\midrule\n    \\textbf{2} & 97.5 & 85.0 & 75.0 & 67.5 & 77.5 \\\\\n    %\\cdashline{4-6} % dashed line start\n    \\textbf{3} & 57.5 & 60.0  & 42.5 & 40.0 & 25.0 \\\\\n    %\\cdashline{2-3} % dashed line start\n    \\textbf{4} & 40 & 40 & 22.5 & 25 & 15 \\\\\n    \\textbf{5} & 40 & 22.5 & 7.5 & 5 & 0.15 \\\\\n    \\textbf{6} & 7.5 & 12.5 & 0 & 0 & 0 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Size leg art physical. Every couple strong or particularly far left. Wrong job task. Challenge go tough former several."
+    },
+    {
+        "type": "text",
+        "data": "People close wall all add staff. Care hope move seem need. Improve protect relationship improve level admit else."
+    },
+    {
+        "type": "text",
+        "data": "Difficult trade understand skill behavior cup. College nice itself someone grow lawyer."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc|c|ccc|c}\n    \\toprule\n    & & & \\multicolumn{3}{c|}{N-WER} & \\\\\n    $p_\\text{corrupt}^v$ & $p_\\text{corrupt}^a$ & $\\hat{p}_\\text{clean}$ & AVG &  N\\,$\\ge$\\,S &  N\\,$<$\\,S & Clean \\\\\n    \\midrule\n    0.1--0.5 & 0.3--0.5 & 0.15 & 5.1 & 7.2 & \\textbf{1.9} & \\textbf{1.5} \\\\\n    \\midrule\n    0.1 & 0.3 & 0.22 & 5.3 & 7.4 & 2.0 & 1.6 \\\\\n    0.3 & 0.5 & 0.14 & 5.0 & 7.1 & 2.0 & \\textbf{1.5} \\\\\n    0.5 & 0.7 & 0.09 & \\textbf{4.7} & \\textbf{6.5} & 2.0 & 1.6 \\\\\n    0.7 & 0.9 & 0.04 & \\textbf{4.7} & \\textbf{6.5} & 2.1 & 1.6 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Also almost hope they produce just name. Center better oil country seven. Condition because important office six send."
+    },
+    {
+        "type": "text",
+        "data": "Actually hit write scene three himself. Surface policy arrive quickly bank my public."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc}\n            \\toprule\n            \\textbf{Method}  & \\begin{tabular}[c]{@{}c@{}}\\textbf{Success}\\\\ \\textbf{Rate(\\%)}\\end{tabular}  \\\\\n            \\midrule\n            BC & 36.0\\\\\n            \\midrule\n            Ours & 85.0\\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcll}\\toprule\n    $1\\leftrightarrow 2$ & $X$ &\\quad& \\\\\n    $3\\leftrightarrow 5$ & $Z$ && $ 4\\leftrightarrow 6$ & $ A^{-1} Y A $\\\\\n    $7\\leftrightarrow 3$ & $XZX^{-1} $ && $ 8\\leftrightarrow 4$ & $ X A^{-1} Y A X^{-1} $\\\\\\midrule\n    \\multicolumn{5}{c}{\\textsl{Translations:} $A$ (horiz.), $ Z^{-1} XZ X^{-1} $ (vert.)}\\\\\\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Three most catch help management part itself. Rich off set thought growth certainly word. Author successful new. Effort PM two task. Rise hit north cell."
+    },
+    {
+        "type": "text",
+        "data": "Customer customer test campaign design movie section. During help special else shake."
+    }
+]

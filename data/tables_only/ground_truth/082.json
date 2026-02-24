@@ -1,0 +1,40 @@
+[
+    {
+        "type": "text",
+        "data": "Yourself process station control responsibility wait. Thing build summer now eight into whole."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|cccc|}\n\\hline\n\\multirow{2}{*}{Model} & \\multicolumn{2}{c|}{BOOM} & \\multicolumn{2}{c|}{XiangShan} \\\\ \n% \\cline{2-5}\n& MAPE & \\multicolumn{1}{c|}{R} & MAPE & R \\\\\n\\hline\n\\hline\nMcPAT & 771 & 0.83 & 427 & 0.86 \\\\\nMcPAT-Plus & 18.3 & 0.83 & 22.5 & 0.84 \\\\\nMcPAT-Calib & \\textbf{5.6} & 0.96 & \\textbf{10.0} & \\textbf{0.95} \\\\\nMcPAT-Calib-Comp & 6.2 & 0.95 & 11.5 & 0.94 \\\\\nMcPAT-Calib-CompGroup & 6.1 & \\textbf{0.96} & 11.3 & 0.94 \\\\\nPANDA & 7.2 & 0.95 & 11.6 & 0.92 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Buy production among. Represent decade people government push. Above allow require laugh."
+    },
+    {
+        "type": "text",
+        "data": "Most TV response manage staff all art. Travel relate medical lot boy dream structure movement. Gas administration under hold sit will bar. Site after right film safe."
+    },
+    {
+        "type": "text",
+        "data": "Technology indeed consider past produce southern. Measure watch certainly situation team or paper."
+    },
+    {
+        "type": "text",
+        "data": "Girl probably focus shake beautiful. Month bad space attack point human evening. Dog sing against attention single player seek."
+    },
+    {
+        "type": "text",
+        "data": "Main every decade best early career. Cell drop finish interesting. Significant what exist sometimes. In eye view phone almost account."
+    },
+    {
+        "type": "text",
+        "data": "Yet own quality hit happen join. List name relate note wide. Rate skin political nature scene. Different rate seem social record read appear. Ten some ahead concern. Event out political hand."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|l}\n            \\toprule  \n            Dataset&Target &Description\\\\    \n            \\midrule\n            \\multirow{2}{*}{\\raisebox{-0.5ex}{Crude Oil Price}} &WTI&West Texas Intermediate Crude Oil Price\\\\\n            \\cmidrule{2-3}\n            &Brent&European Brent Crude Oil Price\\\\\n            \\midrule\n            \\multirow{5}{*}{\\raisebox{-3.5\\height}{Exchange Rate}} &USD Index&United States of America Dollar Index\\\\\n            \\cmidrule{2-3}\n            &USD CNY&Exchange Rate of United States of America Dollar to Chinese Yuan\\\\\n            \\cmidrule{2-3}\n            &USD EUR&Exchange Rate of United States of America Dollar to European Euro\\\\\n            \\cmidrule{2-3}\n            &USD JPY&Exchange Rate of United States of America Dollar to British Pound\\\\\n            \\cmidrule{2-3}\n            &USD GBP&Exchange Rate of United States of America Dollar to Japanese Yen\\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    }
+]

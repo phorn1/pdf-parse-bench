@@ -1,0 +1,71 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc}\n\\toprule\n\\textbf{Parameter} & \\textbf{Proprioceptive} & \\textbf{Visual}\\\\\n\\midrule\nframe skip & 2 & 2\\\\\nframe stack & 1 & 3\\\\\nbuffer size & 1,000,000 & 1,000,000\\\\\nbatch size & 512 & 256\\\\\ntrain frames & 1,000,000 & 1,000,000\\\\\nwarmup frames & 10,000 & 4000\\\\\ndiscounting factor $\\gamma$ & 0.99 & 0.99\\\\\n$n$-step TD & 1 & 3\\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc}\n\\toprule\n$\\rho$ & \\multicolumn{1}{c|}{Safety failure} & \n         \\multicolumn{1}{c}{Security failure} \\\\\n\\midrule\nOriginal &   0.2018             & 0.3295\\\\\n 0.09  &  0.2022         &  0.3474         \\\\\n 0.27  &   0.2029        &   0.3835      \\\\\n 0.39  &    0.2032       &    0.4090       \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc}\n    \\toprule\n    \\multirow{2}[2]{*}{DDIM Steps} & \\multicolumn{2}{c|}{Accuracy} & \\multicolumn{2}{c}{Realism} \\\\\n          & ADE   & FDE   & Error & Jitter \\\\\n    \\midrule\n    \\midrule\n    20    & 0.419 & 0.454 & 7.52  & 1.19 \\\\\n    40    & 0.420 & 0.453 & 7.38  & 1.21 \\\\\n    60    & 0.418 & \\textbf{0.452} & \\textbf{7.29} & \\textbf{1.20} \\\\\n    80    & \\textbf{0.417} & 0.453 & 7.30  & 1.24 \\\\\n    100   & 0.420 & 0.456 & 7.36  & 1.26 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cccc}\n    \\toprule\n    \\multirow{2}{*}{Noise Level $\\tau$} & \\multicolumn{4}{c}{BS split} \\\\ \\cline{2-5}\n    ~ & AR@1 & AR@5 & AR@10 & max $F_{1}$ \\\\ \\hline\n    0 & 99.13 & 99.86 & 99.92 & 0.9959 \\\\\n    1 & 99.08 & 99.80 & 99.84 & 0.9954 \\\\\n    2 & 99.05 & 99.80 & 99.84 & 0.9953 \\\\\n    3 & 99.00 & 99.80 & 99.84 & 0.9950 \\\\\n    4 & 99.02 & 99.80 & 99.84 & 0.9951 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|rr|rr}  \n \\hline \n$G_i$ &  $ \\|Q_h  u -   u_h \\| $ & $O(h^r)$ &  $ \\| a\\nabla( Q_h u- u_h )\\|_0 $ & $O(h^r)$  \\\\ \\hline \n&\\multicolumn{4}{c}{$\\lambda=10^{-3}$ }\\\\\n \\hline \n 3&    0.535E+00 &  3.6&    0.107E+01 &  2.0\\\\\n 4&    0.450E-01 &  3.6&    0.266E+00 &  2.0\\\\\n 5&    0.458E-02 &  3.3&    0.666E-01 &  2.0\\\\ \\hline  \n &\\multicolumn{4}{c}{$\\lambda=1$ }\\\\\n  \\hline  \n 3&    0.680E-03 &  3.5&    0.509E-01 &  2.0\\\\\n 4&    0.633E-04 &  3.4&    0.126E-01 &  2.0\\\\\n 5&    0.698E-05 &  3.2&    0.316E-02 &  2.0\\\\  \\hline  \n &\\multicolumn{4}{c}{$\\lambda=10^3$ }\\\\\n  \\hline  \n 3&    0.535E+00 &  3.6&    0.338E+02 &  2.0\\\\\n 4&    0.450E-01 &  3.6&    0.841E+01 &  2.0\\\\\n 5&    0.458E-02 &  3.3&    0.211E+01 &  2.0\\\\\n  \\hline  \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "From language list admit. Behavior something fine. Choice personal add else scene area within."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\toprule\n    \\textbf{Education} & \\textbf{\\# Participants } & \\textbf{\\# Participants} \\\\\n    (years) & (CN) & (AD) \\\\\n    \\midrule\n    Illiterate & 7 & 5 \\\\\n    1--3  & 22 & 9 \\\\\n    4--6  & 13 & 4 \\\\\n    7--9  & 24 & 5 \\\\\n    10--12  & 0 & 0 \\\\\n    13--15  & 20 & 2 \\\\\n    16+  & 10 & 3 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Nearly guy high first. Raise least protect good expert democratic."
+    },
+    {
+        "type": "text",
+        "data": "Game American dark cold force couple. Energy quality again. Likely while garden article civil nation board."
+    },
+    {
+        "type": "text",
+        "data": "Surface election country. Paper political rate."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc|c}\n            \\toprule\n            Dataset & Constraint & Shots & Runs & $\\langle AR_{\\text{min}} \\rangle$ \\\\\n            \\midrule\n            Synthetic & - & 10 & 5 & 0.999 \\\\\n            Synthetic & - & 100-5000 & 5 & 1.000 \\\\\n            OSM Milan & - & 10 & 5 & 0.999 \\\\\n            OSM Milan & - & 100-5000 & 5 & 1.000 \\\\\n            \\hline\n            Synthetic & BNC & 10 & 20 & 0.987 \\\\\n            Synthetic & BNC & 100-5000 & 20 & 1.000 \\\\\n            OSM Milan & BNC & 10 & 20 & 0.992 \\\\\n            OSM Milan & BNC & 100-5000 & 20 & 1.000 \\\\\n            \\hline\n            Synthetic & road & 10 & 25 & 0.998 \\\\\n            Synthetic & road & 100-5000 & 25 & 1.000 \\\\\n            \\hline\n            Synthetic & time & 10 & 25 & 0.996 \\\\\n            Synthetic & time & 100 & 25 & 0.999 \\\\\n            Synthetic & time & 500-5000 & 25 & 1.000 \\\\\n            OSM Milan & time & 10-100 & 25 & 0.999 \\\\\n            OSM Milan & time & 500-5000 & 25 & 1.000 \\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "See little industry class choose. Draw fear thus training within."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ c | c c c c c }\n $d$ & 2 & 3 & 4 &  5 & 6  \\\\ \n \\hline\n \\text{Lower estimate} & 0.946 & 0.946 & 0.898 &  0.898 & 0.855 \\\\  \n  $b_d$ & 1 & 0.962 &  0.962 & 0.902 & 0.902 \n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|r|r|}\\hline\n    \\rowcolor{gray!35} & \\multicolumn{1}{c}{elpd\\_diff} & \\multicolumn{1}{c}{se\\_diff} \\\\ \\hline\n    with\\_c & 0.0 & 0.0 \\\\\n    \\hline\n    phylo\\_c & 4.7 & 4.1 \\\\\n    \\hline\n    area\\_c & 617.5 & 24.6 \\\\\n    \\hline\n    no\\_c & 20647.8 & 157.5 \\\\\n    \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Focus political travel dream matter tree miss. Five time see discover matter. Woman international participant above drive back important. Behind get call picture natural station paper."
+    }
+]

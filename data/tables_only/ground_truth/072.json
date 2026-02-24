@@ -1,0 +1,46 @@
+[
+    {
+        "type": "text",
+        "data": "World green population city public add pick. Work many Mr treatment tax."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|c|c|c|c|c|}\n        \\hline\n        \\multirow{2}{*}{Models} & \\multicolumn{2}{c|}{CRR} & \\multicolumn{2}{c|}{WRR} & \\multicolumn{2}{c|}{LRR} \\\\\n        \\cline{2-7}\n        & Val & Test & Val & Test & Val & Test \\\\\n        \\hline\n        Proposed HWR & 94.80 & 95.20 & 83.60 & 84.70 & 72.78 & 73.24 \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Available than character remain cut. Now least recently ten huge coach option. Modern various enjoy save page catch your. Here history police central appear decide item."
+    },
+    {
+        "type": "text",
+        "data": "Kid south central ability. Both example example ever. Skin section budget when system point natural identify. Mean life husband pick own. Toward house race cell."
+    },
+    {
+        "type": "text",
+        "data": "Middle himself upon age myself force. Camera hear life natural impact third officer clearly. Box carry imagine rate probably."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c *{10}{c}}\n\\toprule\n\\multirow{2}{*}{\\raisebox{-0.5ex}{Mode}} & \\multirow{2}{*}{\\raisebox{-0.5ex}{$z_1$}} & \\multirow{2}{*}{\\raisebox{-0.5ex}{$z_2$}} &\n\\multicolumn{2}{c}{\\textit{Nature} (20)} &\n\\multicolumn{2}{c}{\\textit{Real} (20)} &\n\\multicolumn{2}{c}{\\textit{Postcard} (199)} &\n\\multicolumn{2}{c}{\\textit{Objects} (200)} &\n\\multicolumn{2}{c}{\\textit{Wild} (55)} \\\\\n\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\\cmidrule(lr){8-9}\\cmidrule(lr){10-11}\\cmidrule(lr){12-13}\n\\multicolumn{3}{c}{} &\nPSNR $\\uparrow$ & SSIM $\\uparrow$ &\nPSNR $\\uparrow$ & SSIM $\\uparrow$ &\nPSNR $\\uparrow$ & SSIM $\\uparrow$ &\nPSNR $\\uparrow$ & SSIM $\\uparrow$ &\nPSNR $\\uparrow$ & SSIM $\\uparrow$ \\\\\n\\midrule\n\\textsc{Flow}   & $\\mathcal{E}(\\mathbf{B})$ & \\textemdash &\n26.18 & 0.816 &\n24.68 & 0.801 &\n26.06 & 0.863 &\n26.47 & 0.890 &\n27.10 & 0.889 \\\\\n\\textsc{Flow}   & $\\mathcal{E}(\\mathbf{B})$ & $\\mathcal{N}(0, \\mathbf{I})$  &\n\\textbf{27.43} & \\textbf{0.849} &\n\\underline{26.19} & \\textbf{0.861} &\n\\underline{28.58} & \\underline{0.929} &\n\\underline{28.46} & \\textbf{0.937} &\n\\textbf{28.98} & \\underline{0.931} \\\\\n\\textsc{Latent} & $\\mathcal{E}(\\mathbf{B})$ & $\\mathcal{E}(\\mathbf{B})$ &\n26.58 & \\underline{0.837} &\n25.43 & 0.824 &\n28.18 & 0.924 &\n27.89 & 0.926 &\n27.48 & 0.908 \\\\\n\\textsc{Flow} & $\\mathcal{E}(\\mathbf{B})$ & $\\mathcal{E}(\\mathbf{B})$ &\n\\underline{27.12} & \\textbf{0.849} &\n\\textbf{26.28} & \\underline{0.856} &\n\\textbf{28.81} & \\textbf{0.944} &\n\\textbf{29.17} & \\underline{0.934} &\n\\underline{28.97} & \\textbf{0.935} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\toprule\nMethod \n& \\makecell{Clean\\\\PPL (\\(\\downarrow\\))} \n& \\makecell{Seen\\\\ASR (\\(\\downarrow\\))} \n& \\makecell{OOD\\\\ASR (\\(\\downarrow\\))} \n& \\makecell{Avg.\\\\Rank (\\(\\downarrow\\))} \\\\\n\\midrule\n\n\\multicolumn{5}{l}{\\textit{Approximate unlearning methods (ranked)}}\\\\\n\n\\rowcolor{black!5} RapidUn (Ours) & \\textbf{44.6} & \\textbf{0.153} & \\textbf{0.096} & 1.00 \\\\\nLoReUn & 44.9 & 0.214 & 0.125 & 2.00 \\\\\nGA Unlearn & 45.3 & 0.253 & 0.132 & 3.33 \\\\\nFisher Unlearn & 45.3 & 0.83 & 0.437 & 3.67 \\\\\nBase (Poisoned) & 50.5 & 0.844 & 0.462 & 5.00 \\\\\nRetain Only & 54.6 & 0.86 & 0.472 & 6.00 \\\\\n\\addlinespace[2pt]\n\n\\multicolumn{5}{l}{\\textit{Reference (not ranked)}}\\\\\n\\rowcolor{black!3} Retrain (reference) & 30.6 & 0.0497 & 0.0447 & -- \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Cover firm alone western program. Traditional investment million both."
+    },
+    {
+        "type": "text",
+        "data": "Everybody group mission after we may Republican. Social allow stand allow possible agree doctor."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cccc}\n\\toprule\n   Method & $\\text{BEDROC}_{85}$(\\%) & $\\text{BEDROC}_{20}$(\\%) & $\\text{EF}_{0.05}$ &  $ \\text{EF}_{0.1}$ \\\\\n\\midrule\nR\\_E &  45.94\t& 61.11  &  13.28 & 7.41 \\\\ \nR\\_E + R\\_R &  48.08\t&  63.92 & 13.89 & 7.89 \\\\ \n% R-E, E-E &  43.18\t& 60.34  &  13.44  & 7.65 \\\\ \nR\\_E + EC  &  45.25\t&  63.93 & 14.46 & 7.97 \\\\ \n% R-E, R-R, EC   & 46.70\t& 65.25   &  14.72\t &  8.15 \\\\ \nR\\_E + R\\_R + E\\_E + EC    &  45.83\t\t& 64.17\t  &  14.37\t& 8.12 \\\\ \nFGW-CLIP (Line 4 + GW) & \\textbf{48.66} & \\textbf{66.69} & \\textbf{14.91} & \\textbf{8.18} \\\\ \n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

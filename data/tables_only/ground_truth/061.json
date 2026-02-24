@@ -1,0 +1,29 @@
+[
+    {
+        "type": "text",
+        "data": "Exactly task miss. Drug phone describe director write. Field should million mission."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|cc}\n           \\toprule[1.5pt]\n             & Parity-even sector & Parity-odd sector \\\\ \\hline\n            Local signal& $G^P$ & $G^K$ $\\Big.$ \\\\ \\hline\n            Non-local signal & $G^K$ & $G^K$ $\\Big.$ \\\\\n           \\bottomrule[1.5pt] \n          \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "None simple mission. Career that head everything look beautiful yet modern."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|ccccccccc|ccc|c|}\n    \\hline\n     & $m_4$  & $\\Delta m_{45}$ &\n    $\\theta_{1 i}$ & $\\theta_{2 i}$ & $\\theta_{3 i}$ & $\\delta_{1 i}$ & $\\delta_{2 i}$ & $\\delta_{3 i}$ & $\\varphi_i$  & $\\mathcal{A}_P$ & $\\mathcal{A}_P^\\prime$ & $\\mathcal{A}_T$ & {\\footnotesize BR($\\mu \\to 3e$)}\\\\\n    \\hline\\hline\n    P1 & $8$ & 0& $0.0031$ &  $-0.0025$ &  $0.026$ &  $4.5$ &  $5.3$ &  $4.8$ & $0.4$ &\\underline{0.87} &0.07 &0.03 & $4.7\\times 10^{-16} $ \\\\\n         &     &  & $-0.0031$ &  $0.0025$ &  $0.026$\n      &  $4.5$ &  $5.3$ &  $4.8$ &  $1.1$ & & &   \n       &  \\\\\n    \\hline\n    P2 & $2.5$ & 0& $0.0009$ &  $-0.0023$ &  $0.034$ &  $4.5$ &  $3.3$ &  $0.6$ & $5.3$ & 0.29 &\\underline{0.49} &0.05 \n    & $2.4\\times 10^{-16}$\\\\\n         &     &  & $0.0009$ &  $0.0023$ &  $0.034$\n      &  $4.5$ &  $-3.3$ &  $-0.6$ &  $4.0$ & & &   &\n         \\\\\n    \\hline\n    P3& $9$ & 0.5& $0.0017$ &  $0.00074$ &  $0.049$ &  $5.1$ &  $0.2$ &  $4.8$ & $2.4$ &0.14 &0.06 &\\underline{0.34} & \n    $1.1\\times 10^{-15}$\\\\\n         &     &  & $0.0017$ &  $0.0067$ &  $-0.0014$\n      &  $5$.9 &  $4.5$ &  $5.5$ &  $5.9$ & & &   \n     &    \\\\\n    \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccccccc}\n\t\t\t\\hline\n\t\t\t\\multirow{2}{*}{Networks} &\\multirow{2}{*}{Para}& \\multirow{2}{*}{Flops}& \\multicolumn{4}{c}{ISIC2018} & \\multicolumn{4}{c}{PH2} \\\\ \\cmidrule(lr){4-7} \\cmidrule(lr){8-11}\n\t\t\t& & & IoU   & Dice  & ACC   & Precision & IoU  & Dice  & ACC  & Precision \\\\ \\hline\n\t\t\tU-Net        & 32.9M  & 65.53G  & 81.69 & 88.81 & 95.68 & 91.31     & 87.07 & 92.62 & 95.57 & 93.32   \\\\ \n\t\t\tDenseASPP    & 33.7M  &107.74G  & 82.52 & 89.35 & 95.89 & 91.38     & 89.38 & 94.13 & 96.61 & 96.54   \\\\ \n\t\t\tBCDU-Net     & 28.8M  &360.18G  & 80.84 & 88.33 & 95.48 & 89.68     & 87.41 & 93.06 & 95.61 & 95.56   \\\\ \n\t\t\tCE-Net       & 29.0M  &  9.76G  & 82.82 & 89.59 & 95.97 & 90.67     & 89.62 & 94.36 & 96.68 & 94.54   \\\\ \n\t\t\tCPF-Net      &30.65M  &  8.83G  & 82.92 & 89.63 & 96.02 & 90.71     & 89.91 & 94.52 & 96.72 & 95.56   \\\\ \n\t\t\tPVT-CASCADE  &35.27M  &  8.20G  & 82.83 & 90.12 & 95.62 & 87.65     & 90.31 & 95.03 & 96.58 & 94.48   \\\\ \n\t\t\tParallel MERIT &147.9M & 33.43G  & 83.44 & 90.05 & 95.66 & 89.99     & 90.21 & 94.69 & 96.81 & 95.59   \\\\ \n\t\t\tEMCAD        & 30.0M  &  6.36G  & 82.81 & 89.46 & 95.55 & 89.25     & 90.56 & 95.00 & 96.69 & 95.03   \\\\ \n\t\t\tG-CASCADE    &141.4M  & 30.42G  & 82.98 & 89.57 & 95.74 & 89.73     & 90.11 & 94.75 & 96.21 & 94.94   \\\\ \n\t\t\t\\textbf{Ours} & 4.6M   & 16.85G  & \\textbf{84.18} & \\textbf{90.71} & \\textbf{96.45} & \\textbf{91.77} \n\t\t\t& \\textbf{90.88} & \\textbf{95.15} & \\textbf{96.99} & \\textbf{96.58} \\\\ \\hline\n\t\t\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Phone paper indicate college forward improve. Woman now market entire human. Similar crime though employee building along less. Despite able if rate president."
+    }
+]

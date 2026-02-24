@@ -1,0 +1,43 @@
+[
+    {
+        "type": "text",
+        "data": "Huge after weight. Nice weight fly mother. Seat line region range. Phone who line often. Action attorney herself wish left. Smile on either always."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c} $B$ badly \\\\ estimated \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrr}\n\\hline\n\\textbf{Method variant} & \\textbf{EM} & \\textbf{F1} \\\\\n\\hline\nWikontic (gpt4.1-mini)  & 42.6\\tiny{$\\pm{0.7}$} & 55.9\\tiny{$\\pm{0.3}$} \\\\\n\\hline\n\\hspace{0.9em}w/o qualifiers & 23.9\\tiny{$\\pm{0.2}$}& 39.4\\tiny{$\\pm{0.4}$} \\\\\n\\hspace{0.9em}w/o aliases & 36.5\\tiny{$\\pm{0.8}$}& 50.0\\tiny{$\\pm{1.4}$} \\\\\n\\hspace{0.9em}w/o ontology (2)& 36.3\\tiny{$\\pm{1.2}$}& 48.8\\tiny{$\\pm{1.0}$} \\\\\n\\makecell[l]{\\hspace{0.9em}w/o ontology (2) and \\\\ \\hfill normalization (3)} & 27.0\\tiny{$\\pm{1.2}$}& 36.9\\tiny{$\\pm{2.2}$} \\\\\n\\hspace{0.9em}Single-step QA & 31.3\\tiny{$\\pm{0.6}$}& 43.4\\tiny{$\\pm{0.6}$} \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\\toprule\n\\multirow{2}*{\\textbf{Methods}}&\\multicolumn{3}{c}{\\textbf{Lane Polyline}}\\\\\n\\cmidrule{2-4}\n & \\textbf{Precision} & \\textbf{Recall} & \\textbf{F1} \\\\\n\\midrule\n\\midrule\nCoords-based & 0.49 & 0.47 & 0.48\\\\\n\\rowcolor{violet!6}GETok & 0.52 & 0.65 & 0.58 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "None purpose himself. Life they remember firm partner. Worker bring then mouth threat friend."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll@{\\hspace{4em}}ll}\n\\dag  & \\verb\"\\dag\"  & \\S & \\verb\"\\S\" \\\\\n\\copyright & \\verb\"\\copyright\"& \\ddag & \\verb\"\\ddag\"\\\\\n \\P & \\verb\"\\P\" & \\pounds    & \\verb\"\\pounds\" \\\\\n\\#    & \\verb\"\\#\"    & \\$ & \\verb\"\\$\"\\\\\n \\% & \\verb\"\\%\" & \\&    & \\verb\"\\&\"  \\\\\n  \\_ & \\verb\"\\_\" & \\{    & \\verb\"\\{\"   \\\\\n \\} & \\verb\"\\}\" & & \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\n\\multirow{2}{*}{Metric} & \\multicolumn{2}{c}{T2US Benchmark} \\\\\n\\cmidrule(lr){2-3}\n & T2US~ & PPTPilot (ours) \\\\\n\\midrule\nSuccess rate (\\%)              & 96.83          & \\textbf{100.00} \\\\\nInstruction following $\\uparrow$ & 2.21           & \\textbf{4.05}   \\\\\nImage quality $\\uparrow$         & 2.17           & \\textbf{4.44}   \\\\\nLayout quality $\\uparrow$        & 2.58           & \\textbf{4.40}   \\\\\nColor quality $\\uparrow$         & 2.57           & \\textbf{4.20}   \\\\\nText quality $\\uparrow$          & 2.48           & \\textbf{3.92}   \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Unit experience money traditional technology without. Truth TV value may."
+    },
+    {
+        "type": "text",
+        "data": "Hand himself produce against stage. Very central address lose bill. Ball method in team then Republican."
+    }
+]

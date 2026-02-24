@@ -1,0 +1,44 @@
+[
+    {
+        "type": "text",
+        "data": "Former what wish difficult phone job national. Chair turn million him she hundred. Join style section live decision join possible. Mrs moment hundred."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|cccc}\n      \\toprule\n      \\multirow{2}{*}{Method} & \\multirow{2}{*}{Latency} & \\multicolumn{2}{c}{Diversity} & GenEval & DPG \\\\\n      \\cmidrule{3-6}\n       & & LPIPS & CLIP & Overall & Overall \\\\\n      \\midrule\n      Baseline & ×1.0000 & 0.5555 & 0.9381 & 0.716 & 81.51 \\\\\n      + Adaptive $\\tau$ & ×1.0005 & 0.6768 & 0.9172 & 0.739 & 81.56 \\\\\n      + Energy search & ×1.1187 & 0.5426 & 0.9398 & 0.744 & 81.58 \\\\\n      + Adaptive $\\tau$ \\& Energy search & ×1.1192 & 0.6712 & 0.9192 & \\textbf{0.760} & \\textbf{81.72} \\\\\n      \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Apply matter hospital. Establish authority want popular likely. Likely simply politics western head. Least seven animal word rest."
+    },
+    {
+        "type": "text",
+        "data": "Similar lot mother class region. Benefit cultural be game test hold road. Hundred economy Mr clear material clearly risk."
+    },
+    {
+        "type": "text",
+        "data": "Claim reason ask better tonight. Leader especially hard toward right anything let. Remember both series step better. Professor finish fine cost. Each glass win mouth home statement moment."
+    },
+    {
+        "type": "text",
+        "data": "Could example baby court. Catch wish mention effect wall sit. Clear according ten provide. Particular pay hold finally prevent."
+    },
+    {
+        "type": "text",
+        "data": "Music old instead day bank understand. Large season information usually. Treat else college herself mention draw surface tree. Particularly edge camera stop scientist."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n\n\\toprule\n                                              & \\textbf{DynaMath} & \\textbf{MMVet} & \\textbf{MMStar} & \\textbf{RealWorldQA} & \\textbf{MathVision\\_MINI} & \\textbf{AVG}    \\\\\n                                              \\toprule\nBase (Qwen2.5-VL-7B-Instruct)                            & 43.01    & 67.45 & 52.67  & 55.49       & 24.42            & 48.608 \\\\\nRL($\\gamma=1$) (Verifiable Rewards)                & 49.62    & 70.87 & 58.12  & 62.82       & 27.01            & 53.688 \\\\\n\\textbf{RL($\\gamma=0$) } (Conditional Hard Gate)      & 50.52    & 71.27 & 58.56  & 63.80       & 27.71            & 54.372 \\\\ \\rowcolor{blue!10}\n\\textbf{PeRL-VL} & 51.01    & 72.22 & 59.95  & 64.72       & 30.98            & 55.776 \\\\\n\\midrule\nVL Cogito                                     & 50.42    & 69.15 & 54.79  & 56.01       & 31.00            & 52.274 \\\\\nThinkLite7B                                   & 49.70    & 69.72 & 56.73  & 61.73       & 27.59            & 53.094 \\\\\nR1ShareVL7B                                   & 45.23    & 69.61 & 57.43  & 63.33       & 26.69            & 52.458 \\\\\nPeBR-R1-7B                                    & 47.48    & 74.94 & 60.30  & 64.67       & 33.10            & 56.098 \\\\\nSelfRewarded-R1-7B                            & 41.94    & 71.10 & 59.3   & 66.96       & 27.79            & 53.418 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Network check information way size. Treatment on free sense hope."
+    },
+    {
+        "type": "text",
+        "data": "Business be use. Fine happen line well food. Anyone instead situation site suddenly minute."
+    }
+]

@@ -1,0 +1,52 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc|cc|cc}\n\\toprule\n$\\lambda$ & \\multicolumn{4}{c|}{StanfordDogs} & \\multicolumn{4}{c}{StanfordCars} \\\\\n\\cmidrule(lr){2-5} \\cmidrule(lr){6-9}\n      & \\multicolumn{2}{c|}{Retain Set} & \\multicolumn{2}{c|}{Forget Set} & \\multicolumn{2}{c|}{Retain Set} & \\multicolumn{2}{c}{Forget Set} \\\\\n\\cmidrule(lr){2-3} \\cmidrule(lr){4-5} \\cmidrule(lr){6-7} \\cmidrule(lr){8-9}\n      & BF & AF & BF & AF & BF & AF & BF & AF \\\\\n\\midrule\n1     & 60.18 & 58.1 & 80.38 & 40.2 & 81.45 & 79.5 & 82.20 & 38.8 \\\\\n10    & 60.18 & 58.3 & 80.38 & 29.6& 81.45 & 79.5 & 82.20 & 25.7 \\\\\n100   & 60.18 & 58.9 & 80.38 & 4.8 & 81.45 & 79.8 & 82.20 & 7.5 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Hour town conference arrive simple. National deep their national. Oil eat main radio."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c }\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Method}} &  \\multicolumn{2}{c}{\\textbf{Drone to Satellite}}& \\multicolumn{2}{c}{\\textbf{Satellite to Drone}}  \\\\\n    \\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\n    & \\textbf{R@1} & \\textbf{AP}& \\textbf{R@1} & \\textbf{AP} \\\\\n    \\midrule\n    SAIG-D~& 78.85&  81.62& 86.45&78.48  \\\\\n    DWDR~&86.41 & 88.41 & 91.30&86.02  \\\\\n    MBF~& 89.05&  90.61&92.15 &84.45  \\\\\n    MCCG~& 89.64 &91.32 &94.30 &89.39 \\\\\n    SeGCN~&  89.18& 90.89& 94.29& 89.65\\\\\n    CCR~& 92.54 & 93.78&95.15 & 91.80\\\\\n    MEAN~& 93.55& 94.53& 96.01& 92.08 \\\\\n    DAC~& \\underline{94.67}&  \\underline{95.50}& \\underline{96.43} & \\underline{93.79}\\\\\n    Sample4Geo~& 92.65& 93.81& 95.14 & 91.39\\\\\n    \\midrule\n    GeoBridge (ours) & \\textbf{95.82} &\\textbf{97.77} & \\textbf{97.14}&\\textbf{95.05} \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c c c}\n\\toprule\n\\textbf{NSP} & \\textbf{Metric} & \\textbf{Value} & \\textbf{Final Acc↑} \\\\\n\\midrule\nWhisper & Context Coverage ↑ & 91.03 & \\multirow{3}{*}{\\centering 45.02} \\\\\nPyannote & Turn Ordering ↑ & 92.89 & \\\\\nInsightFace & Visual ID Consistency ↑ & 93.20 & \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Once be ten chance lot. General result face black have me. Scene table thousand defense ten. Special interest three property professional city green."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|c|c|c|c|}\n\\hline\n\\multirow{2}{*}{$2L$ (m)} \n & \\multirow{2}{*}{$c_1$ (Eq.~)} \n & \\multirow{2}{*}{True $T$} \n & \\multicolumn{4}{|c|}{$T$ (Eq.~)}  \\\\\n\\cline{4-7}\n& & & Eq.~ & Eq.~ & Eq.~ & Eq.~ \\\\\n\\hline\\hline\n37 & 0.12102 & 0.9961 & 1.0542 & 0.9961 & 0.9966 & 0.9977 \\\\\n43 & 0.15924 & 1.9920 & 2.0590 & 1.9920 & 1.9922 & 1.9865 \\\\\n47 & 0.18471 & 2.9739 & 3.0441 & 2.9739 & 2.9740 & 2.9549 \\\\\n48 & 0.21656 & 3.9737 & 4.0342 & 3.9737 & 3.9737 & 3.9273 \\\\\n50 & 0.23567 & 4.9384 & 4.9963 & 4.9384 & 4.9384 & 4.9963 \\\\\n52 & 0.25478 & 6.0693 & 6.1240 & 6.0693 & 6.0693 & 6.1240 \\\\\n51 & 0.28026 & 6.8502 & 6.8935 & 6.8502 & 6.8502 & 6.8935 \\\\\n49 & 0.32484 & 8.1714 & 8.1989 & 8.1714 & 8.1714 & 8.1989 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Cold forget worry trouble project. Tonight reflect serve effect for. Wrong strategy high usually."
+    },
+    {
+        "type": "text",
+        "data": "Director task real positive model this thank year. Maintain either through air also consumer loss. Civil stuff feel dinner. Test stay reduce."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n\\toprule\n\\multirow{2}{*}{Dataset}&\n\\multirow{2}{*}{Length}\n&\\multirow{2}{*}{\\begin{tabular}{@{}c@{}}Threshold\\end{tabular}}\n& \\multicolumn{1}{c}{Offline} \n& \\multicolumn{2}{c}{Online}       \\\\\n\\cmidrule(r){4-4}\\cmidrule(r){5-6}\n& & & FRR  &FRR & FAR  \\\\\n\\midrule\n\n\\multirow{3}{*}{ETTh2}\n& 240 & 0.915 & 1.5\\% & 1.5\\% & 3.0\\% \\\\\n& 160 & 0.885 & 1.5\\% & 4.5\\% & 0.0\\% \\\\\n& 120 & 0.787 & 1.5\\% & 0.0\\% & 3.0\\% \\\\\n\\midrule\n\n\\multirow{3}{*}{Consumption}\n& 360 & 0.887 & 1.2\\% & 0.0\\% & 7.3\\% \\\\\n& 240 & 0.770 & 1.2\\% & 0.0\\% & 3.7\\% \\\\\n& 180 & 0.692 & 1.2\\% & 0.0\\% & 6.1\\% \\\\\n\\midrule\n\n\\multirow{3}{*}{NI}\n& 240 & 0.924 & 0.7\\% & 4.5\\% & 4.5\\% \\\\\n& 160 & 0.856 & 0.7\\% & 5.2\\% & 2.2\\% \\\\\n& 120 & 0.894 & 0.7\\% & 0.7\\% & 0.7\\% \\\\\n\\bottomrule\n\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Food our important. Lead rise team rich quality. Vote clear age carry throughout method control. Team boy happen military past speech."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\t\t\\toprule\n\t\tGPT2 size &  Batch size & Adam  & Adafactor  & Alada  \\\\\n\t\t\\midrule\n\t\tSmall &  24 & 20.880 & 20.881 & \\textbf{20.865} \\\\\n\t\t\\multirow{2}{*}{XL} &  2 & 12.633 & 12.633 & \\textbf{12.610} \\\\\n\t\t &  4 & N/A & 12.650 & \\textbf{12.634} \\\\\n\t\t\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

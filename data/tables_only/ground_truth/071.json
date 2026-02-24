@@ -1,0 +1,88 @@
+[
+    {
+        "type": "text",
+        "data": "Should gas return. Nice eye street especially. Particularly up to age relationship big."
+    },
+    {
+        "type": "text",
+        "data": "Education idea treatment. News risk environment management character. Home decision maybe opportunity. Example positive enough."
+    },
+    {
+        "type": "text",
+        "data": "Property field than technology. Down plant discussion benefit history position reflect."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c}\n        \\multicolumn{3}{c}{Seyferts vs QSOs}                  \\\\\n        \\hline\n                  &  \\multicolumn{2}{c}{$p-\\mathrm{value}$}   \\\\\n        \\hline\n        Parameter & KS test & U test   \\\\\n        (1)       & (2)     & (3)      \\\\\n        \\hline\\hline\n        EW (eV)                                             & $3.2 \\times 10^{-6}$  & $3.9 \\times 10^{-7}$  \\\\\n        $\\sigma$ (eV)                                       & $1.6 \\times 10^{-4}$  & $1.6 \\times 10^{-4}$  \\\\\n        $\\log{(\\xi / \\mathrm{erg\\,cm\\,s}^{-1})}$            & $0.13$                & $0.19$                \\\\\n        $\\log{(N_\\mathrm{H} / \\mathrm{cm}^{-2})}$           & $0.043$               & $0.031$               \\\\\n        $\\upsilon_\\mathrm{out}$ (km s$^{-1}$)               & $3.8 \\times 10^{-3}$  & $2.5 \\times 10^{-3}$  \\\\\n        FWHM (km s$^{-1}$)                                  & $6.0 \\times 10^{-3}$  & $1.9 \\times 10^{-3}$  \\\\\n        $\\log{(L_\\mathrm{bol} / \\mathrm{erg\\,s}^{-1})}$     & $1.1 \\times 10^{-6}$  & $9.6 \\times 10^{-7}$  \\\\\n        $\\log{(M_\\mathrm{BH}/M_\\odot)}$                     & $2.8 \\times 10^{-6}$  & $3.5 \\times 10^{-6}$  \\\\\n        $\\log{\\lambda_\\mathrm{Edd}}$                        & $0.24$                & $0.12$                \\\\\n        $z$                                                 & $1.3 \\times 10^{-11}$ & $2.3 \\times 10^{-9}$  \\\\\n        $\\Gamma$                                            & $0.60$                & $0.25$                \\\\\n        \n        \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Central interesting street itself. Ability these day easy game last street defense. School movie sister fund age."
+    },
+    {
+        "type": "text",
+        "data": "Already manage create success parent nor make. See decide wife few. Sure serve low while yeah. Wait oil husband stand history there."
+    },
+    {
+        "type": "text",
+        "data": "Before easy economy dark. Director certain sure. Under common those speech."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c}\n                 & $t$ \\\\\\hline\n                $s$ & $st$\n            \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Around able always culture yes. Employee probably guess suffer five stand new certainly. Able ok story travel."
+    },
+    {
+        "type": "text",
+        "data": "Source stage check participant. Guy eight true people. Owner type share. War spend wind. Reveal reflect stock Mrs."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|ccccc}\n\\hline\n\\multirow{2}{*}{Method} & \\multicolumn{5}{c}{CVC-300 } \\\\ \\cline{2-6}\n & mDice$\\uparrow$ & mIoU$\\uparrow$ & $S_{\\alpha}\\uparrow$ & $F_{\\beta}^{\\omega}\\uparrow$ & $E_{\\phi}^{max}\\uparrow$ \\\\ \\hline\nSFA     & 0.467 & 0.329 & 0.640 & 0.341 & 0.817 \\\\\nPraNet  & 0.871 & 0.797 & 0.925 & 0.843 & 0.972 \\\\\nSANet    & 0.888 & 0.815 & 0.928 & 0.859 & 0.972 \\\\\nLDNet~               & 0.850 & 0.781 & 0.907 & 0.822 & 0.949 \\\\\nCFANet  & 0.893 & 0.827 & 0.938 & 0.875 & \\textcolor{blue}{0.978} \\\\\nNPDNet  & \\textcolor{blue}{0.908} & \\textcolor{blue}{0.844} & \\textcolor{blue}{0.939} & \\textcolor{blue}{0.880} & 0.977 \\\\\nARNet               & \\textcolor{red}{0.913} & \\textcolor{red}{0.851} & \\textcolor{red}{0.947} & \\textcolor{red}{0.902} & \\textcolor{red}{0.983} \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Administration space leave teach include. Camera west change black."
+    },
+    {
+        "type": "text",
+        "data": "Cell he away industry yard. Share man support far themselves."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n        \\hline\n                             & Method      & NIQE$\\downarrow$ & PIQE$\\downarrow$ & Parameters$\\downarrow$ \\\\ \\hline\n        \\multirow{4}{*}{SES} & Restormer   & 4.32  & \\underline{15.79} & 26.13M      \\\\\n                             & SwinIR      & 5.03  & 18.21 & 10.89M      \\\\\n                             & DGGAN-DAM   & \\textbf{3.62}  & \\textbf{13.79} & 4.72M       \\\\\n                             & DGGAN-DRPM  & \\underline{3.98}  & 16.82 & 0.63M       \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc}\n    $m$ & FID-50K \\\\\n    \\midrule \n    0.25 & \\textbf{11.59}\\\\\n    0.5 & 13.94\\\\\n    0.75 & 16.29\\\\\n    1.0 & 17.22\\\\\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Investment individual light charge those their at. Camera city per black management in."
+    },
+    {
+        "type": "text",
+        "data": "Watch individual drug which choice science central anything. Consider whether entire you decade more live. Without entire very cost."
+    },
+    {
+        "type": "text",
+        "data": "Its information case reality computer. Left great plan certainly newspaper. Per bill make. Her camera safe space rich. Suddenly financial debate recognize within total black."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c  c|c}\n    \\noalign{\\hrule height 1.0pt}\n     & Noise Estimator & Blur Estimator & PSNR \\\\\n    \\noalign{\\hrule height 1.0pt}\n    Net1 &  &  & 31.78  \\\\\n    Net2 & \\checkmark &  & 31.91  \\\\\n    Net3 &  & \\checkmark & 32.20  \\\\\n    Net4 & \\checkmark & \\checkmark & \\textbf{32.28}  \\\\\n    \\noalign{\\hrule height 1.0pt}\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Either service itself hot book. Ability expert brother loss. Travel question both morning light."
+    }
+]

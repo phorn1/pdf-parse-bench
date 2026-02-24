@@ -1,0 +1,45 @@
+[
+    {
+        "type": "text",
+        "data": "Mouth everything total reflect receive try. Become body seek information. Story right information message. None assume wear less create. Peace seek it."
+    },
+    {
+        "type": "text",
+        "data": "Again real never growth. Final federal method style put."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lllll}\n\\toprule\n    & \\multicolumn{2}{c}{Optimal Sample  Allocation}     & \\multicolumn{2}{c}{Convergence Rate}\\\\ \\cmidrule{2-3}  \\cmidrule(l){4-5}\n\\multicolumn{1}{c}{Technique}     & \\multicolumn{1}{c}{CR}      & \\multicolumn{1}{c}{OTP}        & \\multicolumn{1}{c}{CR} & \\multicolumn{1}{c}{OTP} \\\\ \\cmidrule{1-1}\\cmidrule(l){2-2}  \\cmidrule(l){3-3} \\cmidrule(l){4-4} \\cmidrule(l){5-5}\nkNN & \\begin{tabular}[c]{@{}l@{}}$k^*T^*=\\Gamma^{2\\over d+2}$,  $k^*\\in\\left(1,\\Gamma^{{2\\over d+2}}\\right]$,\\\\ $T^*\\in\\left[1,\\Gamma^{{2\\over d+2}}\\right)$\\end{tabular} & \\begin{tabular}[c]{@{}l@{}}$k^*T^*=\\Gamma^{2\\over d+2}$,  $k^*\\in\\left(1,\\Gamma^{{1\\over d+2}}\\right]$,\\\\ $T^*\\in\\left[\\Gamma^{{1\\over d+2}},\\Gamma^{{2\\over d+2}}\\right)$\\end{tabular} & $q\\Gamma^{-{2\\over d+2}}$             & $q\\Gamma^{-{2\\over d+2}}$           \\\\ \\cmidrule{1-1}\\cmidrule(l){2-5}\nKS  & \\begin{tabular}[c]{@{}l@{}}$h^* = \\Gamma^{-{1\\over d+2}}$,  \\\\ $T^*\\in\\left[1,\\Gamma^{{2\\over d+2}}\\right)$ \\end{tabular}                           & \\begin{tabular}[c]{@{}l@{}}$h^* = \\Gamma^{-{1\\over d+2}}$, \\\\ $T^*\\in\\left[\\Gamma^{{1\\over d+2}},\\Gamma^{{2\\over d+2}}\\right)$\\end{tabular} & $q\\Gamma^{-{2\\over d+2}}$ & $q\\Gamma^{-{2\\over d+2}}$ \\\\ \\cmidrule{1-1}\\cmidrule(l){2-5}\nLR  & $T^*\\in[1,T]$ & $T^*\\in\\left[\\Gamma^{1\\over 2},\\Gamma\\right]$ & $q\\Gamma^{-1}$   & $q\\Gamma^{-1}$\\\\ \\cmidrule{1-1}\\cmidrule(l){2-5}\nKRR & \\begin{tabular}[c]{@{}l@{}}$\\lambda^*=\\Gamma^{-1}$, \\\\ $ T^*\\in\\left[1,\\Gamma^{1-{d\\over2m}}\\right)$\\end{tabular}            & \\begin{tabular}[c]{@{}l@{}}$\\lambda^*=\\Gamma ^{-1}$, \\\\ $T^*\\in\\left[\\Gamma^{{1\\over2}-{d\\over4m}},\\Gamma^{1-{d\\over2m}}\\right)$\\end{tabular}        & $q\\Gamma^{-\\left(1-{d\\over2m}\\right)}$       & $q\\Gamma^{-\\left(1-{d\\over2m}\\right)}$     \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Easy send finish note red. Suggest however east hope. Lot black health summer behavior these area realize."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|l|l|l}\n    authblk & babel & cjk & dvips \\\\\n    epsf & epsfig & euler & float \\\\\n    fullpage & geometry & graphics & hyperref \\\\\n    layout & linespread & lmodern & maltepaper \\\\\n    navigator & pdfcomment & pgfplots & psfig \\\\\n    pstricks & t1enc & titlesec & tocbind \\\\\n    ulem\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Operation each grow enter. Per friend prepare young. Quite phone provide only bed finally reduce."
+    },
+    {
+        "type": "text",
+        "data": "Back lay reflect student. Mean heavy better wall reduce. Claim court effect deep pressure suffer. Listen tell beat area."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc ccc}\n        \\toprule\n        \\multirow{2}{*}{Models} & \\multicolumn{3}{c}{One-step} & \\multicolumn{3}{c}{Two-step} \\\\\n        \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n         & P & R & F1 & P & R & F1 \\\\\n        \\midrule\n        Qwen3-4B (int4)&95.1&99.3&97.2&94.6&99.3&96.9\\\\\n         Qwen3-4B (fp16)&99.3&98.1&98.7&99.3&98.1&98.7\\\\\n         Mistral-7B (int4)&99.3&96.8&98.0&98.7&99.3&99.0\\\\\n         Mistral-7B (fp16)&99.3&98.1&98.7&99.3&99.3&99.3\\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Usually box instead doctor cell. Stand drug air fund share space. Recognize church land reach late."
+    },
+    {
+        "type": "text",
+        "data": "Clear model name card across artist. City should claim standard American ready."
+    }
+]

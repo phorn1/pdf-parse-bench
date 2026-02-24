@@ -1,0 +1,44 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n Case  & $ \\Delta^+_x$ & $\\Delta^+_\\xi$ & $\\Delta^+_z$ & $\\Delta^+_y$   \\\\ \\hline\n T950\\_{coarse}  &  $20.0$ & $1.0$ & $0.7 - 4.0$ & $0.7 - 8.1$  \\\\\n T950\\_{fine}  &  $10.0$ & $1.0$ & $0.7 - 4.0$ & $0.7 - 8.1$ \\\\ \\hline\n T615\\_{coarse}  &  $10.0$ & $0.6$ & $0.3 - 12.0$ & $0.25 - 7.87$  \\\\\n T615\\_{fine}  &  $7.0$ & $0.4$ & $0.2 - 8.2$ & $0.17 - 5.13$ \\\\ \\hline\n  \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lc}\n    \\toprule\n        Training Setting & IMO 50 Pass@256 \\\\ \\midrule\n        With CBRL & 44/50  \\\\ \n        SFT Cold Start & 22/50  \\\\ \n        % Random RL Data Distribution & 38/50  \\\\ \n        Easy Data Only & 29/50  \\\\ \n        Challenging Data Only & 24/50  \\\\\n        Same Data without Schedule & 38/50 \\\\ \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Candidate morning drop. Third say general enter. Sell former music east."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n        \\hline\n        \\multicolumn{2}{c}{}                                                                & Params(M) & GFLOPs \\\\ \\hline\n        \\multicolumn{2}{c}{DAM}                                                             & 4.33      & 29.75  \\\\\n        \\multicolumn{2}{c}{DGEM}                                                            & 0.39      & 24.65  \\\\ \\cline{2-2}\n        & \\begin{tabular}[c]{@{}c@{}}Degradation Representation \\\\ Compression\\end{tabular} & 0.066     & 1.31   \\\\\n        & Shallow Feature Extraction                                                        & 0.0018    & 0.11   \\\\\n        & Feature Modulation                                                                & 0.13      & 8.22   \\\\\n        & Reconstruction                                                                    & 0.19      & 15.01  \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\\toprule\n         \\multirow{2}{*}{Service} &  \\multicolumn{2}{c}{LogiAgent}&  \\multicolumn{2}{c}{RESTifAI}\\\\\n         \\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\n         & \\#TC&Tokens/TC& \\#TC&Tokens/TC\\\\\\midrule\n         FDIC& 26&37001& 133&88762\\\\\n         Genome Nexus& 38&62071& 326&22258\\\\\n         Languagetool& 6&46689& 35&3585\\\\\n         OhSome&  234&48036& 2213&37947\\\\\n         Restcountries& 27&62143& 191&9296\\\\ \\midrule\n         Average& & 51188& &32370\\\\\n         \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|} \n\\hline{Symbol}&{Variable Name}&{Value Used} \\\\\n\\hline\n\\hline\n\\multicolumn{3}{|c|}{\\textbf{General}}\\\\\n\\hline{\\(f_s\\)}&{Sampling Frequency}&{\\(2.048\\)MHz }\\\\\n\\hline{\\(f_c\\)}&{Estimated Frequency}&{74-76KHz} \\\\\n\\hline{\\(f_{True}\\)}&{True Frequency}&{75KHz} \\\\\n\\hline{\\(\\Delta f\\)}&{Frequency Offset}&{-1 to 1 KHz}\\\\\n\\hline{\\(\\phi\\)}&{Phase Offset}&{\\(-\\pi\\) to \\(\\pi\\)}\\\\\n\\hline{\\(N_s\\)}&{Samples/Sequence}&{500 }\\\\\n\\hline{\\(SNR\\)}&{Signal to Noise Ratio}&{\\(-30\\) to \\(5\\) dB}\\\\\n\\hline{\\(Samples\\)}&{Sample Sequences/Bin}&{\\(1000\\) }\\\\\n\\hline{\\(LPF\\)}&{Filter Used}&{Butterworth }\\\\\n\\hline{\\(\\omega_c\\)}&{Bandwidth}&{\\(40000\\)Hz }\\\\\n\\hline\n\\hline\n\\multicolumn{3}{|c|}{\\textbf{QPSK}}\\\\\n\\hline{\\(f_{sym}\\)}&{Symbol Rate}&{25KHz }\\\\\n\\hline{\\(\\alpha\\)}&{Roll-Off Factor}&{0.4 }\\\\\n\\hline\n\\hline\n\\multicolumn{3}{|c|}{\\textbf{OFDM}}\\\\\n\\hline{}&{Inner Modulation}&{QPSK}\\\\\n\\hline{\\(f_{sym}\\)}&{Symbol Rate}&{32000}\\\\\n\\hline{SCS}&{Sub-carrier Spacing}&{2000}\\\\\n\\hline{\\(N_c\\)}&{Number of Carriers}&{16}\\\\\n\\hline\n\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Whatever ball bank natural five. Off chair kind parent agency attorney. Start computer oil easy miss official early."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ c | c }\n\\hline\nModel & Accuracy \\\\\n\\hline \\hline\n Q-RBF $j=50$ & 1.0  \\\\\n \\hline\n Classical RBF $j=50$ & 1.0 \\\\\n \\hline \n Linear SVM & 0.978 \\\\\n \\hline\n Gaussian SVM & 0.978 \\\\\n \\hline\n MLP & 1.0\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Project others Congress executive region. Concern listen process. Nothing assume involve most center size."
+    }
+]

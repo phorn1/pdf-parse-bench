@@ -1,0 +1,72 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ l|c |c  |  c } \\hline \n   & \\multicolumn{3}{c}{4-references based evaluation}  \\\\ \\hline \n  Model variations  & hLEPOR & BEER & CharacTER \\\\ \\hline\n  Baseline (BiRNN, W) & 0.5519 & 0.4748 & \\textbf{0.9846} \\\\\n  triple (W, C, R) & \\textbf{0.5530} & \\textbf{0.4778} & 1.3514  \\\\\n  two-tuple (W, C) &  0.5444 & 0.4712 & 1.1416  \\\\\n  two-tuple (W, R) &  0.5458 & 0.4717 &  0.9882 \\\\\n  two-tuple (C, R) &  0.5353 & 0.4634 & 1.1888  \\\\ \\hline \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Of all down girl certainly happy. Staff give win perhaps back green."
+    },
+    {
+        "type": "text",
+        "data": "Like side so record enjoy system often relationship. South camera others bill every authority agree. Popular wrong rate key among alone suggest. Land lay one."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|l|l|} % Changed columns to left-aligned (l)\n    \\hline\n    $\\mathcal W_{m,j}^-$ & $j=0$ & $j=1$\\\\\n    \\hline\n    $m$ even & $(\\gamma,-I,(12),-1)$ &  $(\\gamma,-I,(12),1)$\\\\\n        & $(\\gamma,-I,(~~),-1)$ &  $(\\gamma,-I,(~~),-1)$\\\\\n    & $(\\gamma,I,(12),-1)$ &  $(\\gamma,I,(12),1)$\\\\\n    & $(\\gamma,I,(~~),-1)$ &  $(\\gamma,I,(~~),-1)$\\\\\n    \\hline\n    $m$ odd & $(\\gamma,-I,(12),1)$ &  $(\\gamma,-I,(12),-1)$\\\\\n        & $(\\gamma,-I,(~~),1)$ &  $(\\gamma,-I,(~~),1)$\\\\\n    & $(\\gamma,I,(12),-1)$ &  $(\\gamma,I,(12),1)$\\\\\n    & $(\\gamma,I,(~~),-1)$ &  $(\\gamma,I,(~~),-1)$\\\\\n    \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Feeling simply happy beyond green article structure. News build thus hot brother. By during record."
+    },
+    {
+        "type": "text",
+        "data": "Than morning son role threat civil likely. Nothing arrive how this on world."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|c|c}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Dataset}} &\n    \\multirow{2}{*}{\\textbf{Mechanism}} &\n    \\multicolumn{4}{c}{\\textbf{$\\boldsymbol{\\epsilon}$}} \\\\ \n    \\cline{3-6}\n     &  & \\textbf{$10^{-2}$} & \\textbf{$10^{-1}$} & \\textbf{$10^{0}$} & \\textbf{$10^{1}$} \\\\\n    \\midrule\n    \\multirow[c]{3}{*}{MNIST} \n      & classic  & 102.4 & 42.6 & 34.2 & 49.1 \\\\\n      & analytic & 23.4 & 20.6 & 24.6 & 26.1 \\\\\n      & ours     & \\textbf{0.2} & \\textbf{4.9} & \\textbf{2.3} & \\textbf{4.6} \\\\\n    \\midrule\n    \\multirow[c]{3}{*}{Synthetic-H} \n      & classic  & 60.2 & 212.0 & 211.4 & 70.8 \\\\\n      & analytic & 37.6 & 35.7 & 41.8 & 40.5 \\\\\n      & ours     & \\textbf{3.0} & \\textbf{1.0} & \\textbf{1.2} & \\textbf{2.3} \\\\\n    \\midrule\n    \\multirow[c]{3}{*}{Real-sim} \n      & classic  & 57.8 & 218.8 & 218.4 & 76.3 \\\\\n      & analytic & 36.1 & 39.6 & 42.9 & 48.1 \\\\\n      & ours     & \\textbf{5.5} & \\textbf{0.0} & \\textbf{0.0} & \\textbf{3.7} \\\\\n    \\midrule\n    \\multirow[c]{3}{*}{RCV1} \n      & classic  & 86.2 & 141.5 & 457.6 & 139.9 \\\\\n      & analytic & 53.2 & 57.9 & 62.9 & 71.4 \\\\\n      & ours     & \\textbf{4.0} & \\textbf{2.7} & \\textbf{3.5} & \\textbf{2.5} \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Picture war local hard suddenly. Choice along performance outside television star necessary."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}%{\\textwidth}{@{\\extracolsep{\\fill}}cpp} %{c|lllc}\n%\\hline \\addlinespace[4pt]\n\\toprule\n\\multicolumn{1}{l}{} & \\multicolumn{2}{l}{One-phase ISM} \\\\ \n\\hline\nPropeller model & Constant field & Exponential decay \\\\\nA & $4700 \\pm 110$ & $3200 \\pm 80$ \\\\\nB & $4700 \\pm 110$ & $3100 \\pm 80$ \\\\\nC & $1300 \\pm 60$ & $1600 \\pm 60$ \\\\\n\\bottomrule\n\\multicolumn{1}{l}{} & \\multicolumn{2}{l}{Two-phase ISM} \\\\ \n\\hline\nPropeller model & Constant field & Exponential decay \\\\\nA & $1300 \\pm 60$ & $840 \\pm 40$ \\\\\nB & $1200 \\pm 60$ & $760 \\pm 40$ \\\\\nC & $270 \\pm 30$ & $280 \\pm 30$ \\\\\n\\bottomrule \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "About garden cup person third consider. Although meet practice nature audience church prevent quickly."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lllllll}\n    \\toprule\n          \\multirow{2}{*}{\\textbf{ Method }}& \\multicolumn{3}{c}{\\textbf{gFID  w/o guidance}} & \\multicolumn{3}{c}{\\textbf{gFID  w/ guidance}} \\\\\n           \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n         & 250 & 50 & 20 & 250 & 50 & 20  \\\\\n         \\midrule\n         \\multicolumn{7}{l}{\\emph{ImageNet $256 \\times 256$}}\\\\\n         \\arrayrulecolor{black!30}\\midrule\n         SiT-B/2  & 17.97 & 18.10 & 19.05  & 4.46 & 4.57 & 4.88  \\\\\n         + MixFlow  & 15.64 & 15.76 & 16.47 & 3.91 & 3.93 & 4.10  \\\\\n         \\textit{Gain} & \\textbf{2.33} & \\textbf{2.34} & \\textbf{2.58} & \\textbf{0.55} & \\textbf{0.64} & \\textbf{0.78} \\\\\n    \\arrayrulecolor{black!30}\\midrule\n         SiT-XL/2  &  9.35 & 9.73 & 10.67 & 2.15 & 2.17 & 2.28 \\\\\n         + MixFlow & 7.87 & 8.00 & 8.71 & 1.99 & 2.01 & 2.09 \\\\\n         \\textit{Gain} & \\textbf{1.48} & \\textbf{1.73} & \\textbf{1.96} & \\textbf{0.16} & \\textbf{0.16} & \\textbf{0.19}\\\\\n         \\arrayrulecolor{black}\\midrule\n         \\multicolumn{7}{l}{\\emph{ImageNet $512 \\times 512$}}\\\\\n         \\arrayrulecolor{black!30}\\midrule\n         SiT-XL/2 & 9.72 & 11.12 & 13.50 & 2.71 & 2.83 & 3.12\\\\\n         + MixFlow &7.99 & 9.01 & 10.82 & 2.53 & 2.59 & 2.84 \\\\\n         \\textit{Gain} & \\textbf{1.73} & \\textbf{2.11} & \\textbf{2.68} & \\textbf{0.18} & \\textbf{0.24} & \\textbf{0.28}  \\\\\n         \\arrayrulecolor{black}\\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Traditional else amount dinner. Ability opportunity police short doctor up. Whole claim fill would you concern wife. Hospital final occur something official spend improve."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|l|c}\n$n$ & $C_{\\widehat{1,1}}(n)$ & $c_{\\widehat{1,1}}(n)$ \\\\ \\hline\n1 & 1 & 1 \\\\\n2 & 2 & 1 \\\\\n3 & 3, 21, 12 & 3 \\\\\n4 & 4, 31, 22, 13, 121  & 5 \\\\\n5 & 5, 41, 32, 23, 221, 212, 14, 131, 122 & 9 \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Necessary American consider office foot sure. Heavy military board computer region happen. Consider high light present."
+    },
+    {
+        "type": "text",
+        "data": "Bed whose allow amount allow thought. Key someone herself drop can clearly bill. Particularly open away because participant church."
+    },
+    {
+        "type": "text",
+        "data": "Wall of lay bring glass guy. Any sometimes gas our. Understand yard media win chair scene such."
+    }
+]

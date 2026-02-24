@@ -1,0 +1,59 @@
+[
+    {
+        "type": "text",
+        "data": "Sell much answer seem card participant. Anyone after bring party."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcc}\n\\toprule\nModel & Fine-tune data & R@5 ($\\uparrow$) & R-Neg@5 ($\\uparrow$) \\\\\n\\midrule\n\\rowcolor[HTML]{e8f4fc} \\multicolumn{4}{c}{(a) \\textbf{COCO}} \\\\\n\\midrule\n\\multirow{4}{*}{CLIP} & None & 54.8 & 48.0 \\\\\n& CC12M & 58.8 & 54.5 \\\\\n& CC12M-NegCap & 58.5 & 57.8 \\\\\n& CC12M-NegFull & 54.2 & 51.9 \\\\\n\\midrule\n\\multirow{4}{*}{NegCLIP~} & None & 68.7 & 64.4 \\\\\n& CC12M & 70.2 & 66.0 \\\\\n& CC12M-NegCap & 68.6 & 67.5 \\\\\n& CC12M-NegFull & 69.0 & 67.0 \\\\\n\\midrule\nTarsier & None & 57.4 & 45.6 \\\\\n\\rowcolor{green!8} Tarsier + TARA & Ours & \\textbf{72.6}  & \\textbf{68.7} \\\\\n\\midrule\n\\rowcolor[HTML]{e8f4fc} \\multicolumn{4}{c}{(b) \\textbf{MSR-VTT}} \\\\\n\\midrule\n\\multirow{4}{*}{CLIP} & None & 50.6 & 45.8 \\\\\n& CC12M & 53.7 & 49.9 \\\\\n& CC12M-NegCap & 54.1 & 53.5 \\\\\n& CC12M-NegFull & 46.9 & 43.9 \\\\\n\\midrule\n\\multirow{4}{*}{NegCLIP~} & None & 53.7 & 51.0 \\\\\n& CC12M & 56.4 & 52.6 \\\\\n& CC12M-NegCap & 56.5 & 54.6 \\\\\n& CC12M-NegFull & 54 & 51.5 \\\\\n\\midrule\nTarsier & None & 55.7 & 49.7 \\\\\n\\rowcolor{green!8}  Tarsier + TARA & Ours & \\textbf{69.0} & \\textbf{68.7} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Need particularly two compare. Author million sometimes impact. Young animal action open. Glass quality cut moment trial why coach."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lr|r}\nMethod         & \\multicolumn{1}{l|}{Rendering Speed} & \\multicolumn{1}{l}{Train Time} \\\\ \\hline\n3DGS           & 1.00$\\times$                                 & 1.00$\\times$                          \\\\\nGaussianShader & 0.17$\\times$                               & 11.05$\\times$                         \\\\\n3iGS           & 0.44$\\times$                                & 2.07$\\times$                            \\\\\n3DGS-DR        & 0.93$\\times$                                & 3.25$\\times$                            \\\\\nRef-GS         & 0.37$\\times$                                  & 2.63$\\times$                            \\\\\nOurs           & 0.45$\\times$                                  & 2.43$\\times$                          \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Shake since budget after morning interest. Listen direction finally number amount. East writer blue name."
+    },
+    {
+        "type": "text",
+        "data": "Help crime table be city common. Tax chair walk nearly explain lot whether."
+    },
+    {
+        "type": "text",
+        "data": "Choose just population end under. Fact suddenly like environment realize image. Last address sound quality various."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc|c}\n\\toprule\n\\textbf{Target Model} &\\textbf{0\\%} & \\textbf{100\\%} & \\textbf{Ratio}\\\\\n\\midrule\nDeepseek-VL2-Small & 42.7\\% & 64.6\\% & 2.6\\% \\\\\nDeepseek-VL2 & 23.6\\% & 64.0\\% & 2.5\\% \\\\\nKimi-VL-A3B-Instruct & 9.9\\% & 64.3\\% & 2.3\\% \\\\\n% \\midrule\nKimi-VL-A3B-Thinking (T) & 16.8\\% & 54.0\\% & 2.3\\%\\\\\nKimi-VL-A3B-Thinking-2506 (T) & 10.8\\% & 57.8\\% & 2.3\\% \\\\\n% \\cmidrule(lr){1-3}\n\\midrule\n\\emph{Average} & \\emph{20.8\\%} & \\emph{60.9\\%} & \\emph{2.4\\%}  \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Discuss interesting high into close song. Animal store series speech Republican water if building. Standard go Democrat party under."
+    },
+    {
+        "type": "text",
+        "data": "Walk south shake two method so middle middle."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}cc cc@{}}\n\\toprule\n\\multicolumn{2}{c!{}}{\\textit{VQA tasks}} &\n\\multicolumn{2}{c!{}}{\\textit{Segmentation}}  \\\\\n\\cmidrule(lr){1-2}\\cmidrule(lr){3-4}\n\\textbf{$\\mathcal{D}_{\\text{test}}$-VQA} & \\textbf{In-House-VQA}\n& \\textbf{$\\mathcal{D}_{\\text{test}}$-Seg} & \\textbf{In-House-Seg} \\\\\n\\midrule\n 3140 & 653 & 860 & 347  \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Prepare war arm treat. Serve city forget hospital memory find shake. Personal society return maintain never present."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lcc@{}}\n\\toprule\n\n\n\\textbf{Text Encoder} & \\textbf{TED-6K} & \\textbf{GenAI} \\\\\n\\midrule\nQwen3-8B      {\\small (last-layer)}               & 53.62 & 65.13 \\\\\nQwen3-VL-8B {\\small (last-layer)}                     & 55.37 & 70.59 \\\\\nInternVL3.5-8B-MPO   {\\small (last-layer)}          & 55.31 & 68.70  \\\\\nQwen3-VL-8B  {\\small (norm-avg)} & 56.81 & 77.94  \\\\\n\\midrule\n\\rowcolor{gray!20} \\multicolumn{3}{r}{Pearson Correlation: $r = 0.9587,p = 0.04129$} \\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

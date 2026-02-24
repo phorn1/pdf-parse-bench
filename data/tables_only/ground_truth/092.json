@@ -1,0 +1,16 @@
+[
+    {
+        "type": "text",
+        "data": "Party start the save us. Seek create reduce offer seven site. Upon just now poor good culture including. With chair last subject lay. Outside such southern sense record. Speech movement score."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccccc}\n    \\toprule\n    \\multirow{2}[2]{*}{Methods} & \\multicolumn{2}{c}{GT (S1)} & \\multicolumn{2}{c}{RT (S1)} & \\multicolumn{2}{c}{RT (S2)} \\\\\n          & Top-1 & Top-5 & Top-1 & Top-5 & Top-1 & Top-5 \\\\\n    \\midrule\n    CNN~   & 53.55 & 80.76 & 37.73 & 51.37 & 41.26 & 51.14 \\\\\n    AGCN~  & 65.70  & 94.24 & \\textbf{64.82} & \\textbf{90.55} & \\textbf{59.91} &\\textbf{ 83.97} \\\\\n    BlockGCN~ & \\textbf{75.67} & \\textbf{95.22} & 61.06 & 87.75 & 27.85 & 51.01 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\toprule\n & \\textbf{Undirected NB} & \\textbf{Directed NB} & \\textbf{Undirected Poisson} & \\textbf{Directed Poisson} \\\\\n\\midrule\n\\textbf{Dependent variable:} & \\multicolumn{4}{c}{\\textit{Connection strength}} \\\\\n\\midrule\nIncome similarity & 0.055*** (0.009) & 0.053*** (0.008) & 0.059*** (0.011) & 0.042*** (0.010) \\\\\nRent similarity & 0.026*** (0.006) & 0.036*** (0.007) & 0.039*** (0.008) & 0.048*** (0.008) \\\\\nVisible-minority similarity & 0.093*** (0.008) & 0.085*** (0.008) & 0.115*** (0.010) & 0.106*** (0.010) \\\\\nDensity similarity & -0.042*** (0.008) & 0.014 (0.023) & -0.037*** (0.009) & -0.013 (0.015) \\\\\nVoting similarity & 0.096*** (0.009) & 0.082*** (0.010) & 0.144*** (0.012) & 0.124*** (0.012) \\\\\nEducation similarity & 0.134*** (0.011) & 0.087*** (0.012) & 0.182*** (0.013) & 0.150*** (0.013) \\\\\nGeographic similarity & 0.917*** (0.025) & 0.871*** (0.027) & 1.218*** (0.034) & 1.116*** (0.035) \\\\\nAmenity similarity & 0.163*** (0.013) & 0.166*** (0.014) & 0.208*** (0.017) & 0.193*** (0.017) \\\\\nScene similarity & 0.079*** (0.014) & 0.076*** (0.016) & 0.048** (0.019) & 0.050** (0.019) \\\\\nScene $\\times$ Amenity & 0.052*** (0.007) & 0.051*** (0.006) & 0.049*** (0.009) & 0.040*** (0.008) \\\\\n\\midrule\n\\textbf{Fixed Effects:} & & & & \\\\\nn1 & Yes & Yes & Yes & Yes \\\\\nn2 & Yes & Yes & Yes & Yes \\\\\nyear & Yes & Yes & Yes & Yes \\\\\n\\midrule\nFamily & Neg. Bin. & Neg. Bin. & Poisson & Poisson \\\\\nS.E.: Clustered & by n1 \\& n2 & by n1 \\& n2 & by n1 \\& n2 & by n1 \\& n2 \\\\\nObservations & 88{,}374 & 167{,}289 & 88{,}374 & 167{,}289 \\\\\nSquared Correlation & 0.564 & 0.437 & 0.722 & 0.737 \\\\\nBIC & 571{,}443 & 921{,}756 & 948{,}831 & 1{,}303{,}486 \\\\\nOver-dispersion & 3.616 & 3.680 & -- & -- \\\\\n\\bottomrule\n\\multicolumn{5}{l}{\\footnotesize Standard errors in parentheses. All models include year and neighborhoods (FSAs) fixed effects.} \\\\\n\\multicolumn{5}{l}{\\footnotesize Significance levels: *** $p<0.001$, ** $p<0.01$, * $p<0.05$.} \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

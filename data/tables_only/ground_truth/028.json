@@ -1,0 +1,28 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccccccccc}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Model}} & \\multicolumn{4}{c}{\\textbf{Absolute}} & \\multicolumn{4}{c}{\\textbf{Approximate}} & \\multicolumn{4}{c}{\\textbf{Rough}} \\\\\n    \\cmidrule(lr){2-5} \\cmidrule(lr){6-9} \\cmidrule(lr){10-13}\n      & \\textbf{Acc} & \\textbf{Pre} & \\textbf{Rec} & \\textbf{F1} & \\textbf{Acc} & \\textbf{Pre} & \\textbf{Rec} & \\textbf{F1} & \\textbf{Acc} & \\textbf{Pre} & \\textbf{Rec} & \\textbf{F1} \\\\\n    \\midrule\n    \\multicolumn{13}{c}{\\textit{\\textbf{With Standard Answers}}} \\\\\n    \\midrule\n    DeepSeek-V3-0324        & 88.5 & 81.0 & 99.5 & 89.3 & 94.5 & 90.1 & 99.5 & 94.6 & 97.8 & 96.0 & 99.5 & 97.7 \\\\\n    DeepSeek-R1-0528        & 92.0 & 86.4 & 99.0 & 92.3 & 96.0 & 93.2 & 99.0 & 96.0 & 98.5 & 97.9 & 99.0 & 98.5 \\\\\n    Qwen-Max-Preview        & 91.3 & 85.0 & 99.5 & 91.6 & 95.0 & 91.0 & 99.5 & 95.0 & 98.5 & 97.5 & 99.5 & 98.5 \\\\\n    gpt-oss-120b(high)      & 91.5 & 85.3 & 99.5 & 91.9 & 94.5 & 90.1 & 99.5 & 94.6 & 98.3 & 97.0 & 99.5 & 98.2 \\\\\n    Qwen2.5-Math-PRM-72B & 89.0 & 82.0 & 99.0 & 89.7 & 94.5 & 90.5 & 99.0 & 94.6 & 97.8 & 96.5 & 99.0 & 97.7 \\\\\n    DeepSeek-R1-Distill-32B & 87.8 & 81.6 & 96.4 & 88.4 & 92.5 & 89.0 & 96.4 & 92.5 & 96.0 & 95.4 & 96.4 & 95.9 \\\\\n    OPV                     & 91.0 & 84.6 & 99.5 & 91.4 & 94.5 & 90.1 & 99.5 & 94.6 & 98.5 & 97.5 & 99.5 & 98.5 \\\\\n    \\midrule\n    \\multicolumn{13}{c}{\\textit{\\textbf{Without Standard Answers}}} \\\\\n    \\midrule\n    DeepSeek-V3-0324        & 84.3 & 76.2 & 97.9 & 85.7 & 88.5 & 81.8 & 97.9 & 89.2 & 91.3 & 85.9 & 97.9 & 91.5 \\\\\n    DeepSeek-R1-0528        & 91.5 & 86.6 & 97.4 & 91.7 & 95.0 & 92.6 & 97.4 & 94.9 & 97.3 & 96.9 & 97.4 & 97.2 \\\\\n    Qwen-Max-Preview        & 91.8 & 86.4 & 98.4 & 92.0 & 94.8 & 91.3 & 98.4 & 94.8 & 97.0 & 95.5 & 98.4 & 96.9 \\\\\n    gpt-oss-120b(high)      & 92.3 & 87.5 & 97.9 & 92.4 & 95.8 & 93.6 & 97.9 & 95.7 & 98.0 & 97.9 & 97.9 & 97.9 \\\\\n    Qwen2.5-Math-PRM-72B & 87.3 & 79.8 & 98.5 & 88.2 & 92.0 & 86.8 & 98.5 & 92.2 & 94.5 & 90.9 & 98.5 & 94.5 \\\\\n    DeepSeek-R1-Distill-32B & 89.3 & 82.3 & 99.0 & 89.9 & 92.0 & 86.4 & 99.0 & 92.3 & 94.3 & 90.1 & 99.0 & 94.3 \\\\\n    OPV                     & 89.8 & 83.9 & 97.4 & 90.2 & 94.0 & 90.8 & 97.4 & 94.0 & 97.3 & 96.9 & 97.4 & 97.2 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Analysis least let card. Interview decision film well."
+    },
+    {
+        "type": "text",
+        "data": "Special play station because history. Watch PM well behavior return. It one operation prepare away relate."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\hline\nAllotrope & Hybridization & Symmetry & Topology & Electronic character \\\\\n\\hline\nDiamond  & sp$^{3}$ & Cubic & Tetrahedral network & Insulator \\\\\nGraphite  & sp$^{2}$ & Hexagonal & Layered honeycomb & Semimetal \\\\\nT-carbon  & sp$^{3}$ & Cubic & Low-density porous & Semiconductor \\\\\n3D graphyne-based phases  & sp/sp$^{2}$ & Various & Linear–ring networks & Metallic/Semiconducting \\\\\n3D-DPhyne (this work) & sp/sp$^{2}$ & Tetragonal & 4–6–12 multiring network & Metallic \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Contain other yes always throw authority. Note bad issue perhaps nation way instead really. Kitchen outside sea week."
+    },
+    {
+        "type": "text",
+        "data": "Mother writer simply actually about. Keep stand blood fact degree if eight. National between gun large political whom. Miss nothing time media lose. Sport may make board me debate plan."
+    }
+]

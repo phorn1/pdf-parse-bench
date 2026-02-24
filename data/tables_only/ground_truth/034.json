@@ -1,0 +1,36 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrr}\n\\toprule\n$k_n$        & Mean KS stat & Acceptance Proportion \\\\\n\\midrule\n$n^{0.1}$       & 0.0495  & 0.95 \\\\\n$n^{0.25}$      & 0.0526 & 0.94 \\\\\n$n^{0.50}$      & 0.0634 & 0.84 \\\\\n$n^{0.75}$      & 0.1163 & 0.71 \\\\\n$n^{0.99}$      & 0.1982 & 0.57 \\\\\n$n$ & 0.3768 & 0.00\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc|cc}\n\\toprule\n\\multirow{2}{*}{Model} & \\multicolumn{2}{c|}{Fresh Pins} & \\multicolumn{2}{c}{All Pins} \n% & \\multirow{2}{*}{\\begin{tabular}[c]{@{}c@{}}\\#Unique Fresh Pins\\\\ with 10+ Saves \\end{tabular}} \n\\\\ \n\\cmidrule{2-5}\n & Grid-click & Save & Grid-click&  Save \\\\\n\\midrule\nResidual & \\textbf{+4.48}  & \\textbf{+5.98} & \\textbf{+0.36} & -0.23  \\\\\nScoreReg& \\textbf{+4.07} & \\textbf{+7.88} & \\textbf{+0.35} & -0.18 \\\\\n\nMixup & \\textbf{+3.19}  & \\textbf{+2.45}  & -0.02 & +0.14 \\\\ \\midrule\n\\rowcolor[HTML]{C0C0C0} All & \\textbf{+9.68} & \\textbf{+9.62} & \\textbf{+0.26} & -0.32 \\\\\n \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll}{\\small\n (i)}&{\\small $\\gamma_{12}<0, \\gamma_{13}<0, \\gamma_{21}<0$,} {   $\\gamma_{23}<0, \\gamma_{31}>0, \\gamma_{32}>0$}\\\\\n{\\small  (ii)}&{\\small  $a_{31}\\beta_{12}+a_{32}\\beta_{21}>r_3$\n} \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lc}\n    \\toprule\n    \\multicolumn{2}{c}{\\textbf{Research Agent}} \\\\\n    \\midrule\n    Temperature & $0.6$ \\\\\n    Top-$P$ & $0.95$ \\\\\n    Top-$K$ & $20$ \\\\\n    Max Tokens & $20{,}480$ \\\\\n    \\midrule\n    \\multicolumn{2}{c}{\\textbf{Search Tool}} \\\\\n    \\midrule\n    Search API Top-$K$ & $100$ \\\\\n    Reranker Top-$N$ & $10$ \\\\\n    Summarizer Temperature & $0.6$ \\\\\n    Summarizer Top-$P$ & $0.95$ \\\\\n    Summarizer Max Tokens & $8{,}192$ \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n\\hline \n\\multicolumn{2}{c}{Exposure (ks)} &  $4.00$  \\\\ \\hline\n\\multicolumn{2}{c}{\\texttt{tbabs}} &  \\\\\n\\multicolumn{2}{c}{$N_{\\mathrm{H}}$ ($10^{19}$ $\\mathrm{cm^{-2}}$)} & $5.90_{-5.39}^{+5.88}$ \\\\ \\hline\n\\multicolumn{2}{c}{\\texttt{vapec} (Low Temp.)} &  \\\\\n\\multirow{2}{*}{Temperature} & $kT$ (keV) & $0.51_{-0.04}^{+0.05}$ \\\\\n& $T$ (MK) & $5.86_{-0.47}^{+0.61}$ \\\\\n\\multicolumn{2}{c}{norm ($10^{-2}$)} & $0.99_{-0.36}^{+0.48}$ \\\\ \\hline\n\\multicolumn{2}{c}{\\texttt{vapec} (Med Temp.)} &  \\\\\n\\multirow{2}{*}{Temperature} & $kT$ (keV) & $0.91_{-0.06}^{+0.06}$ \\\\\n& $T$ (MK) & $10.54_{-0.75}^{+0.68}$ \\\\\n\\multicolumn{2}{c}{norm ($10^{-2}$)} & $1.72_{-0.38}^{+0.46}$ \\\\ \\hline\n\\multicolumn{2}{c}{\\texttt{vapec} (High Temp.)} &  \\\\\n\\multirow{2}{*}{Temperature} & $kT$ (keV) & $2.42_{-0.13}^{+0.20}$ \\\\\n& $T$ (MK) & $28.11_{-1.56}^{+2.34}$ \\\\\n\\multicolumn{2}{c}{norm ($10^{-2}$)} & $3.50_{-0.31}^{+0.25}$ \\\\ \\hline\n\\multirow{11}{*}{$Z$ ($Z_{\\odot}$)} \n& He & $1.00$ \\\\\n& C, N, O & $0.36_{-0.06}^{+0.07}$  \\\\\n& Ne & $1.11_{-0.22}^{+0.26}$  \\\\\n& Mg & $0.12_{-0.06}^{+0.07}$  \\\\\n& Al & $1.00$ \\\\\n& Si & $0.18_{-0.04}^{+0.05}$  \\\\\n& S & $0.34_{-0.08}^{+0.08}$  \\\\\n& Ar & $1.00$ \\\\\n& Ca & $1.00$ \\\\\n& Fe & $0.06_{-0.01}^{+0.02}$  \\\\\n& Ni & $1.00$ \\\\\n\\hline\n\\multicolumn{2}{c}{$F_{\\mathrm{X}}$ ($10^{-11}$ erg cm$^{-2}$ s$^{-1}$)} & $5.91^{+0.02}_{-0.06}$ \\\\ \\hline\n\\multicolumn{2}{c}{$\\chi^{2}$ ($d.o.f$)} & $265.27$ ($233$) \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\hline\n        Model & $MAE_H$ & $MSE_H$ \\\\ \\hline\n        w/o pre-trained param & 1.134  & 23.220  \\\\ \n         TSA-LLM & \\textbf{0.156}  & \\textbf{0.137} \\\\ \\hline\n        \\multirow{2}{*}{Model} & Feature & Feature \\\\ \n         & stability & co-direction ($>$0.8) \\\\ \\hline\n        w/o pre-trained param & 0.673 & 46.78\\% \\\\\n        TSA-LLM & \\textbf{0.893} & \\textbf{71.44\\%} \\\\ \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Mind attack join policy myself. Another character generation someone stand."
+    }
+]

@@ -1,0 +1,41 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cccc|ccccc|c}\\hline\n     &  &  &  &  &  &   & & & \\\\\n        $\\quad$ \\textbf{EOS}  &  $\\mathbf{\\log \\rho_1} $  & $ \\mathbf{\\log \\rho_2} $  &  $ \\mathbf{\\log \\rho_3} $  &$ \\mathbf{\\log \\rho_4} $    & $\\Gamma_1$ & $\\Gamma_2$ & $\\Gamma_3$ & $\\Gamma_4$& $\\Gamma_5$ & $K_5$ \\\\\n           &$[\\mathrm{g\\, cm^{-3}}]$ &  $[\\mathrm{g\\, cm^{-3}}]$  &$[\\mathrm{g\\, cm^{-3}}]$ &  $[\\mathrm{g\\, cm^{-3}}]$ &  &  & & & & [cgs units]\\\\\n         &  &  & & &  &  &   & & & \\\\\\hline\n        &  &  &  &  &  &   & & & \\\\\n        SLy4  & $14.99$ &  $14.87$ &  $13.90$ & $12.84$ & $2.68$  &   $2.66$   & $3.02$  &  $1.38$ & $1.29$ &$2.77\\times10^{14}$\\\\\n        GM1Y6  & $14.99$ &  $14.87$ & $13.76$  & $12.84$ & $1.64$ &$1.63$ &$2.96$ & $1.38$ & $1.29$ &  $2.78\\times10^{14}$ \\\\\n        QHC21   & $14.99$ &  $14.87$ & $13.99$  & $12.84$ & $2.22$ &$2.11$ &$3.26$ & $1.38$ & $1.29$ &  $2.78\\times10^{14}$\\\\\n       \n         &  &  &  &  &  &   & & & \\\\\\hline\n        \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}c|cccc|c@{}}\n\\toprule\n\\multirow{2}{*}{\\textbf{Configuration}} & \\multicolumn{2}{c}{\\textbf{Overall Edit }} & \\multicolumn{2}{c|}{\\textbf{Reading Order Edit }} & \\textbf{Detection} \\\\\n\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\n& EN & CH & EN & CH & (F1)\\\\\n\\midrule\n\\textbf{U $\\rightarrow$ U} & \\textbf{0.143} & \\textbf{0.187} & \\textbf{0.045} & \\textbf{0.086} & 0.820 \\\\\n\\textbf{U $\\rightarrow$ S} & 0.148 & 0.204 & 0.055 & 0.103 & 0.829 \\\\\n\\textbf{S $\\rightarrow$ S} & \\textbf{0.143} & 0.211 & 0.058 & 0.108 & \\textbf{0.832} \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Kitchen through offer authority. Forget true good at. Wish cost cold front yeah woman."
+    },
+    {
+        "type": "text",
+        "data": "Rather poor act plan author. Really conference still artist. Congress television report health."
+    },
+    {
+        "type": "text",
+        "data": "Measure bill series religious fire. Seat keep break three computer read describe he. Class much such way. Use manage woman. He moment up course manager eat."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\toprule\n    Attributes & Description & Sample\\\\\n    \\hline\n    asin & ID of the product on Amazon & B011B1IHQK\\\\\n    title & name of the product & Kirkland SignatureTM Men's Ribbed Cotton Polo-White\\\\\n    brand&brand of the product&Kirkland Signature\\\\\n    first date&date first listed on Amazon& July 10, 2015\\\\\n    shipping weight&shipping weight&13.6 ounces\\\\\n    color&color&White\\\\\n    material&material& 95\\% Cotton 5\\% Spandex\\\\\n    package dimensions&package dimensions& 10.5 x 8.7 x 3.4 inches\\\\\n    size&size& 2X-Large\\\\\n    category 1& first level category of the product&Sports \\& Fitness\\\\\n    category 2& second level category of the product &Sports \\& Fitness\\\\\n    category 3& third level category of the product &Golf\\\\\n    price &price of the product &\\$9.79\\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Evidence somebody writer organization edge they ground. Size meet decade enough."
+    },
+    {
+        "type": "text",
+        "data": "Business one mother water cover best. Respond book individual only if."
+    },
+    {
+        "type": "text",
+        "data": "Bed total war rate well. Soldier contain wait success. Author glass specific three director. Answer score two simple south. Tree lay bar watch fact writer."
+    }
+]

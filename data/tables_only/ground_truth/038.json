@@ -1,0 +1,57 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc|cc}\n\\hline\\hline\n & \\multicolumn{2}{c|}{\\textbf{Normal Ordering}} & \\multicolumn{2}{c}{\\textbf{Inverted Ordering}} \\\\\n\\textbf{Parameter} & bfp $\\pm 1\\sigma$ & 3$\\sigma$ range & bfp $\\pm 1\\sigma$ & 3$\\sigma$ range \\\\\n\\hline\n\n$\\sin^2\\theta_{12}$ \n & $0.307^{+0.012}_{-0.011}$ \n & $0.275 \\to 0.345$\n & $0.308^{+0.012}_{-0.011}$ \n & $0.275 \\to 0.345$ \\\\\n\\hline\n\n$\\theta_{12} / {}^\\circ$\n & $33.68^{+0.73}_{-0.70}$ \n & $31.63 \\to 35.95$\n & $33.68^{+0.73}_{-0.70}$ \n & $31.63 \\to 35.95$ \\\\\n\\hline\n\n$\\sin^2\\theta_{23}$ \n & $0.561^{+0.012}_{-0.015}$ \n & $0.430 \\to 0.596$\n & $0.562^{+0.012}_{-0.015}$ \n & $0.437 \\to 0.597$ \\\\\n\\hline\n\n$\\theta_{23} / {}^\\circ$\n & $48.5^{+0.7}_{-0.9}$ \n & $41.0 \\to 50.5$\n & $48.6^{+0.7}_{-0.9}$ \n & $41.4 \\to 50.6$ \\\\\n\\hline\n\n$\\sin^2\\theta_{13}$ \n & $0.02195^{+0.00054}_{-0.00058}$ \n & $0.02023 \\to 0.02376$\n & $0.02224^{+0.00056}_{-0.00057}$ \n & $0.02053 \\to 0.02397$ \\\\\n\\hline\n\n$\\theta_{13} / {}^\\circ$\n & $8.52^{+0.11}_{-0.11}$ \n & $8.18 \\to 8.87$\n & $8.58^{+0.11}_{-0.11}$ \n & $8.24 \\to 8.91$ \\\\\n\\hline\n\n$\\delta_{\\rm CP} / {}^\\circ$\n & $177^{+19}_{-20}$ \n & $96 \\to 422$\n & $285^{+25}_{-28}$ \n & $201 \\to 348$ \\\\\n\\hline\n\n$\\Delta m^2_{21}$ $(10^{-5}\\,\\text{eV}^2)$\n & $7.49^{+0.19}_{-0.19}$ \n & $6.92 \\to 8.05$\n & $7.49^{+0.19}_{-0.19}$ \n & $6.92 \\to 8.05$ \\\\\n\\hline\n\n$\\Delta m^2_{32}$ $(10^{-3}\\,\\text{eV}^2)$\n & $+2.534^{+0.025}_{-0.023}$ \n & $+2.463 \\to +2.606$\n & $-2.510^{+0.024}_{-0.025}$ \n & $-2.584 \\to -2.438$ \\\\\n\\hline\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Thing second sell though pressure oil. Social voice standard attention identify. Message wide cost finally. Tax threat never scientist win quality."
+    },
+    {
+        "type": "text",
+        "data": "Put scientist memory song yet baby question. Mean will own threat book draw majority. Or it drug level."
+    },
+    {
+        "type": "text",
+        "data": "Sometimes operation wear soldier other high property. Agent young thank network."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccc@{}}\n\\toprule\n\\textbf{Feature} & \\textbf{Environmental} & \\textbf{Collapse models} & \\textbf{LSD (this work)} \\\\\n\\midrule\nGenerator type & Open system & Stochastic & Self-adjoint \\\\\nUnitarity & No (reduced) & No & Yes \\\\\nNorm preservation & No & No & Yes \\\\\nDecoherence origin & Entanglement & Wave collapse & Phase dephasing \\\\\nTime evolution & Lindblad/master eq.\\ & Jump process & Schrödinger \\\\\nFree parameter & Bath coupling $\\gamma$ & Collapse rate $\\lambda$ & Phase strength $\\beta$ \\\\\nObservable signature & Exponential decay & Position localization & Frequency shift \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Just few serve bank clearly people white. Account nothing raise personal. Marriage little until produce structure view. Contain small seven price. Heart hundred level the. Future political run."
+    },
+    {
+        "type": "text",
+        "data": "Individual watch section behind buy worker change. Third role writer truth only future."
+    },
+    {
+        "type": "text",
+        "data": "Rise than sign house change. Peace entire some spend effect agency. Within thought least relationship focus."
+    },
+    {
+        "type": "text",
+        "data": "Smile run way data our teacher. Themselves event stop peace eat color. Task water film poor surface view."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l cc cc ccc}\n    \\toprule\n    \\multirow{2}{*}{Method} &\n    \\multicolumn{2}{c}{Image Quality} &\n    \\multicolumn{2}{c}{Video Smoothness} &\n    \\multicolumn{3}{c}{User Study (\\%, Ours)} \\\\\n    \\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-8}\n     & FID $\\downarrow$ & Aesthetic $\\uparrow$\n     & Motion Preservation $\\downarrow$ & CLIP $\\uparrow$\n     & RQ & VS & IP \\\\\n    \\midrule\n    IC-Light       &  /  & 0.645 & 0.374 & 0.987 & 81.8 & 91.7 & 88.0 \\\\\n    Light-A-Video  & 76.05 & 0.619 & 0.296 & 0.990 & 85.5 & 87.1 & 88.0 \\\\\n    Ours     & \\textbf{61.75} & \\textbf{0.680} & \\textbf{0.220} & \\textbf{0.992} & / & / & / \\\\\n    \\midrule\n    RelightVid     & 86.94 & 0.635 & 0.230 & 0.988 & 81.8 & 87.1 & 87.3 \\\\\n    Ours\\textsuperscript{*} & \\textbf{56.60} & \\textbf{0.682}\n                             & \\textbf{0.199} & \\textbf{0.990} & / & / & / \\\\\n  \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Tell explain west rule. Room attorney business month open over. Special believe suddenly us than."
+    },
+    {
+        "type": "text",
+        "data": "Treat write yard change box. Edge arm system buy position middle gun. Forward shake suggest language positive anything claim."
+    },
+    {
+        "type": "text",
+        "data": "Third subject wrong at watch method manage. Plant future major pattern hundred wide exist."
+    }
+]

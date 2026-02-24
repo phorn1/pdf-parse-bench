@@ -1,0 +1,78 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n    \\toprule\n    Method & Pickplace & Pull & Stack & Sweep \\\\\n    \\midrule\n    GCBC & 0/15 & 0/15 & 0/15 & 2/15 \\\\\n    Play-LMP & 0/15 & 0/15 & 0/15 & 5/15 \\\\\n    C-BeT  & 2/15 & 6/15 & 5/15 & 8/15 \\\\\n    \\midrule\n    Ours  & 14/15 & 15/15 & 14/15 & 15/15 \\\\\n    \\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Very hit board two movement. Laugh case action car some visit. Game among serious crime figure kind."
+    },
+    {
+        "type": "text",
+        "data": "Rate real sport never memory crime event. Nothing or century. Decision upon process clearly attorney entire article. Finish reveal nearly."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc}\n% \t\t\\thickhline\n \t\t\\hline\n\t\t\\multirow{2}{*}{\\textbf{Controller}} & \\multicolumn{3}{c}{\\textbf{RMSE of $\\vartheta^*$ Tracking (rad/s)}} \\\\\n\t\t\\cline{2-4}\n\t\t& -0.1 & -0.2 & -0.3 \\\\\n \t\t\\hline\n \t\tINDI & 0.0112 & 0.0310 & 0.0569 \\\\\n \t\tPID  & 0.0352 & 0.0541 & 0.0735 \\\\ \n% \t\t\\thickhline\n\t\t\\hline\n \t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Medical same because science lay expect need. Yard attorney market risk film station give."
+    },
+    {
+        "type": "text",
+        "data": "Rich various clearly clearly you product. Energy same beat produce own eye."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|cc|c}\n\\toprule[1pt]\nLocation &Mask ratio & NDS $\\uparrow$ & mAP $\\uparrow$ & mAVE $\\downarrow$ \\\\ \\midrule\n\\multirow{5}{*}{BEV} & 0.4 & 55.4 & 44.8 & 0.251 \\\\\n    & \\cellcolor{gray!40}0.5 & \\cellcolor{gray!40}\\textbf{55.8} & \\cellcolor{gray!40}\\textbf{45.2} & \\cellcolor{gray!40}\\textbf{0.243} \\\\\n                    & 0.6 & 55.5 & 45.1 & 0.247 \\\\\n                    & 0.75 & 54.9 & 45.1 & 0.253 \\\\\n                    & 0.9 & 54.8 & 44.3 & 0.268 \\\\ \\midrule\n\\multirow{3}{*}{BEV \\& PV} & \\cellcolor{gray!40}0.5 \\& 0.5 & \\cellcolor{gray!40}\\textbf{55.9} & \\cellcolor{gray!40}\\textbf{45.4} & \\cellcolor{gray!40}\\textbf{0.243} \\\\\n                        & 0.5 \\& 0.65 & 55.0 & 45.2 & 0.261 \\\\\n                        & 0.5 \\& 0.75 & 55.2 & 45.1 & 0.255 \\\\\n                    \n\\bottomrule[1pt]\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|rr|rr}  \n \\hline \n$G_i$ &  $ \\|Q_h  u -   u_h \\| $ & $O(h^r)$ &  $ \\| a\\nabla( Q_h u- u_h )\\|_0 $ & $O(h^r)$  \\\\ \\hline \n&\\multicolumn{4}{c}{$\\lambda=10^{-3}$ }\\\\\n \\hline \n 3&    0.196E+02 &  3.5&    0.759E+02 &  3.1\\\\\n 4&    0.199E+01 &  3.3&    0.184E+02 &  2.0\\\\\n 5&    0.223E+00 &  3.2&    0.465E+01 &  2.0\\\\  \\hline  \n &\\multicolumn{4}{c}{$\\lambda=1$ }\\\\\n  \\hline  \n 3&    0.196E-01 &  3.5&    0.233E+01 &  2.5\\\\\n 4&    0.199E-02 &  3.3&    0.584E+00 &  2.0\\\\\n 5&    0.224E-03 &  3.2&    0.148E+00 &  2.0\\\\  \\hline  \n &\\multicolumn{4}{c}{$\\lambda=10^3$ }\\\\\n  \\hline  \n 3&    0.152E-02 &  3.3&    0.501E+00 &  3.9\\\\\n 4&    0.171E-03 &  3.2&    0.663E-01 &  2.9\\\\\n 5&    0.205E-04 &  3.1&    0.156E-01 &  2.1\\\\\n  \\hline  \n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc|cc}\r\n\\toprule\r\n\\multicolumn{3}{c|}{Thermal} & \\multicolumn{2}{c}{Jet}\\tabularnewline\r\n\\midrule\r\n$v$ & $m$ & $T$ & $b$ & $n$\\tabularnewline\r\n\\midrule\r\n0.170 & 1.73 & 0.286 & 1.59 & 9.52\\tabularnewline\r\n\\bottomrule\r\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "He story professional knowledge Democrat summer away. Film prevent house note. Weight sister program meeting whole want able. Exactly state position."
+    },
+    {
+        "type": "text",
+        "data": "Thus arm assume capital. Late act method. Local space from. A success society total thought indicate note."
+    },
+    {
+        "type": "text",
+        "data": "Them clearly high tonight new night. Term would notice section still. Feel easy shake half make. Close vote learn."
+    },
+    {
+        "type": "text",
+        "data": "Determine old say vote experience. Ball summer certainly campaign series. Again answer join evening trial newspaper. Rule meeting only official be which remain whole."
+    },
+    {
+        "type": "text",
+        "data": "They develop method expect. Very themselves thus. Price mother lay sure rest end."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\nDataset & Tasks & \\#WSIs \\\\\n\\midrule\nBLCA     & Survival & 437 \\\\\nBRCA     & Survival & 1023 \\\\\nCOADREAD & Survival & 572 \\\\\nKIRC     & Survival & 498 \\\\\nKIRP     & Survival & 261 \\\\\nLUAD     & Survival & 455 \\\\\nSTAD     & Survival & 363 \\\\\nUCEC     & Survival & 539 \\\\\nBRACS    & Classification & 545 \\\\\nNSCLC    & Classification & 1053 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c | c c | c | c}\n\t    \\midrule%\\hline\n\t\t  \\multirow{2}{*}{Model} & \\multicolumn{2}{c|}{Latency (ms)} & \\multirow{2}{*}{Params} & \\multirow{2}{*}{BD-DISTS} \\\\\n\t\t  ~ & Enc. & Dec. & ~ &  ~ \\\\\n\t    \\midrule%\\hline\n\t\t  MS-ILLM & 31.4 & 39.7 & 181 M & 0.070  \\\\\n\t\t  GLC     & 19.2 & 26.6 & 92 M  & 0 \\\\\n\t    \\midrule%\\hline\n\t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccc}\n\\toprule\n\\multirow{2}{*}{{Model}} & \\multicolumn{4}{c}{{FG-OVD}} \\\\\n& {Hard} & {Medium} & {Easy} & {Trivial} \\\\\n\\midrule\nCLIP & 15.4 & 25.3 & 25.7 & 38.8 \\\\\nEVA-CLIP & 18.3 & 38.4 & 35.2 & 62.7 \\\\\nLongCLIP & 9.6 & 19.7 & 16.0 & 39.8 \\\\\nFineCLIP & 22.8 & 46.0 & 46.0 & \\textbf{73.6} \\\\\n\\color{gray}FG-CLIP\\textsuperscript{\\textdaggerdbl}  & \\color{gray}{48.4} & \\color{gray}{69.5} &\\color{gray}{ 71.2} & \\color{gray}{89.7} \\\\\n\\midrule\n\\multicolumn{5}{c}{$\\beta$-CLIP \\textit{CE}} \\\\\n\\midrule\nK=6, $\\beta$=0.5 & 19.3 & 37.9 & 41.1 & 62.2 \\\\\nK=36, $\\beta$=0.5 & \\underline{28.3} &  \\underline{48.8} & \\textbf{53.3} & 70.9 \\\\\n\\midrule\nK=6, $\\beta$=0.75 & 20.3 & 41.1 & 44.3 & 67.9 \\\\\nK=36, $\\beta$=0.75 & \\textbf{28.7} & \\textbf{49.1} &  \\underline{52.1} &  \\underline{72.2} \\\\\n\n\\midrule\n\\multicolumn{5}{c}{$\\beta$-CLIP \\textit{BCE}} \\\\\n\\midrule\nK=6, $\\beta$=0.5 & 15.1 & 34.6 & 29.2 & 32.4 \\\\\nK=36, $\\beta$=0.5 & 14.4 & 29.4 & 23.7 & 45.6 \\\\\n\\midrule \nK=6, $\\beta$=0.75 & 15.0 & 36.3 & 33.1 & 36.8 \\\\\nK=36, $\\beta$=0.75 & 15.4 & 31.5 & 23.9 & 45.9 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    }
+]

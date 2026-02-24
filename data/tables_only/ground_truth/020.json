@@ -1,0 +1,87 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lll}\n    \\toprule\n    \\multicolumn{2}{c}{Part}                   \\\\\n    \\cmidrule(r){1-2}\n    Name     & Description     & Size ($\\mu$m) \\\\\n    \\midrule\n    Dendrite & Input terminal  & $\\sim$100     \\\\\n    Axon     & Output terminal & $\\sim$10      \\\\\n    Soma     & Cell body       & up to $10^6$  \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Him media operation compare what kid. Guy little behavior similar environment. Fish arrive back news medical thank argue. View front response fall send company democratic."
+    },
+    {
+        "type": "text",
+        "data": "Similar exactly huge book. Positive director no poor. Trade represent PM expect here run. Realize huge many plan. Religious room man market since."
+    },
+    {
+        "type": "text",
+        "data": "Scientist whole senior any much former. White impact impact seat quickly."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}llllll@{}}\n\\toprule\n  & &\\multicolumn{2}{c}{Phantom 1} & \\multicolumn{2}{c}{Phantom 2} \\\\ \n & & Average error & IDR & Average error & IDR \\\\\\midrule\nPA DAS & & -0.45$^\\circ$ & 18.7$^\\circ$ & -0.26$^\\circ$ & 12.2$^\\circ$ \\\\\nUS DAS & &-0.27$^\\circ$ & 18.0$^\\circ$ & -0.03$^\\circ$ & 10.5$^\\circ$ \\\\\nPA RC-DAS & & -0.01$^\\circ$ & 1.39$^\\circ$ & -0.02$^\\circ$ & 2.38$^\\circ$ \\\\\nUS RC-DAS & & -0.10$^\\circ$ & 1.53$^\\circ$ & 0.04$^\\circ$ & 2.37$^\\circ$ \\\\ \\hline\n\\multicolumn{6}{c}{}\\\\\n\\multicolumn{6}{p{230pt}}{The columns labelled ``Average error'' show the difference between the mean flow angle in the channel with PAVF/USVF and the angle of the channel found from the B-mode images with RC-DAS. The column labelled ``IDR'' describes the interdecile range, found as the difference between the 10th percentile and the 90th percentile. This metric describes the spread of the angle estimates.}\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Ability question white man machine address. Yourself guy team control majority. Practice piece responsibility sport argue."
+    },
+    {
+        "type": "text",
+        "data": "Pass under beautiful growth issue amount condition. Second pass decade their. Bag use interest. Tough write even everyone nothing itself gas."
+    },
+    {
+        "type": "text",
+        "data": "Beautiful eat professional trouble within. Test most cut learn score produce. As born service effort just."
+    },
+    {
+        "type": "text",
+        "data": "Threat against how teach. Security well show end civil seem me. Score left bed high where pull police Republican."
+    },
+    {
+        "type": "text",
+        "data": "Stay teach girl main view out majority. Safe stay face idea three can sell."
+    },
+    {
+        "type": "text",
+        "data": "Which six player learn vote team. Effort hand wall four. Customer produce mouth sea but boy business. Sell million ability assume scene. Strong local various final. Lawyer discussion wonder."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|r}\n\\toprule\n$n_Z$ & $Z$ & \\# params [M] & RMSE [K] \\\\\n1 &  $8$ & 3.8 & 1.653\\\\\n2 &  $3,8$ & 3.8 & 0.945\\\\\n3 &  $3,4,8$ & 3.8 & 0.934\\\\\n4 &  $3,4,5,8$ & 3.8 & 0.913\t\\\\\n5 &  $3,4,5,6,8$ & 4.1 & 0.908 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Some however candidate special teacher. Father free mention drop rise produce. Year friend everybody."
+    },
+    {
+        "type": "text",
+        "data": "Once expect we real. Religious project business whatever such form. Often time against western describe garden."
+    },
+    {
+        "type": "text",
+        "data": "Role suggest sort tonight step. End traditional wind. Color year green opportunity seem well particularly."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n        \\toprule\n        \\multirow{2}{*}{Method}  \n        & \\multicolumn{2}{c}{LIPD~}\n        & \\multicolumn{1}{c}{ITOP-Side~} \\\\\n        \\cmidrule(lr){2-3} \\cmidrule(lr){4-4}\n        & MPJPE  ($\\downarrow$)\n        & Ang. Err ($\\downarrow$)\n        & MPJPE  ($\\downarrow$) \\\\ \n        \\midrule\n        Point2Pose$_{\\mathrm{OT-CFM}}$ \\\\ \\quad $T=2 \\rightarrow T=2$ & 434.59\t& 90.98 & 632.76\\\\\n        \\quad $T=3 \\rightarrow T=3$ & 451.27\t& 86.01 & 507.13 \\\\\n        \\quad $T=4 \\rightarrow T=3$ & \\textbf{192.54}\t& \\textbf{13.80} & \\textbf{125.01}\\\\\n        \\quad $T=8 \\rightarrow T=3$ & 202.77\t& 21.81 & 173.52 \\\\\n        \\quad $T=16 \\rightarrow T=3$ & 199.87 & 13.97 & 203.28\\\\\n        \\bottomrule\n        \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Low season organization information. Black allow stuff whose character write decide."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|cc}\n    \\hline\n        \\multicolumn{2}{c|}{\\textbf{Binary Anomaly Detection}} & \\multicolumn{2}{c}{\\textbf{Image-Level}} \\\\\n        \\hline\n        Dataset & Method & AUROC & AP \\\\\n        \\hline\n        \\multirow{3}{*}{\\makecell{Semi-conductor \\\\ (Internal Dataset)}} & AnomalyCLIP & 68.2 & 35.3  \\\\\n        & MultiADS & 91.1 & 61.7 \\\\\n        \\cline{2-4}\n        & DAPO (ours) &  \\textbf{91.8} &  \\textbf{79.1} \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Actually charge father effort even. Responsibility tonight government project president. How war factor last two according large."
+    },
+    {
+        "type": "text",
+        "data": "Either offer collection. Thing begin soldier course clear read left. Forward realize quality visit beautiful."
+    }
+]

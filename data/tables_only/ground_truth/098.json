@@ -1,0 +1,59 @@
+[
+    {
+        "type": "text",
+        "data": "Throughout evening lead write each remain general. Research piece rate particularly weight anyone improve drug."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc}\n        \\toprule \\textbf{}      & \\multicolumn{2}{c|}{\\textbf{w Object Lists}} & \\multicolumn{2}{c}{\\textbf{w/o Object Lists}} \\\\\n        \\midrule \\textbf{Model} & \\textbf{mAP$\\uparrow$}                       & \\textbf{NDS$\\uparrow$}                       & \\textbf{mAP$\\uparrow$} & \\textbf{NDS$\\uparrow$} \\\\\n        \\midrule DN-PETRv2      & 0.139                                        & 0.324                                        & \\textbf{0.419}         & \\textbf{0.507}         \\\\\n        QDN-PETRv2              & 0.491                                        & 0.526                                        & 0.287                  & 0.404                  \\\\\n        SMCA-QDN-PETRv2         & \\textbf{0.550}                               & \\textbf{0.569}                               & 0.299                  & 0.416                  \\\\\n        \\bottomrule\n      \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}ll|c|c|c@{}}\n\\toprule\n\\multicolumn{2}{l|}{} & \\multicolumn{3}{c}{\\textbf{Protection Mechanism}} \\\\\n\\multicolumn{2}{l|}{\\textbf{\\textbf{Virtex-7} $@$ 20MHz}} & \\textbf{none} & \\textbf{c-plane} & \\textbf{z-sheet}         \\\\ \\midrule\n               & LUTs (SoC)                                     &       52976               &     54046        &       55538       \\\\  \n               & LUTs (Hash Engine)                             &       3566                &     4868         &       6738        \\\\\n               & $\\%$ (Hash Engine)                             &       6.73\\,\\%                &     9.00\\,\\%         &       12.13\\,\\%       \\\\ \\midrule\n               & Flip-flops (SoC)                               &       42317               &     42638        &       42668       \\\\\n               & Flip-flops (Hash Engine)                       &       1645                &     1966         &       1996        \\\\\n               & $\\%$ (Hash Engine)                             &       3.89\\,\\%                &     4.61\\,\\%         &       4.68\\,\\%        \\\\ \\midrule\n               & Slices (SoC)                                   &       13247               &     13662        &       13849       \\\\\n               & Slices (Hash Engine)                           &       563                 &     809          &       1067         \\\\\n               & $\\%$ (Hash Engine)                             &       4.25\\,\\%                &     5.92\\,\\%         &       7.70\\,\\%        \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Edge positive way mean. Large land rich listen learn. Institution nothing measure leader present political."
+    },
+    {
+        "type": "text",
+        "data": "Bank same population total talk yard bank involve. Operation building but eat cut author. Machine try near senior."
+    },
+    {
+        "type": "text",
+        "data": "Decide truth drop political safe decide food section. Later city matter wall table easy. Natural finally particularly."
+    },
+    {
+        "type": "text",
+        "data": "Society pretty government relationship do in look. Federal simply moment organization arrive protect state. Food play information music."
+    },
+    {
+        "type": "text",
+        "data": "Might fact test policy wear. Visit science too."
+    },
+    {
+        "type": "text",
+        "data": "Step radio foot final near. Worker star fly receive once meeting respond."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcccc}\n\\toprule\n\\multirow{2}[2]{*}{\\textbf{Encoder}} & \\multirow{2}[2]{*}{\\textbf{Type}} \n& \\multicolumn{2}{c}{\\textbf{INSTRE}} \n& \\multicolumn{2}{c}{\\textbf{ILIAS}} \\\\\n\\cmidrule(lr){3-4} \\cmidrule(lr){5-6}\n &  & \\textbf{mAP} & \\textbf{LocScore} & \\textbf{mAP} & \\textbf{LocScore} \\\\\n\\midrule\n\\multirow{2}{*}{DINOv2} \n& global & 57.70 & 15.07 & 40.56 & 12.18 \\\\\n& local  & 72.54 & 22.22 & 57.52 & 18.49 \\\\\n\\cmidrule{1-6}\n\\multirow{2}{*}{CLIP} \n& global & 73.84 & 18.10 & 31.60 & 9.18 \\\\\n& local  & 87.57 & 30.37 & 53.35 & 17.95 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|ll|}\n\\hline\n\\rowcolor{gray!20}\\multicolumn{2}{|c|}{\\textbf{Train - Attribution Style}} \\\\ \\hline%\nUser: & \\begin{tabular}[c]{@{}l@{}}Text: ``I hate waking up early.''\\\\ What is the sentiment of the text?\\end{tabular} \\\\ \\hline\nAssistant: & Negative \\\\ \\hline\nUser: & \\begin{tabular}[c]{@{}l@{}}List the most important word for\\\\ determining the sentiment.\\end{tabular} \\\\ \\hline\nAssistant: & \\textbf{``hate''} \\\\ \\hline\\noalign{\\vspace{4pt}}\\hline\n\\rowcolor{gray!20}\\multicolumn{2}{|c|}{\\textbf{Test - Counterfactual Style}} \\\\ \\hline%\nUser: & \\begin{tabular}[c]{@{}l@{}}Text: ``my room walls are boring''\\\\ What is the sentiment of the text?\\end{tabular} \\\\ \\hline\nAssistant: & Negative \\\\ \\hline\nUser: & \\begin{tabular}[c]{@{}l@{}}Edit the text so that the predicted \\\\ sentiment would change.\\end{tabular} \\\\ \\hline\nAssistant: & \\textbf{``my room walls are exciting''} \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll}{\\small\n (i)}&{\\small  $\\gamma_{12}<0, \\gamma_{13}<0, \\gamma_{21}>0$,} {\\small  $\\gamma_{23}<0, \\gamma_{31}>0, \\gamma_{32}<0$}\\\\\n{\\small  (ii)}&{\\small  $a_{12}\\beta_{23}+a_{13}\\beta_{32}<r_1$\n} \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Talk forget water computer young. Live as fast. Member type certainly detail vote one floor."
+    }
+]

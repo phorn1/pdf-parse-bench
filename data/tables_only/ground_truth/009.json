@@ -1,0 +1,32 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{p{3cm}||p{9cm}|p{7cm}|p{5cm}}\n    \\hline\n    Algorithm & Description & Hyperparameters & Complexity \\\\\n    \\hline\n    \\multicolumn{4}{c}{Baselines} \\\\\n    \\hline\n    AM   & Greedy decoding strategy of the AM & - & $\\mathcal{O}(n^2 L)$ \\\\\n    AM-sample & Sampling decoding strategy of the AM & $\\eta\\in\\{n/2,100\\}$ samples & $\\mathcal{O}(\\eta \\,n^2 L)$  \\\\\n    AM-BS & Beam Search decoding strategy of the AM & beam width $\\beta \\in \\{n/2, 100\\}$ & $\\mathcal{O}(\\beta \\,n^2 L)$ \\\\\n    AM-MS & Multi-Start greedy trajectories of the AM & $M=n/2$ & $\\mathcal{O}(M \\,n^2 L)$\\\\\n    POMO-single & Single greedy trajectory of POMO & - & $\\mathcal{O}(n^2 L)$ \\\\\n    POMO      & Multi greedy trajectories of POMO & $M=n/2$ & $\\mathcal{O}(M \\,n^2 L)$\\\\\n    POMO-SGBS & SGBS  combined with POMO & $\\beta=\\gamma=5$ & $\\mathcal{O}(\\beta \\, \\gamma\\, n^2 L)$ \\\\\n    Gurobi & Gurobi solver v12.0.3 & - & - \\\\\n    GS & Greedy Search heuristic & - & $\\mathcal{O}(n)$\\\\\n    MSG & Multi-Start Greedy Search heuristic & $M=n/2$ & $\\mathcal{O}(M\\,n)$\\\\\n    LNS & Large Neighborhood Search with random destroy & time out $t_{max}\\in\\{1s,4s,10s\\}$ or iteration $I$ & $\\mathcal{O}(I\\,n^3)$ \\\\\n    SA & Simulated Annealing & time out $t_{max}\\in\\{1s,4s,10s\\}$ & -\\\\\n    % GA & Genetic Search (only for unit capacity m1-PDSTSP) & - \\\\\n    \\hline\n    \\hline\n    \\multicolumn{4}{c}{Post-improvement CO operators} \\\\\n    \\hline\n    2\\text{-}Opt    & Local 2\\text{-}Opt refinement operator & until no gain & $\\mathcal{O}(n^2)$\\\\\n    HC              & Hill Climbing on neighborhood & until no gain & $\\mathcal{O}(n^3)$ \\\\\n    BI-LNS          & 1-destroy Best-improvment LNS & time out $t_{\\max}\\!\\in\\!\\{1\\text{s},4\\text{s},10\\text{s}\\}$ & $\\mathcal{O}(n^4)$\\\\\n    MSLNS         & Multi-Start Large Neighborhood Search & $M \\in [5,10]$, $\\beta\\in\\{3,5\\}$, $t_{\\max}\\!\\in\\!\\{1\\text{s},4\\text{s},10\\text{s}\\}$ & $\\mathcal{O}(\\lfloor{n}/{k_{max}}\\rfloor\\,M\\,n^3)$  \\\\\n    % MSLNS   & Multi-Start Beam-Pruned LNS with HC insertion operator &  $M \\in [5,10]$, $\\beta\\in\\{3,5\\}$, $t_{\\max}\\!\\in\\!\\{1\\text{s},5\\text{s},10\\text{s}\\}$ \\\\\n    \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccc}\n\\toprule\n\\textbf{Config} &\n\\textbf{Train Slot} &\n\\textbf{Test-OOD Slot} &\n\\textbf{Train Acc} &\n\\textbf{Test-Unseen Acc} &\n\\textbf{Swap Success Rate} \\\\\n\\midrule\n\\textbf{joint}    & \\textbf{1.000} & \\textbf{0.912} & \\textbf{1.000} & \\textbf{0.809} & \\textbf{0.847} \\\\\nno\\_align         & 0.167 & 0.167 & \\textbf{1.000} & \\textbf{0.809} & 0.053 \\\\\nno\\_ortho         & 0.711 & 0.689 & \\textbf{1.000} & \\textbf{0.809} & 0.046 \\\\\nno\\_value         & 0.177 & 0.172 & \\textbf{1.000} & \\textbf{0.809} & 0.720 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Mouth raise six nor charge. Should remain set situation use fear pay. Fund job task. Girl include happy ask. Explain send we."
+    },
+    {
+        "type": "text",
+        "data": "Leg nothing cell rather. Push night government should quickly very. Hair between under over side."
+    },
+    {
+        "type": "text",
+        "data": "Member why science whether candidate bill have. Herself actually occur sing. War around must garden continue west."
+    },
+    {
+        "type": "text",
+        "data": "Room bring business agent national area. Thing thus senior dark race people suggest. Family perform our physical event finish decade."
+    },
+    {
+        "type": "text",
+        "data": "Remember seem clearly. Another much evening bag. House few interesting during actually truth."
+    }
+]

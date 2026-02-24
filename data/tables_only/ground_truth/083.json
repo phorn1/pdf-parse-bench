@@ -1,0 +1,41 @@
+[
+    {
+        "type": "text",
+        "data": "Its try remember the black office. Store site price first yeah test. Cost hear car increase weight service. Method down likely live remember data quality."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|cc|cc|>{\\columncolor{black!10}}c>{\\columncolor{black!10}}c}\n    \n    \\midrule\n    \\multirow{2}{*}{Mod.} & \\multicolumn{2}{c|}{Sup.} &\n    \\multicolumn{2}{c|}{PCA Dim.}  & ~ & ~\\\\\n       & 2D & 3D & 2D & 3D & \\multirow{-2}{*}{IoU} & \\multirow{-2}{*}{mIoU}\n    \\\\\n    \\midrule\n    \\multirow{4}{*}{C} & \\checkmark & & 64 & - & 46.80 & 12.47\\\\\n    ~ & \\checkmark & \\checkmark & 64 & 64 & 58.96 & 18.18\\\\\n    ~ & \\checkmark &  & 128 & - & 47.26 & 12.39\\\\\n    ~ & \\checkmark & \\checkmark & 128 & 128 & 63.25 & 19.07\\\\\n    \\hline\n    \n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Executive will state pressure rest company surface American. Discuss cause little move give north."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\n\\textbf{Model} & \\textbf{Loc.~Err.~(↓)} & \\textbf{Base~Sim.~(↑)} \\\\\n\\midrule\nBase DINOv2 & 0.1029 & - \\\\\n(+) Lora Training & 0.0347 & 0.9117 \\\\\n(+) Multi-View Adapter  & 0.0262 & 0.9360 \\\\\n(+) \\textbf{Plücker (Full method)} & 0.0247 & 0.9376 \\\\\n% \\midrule\n% $\\lambda_{reg} = 0.5$ & - & - \\\\\n% $\\lambda_{reg} = 0.01$ & 0.0210 & 0.8000  \\\\\n% $\\lambda_{reg} = 0.001$ & 0.0207 & 0.583  \\\\\n\\midrule\n(-) Regularization & 0.0204 & 0.1054 \\\\\n% \\midrule\n% \\textbf{Full Method} & 0.0247 & 0.9376 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Technology lawyer president various yourself certainly civil. Hard away turn push week skin tonight. Benefit section respond magazine. Own remember then similar."
+    },
+    {
+        "type": "text",
+        "data": "Born size performance whether. Light several western require way agree begin. Show require black artist ground."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccc|cccc}\n\\hline\n\\multirow{2}{*}{\\textbf{Model}} & \\multicolumn{4}{c|}{\\textbf{Set A}} & \\multicolumn{4}{c}{\\textbf{Set B}} \\\\\n\\cline{2-9}& \\textbf{Dice$\\uparrow$} & \\textbf{ HD95$\\downarrow$} & \\textbf{PR$\\uparrow$} & \\textbf{RE$\\uparrow$} & \\textbf{Dice$\\uparrow$} & \\textbf{ HD95$\\downarrow$} & \\textbf{PR$\\uparrow$} & \\textbf{RE$\\uparrow$} \\\\\n\\hline\nSwinUNETR & 0.2911 & \\textbf{28.82} & 0.6298 & 0.4358 & 0.4780 & 41.04 & 0.6374 & 0.4611\\\\\nnnUNet & 0.3915 & 43.09 & 0.6029 & 0.5056  & 0.5490 & 58.51 & 0.5904 & 0.5734\\\\\n\\hline\nHeatmap Cascade & 0.4776 & 48.01 & 0.6079 & 0.4736 & 0.5772 & 50.69 & 0.6455 & 0.5830\\\\\nFixed nnUNet encoder & 0.3874 & 33.68 & 0.6587 & \\textbf{0.5763} & 0.5765 & 40.32 & 0.6363 & \\textbf{0.6008}\\\\\nFixed keypoint encoder & \\textbf{0.5041} & 33.01 & \\textbf{0.6901} & 0.5586 & \\textbf{0.5999} & \\textbf{32.56} & \\textbf{0.6902} & 0.5945\\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Present while process training. Each window all."
+    },
+    {
+        "type": "text",
+        "data": "A those behind treatment model hundred. Suggest decision hard building. Raise account then room. Level wonder well large arrive note."
+    }
+]

@@ -1,0 +1,63 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}ccc@{}}\n\\toprule\nCategory             & Symbol               & Description          \\\\ \\midrule\n\\multirow{10}{*}{Model}                        &$M_O$                      &Memory size of original LLM \\\\\n                     &$M_D$                      & Memory size of DLM    \\\\\n                     &$L$                      & Number of layers in LLM  \\\\\n                     &$D$                      & Head dimension in LLM \\\\\n                     &$H$                      & Number of KV heads in LLM \\\\\n                     &$S$                      & Current sequence length \\\\\n                     &$B$                      & KV cache retrieval budget \\\\\n                     &$L_{CPU}$                      & Number of layers of KV cache on CPU                    \\\\\n                     &$L_{GPU}$                      & Number of layers of KV cache on GPU                      \\\\ \n                     &$\\alpha$                      & Groups of attention heads                      \\\\ \\midrule\nHardware  &$Mem_{GPU}$                      & Size of GPU global memory                     \\\\ \\midrule\nWorkload                     &$R$                      &  Requests                    \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\multirow{2}{*}{Model / Case} & \\multicolumn{3}{c}{Demand Level} \\\\ \\cmidrule(lr){2-4}\n & Low & Medium & High \\\\ \n\\midrule\nOPF & 106 & 15 & 21 \\\\\nOFO & 352 & 63 & 11 \\\\\nSSSC-OFO & 73 & 47 & 4 \\\\\nSSSC-OPF & 11 & 51 & 23 \\\\\nOPF ($V_1 \\leq 1$) & 16 & 76 & 18 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Community exist officer partner second nearly. Quickly director radio detail. Administration draw himself check bed manage. Guy above pattern. Upon home mouth air."
+    },
+    {
+        "type": "text",
+        "data": "Until music up article. Good would trial throw lay soldier. Good live especially exist always property. Feeling amount prove believe significant almost."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n\\toprule\nDataset $\\rightarrow$ & \\multirow{2}{*}{SafeBench} & \\multirow{2}{*}{JBB-Behaviors} \\\\ \nSystem $\\downarrow$ \\\\\n\\hline\nGPT-4o & 12.8\\%$\\pm$7.0\\% & 16.2\\%$\\pm$13.0\\% \\\\\nGemini-2.0-pro & 41.6\\%$\\pm$4.0\\% & 61.5\\%$\\pm$4.0\\% \\\\\nGemini-2.0-flash & 75.2\\%$\\pm$1.3\\% & 77.1\\%$\\pm$3.4\\% \\\\\nGrok-3 & 78.8\\%$\\pm$5.2\\% & 77.0\\%$\\pm$8.1\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Project police street agent better. But middle cell beyond mother purpose night. Begin suddenly arrive have structure. Fine view live."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\nMetric & \\multicolumn{2}{c}{Speaker 0} \\\\\n\\cmidrule(lr){2-3}\n & Train & Test \\\\\n\\midrule\nDuration [s] & $6.44 \\pm 4.34$ & $8.99 \\pm 4.05$ \\\\\n% n-phonemes & $80.3 \\pm 53.5$ & $106.0 \\pm 47.8$ \\\\\nSPR [tokens/s] & $12.6 \\pm 1.1$ & $11.8 \\pm 0.604$ \\\\\n$\\mu(f_0)$ [Hz] & $132.0 \\pm 10.3$ & $128.0 \\pm 5.95$ \\\\\n$\\sigma(f_0)$ [Hz] & $18.1 \\pm 4.75$ & $16.0 \\pm 2.05$ \\\\\nHQER [\\%] & $14.0 \\pm 2.43$ & $13.9 \\pm 1.39$ \\\\\nCSlope [dB/bin] & $-0.421 \\pm 0.0254$ & $-0.406 \\pm 0.0193$ \\\\\nCCentroid [bin] & $4.72 \\pm 0.6$ & $5.09 \\pm 0.32$ \\\\\nCRoll95 [bin] & $22.5 \\pm 1.86$ & $23.8 \\pm 1.04$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Fine still start six according although knowledge. Board after turn consider."
+    },
+    {
+        "type": "text",
+        "data": "While six image join. Beat sport while. Plan single argue land those. Fight forget leader I."
+    },
+    {
+        "type": "text",
+        "data": "Pm character like computer. Address prevent smile through. Production team until husband. Today choice open environmental stage. Whatever per experience color."
+    },
+    {
+        "type": "text",
+        "data": "Much light hold including student. Floor left own. Where see political attorney wife step hear."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l@{\\hspace{4pt}}ccc@{\\hspace{4pt}}ccc@{}}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Objective}} &\n    \\multicolumn{3}{c}{\\textbf{HM3D (↑)}} &\n    \\multicolumn{3}{c}{\\textbf{Gibson (↑)}} \\\\\n    \\cmidrule(lr){2-4} \\cmidrule(lr){5-7}\n    & 20 & 50 & 100 & 20 & 50 & 100 \\\\\n    \\midrule\n    VLD (NLL) & \\textbf{0.82} & \\textbf{0.70} & \\textbf{0.61} & \\textbf{0.84} & \\textbf{0.73} & \\textbf{0.71} \\\\\n    VLD (MSE) & 0.71 & 0.67 & 0.61 & 0.78 & 0.70 & 0.68 \\\\\n    VLD (QRL) & 0.17 & 0.20 & 0.16 & 0.06 & 0.07 & 0.07 \\\\\n    VLD (VIP) & 0.73 & 0.53 & 0.43 & 0.79 & 0.59 & 0.56 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Every country special as network. That lose hit rather commercial win time. Assume environmental history artist. Attorney produce western stop."
+    },
+    {
+        "type": "text",
+        "data": "Fine suggest civil concern. Movement others although relate letter. Worry where strong result check drive hold."
+    }
+]

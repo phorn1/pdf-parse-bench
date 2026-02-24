@@ -1,0 +1,43 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l@{\\hspace{20pt}}l@{}}\n\t\t\\hline\n\t\t\\textbf{Space Group} & \\textbf{Symmetry Operations} \\\\\n\t\t\n\t\t\n\t\t\\( R\\overline{3} \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\t\\( (-y, x - y, z) \\) \\\\\n\t\t\t\\( (-x + y, -x, z) \\) \\\\\n\t\t\t\\( (-x, -y, -z) \\) \\\\\n\t\t\t\\( (y, -x + y, -z) \\) \\\\\n\t\t\t\\( (x - y, x, -z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\n\t\t\n\t\t\n\t\t\\( P\\overline{1} \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\t\\( (-x, -y, -z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\n\t\t\n\t\t\n\t\t\\( P1 \\) & \n\t\t\\begin{tabular}[t]{@{}l@{}}\n\t\t\t\\( (x, y, z) \\) \\\\\n\t\t\\end{tabular} \\\\\n\t\t\\hline\n\t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Party room rise son hope receive since. On to finish move guess teacher. Government wrong tax through. Whole place cell area to listen military."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c}\n\\hline\nGas mixture & $W_{\\mathrm{mix}}$ [eV] \\\\\n\\hline\nSTD      & 34.20 \\\\\nMix I    & 34.15 \\\\\nMix II   & 34.12 \\\\\nECO Mix I & 34.40 \\\\\nECO Mix II& 34.05 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Language only record form. Stage piece describe result letter area child. Everything hear nature least away. Myself relationship person cut watch beat."
+    },
+    {
+        "type": "text",
+        "data": "Report enjoy able. Change work center agency upon card difference. Small special day keep just each always."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\multirow{2}{*}{\\makecell[c]{\\# Training \\\\ iterations}} & \\multicolumn{2}{c}{ Sintel (train) } & \\multicolumn{2}{c}{ KITTI-15 (train) }\\\\\n% \\cmidrule{r}{2-3}  \\cmidrule{r}{4-5} \\cmidrule{r}{6-7} \\cmidrule{r}{8} \\\\\n% \\cmidrule(lr){3-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-8}\\cmidrule(lr){9-9}\n& Clean & Final & F1-epe & F1-all  \\\\\n\\midrule \n1(linear) & 0.91 & 2.00 & 4.93 & 20.47\\\\\n% gmflow_0274_1_bsz6_mp_lr2.5e-5_400k_t384x768_after_0272_1_40k_bsz8_c368x496.yaml\n1& 0.95 & 2.04 & 4.78 & 19.85\\\\\n% gmflow_1064_1_rvit_step_2_C_lr2.5e-5_40k_T_lr1e-5_400k_CT\n2& 0.80 & 1.92 & 3.68 & 14.42\\\\\n% 6&  \\baseline{\\textbf{0.69}} & \\baseline{\\textbf{1.78}} & \\baseline{3.15} & \\baseline{11.45}\\\\\n6&  \\textbf{0.69} & \\textbf{1.78} & 3.15 & 11.45\\\\\n12& 0.70 & \\textbf{1.78} & \\textbf{3.13} & \\textbf{11.29}\\\\\n% flowformer_eval_gmflow_1121_1_rvit_v5_step12.yaml\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c}\n\\hline\\hline\n\\multicolumn{2}{c}{SPEXACT v3.08.01} \\\\\n\\multicolumn{2}{c}{\\texttt{clus}} \\\\\n\\hline\nSi/Fe   &       $0.89 \\pm 0.04$ \\\\\nS/Fe    &       $0.96 \\pm 0.03$ \\\\\nAr/Fe   &       $0.96 \\pm 0.04$ \\\\\nCa/Fe   &       $1.24 \\pm 0.05$ \\\\\nCr/Fe   &       $1.44 \\pm 0.20$ \\\\\nMn/Fe   &       $1.0 \\pm 0.3$   \\\\\nNi/Fe   &       $1.24 \\pm 0.15$ \\\\\n\\hline\nC-stat/d.o.f.   &       3004/2708       \\\\\n\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Lay near clearly another. Fire apply certain visit task those."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n     \\toprule\nDataset   &   Method & ${\\text{FID}_k} \\downarrow$ & ${\\text{Div}_k} \\uparrow$  & $\\text{BAS} \\uparrow$ \\\\\n     \\midrule\n\\multirow{3}{*}{AIST++}  \n&  Music & \\textbf{25.13} & \\textbf{7.98} & \\textbf{0.2446} \\\\\n&  Dance & 31.26 & 6.68 & 0.2136 \\\\\n&  Genre & 29.24 & 6.92 & 0.2268 \\\\\n\\midrule\n\\multirow{3}{*}{FineDance}  \n&  Music & \\textbf{38.42} & \\textbf{8.57} & \\textbf{0.2316} \\\\\n&  Dance & 44.28 & 7.12 & 0.2172 \\\\\n&  Genre & 52.48 & 6.12 & 0.2018 \\\\\n\\midrule\n\\multirow{3}{*}{PopDanceSet}  \n&  Music & \\textbf{23.42} & \\textbf{7.54} & \\textbf{0.2482} \\\\\n&  Dance & 26.48 & 6.72 & 0.2272 \\\\\n&  Genre & -- & -- & -- \\\\\n  \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

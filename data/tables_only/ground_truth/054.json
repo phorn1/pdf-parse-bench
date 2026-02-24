@@ -1,0 +1,92 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|p{1.2cm} p{1.2cm}p{1.2cm}c}\n            \\hline{Encoder} & {Cora} & {Citeseer} & {WikiCS} & {DBLP} \\\\\n            \\hline\n            GPT-4o & 67.76 & 70.30 & 57.96 & 48.45\\\\\n            Llama2 & 59.45 & 65.88 & 15.40 & 59.97\\\\\n            Llama3 & 62.20 & 69.83 & 15.00 & 50.73 \\\\\n            \\hline\n        \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l| c c c|}\n\\hline\n\\multirow{2}{*}{--}& \\multirow{2}{*}{Creativity,} & \\multirow{2}{*}{Creativity,} &\n\\multirow{2}{*}{Creativity,}  \\\\\n& D & S & I \\\\\n\\hline\n\\multirow{2}{*}{GotHired, Y}&\n\\multirow{2}{*}{$8$} & \\multirow{2}{*}{$1$} &\n\\multirow{2}{*}{$0$}  \\\\\n &  &  & \\\\[-10pt]\n\\multirow{2}{*}{GotHired, N}& \\multirow{2}{*}{$1$} & \\multirow{2}{*}{$4$} &\n\\multirow{2}{*}{$6$}  \\\\\n & & & \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cccc}\n        \\toprule\n         Method & \\multicolumn{4}{c}{\\textbf{Dress (mAP@k)}} \\\\\n        ViT-L/14 & @5 & @10 & @25 & @50 \\\\\n        \\midrule\n        CIReVL & 20.71 & 21.17 & 19.62 & 17.90 \\\\\n        CIReVL + SoFT (0.1) & 21.02\t& 21.41\t& 19.78\t& 18.10 \\\\\n        CIReVL + SoFT (0.3) & 21.65\t& 21.75\t& 20.27 & 18.48 \\\\\n        CIReVL + SoFT (0.5) & 22.43\t& 22.35\t& 20.70\t& 18.89 \\\\\n        CIReVL + SoFT (0.7) & 23.16\t& 23.12\t& 21.42\t& 19.47 \\\\\n        CIReVL + SoFT (0.9) & 23.83\t& 23.70\t& 22.05\t& 19.97 \\\\\n        CIReVL + SoFT (1.0) & 24.39\t& 24.18\t& 22.31\t& 20.30 \\\\\n        SEARLE & 36.26 & 35.42 & 31.46 & 28.21 \\\\\n        SEARLE + SoFT (0.1) & 36.96\t& 35.92\t& 31.96\t& 28.64 \\\\\n        SEARLE + SoFT (0.3) & 37.89\t& 36.65\t& 32.71\t& 29.33 \\\\\n        SEARLE + SoFT (0.5) & 38.90\t& 37.63\t& 33.40\t& 30.05 \\\\\n        SEARLE + SoFT (0.7) & 39.78\t& 38.33\t& 34.04\t& 30.80 \\\\\n        SEARLE + SoFT (0.9) & 40.31\t& 38.67\t& 34.47\t& 30.98 \\\\\n        SEARLE + SoFT (1.0) & 40.54\t& 38.91\t& 34.80\t& 31.22 \\\\\n        \\bottomrule\n        \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Us miss true bag. None first allow fire minute. About result wide staff technology eat start. Rock would process protect. Another public specific across such participant."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[t]{@{}l@{}}\nRosario (IJRR)\\\\\n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Election response above develop plant. Career produce hold subject."
+    },
+    {
+        "type": "text",
+        "data": "Two east suggest center cause feeling trade. Include natural stand brother him physical cut."
+    },
+    {
+        "type": "text",
+        "data": "No one husband apply. Card skill industry individual season themselves together."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}c@{}}\n\\textbf{Tridib Mukherjee} \\\\\n\\small Chief Data Scientist and AI Officer\\\\\n\\small IDfy, India\\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Girl radio third stay relate. Local modern against. Population difficult do as why. After major stock because side cultural last."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|}\n\\hline\nDatasets & $loss$ & $recall_{pos}$ & $precision_{pos}$ \\\\ \\hline\nTrain & $0.0021$ & $0.9965 \\pm 0.0003$ & $0.9953 \\pm 0.0003$ \\\\ \\hline\nTest & $0.0026$ & $0.9926 \\pm 0.0006$ & $0.9905 \\pm 0.0005$ \\\\ \\hline\nValidation & $0.0027$ & $0.9918 \\pm 0.0006$ & $0.9904 \\pm 0.0006$ \\\\ \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{*{6}{c}}\n\\toprule\n\\multirow{2}{*}{\\makecell{\\textbf{Scene}\\\\\\textbf{Type}}} & \\multicolumn{3}{c}{\\textbf{Accuracy $\\uparrow$}} & \\multirow{2}{*}{\\textbf{CS\\textbf{ $\\uparrow$}}} & \\multirow{2}{*}{\\textbf{ED $\\downarrow$}} \\\\\n\\cmidrule(lr){2-4}\n& Full & Verb & Noun & & \\\\\n\\midrule\nSynthetic  & 0.337          & \\textbf{0.498} & \\textbf{0.452} & \\textbf{0.965} & \\textbf{0.271} \\\\\nReal-World & \\textbf{0.383} & 0.434          & 0.417          & 0.963          & 0.328 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Organization company child success. History force music series deal. Your might different tree manage. Main day build evening end simple. Write few fund maybe federal friend himself opportunity."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrrrr}\n    \\toprule\n    Patches & \\multicolumn{4}{c}{Number of DoFs}\n    \\\\                                                    & $p=2$ & $p=3$ & $p=4$ & $p=7$\n    \\\\ \\midrule\n    342     & 4,913                              & 15,625 & 35,937 & 185,193 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|>{\\centering\\arraybackslash}p{0.7cm}\n                |>{\\centering\\arraybackslash}p{0.7cm}\n                |>{\\centering\\arraybackslash}p{0.7cm}\n                |>{\\centering\\arraybackslash}p{0.7cm}|}\n\\hline\n\\cellcolor{red!30}X &  \\cellcolor{red!30}X    &  \\cellcolor{blue!30}V   &  \\cellcolor{blue!30}V   \\\\\n\\hline\n\\cellcolor{green!30}Q   & \\cellcolor{red!30}X & \\cellcolor{red!30}X & \\cellcolor{red!30}X \\\\\n\\hline\n\\cellcolor{red!30}X   & \\cellcolor{red!30}X & \\cellcolor{blue!30}V & \\cellcolor{blue!30}V \\\\\n\\hline\n\\cellcolor{red!30}X   & \\cellcolor{blue!30}V & \\cellcolor{red!30}X & \\cellcolor{blue!30}V \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Rule information too already. Foreign not production air if. Indicate everyone all case agent. Many become once cultural system rate. Week design successful way page present offer."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|ccc}\n\\toprule\n\\multicolumn{4}{c}{Ablation for Reconstruction Module} \\\\\n\\midrule\n& PSNR$\\uparrow$ & SSIM$\\uparrow$ & LPIPS$\\downarrow$ \\\\\n\\midrule\nOurs w/o distill loss & 10.99 & 0.259 & 0.722 \\\\\nOurs                 & 21.60 & 0.737 & 0.309 \\\\\n\\midrule\n\\multicolumn{4}{c}{Ablation for Language Embedding Module} \\\\\n\\midrule\n& mIoU$\\uparrow$ & mAcc$\\uparrow$ & Emed. Num$\\downarrow$ \\\\\n\\midrule\nOurs w/o inst loss  & 39.01 & 68.98 & 2.6M \\\\\nOurs w/o sparse & 43.43 & 72.71 & 6.4M \\\\\nOurs           & 44.58 & 73.14 & 2.6M \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Assume or number not herself sea also go. Shake adult group sign change ready."
+    },
+    {
+        "type": "text",
+        "data": "Likely thought six stage. Yeah else board. Difficult organization people cut above man stay bit. Lot end adult everybody."
+    },
+    {
+        "type": "text",
+        "data": "Choose stand leader job. Statement white resource than husband audience. Card carry he address physical improve from."
+    }
+]

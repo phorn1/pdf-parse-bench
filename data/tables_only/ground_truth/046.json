@@ -1,0 +1,44 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|}\n        \\hline\n        $p$ & \\texttt{regressis} linear weights & catalog linear weights\\\\\n        \\hline\\hline\n        $1.6$ & $f_{\\mathrm{NL}} = 17^{+30}_{-40}\\,\\, (\\chi^2=11)$  & $f_{\\mathrm{NL}} = 4^{+33}_{-41}\\,\\, (\\chi^2=11)$ \\\\\n        \\hline\n        $1.0$ & $f_{\\mathrm{NL}} = 12^{+24}_{-28}\\,\\, (\\chi^2=11)$  & $f_{\\mathrm{NL}} = 3^{+23}_{-27}\\,\\, (\\chi^2=11)$ \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Affect nothing affect fund total plant. Court usually good drug table long. Their mean successful."
+    },
+    {
+        "type": "text",
+        "data": "Former instead under already election. Water amount mention goal authority free them fill."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lc@{}}\n        \\toprule\n        \\textbf{Metric} & \\textbf{Value} \\\\\n        \\midrule\n        \\textbf{Overall Accuracy (Video)} & 82.57\\% \\\\\n        \\textbf{Inter-Rater Agreement ($\\kappa$)} & 0.89 \\\\\n        \\midrule\n        \\rowcolor{gray!10} \\multicolumn{2}{l}{\\textbf{Error Source Distribution}} \\\\\n        Missed Detail (Video $>$ 30s) & 65.2\\% \\\\\n        Ambiguous Interpretation & 21.4\\% \\\\\n        Fatigue / Random Error & 13.4\\% \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[c]{@{}c@{}}Expert Number =10,\\\\ TopK = 5,\\\\ FRL Prototype Number = 16,\\\\ $\\lambda_{\\text{FRL}}$ = 1e-4\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}ll@{}}\n    \\toprule\n    \\textbf{Case ID} & bank\\_river \\\\ \n    \\textbf{Key Context} & river \\\\\n    \\textbf{Top Active Feature} & Feat 1556 (Act: 8.69) \\\\\n    \\textbf{Semantic Concept} & Location / Nature \\\\ \\midrule\n\n    \\textbf{Case ID} & bank\\_river \\\\\n    \\textbf{Key Context} & water \\\\\n    \\textbf{Top Active Feature} & Feat 2193 (Act: 7.16) \\\\\n    \\textbf{Semantic Concept} & Liquid / Object \\\\ \\midrule\n\n    \\textbf{Case ID} & bank\\_money \\\\ \n    \\textbf{Key Context} & money \\\\\n    \\textbf{Top Active Feature} & Feat 948 (Act: 9.00) \\\\\n    \\textbf{Semantic Concept} & Finance / Value \\\\ \\midrule\n\n    \\textbf{Case ID} & bank\\_money \\\\ \n    \\textbf{Key Context} & went \\\\\n    \\textbf{Top Active Feature} & Feat 1556 (Act: 8.19) \\\\\n    \\textbf{Semantic Concept} & Action / Movement \\\\ \n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[t]{c}\\@author\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Box who face. The rate truth go serious team late present. Drop discuss grow physical management."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c||c|c||c|c}\n        \\hline\n        \\makebox[0.05\\textwidth][c]{\\text{Parameter}} & \\makebox[0.025\\textwidth][c]{\\text{Value}} & \\makebox[0.05\\textwidth][c]{\\text{Parameter}} & \\makebox[0.035\\textwidth][c]{\\text{Value}} & \\makebox[0.05\\textwidth][c]{\\text{Parameter}} & \\makebox[0.020\\textwidth][c]{\\text{Value}} \\\\\n        \\hline\n        $e_\\text{B}$ & 20$\\sim$80 J & $e_\\text{E}$ & 30$\\sim$90 J & $n$ & 5\\\\ \\hline\n        $p_\\text{0}$ & 3 W & $p_\\text{Hov}$& 150 J/s& $p_\\text{Fly}$& 160 J/s \\\\ \\hline\n        $l_0$ & (4,4,0) &  $D$ & 2 m & $v$ & 3 m/s \\\\ \\hline\n       \\multicolumn{2}{c|}{Region} &  \\multicolumn{4}{|c}{4m×4m×2m}\\\\ \\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    }
+]

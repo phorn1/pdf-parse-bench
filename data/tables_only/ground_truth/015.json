@@ -1,0 +1,65 @@
+[
+    {
+        "type": "text",
+        "data": "Case bank itself he hospital. Talk director now blood allow still gas. Analysis nice laugh yeah. Water bit account about boy."
+    },
+    {
+        "type": "text",
+        "data": "Activity today her feel suggest. Someone toward popular born worker. Family reduce go society stage hour."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccc@{}}\n\\toprule\nMaze Size & Pure Spiral & Fixed Conv & RL Conv \\\\\n\\midrule\n16$\\times$16 & 14.2s (1.0$\\times$) & 12.8s & 11.0s \\\\\n32$\\times$32 & 60.0s (4.2$\\times$) & 45.8s & 39.6s \\\\\n64$\\times$64 & 359.2s (25.3$\\times$) & 226.6s & 160.6s \\\\\n128$\\times$128 & $\\sim$900s* (63$\\times$) & $\\sim$1000s* & $\\sim$700s* \\\\\n\\bottomrule\n\\multicolumn{4}{l}{\\small *Estimated from completed tests}\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Manage product brother must. Such leg expert education chair spend themselves. Travel little whatever deal short. Art himself development condition would."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lcccccc@{}}\n               \\toprule\n               \\multirow{2}{*}{Model}  & \\multicolumn{2}{c}{\\small Easy} & \\multicolumn{2}{c}{\\small Medium} & \\multicolumn{2}{c}{\\small Hard}                                                 \\\\\\cmidrule{2-7}\n                                       & {\\small Seq.}                                          & {\\small Token }                                            & {\\small Seq.}                                           & {\\small Token }     & {\\small Seq.}    & {\\small Token }        \\\\ \\midrule\n               ARLM                     & 33.1                                                & 81.7                                                  & 77.2                                                 & 82.1           & 25.2          & 43.7                \\\\\n               ILM                     & 100.0                                               & 100.0                                                 & {100.0}                                       & {100.0} & {97.5} & {98.2} \\\\ \n                MLM                     & 100.0                                               & 100.0                                                 & 83.1                                                 & 98.0           & 25.3          & 79.6                \\\\\n               MDLM                     & 100.0                                               & 100.0                                                 & 36.5                                                 & 90.6           & 21.0          & 54.9                \\\\\n\\bottomrule\n           \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c}\n\t\t\\toprule\n\t\t$c$ & \\multicolumn{2}{c}{$\\mathcal{S}$} & \\multicolumn{2}{c}{$\\mathcal{I}$} \\\\\n\t\t\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\n\t\t& {$\\tau_N = 2$} & {$\\tau_N = \\infty$} & {$\\tau_N = 2$} & {$\\tau_N = \\infty$} \\\\\n\t\t\\midrule\n\t\t0.8 & 0.008 & 0.283 & 0.008 & 0.283 \\\\\n\t\t0.9 & 0.000 & 0.033 & 0.000 & 0.033 \\\\\n\t\t1.0 & 0.083 & 0.167 & 0.083 & 0.158 \\\\\n\t\t1.1 & 0.458 & 0.583 & 0.517 & 0.583 \\\\\n\t\t1.2 & 0.350 & 0.683 & 0.350 & 0.683 \\\\\n\t\t\\bottomrule\n\t\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Should adult source own. Job begin within less decade important respond."
+    },
+    {
+        "type": "text",
+        "data": "Fill detail clearly mention let fear. Soldier any score real class suggest born. Final total but second stage. Quality various media story traditional. General research agree."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n\\textbf{Parallel or Iterative} & \\textbf{PSNR$\\uparrow$} & \\textbf{SSIM$\\uparrow$} & \\textbf{RMSE$\\downarrow$} \\\\\n\\midrule\n    6 iterative blocks (ours)  & \\textbf{41.92} & \\textbf{0.9806} & \\textbf{2.211} \\\\\n    6 parallel blocks   & 39.57 & 0.9713 & 2.860 \\\\\n    single block        & 38.97 & 0.9683 & 3.063  \\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\n\\toprule\n\\multicolumn{1}{l|}{\\multirow{2}{*}{Method}} & \\multicolumn{1}{c|}{\\multirow{2}{*}{Sup.}} & \\multicolumn{1}{c|}{\\multirow{2}{*}{N.}} & \\multicolumn{1}{c}{VOC} \\\\ \\cline{4-4} \n\\multicolumn{1}{c|}{} & \\multicolumn{1}{c|}{} & \\multicolumn{1}{c|}{} & Train \\\\ \\midrule\n\\multicolumn{1}{l|}{MCTformer {\\scriptsize CVPR'2022}} & \\multicolumn{1}{c|}{$\\mathcal{I + D}$} & \\multicolumn{1}{c|}{R} & 61.7 \\\\\n\\multicolumn{1}{l|}{CLIMS~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{R} & 56.6 \\\\\n\\multicolumn{1}{l|}{WeakTr~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{D} & 66.2 \\\\\n\\multicolumn{1}{l|}{POLE {\\scriptsize WACV'2023}} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{R} & 59.0 \\\\\n\\multicolumn{1}{l|}{CLIP-ES~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 70.8 \\\\\n\\multicolumn{1}{l|}{ToCo~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{V} & 71.6 \\\\\n\\multicolumn{1}{l|}{CPAL~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{R} & 71.9 \\\\\n\\multicolumn{1}{l|}{CTI~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{D} & 69.5 \\\\\n\\multicolumn{1}{l|}{SeCo~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{V} & 74.8 \\\\ \n\\multicolumn{1}{l|}{DuPL~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{V} & 75.0 \\\\\n\\multicolumn{1}{l|}{WeCLIP~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 75.4 \\\\\n\\multicolumn{1}{l|}{DIAL~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 75.2 \\\\\n\\multicolumn{1}{l|}{WeakCLIP~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 61.7 \\\\\n\\multicolumn{1}{l|}{VPL~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 77.8 \\\\\n\\multicolumn{1}{l|}{MoRe~} & \\multicolumn{1}{c|}{$\\mathcal{I}$} & \\multicolumn{1}{c|}{V} & 77.0 \\\\\n\\multicolumn{1}{l|}{ExCEL~} & \\multicolumn{1}{c|}{$\\mathcal{I + L}$} & \\multicolumn{1}{c|}{V} & 78.0 \\\\\n\\rowcolor{gray!15}\n\\multicolumn{1}{l|}{\\textbf{Ours}} & \\multicolumn{1}{c|}{$\\mathcal{I+L+D}$} & \\multicolumn{1}{c|}{V} & \\textbf{78.7} \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrrr}\n\\toprule\n\\multicolumn{1}{c}{Technique} &  \\multicolumn{1}{c}{BLEU} & \\multicolumn{1}{c}{ROUGE-L} & \\multicolumn{1}{c}{METEOR}\\\\\n\\midrule\nZero-shot &  83.06 & 94.43 & 92.82\\\\\nChain-of-thought &  81.92 & 93.79 & 91.25\\\\\nTree-of-thoughts &  81.80 & 93.72 & 91.16\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n    \\toprule\n    \\textbf{Parameter} & \\textbf{Classification} & \\textbf{Regression} \\\\\n    \\midrule\n    Prediction head & \\multicolumn{2}{c}{Linear layer (input dim = 300)} \\\\\n    Optimizer & \\multicolumn{2}{c}{Adam} \\\\\n    Learning rate & \\multicolumn{2}{c}{$1\\times 10^{-3}$} \\\\\n    Epochs & 100 & 100\\\\\n    Dropout rate & 0.5 & 0.2 \\\\\n    Batch size & 32 & 256 \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Character son young degree actually. Receive daughter thus trip society PM. Together now for page role."
+    },
+    {
+        "type": "text",
+        "data": "Thought machine anything address offer series. Father too with data success line."
+    }
+]

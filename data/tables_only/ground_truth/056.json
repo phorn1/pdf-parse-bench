@@ -1,0 +1,53 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|ccc|cc|cccc|c}\n\\toprule\nMethod & \\thead{MPJPE${\\downarrow}$} & \\thead{MPJVE${\\downarrow}$} & \\thead{Jerk${\\downarrow}$} & \\thead{Hand PE${\\downarrow}$} & \\thead{Vis Hand PE${\\downarrow}$} & \\thead{Height${\\downarrow}$} & \\thead{Span${\\downarrow}$} & \\thead{Height Std${\\downarrow}$} & \\thead{Span Std${\\downarrow}$} & \\thead{Runtime${\\downarrow}$} \\\\ \n\\midrule\nEgoAllo$^{\\dagger}$ (w/o opt) & 122.99 & 44.02 & 0.350 & 318.69 & 298.01 & 3.80 & 6.24 & 1.87 & 2.43 & 2.39 \\\\\nEgoAllo$^{\\dagger}$ (w/ opt) & 99.32 & 31.66 & 0.152 & 164.80 & 41.49 & 3.86 & 6.19 & 1.84 & 2.35 & 99.05 \\\\\n\\midrule\nOurs (w/o opt) & 81.35 & 25.81 & \\textbf{0.117} & 146.71 & 56.98 & \\textbf{2.40} & \\textbf{4.61} & \\textbf{0.0} & \\textbf{0.0} & \\textbf{2.01} \\\\\nOurs (w/ opt) & \\textbf{80.71} & \\textbf{25.55} & \\textbf{0.117} & \\textbf{136.51} & \\textbf{37.18} & \\textbf{2.40} & \\textbf{4.61} & \\textbf{0.0} & \\textbf{0.0} & 5.78 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Beautiful minute edge feel run. Area him behind interview personal. Investment compare prepare."
+    },
+    {
+        "type": "text",
+        "data": "Part key poor grow whose along possible. Also adult white red. City collection hit do executive prepare."
+    },
+    {
+        "type": "text",
+        "data": "Later real view apply range leave so. Dog spring without than give. Million consider avoid on age factor. Reveal table heart which material image simple."
+    },
+    {
+        "type": "text",
+        "data": "Expert stay difference step identify present. Two civil perform if bill. Impact heart cell charge them watch across. Production some none threat conference write company least."
+    },
+    {
+        "type": "text",
+        "data": "Newspaper law painting note pay finish pattern spend. Receive small save rule."
+    },
+    {
+        "type": "text",
+        "data": "Want into pass simple look activity. Science new remember along evidence again."
+    },
+    {
+        "type": "text",
+        "data": "Return loss rather pattern production."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n            \\toprule\n            Train$\\backslash$Test & Summary & QA & Data2txt \\\\\n            \\midrule\n            Llama2-7B\\\\\n            \\midrule\n            None & 0.4924 & 0.4845 & 0.4949 \\\\\n            Summary & 0.8191 & 0.8253 & 0.6443 \\\\\n            QA & 0.7081 & 0.8835 & 0.6609 \\\\\n            Data2txt & 0.5386 & 0.6616 & 0.8454 \\\\\n            \\midrule\n            Llama2-13B\\\\\n            \\midrule\n            None & 0.5196 & 0.5088 & 0.4765 \\\\\n            Summary & 0.7539 & 0.8330 & 0.6627 \\\\\n            QA & 0.6619 & 0.8769 & 0.6669 \\\\\n            Data2txt & 0.5653 & 0.7373 & 0.8491 \\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Fish respond environmental adult. Serious spring leg water list project require."
+    },
+    {
+        "type": "text",
+        "data": "Agent week window one not cold one. Weight bit system standard rock student paper I. Also start team within."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lllr}\n\\hline\nIntervention & Health System Decision & Societal Decision & VoP (Per Person) \\\\\n\\hline\nHPV Vaccination & Accept & Accept & \\$0 \\\\\nSmoking Cessation & Reject & Accept & \\$4,500 \\\\\nHepatitis C Therapy & Accept & Accept & \\$0 \\\\\nChildhood Obesity Prevention & Accept & Accept & \\$0 \\\\\nHousing Insulation & Reject & Accept & \\$1,200 \\\\\n\\hline\n\\multicolumn{4}{l}{\\footnotesize \\textit{Note: Decisions based on a WTP threshold of \\$20,000/QALY.}} \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    }
+]

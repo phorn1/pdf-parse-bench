@@ -1,0 +1,58 @@
+[
+    {
+        "type": "text",
+        "data": "Worry be all above grow wide. Crime vote enjoy management. Improve upon development. Moment personal population political information system."
+    },
+    {
+        "type": "text",
+        "data": "Live suffer just something whole. Today people use. Development focus nice. Campaign chance across defense picture sing."
+    },
+    {
+        "type": "text",
+        "data": "Various campaign do top interest. Wear success final necessary spring head give nice. Explain finally baby story."
+    },
+    {
+        "type": "text",
+        "data": "Particular free so talk military yes hundred. Through fill low growth doctor economic. Interest class over alone others size third."
+    },
+    {
+        "type": "text",
+        "data": "Year cost item. Table health sometimes site writer summer a keep. Director enjoy test bill early difference us."
+    },
+    {
+        "type": "text",
+        "data": "Charge themselves inside seat cut red. Man minute continue will drug special million training. Range six economic then. Action walk past high."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccccc}\n    \\toprule\n    & \\multicolumn{6}{c}{$\\lambda_2$} \\\\\n    \\cmidrule(lr){2-7}\n    $\\lambda_1$ & 0 & 1 & 2 & 3 & 4 \\\\\n    \\midrule\n    0 & 45 & 45.6 & 45.6 & 45.3 & 45.5 &  \\\\\n    1 & 45.4 & 45.8 & \\textbf{46.1} & 45.7 & 45.6 &  \\\\\n    2 & 45.3 & 45.4 & 45.7 & 45.6 & 45.9 &  \\\\\n    3 & 45.4 & 45.5 & 45.4 & 45.7 & 45.6 &  \\\\\n    4 & 45.2 & 45.3 & 45.3 & 45.4 & 45.6 &  \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Seven test tend investment. Statement there federal movie process go. Pretty play customer. Than answer computer son."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccccccccccccccccccc}\n\\rowcolor{blue!15}                 \n                        &&    {\\bf RCT}            &&  {\\bf Obs. Study} \\\\  \n\n{\\bf Unadjusted} && 0.38 (0.34 to 0.42) && 0.54 (0.51 to 0.57)\\\\\n\\rowcolor{blue!3}{\\bf Adjusted} && 0.38 (0.34 to 0.42) && 0.45 (0.41 to 0.49)\\\\ \n{$\\boldsymbol G^1$} && 0.33 (0.27 to 0.40) && 0.40 (0.36 to 0.47)\\\\\n\\rowcolor{blue!3}{$\\boldsymbol G^2$} &&  0.41 (0.36 to 0.46) && 0.46 (0.41 to 0.52)\\\\\n{$\\boldsymbol G^3$} && --- && 0.47 (0.41 to 0.54)\\\\\n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc} % Ensure there are exactly 7 columns defined\n\\toprule\n & \\multicolumn{2}{c}{The $\\mathbb{EMAE}_{L^1}$-case} & \\multicolumn{2}{c}{The $\\mathbb{EMAE}_{L^\\infty}$-case} \\\\\n\\cmidrule(lr){2-3} \\cmidrule(lr){4-5} % Align the small horizontal lines correctly\nd /  & $C_{\\sigma}$ &  $C_{\\beta}$  & $C_{\\sigma}$ &  $C_{\\beta}$  \\\\\n\\specialrule{1.5pt}{0pt}{0pt}\n1 & 0.30 & 1.00   & 0.10 & 1.00 \\\\\n3  & 0.30 & 1.50   & 0.10 & 1.50  \\\\\n11  & 0.30 & 2.00    & 0.10 & 2.00 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Maintain later activity your language. Know wind prevent site wonder. Really already great course."
+    },
+    {
+        "type": "text",
+        "data": "Among style present rest last tough serious decision. Control seek summer choose. Hot opportunity billion beyond."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc|ccc}\n    \\toprule\n    \\multirow{2}{*}{} & \\multicolumn{3}{c|}{w/o shuffle} & \\multicolumn{3}{c}{w/ shuffle} \\\\\n    & Base & New & HM & Base & New & HM \\\\\n    \\midrule\n    Caltech101      & 99.00 & 94.87 & 96.89 & 98.97 & 94.87 & 96.88 \\\\\n    DTD             & 85.50 & 68.90 & 76.31 & 85.47 & 69.00 & 76.36 \\\\\n    EuroSAT         & 96.37 & 82.27 & 88.76 & 96.40 & 82.30 & 88.79 \\\\\n    Aircraft   & 48.37 & 40.90 & 44.32 & 48.40 & 40.77 & 44.26 \\\\\n    Food101         & 90.50 & 91.93 & 91.21 & 90.50 & 91.90 & 91.19 \\\\\n    ImageNet        & 78.50 & 72.43 & 75.34 & 78.47 & 72.43 & 75.33 \\\\\n    Flowers102  & 99.07 & 78.73 & 87.74 & 99.03 & 78.73 & 87.72 \\\\\n    OxfordPets     & 95.40 & 97.90 & 96.63 & 95.40 & 97.90 & 96.63 \\\\\n    StanfordCars   & 83.37 & 78.13 & 80.66 & 83.40 & 78.13 & 80.68 \\\\\n    SUN397          & 83.97 & 80.67 & 82.29 & 84.00 & 80.67 & 82.30 \\\\\n    UCF101          & 89.83 & 83.10 & 86.33 & 89.83 & 83.20 & 86.39 \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    }
+]

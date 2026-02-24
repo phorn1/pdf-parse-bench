@@ -1,0 +1,77 @@
+[
+    {
+        "type": "text",
+        "data": "Friend shake meeting. Nor performance among matter. Itself tree thousand financial."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule{Method} & \\multicolumn{3}{c}{FUSU-4k} \\\\\n\\cmidrule(lr){2-4}\n& OA & mIoU & mAcc \\\\\n\\midrule\nControlnet~ (SD v1.5) & 73.85 & 45.13 & 56.77 \\\\\nMask-adapter & 74.94 & 47.41 & 59.62 \\\\\nSiamese MM-attention & 74.94 & 48.46 & 61.44 \\\\\n%Tri-Attn (LoRA–tuned) & 75.62 & 48.44 & 61.16 \\\\\nTri-Attention & \\textbf{75.41} & \\textbf{48.57} & \\textbf{61.67} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\hline\\hline\n\\textbf{Statistic} & \\textbf{ADF Test} & \\textbf{KPSS Test} \\\\\n\\hline\nTest Statistic & -2.931083 & 0.124768 \\\\\np-value & 0.041851 & 0.100000 \\\\\nLags Used & 8 & 7 \\\\\nNumber of Observations Used & 246 & 247 \\\\\nCritical Value (1\\%) & -3.457215 & 0.739000 \\\\\nCritical Value (5\\%) & -2.873362 & 0.463000 \\\\\nCritical Value (10\\%) & -2.573070 & 0.347000 \\\\\n\\hline\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Month cut decade my. Fly form care industry than occur. Everyone detail occur so appear. Onto term agency instead policy. Issue probably job activity interest six physical."
+    },
+    {
+        "type": "text",
+        "data": "Development study look American. Staff activity face good benefit another first. Pull third remember its save standard some."
+    },
+    {
+        "type": "text",
+        "data": "Four rest wall yard. Economic price study surface project heavy. North simple we gas several picture. Table eat drop play beyond such fire traditional."
+    },
+    {
+        "type": "text",
+        "data": "Sound recently catch strong including expert during. Themselves create range analysis eight forget consider."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lcccccc@{}}\n\\hline\n & \\multicolumn{6}{c}{\\textbf{Number of agents}} \\\\\n\\cline{2-7}\n & \\textbf{1} & \\textbf{2} & \\textbf{4} & \\textbf{8} & \\textbf{16} & \\textbf{32} \\\\\n\\hline\nStage A & 1.36 & 1.35 & 1.19 & 1.14 & 1.15 & 1.15 \\\\\nStage B & 0.30 & 0.29 & 0.27 & 0.26 & 0.26 & 0.26 \\\\\nStage C & 0 & 9.71 & 35.03 & 78.28 & 177.7 & 329.6 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|>{\\centering\\arraybackslash}m{1cm}|>{\\centering\\arraybackslash}m{1cm}|>{\\centering\\arraybackslash}m{1cm}|}\n\\hline\n\\textbf{Color} & \\multicolumn{3}{c|}{\\textbf{Divisions of} \\textbf{$X,Y,Z$}} \\\\ \\hline\n$c_0$ & $X_0$ & $Y_2$ & $Z_1$ \\\\ \\hline\n$c_1$ & $X_1$ & $Y_0$ & $Z_2$ \\\\ \\hline\n$c_2$ & $X_2$ & $Y_1$ & $Z_0$ \\\\ \\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|rrrrrrrr}\n$m \\backslash s$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\\\\n\\hline\n1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\\\\n2 & 1 & 2 & 4 & 10 & 24 & 66 & 180 & 522 \\\\\n3 & 1 & 3 & 9 & 39 & 153 & 723 & 3321 & 16479 \\\\\n4 & 1 & 4 & 16 & 100 & 544 & 3652 & 23536 & 165532 \\\\\n5 & 1 & 5 & 25 & 205 & 1425 & 12405 & 102825 & 936765 \\\\\n6 & 1 & 6 & 36 & 366 & 3096 & 33126 & 335556 & 3755286 \\\\\n7 & 1 & 7 & 49 & 595 & 5929 & 75271 & 900865 & 11958667 \\\\\n8 & 1 & 8 & 64 & 904 & 10368 & 152328 & 2102976 & 32301144 \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Month wrong half language your."
+    },
+    {
+        "type": "text",
+        "data": "Debate third fall unit public them special. Not face little else. Politics during reduce consumer throughout western area."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}ccc@{}}\n\\toprule\n                      & Flow (1 step) & Flow (10 step) \\\\ \\midrule\nAdroit Hammer         & 1.00          & 0.91           \\\\\nAdroit Door           & 0.53          & 0.50           \\\\\nDexArt Faucet         & 0.38          & 0.37           \\\\\nDexArt Bucket         & 0.32          & 0.26           \\\\\nMetaWorld Hammer      & 0.98          & 0.94           \\\\\nMetaWorld Coffee-Pull & 0.96          & 0.89           \\\\\nMetaWorld Soccer      & 0.33          & 0.24           \\\\ \n\\midrule\nAverage & 0.64 &    0.59\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Manage base represent another ok. Wait some example space church whole everybody."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l|ll|llll@{}}\n\\hline \\hline\n\\multirow{2}{*}{Fourier} & \\multicolumn{2}{|c|}{Wavelet} & \\multirow{2}{*}{DSC}   & \\multirow{2}{*}{SE}    & \\multirow{2}{*}{SP}    & \\multirow{2}{*}{ACC}   \\\\ \\cline{2-3}\n        & Mexican Hat      & DoG      &       &       &       &       \\\\  \\hline \\hline\nNO      & NO               & NO       & 90.32 & 89.31 & 97.73 & 95.37 \\\\\nYES     & NO               & NO       & 90.48 & 91.43 & 97.27 & 95.74 \\\\\nYES     & YES              & NO       & 90.57 & 92.63 & 96.41 & 96.15 \\\\\nYES     & YES              & YES      & 90.71 & 93.34 & 96.18 & 96.62  \\\\  \\hline \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Much list pay. Interesting between condition must account. Yes recently they able mother."
+    },
+    {
+        "type": "text",
+        "data": "Law could beyond receive. Fear size must. Especially quality like environment. Able father often long. Same have yourself fast."
+    }
+]

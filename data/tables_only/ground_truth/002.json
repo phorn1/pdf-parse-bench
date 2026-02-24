@@ -1,0 +1,16 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{r c | r c}\n    \\hline\n    Parameter & Value & Parameter & Value \\\\\n    \\hline\n    $A$ [m$^2$] & 80 & $K_a$ [m$^2$/g] & 0.1 \\\\\n    $\\mu_{max}$ [day$^{-1}$] & 1.8144 & $I_k$ [$\\mu$E$\\cdot$ m$^{-2}\\cdot$ s$^{-1}$] & 120 \\\\\n    $m_{min}$ [day$^{-1}$] & 0.0173 & $n$ [-] & 3 \\\\\n    $m_{max}$ [day$^{-1}$] & 0.0173& $n_m$ [-] & 4 \\\\\n    $T_{min}$ [$^o$C] & 12 & $pH_{min}$ [-] & 4 \\\\\n    $T_{max}$ [$^o$C] & 46 & $pH_{max}$ [-] & 12 \\\\\n    $T_{opt}$ [$^o$C] & 30 & $pH_{opt}$ [-] & 8 \\\\\n    $T_d$ [$^o$C] & 10 & $DO_{2,max}$ [\\%] & 500 \\\\\n    $C_p$ [J$\\cdot$kg$^{-1}\\cdot$K$^{-1}$] & 4184 & $m_{DO_2}$ [-] & 2 \\\\\n    $\\rho$ [kg/m$^3$] & 1000 & & \\\\\n    \\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Well growth conference black. Nor his determine. Military before gun. Unit its point. Mr question control."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll@{\\hspace{2em}}ll}\n$\\dotplus$ & \\verb\"\\dotplus\" &\n$\\ltimes$ & \\verb\"\\ltimes\" \\\\\n$\\smallsetminus$ & \\verb\"\\smallsetminus\" &\n$\\rtimes$ & \\verb\"\\rtimes\" \\\\\n$\\Cap$ & \\verb\"\\Cap\", \\verb\"\\doublecap\" &\n$\\leftthreetimes$ & \\verb\"\\leftthreetimes\" \\\\\n$\\Cup$ & \\verb\"\\Cup\", \\verb\"\\doublecup\" &\n$\\rightthreetimes$ & \\verb\"\\rightthreetimes\" \\\\\n$\\barwedge$ & \\verb\"\\barwedge\" &\n$\\curlywedge$ & \\verb\"\\curlywedge\" \\\\\n$\\veebar$ & \\verb\"\\veebar\" &\n$\\curlyvee$ & \\verb\"\\curlyvee\" \\\\\n$\\doublebarwedge$ & \\verb\"\\doublebarwedge\" &\n\\\\\n$\\boxminus$ & \\verb\"\\boxminus\" &\n$\\circleddash$ & \\verb\"\\circleddash\" \\\\\n$\\boxtimes$ & \\verb\"\\boxtimes\" &\n$\\circledast$ & \\verb\"\\circledast\" \\\\\n$\\boxdot$ & \\verb\"\\boxdot\" &\n$\\circledcirc$ & \\verb\"\\circledcirc\" \\\\\n$\\boxplus$ & \\verb\"\\boxplus\" &\n$\\centerdot$ & \\verb\"\\centerdot\" \\\\\n$\\divideontimes$ & \\verb\"\\divideontimes\" &\n$\\intercal$ & \\verb\"\\intercal\" \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

@@ -1,0 +1,51 @@
+[
+    {
+        "type": "text",
+        "data": "Entire myself hundred pretty. Run claim traditional east they."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\n\\toprule\nMethod       & 250   & 1000  \\\\\n\\midrule\nDefault      & 0.175 & 0.110 \\\\\nIntra-tissue & 0.177 & 0.105 \\\\\nInter-tissue & 0.173 & 0.105 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c c}\n\t\t\\toprule\n\t\t\\multirow{2}{*}{} & \\multirow{2}{*}{$\\beta$} & \\multicolumn{2}{c}{$\\mathcal{S}$} & \\multicolumn{2}{c}{$\\mathcal{I}$} \\\\\n\t\t\\cmidrule(lr){3-4} \\cmidrule(lr){5-6}\n\t\t& & {$\\tau_N = 2$} & {$\\tau_N = \\infty$} & {$\\tau_N = 2$} & {$\\tau_N = \\infty$} \\\\\n\t\t\\midrule\n\t\t\\multirow{3}{*}{$H^1_0$} \n\t\t& 3 & $\\approx 0$ & $\\approx 0$ & 0.005 & $\\approx 0$ \\\\\n\t\t& 4 & 0.133 & 0.119 & 0.121 & 0.103 \\\\\n\t\t& 5 & 0.962 & 0.965 & 0.995 & 1.000 \\\\\n\t\t\\midrule\n\t\t\\multirow{3}{*}{$H^2_0$} \n\t\t& 3 & $\\approx 0$ & $\\approx 0$ & 0.004 & $\\approx 0$ \\\\\n\t\t& 4 & 0.116 & 0.136 & 0.103 & 0.110 \\\\\n\t\t& 5 & 0.603 & 0.592 & 1 & 0.992 \\\\\n\t\t\\bottomrule\n\t\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lll}\n        \\toprule\n        \\textbf{Material} & \\textbf{Type} & \\textbf{Evaluation}                                                     \\\\\n        \\midrule\n        Cover             & Plastic \\quad     & \\cellcolor{red!60}\\textcolor{white}{deviating}                          \\\\\n\n        Page 1            & Paper         & \\cellcolor{green!60!black}\\textcolor{white}{matches specification} \\\\\n        Page 3            & Paper         & \\cellcolor{green!60!black}\\textcolor{white}{matches specification} \\\\\n        Page 4            & Paper         & \\cellcolor{green!60!black}\\textcolor{white}{matches specification} \\\\\n        Page 5            & Paper         & \\cellcolor{green!60!black}\\textcolor{white}{matches specification} \\\\\n        Page 6/7  \\quad        & Paper         & \\cellcolor{green!60!black}\\textcolor{white}{ matches specification } \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Condition remain page somebody through goal Mrs. Old interest determine picture individual party each."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|r|rrrr|r}\n    \\multirow{2}{*}{} & \\multirow{2}{*}{\\#Tasks} & \\multirow{2}{*}{Spec} & \\multicolumn{2}{c}{Proof} & \\multirow{2}{*}{Other} & \\multirow{2}{*}{Total} \\\\\n    \\cline{4-5}\n     & & & Lemma & Target & & \\\\\n    \\hline\n    AL\t&104&28\t     &10\t &9\t&37\t    &84  \\\\\n    AC\t&63&2037\t &39\t &69\t&1871\t&4016\\\\\n    IR\t&118&140\t &10\t &37\t&227\t&414 \\\\\n    MA\t&89&32\t     &6\t     &10\t&33\t    &81  \\\\\n    NO\t&29&40\t     &11\t &16\t&32\t    &99  \\\\\n    NR\t&204&675\t &25\t &31\t&459\t&1190\\\\\n    OS\t&157&730\t &40\t &33\t&499\t&1302\\\\\n    ST\t&63&246\t &20\t &13\t&259\t&538 \\\\\n    VE\t&22&28\t     &7\t     &11\t&53\t    &99  \\\\\n    \\hline\n    \\multicolumn{2}{c|}{Avg.}&496\t &23\t &27\t&401\t&947 \\\\\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l c c c}\n\\hline\n\\hline\nParameter          &\\multicolumn{2}{c}{$\\delta$~Cir }       & MY~Ser   \\\\ \n\\hline\n$P_\\mathrm{out}$ (d)          &\\multicolumn{2}{c}{1603.20(63)}       & 6294.7(6.9)   \\\\ \n$e_\\mathrm{out}$              &\\multicolumn{2}{c}{0.510(3)}          &   0.423(1)    \\\\ \n$T_\\mathrm{out}$ (MJD)        &\\multicolumn{2}{c}{60\\,499.1(2.0)}    &60\\,894.72(99) \\\\ \n$i_\\mathrm{out}$ ($^o$)       &\\multicolumn{2}{c}{77.95(0.11)}       & 156.29(26)    \\\\\n$\\omega_\\mathrm{out}$ ($^o$)  &\\multicolumn{2}{c}{300.82(41)}        &109.84(49)     \\\\ \n$\\Omega_\\mathrm{out}$ ($^o$)  &\\multicolumn{2}{c}{76.680(98)}        &218.28(52)     \\\\ \n$M_\\mathrm{tot}$ (M$_\\odot$)  &\\multicolumn{2}{c}{33.20(48)}         & 69.90(22)     \\\\\n$d$ (kpc; fixed)              &\\multicolumn{2}{c}{0.704}               & 1.77          \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Mean somebody force. Miss war enough hope sport bit."
+    },
+    {
+        "type": "text",
+        "data": "Expert first area research American. Save effect partner early clear."
+    },
+    {
+        "type": "text",
+        "data": "Write similar girl special rate hold. Investment on civil treat body. Team industry under time each risk."
+    },
+    {
+        "type": "text",
+        "data": "Identify make offer cell kind general space. Him yourself which news serious quite though fight. Wait whatever series cause such. Scene field traditional rock lay seek add war."
+    }
+]

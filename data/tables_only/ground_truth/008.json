@@ -1,0 +1,38 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lllcccccc}\n\\toprule\n\\textbf{Dim. Reduction} &\n\\textbf{Model} &\n\\textbf{Estimators} &\n\\textbf{Combined Acc \\%} &\n\\textbf{Combined F1} &\n\\textbf{Accuracy Urgency} &\n\\textbf{F1 Urgency} &\n\\textbf{Accuracy Impact} &\n\\textbf{F1 Impact} \\\\\n\\midrule\n\\multicolumn{9}{c}{\\textbf{UMAP + XGBoost}} \\\\\n\\midrule\nUMAP & XGBoost & 100 & 78.48 & 71.08 & 79.28 & 76.22 & 97.42 & 82.18 \\\\\nUMAP & XGBoost & 150 & 86.28 & 79.38 & 86.63 & 86.30 & 98.84 & 94.09 \\\\\nUMAP & XGBoost & 200 & 90.62 & 96.20 & 90.78 & 90.64 & 99.43 & 97.32 \\\\\nUMAP & XGBoost & 250 & 96.16 & 98.18 & 94.21 & 94.74 & 99.83 & 99.33 \\\\\nUMAP & XGBoost & 300--500 & 96.75--\\textbf{99.62} & 91.94--99.91 & 96.76--\\textbf{99.62} & 97.12--99.70 & 99.96--\\textbf{100.00} & 99.77--\\textbf{100.00} \\\\\n\\midrule\n\\multicolumn{9}{c}{\\textbf{UMAP + Random Forest}} \\\\\n\\midrule\nUMAP & Random Forest & 100--500 & 99.99--\\textbf{100.00} & 99.99--\\textbf{100.00} & \\textbf{100.00} & \\textbf{100.00} & 99.99--\\textbf{100.00} & \\textbf{100.00} \\\\\n\\midrule\n\\multicolumn{9}{c}{\\textbf{XGBoost (no Dim. Reduction)}} \\\\\n\\midrule\nNone & XGBoost & 100 & 97.35 & 92.10 & 97.35 & 97.35 & 99.98 & 99.79 \\\\\nNone & XGBoost & 150--500 & 99.28--99.97 & 99.82--99.99 & 99.28--99.97 & 99.40--99.97 & 99.99--\\textbf{100.00} & 99.98--\\textbf{100.00} \\\\\n\\midrule\n\\multicolumn{9}{c}{\\textbf{Random Forest (no Dim. Reduction)}} \\\\\n\\midrule\nNone & Random Forest & 100--500 & 99.99--\\textbf{100.00} & 99.99--\\textbf{100.00} & \\textbf{100.00} & \\textbf{100.00} & 99.99--\\textbf{100.00} & \\textbf{100.00} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Dream religious picture resource live doctor. Ever white person risk voice want weight."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lccc@{}}\n\\toprule\nBackbone Type & mAP@0.5 & mAP@0.7 & Avg. mAP \\\\\n\\midrule\nTransformer (Baseline) & 71.0 & 43.9 & 66.8 \\\\\nHybrid Attn-Mamba & 69.5 & 42.9 & 65.8 \\\\\nSGP (Convolutional) & 70.1 & 43.2 & 66.2 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Thank personal his leader least professional. Model parent term state short least point. There different painting."
+    },
+    {
+        "type": "text",
+        "data": "Should father stay own. Individual forget enter laugh themselves student increase. Somebody know different push. Need table woman strong long. Cut song difference."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c p{1cm} c|c|c}\n\\multicolumn{3}{c}{} & & \\multicolumn{3}{c}{} \\\\[-1.5ex]\n$P_1$ & $P_2$ & $P_3$ & & $\\succ_a$ & $\\succ_b$ & $\\succ_c$ \\\\\n\\cline{1-3} \\cline{5-7}\n$b$   & $a$   & $a$   & & $1$ & $2$ & $1$ \\\\\n$a$   & $b$   & $b$   & & $3$ & $1$ & $2$ \\\\\n$c$   & $c$   & $c$   & & $2$ & $3$ & $3$ \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c}\n\\hline\n & number of tasks & environment & prompt \\\\\n\\hline\ncode agent & 24667 & real & extracted \\\\\n\\hline\nsearch agent& 50275 & real & synthesized \\\\\n\\hline\ngeneral agent & 4417& synthesized & synthesized\\\\\n\\hline\ncode interpreter & 5908 & real & extracted \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Far bad blood discussion easy continue oil. Measure act once already. Arm wish avoid. Firm population take piece sing who."
+    }
+]

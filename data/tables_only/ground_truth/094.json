@@ -1,0 +1,7 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|c|c}\n        \\toprule\n        Datasets & Methods & Extraction & Retrieval & Total & GFLOPs \\\\ \\hline\n        \\multirow{7}{*}{nuScenes} & \n        AnyLoc~ & 87.36 & 49.97 & 137.33 & 314.08 \\\\\n        ~ & MegaLoc~ & 11.19 & 8.52 & 19.71 & 24.08 \\\\\n        ~ & EgoNN~ & 9.41 & \\textbf{0.09} & 9.50 & - \\\\\n        ~ & BEVPlace++~ & 17.99 & 8.43 & 26.42 & 10.84 \\\\\n        ~ & AutoPlace~ & 21.08 & 4.22 & 25.30 & 20.77 \\\\\n        ~ & LCPR~ & 8.38 & 0.12 & 8.50 & 57.85 \\\\\n        ~ & LRFusionPR~ & \\textbf{6.53} & 0.25 & \\textbf{6.78} & \\textbf{7.22} \\\\\n        ~ & UniMPR (ours) & 16.45 & 0.52 & 16.97 & 26.91 \\\\ \\hline\n        \\multirow{7}{*}{Boreas} & \n        AnyLoc~ & 85.24 & 26.88 & 112.12 & 314.08 \\\\\n        ~ & MegaLoc~ & 10.82 & 4.40 & 15.22 & 22.35 \\\\\n        ~ & EgoNN~ & 14.00 & \\textbf{0.07} & 14.07 & - \\\\\n        ~ & BEVPlace++~ & 17.53 & 4.31 & 21.84 & 11.49 \\\\\n        ~ & OpenRadVLAD~ & 51.96 & 47.28 & 99.24 & - \\\\\n        ~ & LRFusionPR~ & \\textbf{6.43} & 0.14 & \\textbf{6.57} & \\textbf{7.54} \\\\\n        ~ & UniMPR (ours) & 9.83 & 0.17 & 10.00 & 14.56 \\\\\n        \\bottomrule\n    \\multicolumn{6}{p{1.0\\columnwidth}}{All time measurements are expressed in milliseconds. GFLOPS for sparse convolution-based baselines are not reported due to unmeasurable complexity}\\\\\n    \\end{tabular}",
+        "complexity": "complex"
+    }
+]

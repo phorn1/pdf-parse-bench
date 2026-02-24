@@ -1,0 +1,51 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{p{0.2\\textwidth}p{0.8\\textwidth}}\n\\toprule\n\\textbf{Dataset} & \\textbf{Example} \\\\\n\\midrule\nMMLU-Math & Let $p = (1, 2, 5, 4)(2, 3)$ in $S_5$. Find the index of $\\langle p \\rangle$ in $S_5$.\\\\\n%         & A: 8 \\quad B: 2 \\quad C: 24 \\quad D: 120 \\\\\n\\midrule \nMMLU-Health & Which of the following structures is derived from ectomesenchyme? \\\\\n        & A: Motor neurons \\quad B: Skeletal muscles \\quad C: Melanocytes \\quad D: Sweat glands \\\\\n\\midrule\nMathCAMPS &\nA truck driver starts his route with 9 gallons of gas in his tank. He stops at a station and adds to this tank another 21/36 gallons of gas. Later, he stops at another station and adds another 26/42 gallons of gas. How many gallons of gas total does the truck driver have now in his tank?\n \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|}\n\\hline\nGene & $\\hat \\gamma$\\\\\n\\hline\nIFT80 & 2.08\\\\\n\\hline\nIFIT1 & 2\\\\\n\\hline\nAK217941 & -2.88\\\\\n\\hline\n%IL12B:& -0.57\\\\\n%\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Student get use certain. Meeting although worry tree yourself. Time able third out enter lead address."
+    },
+    {
+        "type": "text",
+        "data": "Prevent story threat wall share. Itself ask probably decade history add join. Analysis above line let hold material high."
+    },
+    {
+        "type": "text",
+        "data": "President impact draw finally. Development already never artist miss."
+    },
+    {
+        "type": "text",
+        "data": "Husband month loss either third no. Fight book during half hand since. Middle speak hard she tax help. Door well any design drive alone."
+    },
+    {
+        "type": "text",
+        "data": "Fast technology leave investment someone religious. Product whom feeling yourself."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccccc}\n\\toprule\n\\textbf{Model} & \\textbf{Accuracy} & \\textbf{AUC} & \\textbf{Loss} & \\textbf{Precision} & \\textbf{Recall} \\\\ \n\\midrule\nVGG16 & 0.8326 & 0.7990 & 0.3813 & 0.3757 & 0.2374 \\\\\nVGG19 & 0.8498 & 0.7942 & 0.4214 & 0.4527 & 0.1833 \\\\\nResNetV2 & 0.8403 & 0.7779 & 0.5965 & 0.3778 & 0.3559 \\\\\nInceptionV3 & 0.8553 & 0.5603 & 16.1981 & 0.0000 & 0.0000 \\\\\nXception & \\textbf{0.8660} & \\textbf{0.8435} & \\textbf{0.3380} & \\textbf{0.5469} & \\textbf{0.3535} \\\\ \n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|c|c|c|c|c}        % centered columns (4 columns)\n%\\hline\\hline                 % inserts double horizontal lines    % table heading \nData & $f\\sigma_8$ & Reduced $\\chi^2$ & dof & grid size & $\\sigma_u$ & $\\sigma_{\\mathrm{cut}}$ &$\\delta_g^{\\mathrm{cut}}$ & $z_{\\mathrm{cut}}$\\\\ \\hline \\hline\nall  &$0.500_{-0.030}^{+0.043}$ & $1.012$ & $10729$ & $20$ &$16$ &$4$ & 10 & None\\\\\n\\hline\nall  &$0.485_{-0.054}^{+0.068}$ & $1.009$ & $3760$ & $30$ &$16$ &$4$ & 2 & None\\\\\n\\hline\n\\hline\n$\\boldsymbol{\\mathrm{all}}$ & $\\boldsymbol{0.483_{-0.026}^{+0.049}}$ & $\\boldsymbol{1.011}$ & $\\boldsymbol{10716}$ & $\\boldsymbol{20}$ & $\\boldsymbol{16}$ & $\\boldsymbol{4}$ & $\\boldsymbol{10}$ & $\\boldsymbol{\\mathrm{0.05}}$ $\\boldsymbol{\\mathrm{TF}}$ $\\boldsymbol{\\mathrm{cut}}$\\\\\n\\hline\nall & $0.453_{-0.053}^{+0.048}$ & $0.986$ & $3755$ & 30 & $16$ &$4$ & $2$ & 0.05 TF cut \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l | c c | c c | c c}\n\\toprule\n\\textbf{Base Model} & \\textbf{UA} $\\uparrow$ & \\textbf{UCS} $\\uparrow$ & \\textbf{RRA} $\\uparrow$ & \\textbf{RRCS} $\\uparrow$ & \\textbf{GRA} $\\uparrow$ & \\textbf{GRCS} $\\uparrow$ \\\\\n\\midrule\n$SD-1.5$ & 0.86 & 30.4 & 0.81 & 33.0 & 0.85 & 32.1 \\\\\n$SD-1.4$ & 0.83 & 30.8 & 0.84 & 33.0 & 0.83 & 32.1 \\\\\n$SD-2.1-base$ & 0.79 & 30.91 & 0.83 & 33.1 & 0.84 & 32.2 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Respond school audience follow. Soon leg send seven. Theory born speak great purpose. History seat dark station. Benefit remain Republican me. Whatever tonight field everything air eye bank."
+    }
+]

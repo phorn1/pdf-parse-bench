@@ -1,0 +1,69 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\hline\n\\textbf{Class} & \\textbf{Precision} & \\textbf{Recall} & \\textbf{F1-score} & \\textbf{Support} \\\\\n\\hline\nDREB & 0.89 & 0.87 & 0.88 & 500 \\\\\nOREB & 0.87 & 0.89 & 0.88 & 500 \\\\\n\\hline\n\\multicolumn{4}{r}{\\textbf{Overall accuracy}} & 0.881 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lr} \nResearch Area & Count\\\\\n\\midrule\nLife sciences & 264\\\\\nEngineering & 164\\\\\nSocial sciences & 104\\\\\nPhysical sciences & 89\\\\\nComputer and information services & 57\\\\\nOther & 52\\\\\nMathematics and statistics & 40\\\\\nPsychology & 40\\\\\nGeosciences, atmospheric sciences \\& ocean sciences & 33\\\\\nEducation & 11\\\\\nBusiness management \\& administration & 7\\\\\nHumanities & 4\\\\\nLaw & 1\\\\\nSocial work & 1\\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\nMetric   & Accuracy (\\%) & \\multicolumn{2}{c}{Privacy Loss $L_S$ (\\%)}  \\\\ \\toprule\nAttribute  & $U$-Act. ($\\uparrow$) & $S_1$-Gender ($\\downarrow$) & $S_2$-Weight ($\\downarrow$) \\\\ \\midrule\nRaw Data & $98.87^{\\pm0.00}$ & $47.51^{\\pm0.00}$ & $58.41^{\\pm0.00}$  \\\\\n\\textsc{Cloak}    & $98.25^{\\pm 0.12}$ &  $0.79^{\\pm 1.90}$ & $0.39^{\\pm 0.45}$ \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Air television style community camera administration nearly. Certainly blue actually green. Pay last major no sound land information."
+    },
+    {
+        "type": "text",
+        "data": "Parent off city billion. Any figure step our challenge explain. More material off recent international."
+    },
+    {
+        "type": "text",
+        "data": "Consider that board suggest challenge yeah easy. Think television no. Run perhaps at look friend."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|l|c|c|c|c|}\n\\hline\n\\textbf{Class} & \\textbf{Accuracy} & \\textbf{Precision} & \\textbf{Recall} & \\textbf{F1-Score} \\\\\n\\hline\nNo-Grinding & \\multirow{2}{*}{0.9611} & 0.9560 & 0.9556 & 0.9609 \\\\\n\\cline{1-1} \\cline{3-5}\nGrinding & & 0.9663 & 0.9667 & 0.9613 \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n        \\toprule\n        \\multirow{2}{*}{MLLM} & \\multirow{2}{*}{Frames} & \\multicolumn{2}{c}{VideoMME} & \\multicolumn{2}{c}{LongVideoBench}\\\\\n        \\cmidrule(lr){3-4}\n        \\cmidrule(lr){5-6}\n        & & $\\tau$ & $\\gamma$ & $\\tau$ & $\\gamma$ \\\\\n        \\midrule\n        Qwen2.5-VL-7B & 32 & 0.4 & 0.7 & 0.2 & 0.6 \\\\\n        Qwen2.5-VL-7B & 64 & 0.6 & 0.6 & 0.2 & 0.7 \\\\\n        Qwen2.5-VL-32B & 64 & 0.5 & 0.6 & 0.3 & 0.7 \\\\\n        InternVL3-8B & 64 & 0.4 & 0.7 & 0.6 & 0.7 \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}l|c@{}}\n    \\toprule\n    \\multicolumn{1}{c|}{\\textbf{Statistics}} & \\textbf{Number} \\\\\n    \\midrule\n    Object Class & 241 \\\\\n    Image Size & 1,500 - 7,680 \\\\\n    Instance Size & 21 - 946 \\\\\n    Instance Area Ratio Quartile & (0.16\\%, 1.0\\%, 2.7\\%) \\\\\n    Description Length Quartile & (18, 40, 58) \\\\\n    Intra-Class Count Quartile & (5, 7, 12) \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Bag hold hear still. Organization catch participant present enough. Anyone information summer big identify. So need role relationship nor. Authority product professor authority. Part play goal."
+    },
+    {
+        "type": "text",
+        "data": "Phone late number collection hand human. Energy fund could. Price thank project in too."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c|c} \n\\hline\n\\multirow{2}{*}{Method} & \\multicolumn{4}{c}{NMSE(dB) vs. $f_{\\rm c}$} \\\\ \n\\cline{2-5}\n& $7\\text{GHz}$ & $12\\text{GHz}$ & $17\\text{GHz}$ & $22\\text{GHz}$ \\\\ \n\\hline\nRatio-Type II & $1.41$ & $2.52$ & $3.96$ & $5.10$ \\\\ \n\\hline\nLCE & $-3.33$ & $-1.80$ & $0.13$ & $1.79$ \\\\ \n\\hline\nMMSE-Type II & $-3.56$ & $-2.36$ & $-0.50$ & $1.20$ \\\\ \n\\hline\nDACEN & $-5.03$ & $-4.12$ & $-3.30$ & $-2.89$ \\\\ \n\\hline\nKDD-SFCEN + TUDCEN & $-4.87$ & $-4.44$ & $-3.78$ & $-3.06$ \\\\ \n\\hline\nHASCAN (This work) & $\\mathbf{-7.80}$ & $\\mathbf{-7.04}$ & $\\mathbf{-6.25}$ & $\\mathbf{-5.37}$ \\\\ \n\\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Side Mr surface pattern outside myself. Study win reason prepare commercial."
+    },
+    {
+        "type": "text",
+        "data": "Particular campaign serve stay wish society. Foot Democrat that election at family born. Hour summer manager relationship itself."
+    },
+    {
+        "type": "text",
+        "data": "World argue pick tonight somebody hotel himself. Receive truth shake popular fact those heavy."
+    }
+]

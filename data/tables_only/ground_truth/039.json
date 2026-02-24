@@ -1,0 +1,21 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll@{\\hspace{4em}}ll}\n\\dag  & \\verb\"\\dag\"  & \\S & \\verb\"\\S\" \\\\\n\\copyright & \\verb\"\\copyright\"& \\ddag & \\verb\"\\ddag\"\\\\\n \\P & \\verb\"\\P\" & \\pounds    & \\verb\"\\pounds\" \\\\\n\\#    & \\verb\"\\#\"    & \\$ & \\verb\"\\$\"\\\\\n \\% & \\verb\"\\%\" & \\&    & \\verb\"\\&\"  \\\\\n  \\_ & \\verb\"\\_\" & \\{    & \\verb\"\\{\"   \\\\\n \\} & \\verb\"\\}\" & & \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "A walk guess why. Sing our myself certainly require. Forget away walk list."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|}\n    \\hline\n    \\multicolumn{2}{|c|}{\\textbf{Parameters Used}} \\\\\n    \\hline \\hline\n    Temperature $T$ & $0.01~K$ \\\\\n    Laser Power $P$ & $10^{-6}~\\rm W$ \\\\\n    \\hline\n    \\multicolumn{2}{|c|}{Fabry-Perot Cavity} \\\\\n    \\hline\n    Resonant Frequency $\\omega_{\\rm cav}$ & $1.77\\times10^{15}~\\rm rad/s$ \\\\\n    Length $L_{\\rm cav}$ & $10^{-4}~\\rm m$ \\\\\n    Finesse $F_{\\rm cav}$ & $200$ \\\\\n    \\hline\n    \\multicolumn{2}{|c|}{Fe-Co Micromagnet}\\\\ \n    \\hline\n    Saturation Magnetization $\\mu_0M_0$ & $2.4~\\rm T$ \\\\\n    Radius $R_{\\rm mag}$ & $100~\\rm \\mu m$ \\\\\n    Density $\\rho_{\\rm mag}$ & $8.5~\\rm g/cm^3$ \\\\\n    Mass $m_{\\rm mag}$ & $36~\\rm \\mu g$ \\\\\n    \\hline\n    \\multicolumn{2}{|c|}{SiN Membrane} \\\\\n    \\hline\n    Quality Factor $Q_{\\rm m}$ & $10^6$ \\\\\n    Resonant Frequency $\\omega_{\\rm m}$ & $2\\pi\\times5.8~\\rm kHz$ \\\\\n    \\hline\n    \\multicolumn{2}{|c|}{Cantilever} \\\\\n    \\hline\n    Quality Factor $Q_{\\rm m}$ & $10^5$ \\\\\n    Resonant Frequency $\\omega_{\\rm m}$ & $2\\pi\\times1.1~\\rm kHz$ \\\\\n    \\hline\n    \\multicolumn{2}{|c|}{YIG Sample} \\\\\n    \\hline\n    Longitudinal Relaxation Time $T_1$ & $10^{-6}~\\rm s$ \\\\\n    Transverse Relaxation Time $T_2$ & $10^{-6}~\\rm s$ \\\\\n    Number density $N_{\\rm sample}$ & $2.1\\times 10^{28}~\\rm m^{-3}$ \\\\\n%    \\textcolor{red}{Radius $r_{\\rm sample}$} & \\textcolor{red}{$1~\\rm mm$}\\\\\n    Length and Width & $2.5~\\rm mm$ \\\\\n%    Width & $2.5~\\rm mm$ \\\\\n    Height & $0.25~\\rm mm$ \\\\\n    \\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\t\t\t\\toprule\n\t\t\tMethod&Size&PSNR\\(\\uparrow \\)&SSIM\\(\\uparrow \\)&LPIPS\\(\\downarrow  \\)\\\\\n\t\t\t\\midrule \n\t\t\tstandard&&20.349&0.8909&0.1364\\\\\n\t\t\tEDN&90&21.167&0.9017&0.1266\\\\\n\t\t\tEDN&180&21.537&0.9051&0.1226\\\\\n\t\t\tEDN&359&21.659&0.9070&0.1208\\\\\n\t\t\t\\bottomrule\n\t\t\\end{tabular}",
+        "complexity": "simple"
+    }
+]

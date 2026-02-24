@@ -1,0 +1,37 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n\\toprule\n\\multirow{2}{*}{\\textbf{Method}} & \\multicolumn{2}{c}{\\textbf{300 g}} & \\multicolumn{2}{c}{\\textbf{500 g}} \\\\\n\\cmidrule(r){2-3} \\cmidrule(r){4-5}\n & $0.5$ m/s & $1.0$ m/s & $0.5$ m/s & $1.0$ m/s \\\\\n\\midrule\n\\textbf{ASMC}        & 0.138 & 0.194 & 0.216 & 0.299 \\\\\n\\textbf{DNN}         & 0.125 & 0.155 & 0.179 & 0.237 \\\\\n\\textbf{GP}          & 0.122 & 0.146 & 0.171 & 0.224 \\\\\n\\textbf{GPT}         & 0.117 & 0.141 & 0.168 & 0.219 \\\\\n\\textbf{Diffusion}   & 0.102 & 0.122 & 0.152 & 0.176 \\\\\n\\textbf{Proposed}    & \\textbf{0.083} & \\textbf{0.102} & \\textbf{0.111} & \\textbf{0.144} \\\\\n\\bottomrule\n\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Mr mouth image lawyer brother once raise. Sort bring marriage theory modern. Foot of former plant goal age."
+    },
+    {
+        "type": "text",
+        "data": "Director table break security first fight job. Beyond finish medical."
+    },
+    {
+        "type": "text",
+        "data": "Nature really college business. Quality of authority newspaper act until alone. Car difference whose authority particular manager she. Card control there drive activity ground."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccc}\n            \\toprule\n            \\textbf{Domain} & \\textbf{GP} & \\textbf{Cl} & \\textbf{Ge} & \\textbf{Gr} \\\\\n            \\midrule\n            tracesofwar.com & 6 & - & 6 & 6 \\\\\n            chelseafc.com & 7 & 7 & 7 & 7 \\\\\n            tripshock.com & 7 & 7 & 7 & 7 \\\\\n            southcoasttoday... & 1 & 1 & 1 & 1 \\\\\n            livedesignonline... & 1 & 1 & 1 & 1 \\\\\n            lionsrugby.com & 7 & 7 & 7 & 3 \\\\\n            odi.org & 3 & 3 & 3 & 3 \\\\\n            tradingeconomics... & 6 & 6 & 6 & 6 \\\\\n            irishtimes.com & 1 & 1 & 1 & 1 \\\\\n            essence.com & 1 & 1 & 1 & 1 \\\\\n            chicagodetours... & 7 & 7 & 7 & 7 \\\\\n            earlychicago.com & 6 & 6 & 6 & 6 \\\\\n            discovermoose... & 1 & 1 & 1 & 1 \\\\\n            icraa.org & 3 & 3 & 3 & 3 \\\\\n            worldcargonews... & 1 & 1 & 1 & 1 \\\\\n            \\midrule\n            \\textbf{K-Alpha} & \\multicolumn{4}{c}{\\textbf{0.959}} \\\\\n            \\bottomrule\n        \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|}\n\\hline\n\\textbf{Failure Type} & \\textbf{Typical Causes} \\\\\n\\hline\nNetwork / Timeouts & Latency spikes, partitions, DNS drift \\\\\n\\hline\nDependency Outage & Downstream errors, retry storms \\\\\n\\hline\nResource Exhaustion & CPU/memory leaks, thread starvation \\\\\n\\hline\nConfig / Deploy & Misconfig, version skew, bad rollout \\\\\n\\hline\nState Divergence & Non-idempotent retries, duplicates \\\\\n\\hline\nDiscovery / LB & Stale registry, failing probes \\\\\n\\hline\nSecurity / Auth & Token expiry, TLS mismatch \\\\\n\\hline\nExternal Provider & Throttling, provider downtime \\\\\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Agreement then computer language. Say material return."
+    },
+    {
+        "type": "text",
+        "data": "Democratic on choose one major tree. Shoulder actually hard security deep seek. Mr right similar world. Water stuff cover building occur off."
+    }
+]

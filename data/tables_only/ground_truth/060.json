@@ -1,0 +1,87 @@
+[
+    {
+        "type": "text",
+        "data": "Still year care friend. Allow subject article. Finish human risk real baby catch yard."
+    },
+    {
+        "type": "text",
+        "data": "Stuff nature impact news conference nothing. Fast land ready. Experience perhaps security identify."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cc}\n        \\toprule\n        Option & Mean Number of Iterations \\\\\n        \\midrule\n        Option 1 & 4.8000 \\\\\n        Option 2 & 5.0750 \\\\\n        Option 3 & 5.5250 \\\\\n        Option 4 & 7.5000 \\\\\n        Option 5 & 41.8125 \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Go bill full lose set whose Republican. Work short reflect think tell. Although possible director simply. Management too success former now color number keep. Film hundred tree."
+    },
+    {
+        "type": "text",
+        "data": "Production start cup along upon sport. Medical his red shoulder ability standard. The race western other letter. Ago behind we reduce space. Deep main serve such."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n        \\toprule\n        \\textbf{Environment} & \\textbf{Combined Score} & \\textbf{Alternating} \\\\\n        \\midrule\n        Medium-Expert & 106.9 & \\textbf{110.4} \\\\\n        Medium & 90.4  & \\textbf{98.4} \\\\\n        Medium-Replay & 97.2 & \\textbf{98.3} \\\\\n        \\midrule\n        Average & 98.2 & 102.4\\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Court born including minute. Mr easy time guess. Eye author agreement or officer significant. Technology high morning they common design establish. Seven far put move street follow performance give."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccccccc}\\multicolumn{3}{c}{Tolga Birdal \\textsuperscript{4}} & \\multicolumn{3}{c}{Jan Eric Lenssen \\textsuperscript{3}} &  \\multicolumn{3}{c}{Gerard Pons-Moll \\textsuperscript{1,2,3}}\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lcccc@{}}\n    \\toprule\n    \\textbf{Method} & \\textbf{TS (\\%)} & \\textbf{SA (\\%)} & \\textbf{Mem} & \\textbf{Len} \\\\\n    \\hline\n    \\rowcolor{gray!15}\n    \\multicolumn{5}{c}{\\textbf{Qwen3-8B-w/-think}} \\\\\n    Vanilla model & 1.01\\% & 11.13\\% & - & - \\\\\n    MNL & \\textbf{1.35\\%} & \\textbf{12.60\\%} & 695 & \\textbf{505} \\\\\n    \\hline\n    \\rowcolor{gray!15}\n    \\multicolumn{5}{c}{\\textbf{Mimo-v2-w/o-think}} \\\\\n    Vanilla model & \\textbf{8.75\\%} & \\textbf{41.12\\%} & - & - \\\\\n    MNL & 8.08\\% & 40.71\\% & 410 & \\textbf{413} \\\\\n    \\hline\n    \\rowcolor{gray!15}\n    \\multicolumn{5}{c}{\\textbf{Mimo-v2-w/-think}} \\\\\n    Vanilla model & 10.77\\% & 47.63\\% & - & - \\\\\n    MNL & \\textbf{11.09\\%} & \\textbf{48.51\\%} & 410 & \\textbf{423} \\\\\n    \\hline\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "President here describe than others kind professional. About figure all very child let else. Natural mouth deal sing break. Billion girl build mind drop day add."
+    },
+    {
+        "type": "text",
+        "data": "Accept to a position sell peace from so. Rock usually almost simply five. Off approach stock among. Cell nearly garden always scientist."
+    },
+    {
+        "type": "text",
+        "data": "Discover month bill somebody sister actually. Special national power beyond space fly down."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\toprule\n    \\multirow{2}{*}{\\textbf{Method}} & \\multicolumn{2}{c}{\\textbf{F1 Score ($\\uparrow$)}} \\\\ \n    & \\textbf{Faithful Class} & \\textbf{Unfaithful Class}\\\\\n    \\midrule\n    SAPLMA & 74.9 & 25.4 \\\\\n    HaloScope & 91.5 & 14.9 \\\\\n    kNN & 67.5 & 8.9 \\\\\n    \\midrule\n    Prompting & 84.8 & 30.8 \\\\\n    Auxiliary Model & \\textbf{98.6} & \\textbf{97.8} \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}lllllll@{}}\n\\toprule\n\\multirow{2}{*}{} & \\multicolumn{4}{c}{Outcome}                                                      \\\\ \\cmidrule(l){2-5} \n                    Model   & \\multicolumn{2}{l}{Step count} & \\multicolumn{2}{l}{Sleep}  \\\\ \\cmidrule(r){2-5}\n                       & PCov         & AL          & PCov         & AL             \\\\\n                       \\cmidrule(r){1-5}\nLIN                    & 94.26       & \\textbf{4842}.54       & 94.91       & \\textbf{139.46}             \\\\\nNN                     & 93.42       & 5138.29       & 95.14       & 178.21         \\\\\nRF                     & 94.22       & 4991.42       & 94.97       & 151.06       \\\\ \\bottomrule \n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llcr}\n\\hline\\noalign{\\smallskip}\nstation & dates & lifetime [h] & \\# triggers\\\\\n\\noalign{\\smallskip}\\hline\\noalign{\\smallskip}\n\\multirow{2}{*}{13} & 2022-07-25 & \\multirow{2}{*}{1410} & \\multirow{2}{*}{306,869}\\\\\n & 2022-10-01 &  & \\\\\n\\multirow{2}{*}{23} & 2022-07-25 & \\multirow{2}{*}{1453} & \\multirow{2}{*}{680,902}\\\\\n & 2022-10-01 &  &\\\\\n\\multirow{2}{*}{24} & 2022-07-25 & \\multirow{2}{*}{1352} & \\multirow{2}{*}{217,516}\\\\\n & 2022-10-01 &  &\\\\\n\\noalign{\\smallskip}\\hline\\noalign{\\smallskip}\n\\multirow{2}{*}{13} & 2023-04-24 & \\multirow{2}{*}{3929} & \\multirow{2}{*}{726,444}\\\\\n & 2023-10-12 &  &\\\\\n\\multirow{2}{*}{23} & 2023-04-24 & \\multirow{2}{*}{3434} & \\multirow{2}{*}{4,476,619}\\\\\n & 2023-10-14 &  &\\\\\n\\multirow{2}{*}{24} & 2023-04-21 & \\multirow{2}{*}{3604} & \\multirow{2}{*}{653,415} \\\\\n & 2023-10-11 &  &\\\\\n\\noalign{\\smallskip}\\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lr}\n    \\multicolumn{2}{l}{\\textbf{(a) Basic counts}}\\\\\n    \\hline\n    Metric & Full\\\\\n    \\hline\n    Rows (chat--viewer pairs)   & 21,241,284\\\\\n    Videos                      &     55,476\\\\\n    VTubers                     &        458\\\\\n    Total chats                 & 190,328,435\\\\\n    Unique chat users           &   2,069,067\\\\\n    \\hline\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Decade produce reduce consumer discuss. Box late no such let bag then. Whatever door pay wait. Trial realize west standard."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\multirow{2}{*}{ Model } & \\multicolumn{2}{c}{ Sintel (train) } & \\multicolumn{2}{c}{ KITTI-15 (train) }\\\\\n% \\cmidrule{r}{2-3}  \\cmidrule{r}{4-5} \\cmidrule{r}{6-7} \\cmidrule{r}{8} \\\\\n% \\cmidrule(lr){3-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-8}\\cmidrule(lr){9-9}\n& Clean & Final & F1-epe & F1-all  \\\\\n\\midrule \nViT-Small& 0.99 & 2.32 & 6.33 & 19.81 \\\\\n\nViT-Base& 0.87 & 2.22 & 4.72 & 15.81 \\\\\n\n% ViT-Large& \\baseline{\\textbf{0.75}} & \\baseline{\\textbf{1.82}} & \\baseline{\\textbf{3.70}} & \\baseline{\\textbf{13.78}} \\\\\nViT-Large& \\textbf{0.75} & \\textbf{1.82} & \\textbf{3.70} & \\textbf{13.78} \\\\\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "A cut central information responsibility tell. Record level explain probably be lawyer. Board relationship walk than home physical serve."
+    }
+]

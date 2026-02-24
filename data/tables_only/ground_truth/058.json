@@ -1,0 +1,30 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcc}\r\n\t\t\t\\toprule\r\n\t\t\t& Strong Capital Deepening & Weak Capital Deepening \\\\\r\n\t\t\t& ($\\delta_j < $ median) & ($\\delta_j \\geq $ median) \\\\\r\n\t\t\t\\midrule\r\n\t\t\t$\\alpha_{\\text{output}}$ & 0.284*** & 0.258*** \\\\\r\n\t\t\t& (0.062) & (0.058) \\\\\r\n\t\t\tCoefficient difference test $p$-value & \\multicolumn{2}{c}{0.078} \\\\\r\n\t\t\tFirst-stage F-statistic & 246.75 & 131.59 \\\\\r\n\t\t\tObservations & 5,837 & 7,394 \\\\\r\n\t\t\t\\bottomrule\r\n\t\t\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\toprule\n\\multirow{2}{*}{The Number}\n&\\multirow{2}{*}{\\begin{tabular}{@{}c@{}}Threshold\\end{tabular}}\n& \\multicolumn{1}{c}{\\# of Offline} \n& \\multicolumn{2}{c}{\\# of Online}       \\\\\n\\cmidrule(r){3-3}\\cmidrule(r){4-5}\n& &  FRR  &FRR & FAR  \\\\\n\\midrule\n1 & 0.940 & 1.2\\%& 0\\% & 1.2\\% \\\\   \n2 & 0.912 & 1.2\\% & 0\\% & 1.2\\% \\\\\n3 & 0.843 & 1.2\\% & 0\\% & 1.2\\% \\\\\n4 & 0.836 & 1.2\\% & 0\\% & 0.0\\% \\\\\n5 & 0.775 & 1.2\\% & 0\\% & 2.4\\% \\\\\n6 & 0.692 & 1.2\\% & 0\\% & 6.1\\% \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Check whatever east traditional military. Explain development pull both young."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n    \\toprule\n    Loss & Size  & RMSE$_{x^\\prime}$ & RMSE$_{x}$ &$|\\tau-\\hat{\\tau}|$ \\\\%$\\hat{\\tau}$ ($\\tau = 1$)\n       \\midrule\n       \\multirow{4}{*}{$\\mathcal{L}_{x^\\prime}$} & 2 & $3.42\\times10^{-1}$  & $1.83\\times10^{-1}$ & $1.70 \\times 10^{-1}$\\\\%0.8298\n      & 5 & $6.19\\times10^{-2}$ & $3.38\\times10^{-2}$ & $1.76 \\times 10^{-2}$\\\\%0.9824\n       & 10 & $2.43\\times10^{-2}$ & $2.45\\times10^{-2}$& \\boldmath{$5.20 \\times 10^{-3}$} \\\\%0.9948\n       & 20 & \\boldmath{$2.24\\times10^{-2}$} &\\boldmath{$2.14\\times10^{-2}$} & $6.90 \\times 10^{-3}$\\\\%0.9931\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular*}{0.68\\textwidth}{@{\\extracolsep{\\fill}}ccccc}\n    \\hline\n    & pulse-1 & pulse-2 & pulse-3 &pulse-4 \\\\\n    \\hline\n    $I_{\\mathrm{max}}$( W~cm$^{-2}$) & $ 2 \\times 10^{13}$ & $ 2 \\times 10^{13}$ & $ 2 \\times 10^{13}$ &$ 8 \\times 10^{13}$\\\\\n    $t_0$(fs)& 18 & 35 & 55 & 9\\\\\n    $\\sigma$(fs) & 5 & 10 & 15 & 2.5\\\\\n     \n    \\hline\n  \\end{tabular*}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Itself her administration laugh PM. Compare writer continue world compare every there. Of against remain team. Pay do what wall talk open. Pressure leader alone place."
+    }
+]

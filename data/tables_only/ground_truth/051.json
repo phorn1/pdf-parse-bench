@@ -1,0 +1,75 @@
+[
+    {
+        "type": "text",
+        "data": "Mission own hold hundred grow government would standard. Cup technology well item. Foreign course reflect maintain. Shake would paper choose forget woman kind risk."
+    },
+    {
+        "type": "text",
+        "data": "Door throw run budget energy student growth. Sport boy protect school song agree race. Hotel himself reach doctor beautiful old trouble."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c c c c c}\n\t\t\\toprule\n\t\t$c$ & \\multicolumn{2}{c}{$\\mathcal{S}$} & \\multicolumn{2}{c}{$\\mathcal{I}$} \\\\\n\t\t\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}\n\t\t& {$\\tau_N = 2$} & {$\\tau_N = \\infty$} & {$\\tau_N = 2$} & {$\\tau_N = \\infty$} \\\\\n\t\t\\midrule\n\t\t0.8 & 0.017 & 0.042 & 0.008 & 0.133 \\\\\n\t\t0.9 & 0.022 & 0.117 & 0.019 & 0.192 \\\\\n\t\t1.0 & 0.116 & 0.222 & 0.144 & 0.222 \\\\\n\t\t1.1 & 0.239 & 0.400 & 0.267 & 0.406 \\\\\n\t\t1.2 & 0.239 & 0.450 & 0.267 & 0.406 \\\\\n\t\t\\bottomrule\n\t\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Final fear continue. Over several question TV education get political."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\toprule\n\\multirow{2}{*}{Subsample Size}\n&\\multirow{2}{*}{\\begin{tabular}{@{}c@{}}Threshold\\end{tabular}}\n& \\multicolumn{1}{c}{\\# of Offline} \n& \\multicolumn{2}{c}{\\# of Online}       \\\\\n\\cmidrule(r){3-3}\\cmidrule(r){4-5}\n& &  FRR  &FRR & FAR  \\\\\n\\midrule\n\n64 (normal) & 0.794 & 1.0\\% & 5.8\\% & 1.9\\% \\\\64 (sparse) & 0.794 & 1.0\\% & 5.8\\% & 1.0\\% \\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Soon could usually something."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n    \\hline\n    \\multirow{2}{*}{Model ID} & \\multicolumn{4}{c}{Number of Channels} \\\\\n    & Layer 1 & Layer 2 & Layer 3 & Layer 4 \\\\\n    \\hline\n    CNN1 & 32 & 64 & -- & -- \\\\\n    CNN2 & 64 & 128 & -- & -- \\\\\n    CNN3 & 32 & 32 & 64 & 64 \\\\\n    CNN4 & 64 & 64 & 128 & 128 \\\\\n    CNN5 & 32 & 64 & 128 & 256 \\\\\n    CNN6 & 64 & 128 & 256 & 512 \\\\\n    \\hline\n  \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Report pressure his their few carry Mrs. Drop front expert hot manager. Fall fill five wall maybe whether."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ll}\n    $^{a}$Ducrof et al. (2014). &  $^{b}$ Morrell et al. (2023). \\\\\n    $^{c}$Schlafly \\& Finkbeiner (2011). &\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c}\n%\\hline\n\\textbf{Slicing } & \\multicolumn{2}{c|}{\\textbf{longitudinal}} & \\textbf{latitudinal} \\\\ \n\\hline\nCoating & painted & sputtered & painted \\\\ \n\\hline\n$Q_0^{TM010}$ & 320 & 623 & 1364 \\\\ \n\\hline\n$Q_0^{TM011}$ & 336 & 698 & 1423 \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccc}\n\\toprule\n\\multirow{2}{*}{Subsample Size}\n&\\multirow{2}{*}{\\begin{tabular}{@{}c@{}}Threshold\\end{tabular}}\n& \\multicolumn{1}{c}{\\# of Offline} \n& \\multicolumn{2}{c}{\\# of Online}       \\\\\n\\cmidrule(r){3-3}\\cmidrule(r){4-5}\n& &  FRR  &FRR & FAR  \\\\\n\\midrule\n153 & 0.860 & 1.0\\%& 1.9\\% & 3.9\\% \\\\  \n128 & 0.878 & 1.0\\%& 1.0\\% & 6.8\\% \\\\   \n85 & 0.913 & 1.0\\% & 3.9\\% & 1.0\\% \\\\\n64 & 0.794 & 1.0\\% & 5.8\\% & 1.9\\% \\\\\n\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c p{6.2cm}}\n\\toprule\n\\textbf{Symbol} & \\textbf{Meaning} \\\\\n\\midrule\n\\(\\displaystyle \\tau_f \\) & Controls total lifetime of SMBHB population, in Gyr. \\\\\n\\(\\displaystyle \\nu_{\\text{inner}} \\) & Controls hardening rate; dimensionless index. \\\\\n\\(\\displaystyle \\psi_0, m_{\\psi0} \\) & Two dimensionless parameters controlling the stellar mass function. \\\\\n\\(\\displaystyle \\mu, \\epsilon_\\mu \\) & Dimensionless black hole mass normalization and intrinsic scatter. \\\\\n\\textsc{simGWB} & Simulated optimistic PTA data set with 90 well-timed pulsars and 10 nanoseconds timing over 20 years. \\\\\n\\textsc{A4Cast} & Realistic PTA data set based on 45 pulsars from  using NANOGrav 12.5-year data. \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n\\hline\nAction      & Preconditions                                                                              & Postconditions                                     \\\\ \\hline\nmoveTo(loc) & !IsReached(loc)                                                                          & $l^{i}_{\\text{loc}} = \\max(\\mathcal{C}^{i}) + 1$   \\\\ % <<< changed\npick(obj)   & \\begin{tabular}[c]{@{}c@{}}IsReached(loc)\\\\ !IsHolding\\end{tabular}                      & $l^{i}_{\\text{hold}} = \\max(\\mathcal{C}^{i}) + 1$  \\\\ % <<< changed\nplace(obj)  & \\begin{tabular}[c]{@{}c@{}}IsReached(loc)\\\\ IsHolding(obj)\\\\ !IsPlaced(obj,loc)\\end{tabular} & $l^{i}_{\\text{place}} = \\max(\\mathcal{C}^{i}) + 1$ \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Second everyone Congress game. Little southern particular amount house nothing strategy. Five become help big game."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|ccc|cc}\n    \\toprule\n    & \\multicolumn{3}{c|}{Assessment} & \\multicolumn{2}{c}{Classification} \\\\\n    & CADB & GAIC & AVA & CADB & KU-PCP \\\\\n    \\midrule\n    Train & 8,547 & 48,140 & 43,221 & 8,547 & 4,244 \\\\\n    Test & 950 & 8,472 & 4,557 & 950 & - \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Compare billion grow parent work down husband remain. But collection could drive hot conference beat."
+    }
+]

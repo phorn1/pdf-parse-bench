@@ -1,0 +1,29 @@
+[
+    {
+        "type": "text",
+        "data": "Year power newspaper modern."
+    },
+    {
+        "type": "text",
+        "data": "Style national answer military strategy agreement eight owner. Account body involve. Treatment they appear stay radio."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular*}{\\columnwidth}{@{\\extracolsep{\\fill}}lcccc@{}}\n\\toprule\nGoal & Method & SR ($\\uparrow$) & FS ($\\downarrow$) & DTG (cm) ($\\downarrow$)\\\\\n\\midrule\n\\multirow{2}{*}{Goal 1}\n& WANDR~ & 56.16 \\% & 16.57 \\% & 23.56\\\\\n& COMET & \\textbf{91.55} \\% & \\textbf{15.29} \\% & \\textbf{7.22} \\\\\n\\midrule\n\\multirow{2}{*}{Goal 2}\n& WANDR~ & 37.33 \\% & 28.18 \\% & 51.51 \\\\\n& COMET & \\textbf{86.69} \\% & \\textbf{18.25} \\% & \\textbf{14.54}  \\\\\n\\midrule\n\\multirow{2}{*}{Goal 3}\n& WANDR~ & 20.96 \\% & 39.96 \\% & 99.07 \\\\\n& COMET & \\textbf{86.27} \\% & \\textbf{20.18} \\% & \\textbf{13.62}   \\\\\n\\bottomrule\n\\end{tabular*}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|c|c|c|c|c|}\n        \\cline{3-8}\n        \\multicolumn{1}{c}{} && \\multicolumn{2}{|c|}{Baseline} & \\multicolumn{2}{|c|}{GRU}&\\multicolumn{2}{|c|}{Transformer}\\\\\n        \\hline\n        BS & LR & CNN & UNET & CNN & UNET & CNN & UNET \\\\\n        \\hline\n        \\multirow{2}{*}{1} & $10^{-3}$ & 0.881 & 0.764 & 0.782 & 0.776 & NaN & 0.764 \\\\\n        \\cline{2-8}\n         & $10^{-5}$ & 0.852 & 0.762 & 0.794 & 0.761 & 0.805 & 0.764 \\\\\n         \\hline\n        \\multirow{2}{*}{2} & $10^{-3}$ & 0.823 & 0.764 & 0.830 & 0.769 & NaN & NaN \\\\\n        \\cline{2-8}\n         & $10^{-5}$ & 0.801 & 0.762 & 0.802 & 0.759 & 0.811 & 0.763 \\\\\n        \\hline\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|cc}\n    \\toprule\n    \\multirow{2}{*}{\\begin{tabular}[c]{@{}l@{}}{Decoding Methods} \\end{tabular}} & \\multicolumn{2}{c}{ Logarithm of Token Probability }  \\\\\n     & Average & Standard Deviation \\\\\n    \\midrule\n    Auto-regression &  -4.8950 & 2.3457 \\\\\n    SJD &  -4.9007 & 2.3275  \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Any onto reduce nor accept. Lose live first phone whose thousand. Carry protect us last clearly. Music benefit film accept. Meet late ball have per baby worry loss."
+    }
+]

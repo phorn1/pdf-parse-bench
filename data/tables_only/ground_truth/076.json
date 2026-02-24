@@ -1,0 +1,28 @@
+[
+    {
+        "type": "text",
+        "data": "Might key hard research economic foreign. Fund glass professor record such finally."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l}\n\t\t\t\t\t\t\\texttt{bob 0 = location}\\\\[-.2em] \n\t\t\t\t\t\t\\texttt{bob n = normalize $\\$$ do} \\\\[-.2em] \n\t\t\t\t\t\t\\texttt{  loc <- location}\\\\[-.2em] \n\t\t\t\t\t\t\\texttt{  prediction <- alice n}\\\\[-.2em] \n\t\t\t\t\t\t\\texttt{  condition}\\\\[-.2em] \n\t\t\t\t\t\t\\texttt{    (loc == prediction)}\\\\[-.2em] \n\t\t\t\t\t\t\\texttt{  return loc}\n\t\t\t\t\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Visit wide shake employee health. Impact experience part available specific serve smile. Power capital later list entire control."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{\\extracolsep{2pt}}lcccc}\n\\\\[-2.3ex]\\hline\n\\hline \\\\[-2.3ex]\n\\\\[-2.3ex]  & (1) & (2) & (3) & (4) \\\\\n\\\\[-2.3ex] & log\\,\\textsf{RepTXs} & log\\,\\textsf{RepTXs} & log\\,\\textsf{Revenue} & log\\,\\textsf{Revenue} \\\\\n\\hline \\\\[-2.3ex]\n\\textsf{Intercept} & -11.000$^{*}$ & -11.939$^{*}$ & -3.732$^{}$ & -8.377$^{}$ \\\\\n& (5.681) & (6.153) & (6.958) & (7.223) \\\\\n\\textsf{Post} & -0.462$^{*}$ & -0.390$^{}$ & 1.307$^{***}$ & 1.155$^{***}$ \\\\\n& (0.259) & (0.263) & (0.355) & (0.370) \\\\\n\\textsf{VolumeDEX} & 1.090$^{***}$ & 1.053$^{***}$ & 0.286$^{}$ & 0.563$^{}$ \\\\\n& (0.283) & (0.315) & (0.345) & (0.366) \\\\\n\\textsf{BaseGasMain} & -0.200$^{}$ & -0.264$^{*}$ & 0.355$^{**}$ & 0.376$^{**}$ \\\\\n& (0.149) & (0.145) & (0.169) & (0.175) \\\\\n\\textsf{BaseGasArb} & & 169.113$^{***}$ & & -19.931$^{}$ \\\\\n& & (52.415) & & (34.822) \\\\\n\\textsf{VolatilityETH} & & -0.114$^{}$ & & -1.926$^{**}$ \\\\\n& & (0.839) & & (0.775) \\\\\n\\hline \\\\[-2.3ex]\n Observations & 123 & 123 & 123 & 123 \\\\\n $R^2$ & 0.224 & 0.255 & 0.313 & 0.342 \\\\\n Adjusted $R^2$ & 0.205 & 0.224 & 0.296 & 0.314 \\\\\n\\hline\n\\hline \\\\[-2.3ex]\n\\multicolumn{5}{l}{Standard errors are computed using the Newey-West estimator.} \\\\\n\\textit{Note:} & \\multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\\\\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Able today benefit build Congress. Food manage research ready buy."
+    },
+    {
+        "type": "text",
+        "data": "Citizen church gun sure event. Instead wrong performance home evening fill teach model. Source would risk place son."
+    }
+]

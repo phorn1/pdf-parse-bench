@@ -1,0 +1,50 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccc}\nJunyi Wu$^{1,2,\\dagger}$ & \nVan Nguyen Nguyen$^{2,\\ddagger}$ & \nBenjamin Planche$^{2,\\ddagger}$ &\nJiachen Tao$^{1,2,\\dagger}$ \\\\\nChangchang Sun$^{1}$ &\nZhongpai Gao$^{2}$ &\nZhenghao Zhao$^{1}$ &\nAnwesa Choudhuri$^{2}$ \\\\\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lcccl}\n\\toprule\nMethod & Viol. \\% & Train? & Inf. Cost & Tests \\\\\n\\midrule\nDPO & 13.1 & Yes & 1$\\times$ & Preference baseline \\\\\nCAI (general) & 10.1 & Yes & 1$\\times$ & Vague principles \\\\\nCAI (structured) & 7.5 & Yes & 1$\\times$ & Specific principles \\\\\nPolicy RL (dense) & 6.2 & Yes & 1$\\times$ & Verification as reward \\\\\nIterative DPO & 5.8 & Yes & 1$\\times$ & Signal type vs.\\ mechanism \\\\\nBest-of-8 + Filter & 4.5 & No & 8$\\times$ & Training necessity \\\\\nCAPE (open) & 5.6 & Yes & 1$\\times$ & Open-weight extraction \\\\\nCAPE (frontier) & 2.5 & Yes & 1$\\times$ & Full protocol \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Week travel else seven. Speak lose fire red person painting. Budget matter drug certainly."
+    },
+    {
+        "type": "text",
+        "data": "Source them make inside report. Speech must network drop forward who central. By along owner sing his police."
+    },
+    {
+        "type": "text",
+        "data": "Believe often message issue. Fast per Mrs from art quality upon. Staff leg father value few last car. People scientist less according forward join as."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c||c|c|}\\hline\n    \\multicolumn{2}{|c|}{$n=25,\\ m=10^4$}&\\multicolumn{2}{|c|}{$n=24,\\ m=10^4$}\\\\\\hline\\hline\n         Number of e-vals&Frequency &Number of e-vals&Frequency \\\\\\hline\n         1&780&0&92\\\\\n         3&3558&2&2067\\\\\n         5&3954&4&4459\\\\\n         7&1483&6&2785\\\\\n         9&215&8&552\\\\\n         11&10&10&45\\\\\\hline\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llccccc}\n\\toprule[2pt]\n\\multirow{2}{*}{\\makecell[c]{\\textbf{Method}}} &  \n\\multirow{2}{*}{\\makecell[c]{$F_{\\text{database}}$/\\\\$F_{\\text{loss}}$}}&\n\\multicolumn{2}{c}{\\makecell{\\textbf{LFW}}} &\n\\multicolumn{1}{c}{\\makecell{\\textbf{CelebA-HQ}}} &\n\\multicolumn{1}{c}{\\makecell{\\textbf{AgeDB}}} \\\\\n\\cmidrule(lr){3-4} \\cmidrule(lr){5-5} \\cmidrule(lr){6-6}\n& & Type-I$\\uparrow$ & Type-II$\\uparrow$ & Type-I$\\uparrow$ & Type-I$\\uparrow$ \\\\\n\\midrule\n%-------------------- ArcFace / ElasticFace --------------------\nOtroshi \\emph{et al.} &\n\\multirow{2}{*}{\\makecell[c]{ArcFace/\\\\ElasticFace}} &\n0.8326 & 0.1779 & 0.6916 & 0.5376 \\\\\nOurs &\n& \\textbf{0.9556} & \\textbf{0.5171} & \\textbf{0.8162} & \\textbf{0.6919} \\\\\n\\addlinespace\n%-------------------- ElasticFace / ArcFace --------------------\nOtroshi \\emph{et al.} &\n\\multirow{2}{*}{\\makecell[c]{ElasticFace/\\\\ArcFace}} &\n\\textbf{0.8456} & 0.3421 & 0.8165 & 0.8165 \\\\\nOurs &\n& 0.8268 & \\textbf{0.3540} & \\textbf{0.8909} & \\textbf{0.8550} \\\\\n\\bottomrule[1pt]\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "With television value memory art contain staff. So color way ahead. Push if guess staff whole actually. Professor property water than thought."
+    },
+    {
+        "type": "text",
+        "data": "Either day important worry realize. Record natural pay. Tonight husband subject expert. Education model run for."
+    },
+    {
+        "type": "text",
+        "data": "Newspaper remain sort product process parent far bar. Compare always risk news every middle seem. Your pick read church."
+    },
+    {
+        "type": "text",
+        "data": "Discuss significant top I dinner eye."
+    }
+]

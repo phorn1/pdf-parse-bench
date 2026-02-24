@@ -1,0 +1,58 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lrrrrrr}\n    \\toprule\n    \\multirow{2}{*}{Resource} &\n      \\multicolumn{2}{c}{Partition 1} &\n      \\multicolumn{2}{c}{Partition 2} &\n      \\multicolumn{2}{c}{Partition 4} \\\\\n    \\cmidrule(lr){2-3}\n    \\cmidrule(lr){4-5}\n    \\cmidrule(lr){6-7}\n      & Vitis & Calyx & Vitis & Calyx & Vitis & Calyx \\\\\n    \\midrule\n      LUTs  & 2011 & 3730  & 6021 & 13197 & 13799 & 49121 \\\\\n      FFs   & 1281 & 742   & 4036 & 3145  & 15083 & 10657 \\\\\n      BRAMs &  43  & 9     & 39   & 10    & 64    & 20    \\\\\n      DSPs  &   5  & 6     & 7    & 20    & 80    & 69    \\\\\n    \\bottomrule\n  \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "With civil often want change easy. Law about imagine do discuss build pay feeling. Interest media run."
+    },
+    {
+        "type": "text",
+        "data": "Son charge far meeting decision work position. Free center my when also enough interview factor. Base response same."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}c|cc|cc@{}}\n    \\toprule\n     & \\multicolumn{2}{c|}{SLC=100 (190 MB)} & \\multicolumn{2}{c}{SLC=50 (95 MB)} \\\\\n    ResNet-18 & \\emph{Soft-Only}  & \\textbf{Ours} & \\emph{Soft-Only}  & \\textbf{Ours}    \\\\ \\midrule\n    IPC=10    & 29.9 & \\textbf{34.4} & 26.9 & \\textbf{28.6}  \\\\\n    IPC=50    & 26.9 & \\textbf{44.7} & 19.1 & \\textbf{40.9} \\\\\n    \\bottomrule\n    \\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Five life ever. Help thousand believe exactly attorney court election appear."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c}\n        \\toprule[0.1em]\n        Category & Video Paris \\\\\n    \\midrule\n      Global Style   &   58 \\\\\n    Background Change  &   59   \\\\\n      Local Change   &  65  \\\\\n      Local Add   &   67 \\\\\n      Local Remove   &   59 \\\\\n      Subtitles Edit   &   50 \\\\\n    \\midrule\n      Camera  Edit   &   43  \\\\\n      Creative Edit   &   30 \\\\\n        \\toprule[0.1em]\n        \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{cccccc}\n\\toprule\n\\multirow{3.5}{*}{\\textbf{Backbone}} & \\multirow{3.5}{*}{{\\textbf{Method}}} & \\multicolumn{2}{c}{\\textbf{Pascal VOC}} & \\multicolumn{2}{c}{\\textbf{ADE20K}}\\\\\n\\cmidrule(lr){3-4} \\cmidrule(lr){5-6}\n&  & \\makebox[0.03\\textwidth][c]{\\textbf{\\makecell[c]{Data \\\\ Size}}} & \\makebox[0.04\\textwidth][c]{\\textbf{\\makecell[c]{mIoU}}} & \\makebox[0.03\\textwidth][c]{\\textbf{\\makecell[c]{Data \\\\ Size}}} & \\makebox[0.04\\textwidth][c]{\\textbf{\\makecell[c]{mIoU}}} \\\\\n\\midrule\n\\multirow{4.5}{*}{ResNet50} & Raw Data & $11.5k$ & 77.3 & $20k$ & 47.2 \\\\\n\\cmidrule{2-6}\n& SegGen & - & - & $ 1 $M  & \\textbf{49.9} \\\\\n& FreeMask & 40k & \\underline{77.9}$ ^\\dagger $ & $ 40k $ & 48.2$ ^\\dagger $ \\\\\n& JoDiffusion & 40k & \\textbf{79.4} & $ 40k $ & \\underline{48.4} \\\\\n\\midrule\n\\multirow{3.5}{*}{Swin-S} & Raw Data & $11.5k$ & 83.8 & $20k$ & 51.6 \\\\\n\\cmidrule{2-6}\n& FreeMask & 40k & \\underline{84.2}$ ^\\dagger $ & $ 40k $ & \\underline{52.1}$ ^\\dagger $ \\\\\n& JoDiffusion & 40k & \\textbf{85.1} & $ 40k $ & \\textbf{52.2} \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Sister name reduce sort I interest mother until. Book vote usually by its look option city. Me head lot news three return speak."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c|c|c}\n\\multirow{2}{*}{\\textbf{Actual Value}} & \\multicolumn{2}{c|}{\\textbf{Predicted Value}} & \\\\\n\\cline{2-3}\n & \\textbf{Positive} & \\textbf{Negative} & \\\\\n\\hline\n\\textbf{Positive} & True Positive (TP) & False Negative (FN) & \\\\\n\\hline\n\\textbf{Negative} & False Positive (FP) & True Negative (TN) & \\\\ \\hline\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l rr}\n\\toprule\n& \\multicolumn{2}{c}{Latency (ms) $\\downarrow$} \\\\\n\\cmidrule(lr){2-3}\nMethod & CPU & CUDA \\\\\n\\midrule\nERM & 112.22 $\\pm$ 13.58 & 5.42 $\\pm$ 0.31 \\\\\nEnsemble & 107.15 $\\pm$ 12.41 & 5.83 $\\pm$ 0.38 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{l|lll}\nMethod       & ResNet50 & ViT-B/16 & ConvNeXt-Base                                         \\\\\n\\hline\nCLIP-Dissect & 66.9\\%   & 51.2\\%   &  53.7\\% \\\\\nNetDissect   & 79.2\\%   & 91.3\\%   & 27.8\\%                                               \n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{|c|c|c|}\n\\hline{\\footnotesize{}Algebra} & {\\footnotesize{}Definition} & {\\footnotesize{}Relations with Exc. Algebras}\\tabularnewline\n\\hline\n\\hline{\\footnotesize{}$\\mathfrak{A}_{1}$} & {\\footnotesize{}$\\begin{array}{c}\n\\mathfrak{su}_{2}\\oplus\\mathfrak{f}_{4}\\oplus\\left(\\mathbf{7},\\mathbf{26}\\right)\\end{array}$} &\n{\\footnotesize{}$\\mathfrak{f}_{4}\\subset\\mathfrak{e}_{6}\\subset\\mathfrak{A}_{1}\\subset\\mathfrak{e}_{8}$}\\tabularnewline\n\\hline{\\footnotesize{}$\\mathfrak{A}_{2}^{\\text{enh}}$} &\n{\\footnotesize{}$\\mathfrak{g}_{2}\\oplus\\mathfrak{su}_{2}\\oplus\\left(\\mathbf{7},\\mathbf{7+}3\\cdot\\mathbf{1}\\right)$} &\n{\\footnotesize{}$\\mathfrak{f}_{4}\\subset\\mathfrak{e}_{6}\\subset\\mathfrak{A}_{2}^{\\text{enh}}\\subset\\mathfrak{e}_{8}$}\\tabularnewline\n\\hline{\\footnotesize{}$\\mathfrak{A}_{3}$} &\n{\\footnotesize{}$\\mathfrak{g}_{2}\\oplus\\mathfrak{sp}_{6}\\oplus\\left(2\\cdot\\mathbf{7}+\\mathbf{1},\\mathbf{14}\\right)$} &\n{\\footnotesize{}$\\mathfrak{f}_{4}\\subset\\mathfrak{e}_{6}\\subset\\mathfrak{e}_{7}\\subset\\mathfrak{A}_{3}$}\\tabularnewline\n\\hline\n\\end{tabular}",
+        "complexity": "simple"
+    }
+]

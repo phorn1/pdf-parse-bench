@@ -1,0 +1,7 @@
+[
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{lccc}\n\\toprule\n% --- 表头 ---\n% \\multirow{2}{*}{...} 让 \"Model\" 占两行\n% \\multicolumn{3}{c}{...} 让 \"GEdit-Bench-EN\" 跨三列\n\\multirow{2}{*}{\\textbf{Model}} & \\multicolumn{3}{c}{\\textbf{GEdit-Bench-EN $\\uparrow$}} \\\\\n\\cmidrule(l){2-4} % 在第2到第4列下画一条短线\n& \\textbf{G\\_SC} & \\textbf{G\\_PQ} & \\textbf{G\\_O} \\\\\n\\midrule\n\n% --- 第1部分：模型列表 ---\n\nFLUX.1-Kontext [Dev] & 6.62 & 7.61 &  6.18 \\\\\n\\midrule \n+ \\textit{Think before Edit} &7.34 &  7.64 &   6.82 \\\\\n+ \\textit{Think while Edit} & 7.83 &  7.66  & \\textbf{7.19} \\\\\n+ \\textit{Think before and while Edit} &  7.75 &  7.60 & 7.06 \\\\\n\\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    }
+]

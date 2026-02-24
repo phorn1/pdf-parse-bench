@@ -1,0 +1,84 @@
+[
+    {
+        "type": "text",
+        "data": "Occur range but be inside another paper. Road effort trial nor raise beyond environmental listen."
+    },
+    {
+        "type": "text",
+        "data": "Music reduce organization toward music partner option."
+    },
+    {
+        "type": "text",
+        "data": "Large idea Republican fact any third fight. Image body threat worry PM consumer resource enjoy."
+    },
+    {
+        "type": "text",
+        "data": "Prevent eat decade certain animal affect woman. Government college ahead cause author child she. Market know concern animal yes high course."
+    },
+    {
+        "type": "text",
+        "data": "Cost police agree guy good news. Writer heavy which easy send."
+    },
+    {
+        "type": "text",
+        "data": "Population rest leave region. Dinner successful day suffer continue drug base. Sell especially movie alone art decade fly. Bed reach cultural finish. Thought true site back."
+    },
+    {
+        "type": "text",
+        "data": "Green indicate public unit figure black away. Sound western act happen. Pattern box so ground employee affect. Gas really real."
+    },
+    {
+        "type": "text",
+        "data": "Carry water ten lose relationship. Exactly week I manage democratic enough. Voice guess can size prove she better house. Worker material even already morning."
+    },
+    {
+        "type": "text",
+        "data": "Mouth bank during opportunity class down. Professional large them relate will. Reality middle agree head improve."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{@{}>{\\columncolor[HTML]{FFFFFF}}c \n>{\\columncolor[HTML]{FFFFFF}}c \n>{\\columncolor[HTML]{FFFFFF}}c \n>{\\columncolor[HTML]{FFFFFF}}c \n>{\\columncolor[HTML]{FFFFFF}}c \n>{\\columncolor[HTML]{FFFFFF}}l @{}}\n\\toprule\n\\textbf{Framework} & \\textbf{Model} & \\textbf{Dice} & \\textbf{IoU} & \\multicolumn{2}{c}{\\cellcolor[HTML]{FFFFFF}\\textbf{\\begin{tabular}[c]{@{}c@{}}Inference\\\\ Time (min)\\end{tabular}}} \\\\ \\midrule\n\\textbf{STL} & \\cellcolor[HTML]{FFFFFF} & 0.8811 & 0.8542 & \\multicolumn{2}{c}{\\cellcolor[HTML]{FFFFFF}0.1944} \\\\ \\cmidrule(r){1-1} \\cmidrule(l){3-6} \n\\textbf{MTL} & \\multirow{-2}{*}{\\cellcolor[HTML]{FFFFFF}\\textbf{UNet-RN34}} & 0.9016 & 0.8824 & \\multicolumn{2}{c}{\\cellcolor[HTML]{FFFFFF}0.2114} \\\\ \\bottomrule\n\\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccc}\n    \\hline\n    Method & PSNR (dB) & Size (MB) \\\\\n    \\hline\n    LocoMoco (Ours) & 29.12 & 19.92 \\\\\n    \\hline\n    Lossy Color Compression   & 27.38 & 13.20 \\\\\n    Lossless Color Compression & 29.30 & 36.49 \\\\\n    \\hline\n    \\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "text",
+        "data": "Day senior six. Forward organization raise almost leg and."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}[t]{@{}l@{}}\nZurich Urban MAV (IJRR)\\\\\n\n\\end{tabular}",
+        "complexity": "simple"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{llllll}\n\\hline\n\\multicolumn{2}{l}{Method} & \\multicolumn{2}{l}{\\textbf{AUC (\\%)}}                               & \\multicolumn{2}{l}{\\textbf{Simplicity (\\%)}}                        \\\\ \\cline{3-6} \n      & \\textbf{}          & \\textbf{Mean}                & \\textbf{95\\% CI}                     & \\textbf{Mean}                & \\textbf{95\\% CI}                     \\\\ \\hline\nILP   & DBScan             & \\cellcolor[HTML]{E8E8E8}91.8 & \\cellcolor[HTML]{E8E8E8}[89.8, 93.7] & \\cellcolor[HTML]{E8E8E8}55.8 & \\cellcolor[HTML]{E8E8E8}[46.9, 64.7] \\\\\n      & OPTICS             & 91.3                         & [89.7, 92.8]                         & 39.2                         & [31.6, 46.7]                         \\\\\n      & DPGMM              & 91.6                         & [89.6, 93.6]                         & 41.4                         & [38.2, 44.6]                         \\\\\n      & Baseline           & 77.4                         & [69.8, 85.1]                         & 12.7                         & [10.0, 15.5]                         \\\\ \\cline{2-6} \n      & \\textit{p-values}  & \\multicolumn{2}{l}{\\textbf{Clustering: $<0.001$}}                   & \\multicolumn{2}{l}{\\textbf{Clustering: $<0.001$}}                   \\\\\n      & \\textit{}          & \\multicolumn{2}{l}{\\textbf{Iteration: $0.209$}}                     & \\multicolumn{2}{l}{\\textbf{Iteration: $<0.001$}}                    \\\\ \\hline\nIM    & DBScan             & \\cellcolor[HTML]{E8E8E8}84.3 & \\cellcolor[HTML]{E8E8E8}[79.5, 89.2] & \\cellcolor[HTML]{E8E8E8}87.6 & \\cellcolor[HTML]{E8E8E8}[83.9, 91.3] \\\\\n      & OPTICS             & 83.9                         & [79.6, 88.1]                         & 84.7                         & [81.9, 87.4]                         \\\\\n      & DPGMM              & 83.3                         & [79.2, 87.4]                         & 83.3                         & [82.2, 84.5]                         \\\\\n      & Baseline           & 83.7                         & [80.6, 86.8]                         & 76.8                         & [72.4, 81.2]                         \\\\ \\cline{2-6} \n      & \\textit{p-values}  & \\multicolumn{2}{l}{\\textbf{Clustering: $0.935$}}                    & \\multicolumn{2}{l}{\\textbf{Clustering: $<0.001$}}                   \\\\\n      & \\textit{}          & \\multicolumn{2}{l}{\\textbf{Iteration: $<0.001$}}                    & \\multicolumn{2}{l}{\\textbf{Iteration: $<0.001$}}                    \\\\ \\hline\nHM    & DBScan             & 90.0                         & [87.8, 92.2]                         & 83.8                         & [80.2, 87.5]                         \\\\\n      & OPTICS             & 90.0                         & [88.2, 91.9]                         & 83.7                         & [82.0, 85.4]                         \\\\\n      & DPGMM              & \\cellcolor[HTML]{E8E8E8}90.5 & \\cellcolor[HTML]{E8E8E8}[88.4, 92.7] & \\cellcolor[HTML]{E8E8E8}88.3 & \\cellcolor[HTML]{E8E8E8}[87.3, 89.4] \\\\\n      & Baseline           & 81.2                         & [76.4, 86.0]                         & 62.8                         & [60.9, 64.7]                         \\\\ \\cline{2-6} \n      & \\textit{p-values}  & \\multicolumn{2}{l}{\\textbf{Clustering: $<0.001$}}                   & \\multicolumn{2}{l}{\\textbf{Clustering: $<0.001$}}                   \\\\\n      & \\textit{}          & \\multicolumn{2}{l}{\\textbf{Iteration: $<0.001$}}                    & \\multicolumn{2}{l}{\\textbf{Iteration: $<0.001$}}                    \\\\ \\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{ccccccc}\n        \\toprule\n        \\multirow{2}{*}{MLLM} & \\multirow{2}{*}{Frames} & \\multirow{2}{*}{\\makecell{Sampling \\\\ Method}} & \\multicolumn{2}{c}{\\textbf{VideoMME}} & \\multicolumn{2}{c}{\\textbf{LVB}} \\\\\n        \\cmidrule(lr){4-5}\n        \\cmidrule(lr){6-7}\n        & & & Acc. & UKSS & Acc. & UKSS \\\\\n        \\midrule\n        \\multirow{5}{*}{\\makecell{Qwen2.5-\\\\VL-7B}} & \\multirow{5}{*}{32} & Uniform & 60.5 & 0.202 & 57.2 & 0.099 \\\\\n        & & K-means & 60.9 & 0.206 & 59.8 & 0.110 \\\\\n        & & AKS & 62.4 & 0.248 & 61.5 & 0.188 \\\\\n        & & ITS & 62.0 & 0.258 & 61.9 & \\textbf{0.202} \\\\\n        & & ASCS & \\textbf{63.1} & \\textbf{0.265} & \\textbf{63.6} & 0.199 \\\\\n        \\midrule\n        \\multirow{5}{*}{\\makecell{Qwen2.5-\\\\VL-7B}} & \\multirow{5}{*}{64} & Uniform & 64.0 & 0.276 & 59.5 & 0.143 \\\\\n        & & K-means & 64.7 & 0.282 & 59.5 & 0.157 \\\\\n        & & AKS & 64.5 & 0.291 & 63.2 & 0.235 \\\\\n        & & ITS & 65.2 & 0.313 & 63.4 & 0.256 \\\\\n        & & ASCS & \\textbf{66.0} & \\textbf{0.318} & \\textbf{64.1} & \\textbf{0.269} \\\\\n        \\midrule\n        \\multirow{5}{*}{\\makecell{Qwen2.5-\\\\VL-32B}} & \\multirow{5}{*}{64} & Uniform & 66.6 & 0.276 & 60.2 & 0.143 \\\\\n        & & K-means & 67.9 & 0.282 & 61.7 & 0.157 \\\\\n        & & AKS & 66.9 & 0.291 & 63.5 & 0.235 \\\\\n        & & ITS & 67.6 & \\textbf{0.313} & 63.6 & 0.256 \\\\\n        & & ASCS & \\textbf{68.4} & \\textbf{0.313} & \\textbf{65.5} & \\textbf{0.269} \\\\\n        \\midrule\n        \\multirow{5}{*}{\\makecell{Intern\\\\VL3-8B}} & \\multirow{5}{*}{64} & Uniform & 65.4 & 0.276 & 60.8 & 0.143 \\\\\n        & & K-means & 66.6 & 0.282 & 62.7 & 0.157 \\\\\n        & & AKS & 66.9 & 0.291 & 64.9 & 0.235 \\\\\n        & & ITS & 67.1 & \\textbf{0.313} & 65.1 & 0.256 \\\\\n        & & ASCS & \\textbf{67.6} & 0.311 & \\textbf{65.4} & \\textbf{0.268} \\\\\n        \\bottomrule\n    \\end{tabular}",
+        "complexity": "complex"
+    },
+    {
+        "type": "text",
+        "data": "Report media item of. Rather oil clearly any many stage during room."
+    },
+    {
+        "type": "text",
+        "data": "Full appear hour national anything simple lead. Energy price wait maybe. Beautiful itself fast none."
+    },
+    {
+        "type": "table",
+        "data": "\\begin{tabular}{c|c||c|c|c}\n\\hline\n\\multicolumn{2}{c||}{Grid Parameters} & HESS Parameters               & BESS     & SC \\\\ \\hline\n$H$                 & 6               & $P_\\mathrm{max}$  (MW)        & 30   & 10       \\\\ \\hline\n$D$                 & 3               & $\\dot{P}_\\mathrm{max}$ (MW/s) & 15 & 100  \\\\ \\hline\n$R_\\mathrm{droop}$  & 0.05            & $\\tau$                        & 0.25    & 0.02 \\\\ \\hline\n$T_g$               & 0.3             & $\\eta$                        & \\multicolumn{2}{c}{0.97} \\\\ \\hline\n\\end{tabular}",
+        "complexity": "moderate"
+    },
+    {
+        "type": "text",
+        "data": "Usually shoulder thus interest number defense. Role answer in want person spring. News kid care blue back."
+    }
+]
