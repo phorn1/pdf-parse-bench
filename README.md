@@ -92,7 +92,7 @@ Given a parser's output (the extracted text from a PDF), an LLM establishes init
 
 ### Step 2: Scoring with LLM-as-a-Judge
 
-The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: GPT-5-mini). For each formula pair, the LLM judge evaluates three key criteria: (1) **Correctness** - whether mathematical symbols, variables, and operations are accurately preserved, (2) **Completeness** - whether all parts are present without omissions, and (3) **Semantic equivalence** - whether the extracted formula conveys the same mathematical meaning as the ground truth. Our research demonstrates that using LLMs as judges provides a robust and meaningful metric for comparing ground truth LaTeX formulas against parsed output, focusing on semantic equivalence and mathematical correctness rather than relying solely on text similarity metrics or visual rendering comparison. Scores are computed separately for inline and display formulas.
+The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: Gemini 3 Flash via OpenRouter). For each formula pair, the LLM judge evaluates three key criteria: (1) **Correctness** - whether mathematical symbols, variables, and operations are accurately preserved, (2) **Completeness** - whether all parts are present without omissions, and (3) **Semantic equivalence** - whether the extracted formula conveys the same mathematical meaning as the ground truth. Our research demonstrates that using LLMs as judges provides a robust and meaningful metric for comparing ground truth LaTeX formulas against parsed output, focusing on semantic equivalence and mathematical correctness rather than relying solely on text similarity metrics or visual rendering comparison. Scores are computed separately for inline and display formulas.
 
 ## Quick Start
 
@@ -112,7 +112,7 @@ There are two ways to use this benchmark, depending on your needs:
 pip install pdf-parse-bench
 ```
 
-**Note:** Set `OPENAI_API_KEY` environment variable for evaluation.
+**Note:** Set `OPENROUTER_API_KEY` environment variable for evaluation (used for LLM-as-a-Judge scoring via [OpenRouter](https://openrouter.ai/)).
 
 #### Step 1: Parse the Benchmark PDFs
 
@@ -153,14 +153,26 @@ results/my_parser/
 Run the benchmark evaluation on your parsed results:
 
 ```python
-from pdf_parse_bench import Benchmark, get_benchmark_ground_truth_dir
+from pathlib import Path
+from pdf_parse_bench import Benchmark, PDFParser, get_benchmark_ground_truth_dir
 
-# Run evaluation on your parsed results
-Benchmark(
-    parser_output_dir="results/my_parser",
+class MyParser(PDFParser):
+    @classmethod
+    def display_name(cls) -> str:
+        return "My Parser"
+
+    def parse(self, pdf_path: Path, output_path: Path) -> str:
+        raise NotImplementedError  # Already parsed in Step 1
+
+bench = Benchmark(
+    parser_output_dir=Path("results/my_parser"),
     ground_truth_dir=get_benchmark_ground_truth_dir(),
-    llm_judge_models="openai/gpt-5-mini",
-).extract().evaluate().save_benchmark_summary()
+    llm_judge_models=["google/gemini-3-flash-preview"],
+    parser=MyParser(),
+)
+bench.extract()
+bench.evaluate()
+bench.save_benchmark_summary()
 ```
 
 ---
