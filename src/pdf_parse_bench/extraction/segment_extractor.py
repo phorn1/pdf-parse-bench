@@ -28,7 +28,7 @@ class SegmentExtractionJob:
 class ParallelSegmentExtractor:
     """Parallel segment extraction processor with integrated progress tracking."""
 
-    def __init__(self, max_workers: int, model: str = "gpt-5-mini", verbose: bool = False):
+    def __init__(self, max_workers: int, model: str = "google/gemini-3-flash-preview", verbose: bool = False):
         self.max_workers = max_workers
         self.model = model
         self.verbose = verbose
@@ -280,9 +280,12 @@ def extract_formulas_using_llm(
     if not gt_formulas:
         return [], markdown_content
 
-    # ========== OPENAI CLIENT SETUP ==========
+    # ========== OPENROUTER CLIENT SETUP ==========
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+    )
 
     # ========== EXTRACTION STATE ==========
 
@@ -325,13 +328,18 @@ def extract_formulas_using_llm(
 
         prompt = create_formula_extraction_prompt(formulas_for_prompt, current_text)
 
-        response = client.responses.parse(
-            model=model,
-            input=[{"role": "user", "content": prompt}],
-            text_format=ExtractedFormulas
-        )
-
-        extraction_batch = response.output_parsed
+        try:
+            response = client.beta.chat.completions.parse(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format=ExtractedFormulas,
+                max_tokens=32000,
+            )
+            extraction_batch = response.choices[0].message.parsed
+        except Exception as e:
+            if console:
+                console.print(f"   ⚠️  {job_name}: Formula LLM call failed: {e} (retrying...)")
+            continue
 
         # ========== VALIDATE IS_GROUPED CONSISTENCY ==========
 
@@ -524,9 +532,12 @@ def split_grouped_formula(
             grouped_formula = grouped_formula[len(start):-len(end)]
             break
 
-    # ========== OPENAI CLIENT SETUP ==========
+    # ========== OPENROUTER CLIENT SETUP ==========
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+    )
 
     # ========== CREATE PROMPT ==========
 
@@ -567,13 +578,14 @@ JSON list with {len(gt_formulas)} strings, one for each ground truth formula in 
 
     # ========== LLM CALL ==========
 
-    response = client.responses.parse(
+    response = client.beta.chat.completions.parse(
         model=model,
-        input=[{"role": "user", "content": prompt}],
-        text_format=SplitFormulas
+        messages=[{"role": "user", "content": prompt}],
+        response_format=SplitFormulas,
+        max_tokens=16000,
     )
 
-    raw_formulas = response.output_parsed.formulas
+    raw_formulas = response.choices[0].message.parsed.formulas
 
     # ========== VALIDATE AND ADD DELIMITERS ==========
 
@@ -781,9 +793,12 @@ def extract_tables_using_llm(
     if not gt_tables:
         return [], markdown_content
 
-    # ========== OPENAI CLIENT SETUP ==========
+    # ========== OPENROUTER CLIENT SETUP ==========
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+    )
 
     # ========== EXTRACTION STATE ==========
 
@@ -816,13 +831,18 @@ def extract_tables_using_llm(
 
         prompt = create_table_extraction_prompt(tables_for_prompt, current_text)
 
-        response = client.responses.parse(
-            model=model,
-            input=[{"role": "user", "content": prompt}],
-            text_format=ExtractedTables
-        )
-
-        extraction_batch = response.output_parsed
+        try:
+            response = client.beta.chat.completions.parse(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format=ExtractedTables,
+                max_tokens=32000,
+            )
+            extraction_batch = response.choices[0].message.parsed
+        except Exception as e:
+            if console:
+                console.print(f"   ⚠️  {job_name}: Table LLM call failed: {e} (retrying...)")
+            continue
 
         # ========== VALIDATE INDICES ==========
 

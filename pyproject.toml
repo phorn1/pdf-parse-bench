@@ -31,8 +31,7 @@ dependencies = [
     "rich>=14.1.0",
     # Evaluation & AI
     "openai>=2.17.0",
-    "google-genai>=1.46.0",
-    "mistralai>=1.9.0",
+    "mistralai>=1.12.3",
     "requests>=2.32.0",
     "levenshtein>=0.27.1",
     "nltk>=3.9.1",

@@ -79,6 +79,7 @@ class LaTeXDocument:
             "\\usepackage{booktabs,multirow,makecell,graphicx,array}",
             "\\usepackage{colortbl}",
             "\\usepackage{adjustbox,caption,diagbox}",
+            "\\usepackage{pifont}",
         ]
 
         if not self._config.font_family.conflicts_with_amsfonts:
