@@ -8,12 +8,12 @@ PDF parser using [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL
 
 **1. Install PaddlePaddle (custom index):**
 ```bash
-uv pip install paddlepaddle-gpu==3.2.0 --index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
+uv pip install paddlepaddle-gpu==3.2.1 --index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
 ```
 
 **2. Install PaddleOCR:**
 ```bash
-uv pip install "paddleocr[doc-parser]"
+uv pip install -U "paddleocr[doc-parser]"
 ```
 
 **3. Install safetensors (required development build):**

@@ -1,4 +1,3 @@
-import tempfile
 from pathlib import Path
 
 from pdf_parse_bench.pipeline import run_cli
@@ -30,27 +29,9 @@ class PaddleOCRVLParser(PDFParser):
         """Parse single-page PDF to markdown using PaddleOCR-VL."""
         self._load_model()
 
-        # ========== PDF TO IMAGE ==========
-        import fitz
-
-        doc = fitz.open(pdf_path)
-        page = doc[0]  # Single page only
-        pix = page.get_pixmap(dpi=300)
-
-        temp_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-        temp_path = Path(temp_file.name)
-        pix.save(temp_path)
-        doc.close()
-
-        # ========== RUN OCR ==========
-        try:
-            # predict() returns a list of Result objects
-            results = self.pipeline.predict(str(temp_path))
-            res = results[0]  # Get first result (single image)
-            # Extract markdown text from the result's markdown attribute
-            markdown = res.markdown['markdown_texts']
-        finally:
-            temp_path.unlink()
+        # PaddleOCR-VL handles PDFs directly — no image conversion needed
+        result = next(iter(self.pipeline.predict(str(pdf_path))))
+        markdown = result.markdown['markdown_texts']
 
         self._write_output(markdown, output_path)
         return markdown
