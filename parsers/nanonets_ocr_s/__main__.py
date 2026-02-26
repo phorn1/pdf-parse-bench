@@ -18,7 +18,7 @@ class NanonetsOCRSParser(PDFParser):
 
     def _load_model(self):
         """Load Nanonets-OCR-s model using transformers."""
-        if self.model is not None:
+        if self.model is not None and self.processor is not None:
             return
 
         from transformers import AutoProcessor, AutoModelForImageTextToText
