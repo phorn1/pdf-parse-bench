@@ -34,18 +34,30 @@ class LlamaParseParser(PDFParser):
         Returns:
             str: Generated markdown content
         """
-        from llama_cloud_services import LlamaParse
+        from llama_cloud import LlamaCloud
 
-        parser = LlamaParse(
-            api_key=self.api_key,
+        client = LlamaCloud(api_key=self.api_key)
+
+        result = client.parsing.parse(
+            upload_file=pdf_path,
+            tier="agentic",
+            version="latest",
+            expand=["markdown"],
+            output_options={
+                "markdown": {
+                    "tables": {
+                        "output_tables_as_markdown": False,
+                    }
+                }
+            },
             verbose=True,
-            premium_mode=True
         )
 
-        result = parser.parse(str(pdf_path))
-
-        documents = result.get_markdown_documents(split_by_page=False)
-        markdown = documents[0].text
+        markdown = "\n\n".join(
+            page.markdown
+            for page in result.markdown.pages
+            if page.success
+        )
         self._write_output(markdown, output_path)
         return markdown
 

@@ -1,12 +1,12 @@
 # LlamaParse Parser
 
-PDF parser using [LlamaParse](https://github.com/run-llama/llama_parse).
+PDF parser using [LlamaParse](https://docs.cloud.llamaindex.ai).
 
 ## Setup
 
 **1. Install dependencies:**
 ```bash
-uv pip install llama-cloud-services>=0.6.76
+uv pip install llama-cloud>=1.0
 ```
 
 **2. Set API key in `.env`:**
