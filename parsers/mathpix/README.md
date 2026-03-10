@@ -6,7 +6,7 @@ PDF parser using [Mathpix OCR](https://mathpix.com/).
 
 **1. Install dependencies:**
 ```bash
-uv pip install mpxpy>=0.0.18
+uv pip install "mpxpy>=0.0.20"
 ```
 
 **2. Set API credentials in `.env`:**

@@ -32,6 +32,10 @@ class ParallelSegmentExtractor:
         self.max_workers = max_workers
         self.model = model
         self.verbose = verbose
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+        )
 
     def _process_single_job(self, job: SegmentExtractionJob, console) -> bool:
         """Process a single segment extraction job.
@@ -43,8 +47,7 @@ class ParallelSegmentExtractor:
 
         try:
             # Load ground truth segments
-            with open(job.gt_json_path, 'r', encoding='utf-8') as f:
-                gt_segments = json.load(f)
+            gt_segments = json.loads(job.gt_json_path.read_text())
 
             gt_tables = [
                 {"gt_data": segment["data"], "complexity": segment["complexity"]}
@@ -59,8 +62,7 @@ class ParallelSegmentExtractor:
             ]
 
             # Load parsed markdown content
-            with open(job.input_md_path, 'r', encoding='utf-8') as f:
-                markdown_content = f.read()
+            markdown_content = job.input_md_path.read_text()
 
             remaining_text = markdown_content
 
@@ -70,20 +72,17 @@ class ParallelSegmentExtractor:
                 gt_tables,
                 remaining_text,
                 self.model,
+                self.client,
                 console=console,
                 job_name=job_name,
                 verbose=self.verbose
             )
 
-            failed_table_extractions = [
-                (i, pair["gt_table"])
-                for i, pair in enumerate(table_extraction_result)
-                if pair["extracted_table"] is None
-            ]
-
-            for table_pair in table_extraction_result:
-                if table_pair["extracted_table"] is None:
-                    table_pair["extracted_table"] = ""
+            failed_table_extractions = []
+            for i, pair in enumerate(table_extraction_result):
+                if pair["extracted_table"] is None:
+                    failed_table_extractions.append((i, pair["gt_table"]))
+                    pair["extracted_table"] = ""
 
             if table_extraction_result:
                 table_results = [
@@ -103,6 +102,7 @@ class ParallelSegmentExtractor:
                 gt_formulas,
                 remaining_text,
                 self.model,
+                self.client,
                 console=console,
                 job_name=job_name,
                 verbose=self.verbose
@@ -112,6 +112,7 @@ class ParallelSegmentExtractor:
             process_grouped_formulas(
                 formula_extraction_result,
                 self.model,
+                self.client,
                 console=console,
                 job_name=job_name
             )
@@ -131,16 +132,11 @@ class ParallelSegmentExtractor:
                             f"formula_{i:03d}"
                         )
 
-            failed_formula_extractions = [
-                (i, pair["gt_formula"])
-                for i, pair in enumerate(formula_extraction_result)
-                if pair["extracted_formula"] is None
-            ]
-
-            # Convert None to empty string for failed extractions
-            for formula_pair in formula_extraction_result:
-                if formula_pair["extracted_formula"] is None:
-                    formula_pair["extracted_formula"] = ""
+            failed_formula_extractions = []
+            for i, pair in enumerate(formula_extraction_result):
+                if pair["extracted_formula"] is None:
+                    failed_formula_extractions.append((i, pair["gt_formula"]))
+                    pair["extracted_formula"] = ""
 
             if formula_extraction_result:
                 formula_results = [
@@ -154,8 +150,7 @@ class ParallelSegmentExtractor:
                 ]
                 save_results(job.output_formulas_json_path, formula_results)
 
-            with open(job.stripped_parsed_text_path, 'w', encoding='utf-8') as f:
-                f.write(remaining_text)
+            job.stripped_parsed_text_path.write_text(remaining_text)
 
             # ========== LOG RESULTS ==========
 
@@ -264,6 +259,7 @@ def extract_formulas_using_llm(
     gt_formulas: list[dict[str, str]],
     markdown_content: str,
     model: str,
+    client: OpenAI,
     console=None,
     job_name: str = "",
     max_retries: int = 1,
@@ -279,13 +275,6 @@ def extract_formulas_using_llm(
 
     if not gt_formulas:
         return [], markdown_content
-
-    # ========== OPENROUTER CLIENT SETUP ==========
-
-    client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-    )
 
     # ========== EXTRACTION STATE ==========
 
@@ -442,6 +431,7 @@ def extract_formulas_using_llm(
 def process_grouped_formulas(
     formula_results: list[dict[str, str | bool]],
     model: str,
+    client: OpenAI,
     console=None,
     job_name: str = ""
 ) -> None:
@@ -477,6 +467,7 @@ def process_grouped_formulas(
                     grouped_formula,
                     gt_formulas_for_split,
                     model,
+                    client,
                     console=console,
                     job_name=job_name
                 )
@@ -501,6 +492,7 @@ def split_grouped_formula(
     grouped_formula: str,
     gt_formulas: list[str],
     model: str,
+    client: OpenAI,
     console=None,
     job_name: str = ""
 ) -> list[str]:
@@ -531,13 +523,6 @@ def split_grouped_formula(
             delimiter_end = end
             grouped_formula = grouped_formula[len(start):-len(end)]
             break
-
-    # ========== OPENROUTER CLIENT SETUP ==========
-
-    client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-    )
 
     # ========== CREATE PROMPT ==========
 
@@ -688,12 +673,12 @@ def find_original_segment_in_markdown(
             best_pos, best_dist = i, dist
 
     # Build mapping from normalized indices to original indices
-    norm_to_orig = {
-        norm_idx: orig_idx
-        for norm_idx, (orig_idx, char) in enumerate(
-            (i, c) for i, c in enumerate(markdown_content) if not c.isspace() and c != '\\'
-        )
-    }
+    norm_to_orig = {}
+    norm_idx = 0
+    for orig_idx, c in enumerate(markdown_content):
+        if not c.isspace() and c != '\\':
+            norm_to_orig[norm_idx] = orig_idx
+            norm_idx += 1
 
     # Map normalized window to original text boundaries
     orig_start = norm_to_orig[best_pos]
@@ -776,6 +761,7 @@ def extract_tables_using_llm(
     gt_tables: list[dict[str, str]],
     markdown_content: str,
     model: str,
+    client: OpenAI,
     console=None,
     job_name: str = "",
     max_retries: int = 1,
@@ -792,13 +778,6 @@ def extract_tables_using_llm(
     # Early return if no tables to extract
     if not gt_tables:
         return [], markdown_content
-
-    # ========== OPENROUTER CLIENT SETUP ==========
-
-    client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-    )
 
     # ========== EXTRACTION STATE ==========
 
@@ -911,3 +890,4 @@ def extract_tables_using_llm(
     ]
 
     return result, current_text
+

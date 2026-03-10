@@ -37,7 +37,6 @@ dependencies = [
     "nltk>=3.9.1",
     # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
-    "pymupdf>=1.24.0",
     "pillow>=10.0.0",
     # Synthetic PDF generation - for creating test documents
     "faker>=37.11.0",
@@ -46,6 +45,7 @@ dependencies = [
     "markdown>=3.10.1",
     "scipy>=1.17.0",
     "matplotlib>=3.10.8",
+    "anthropic>=0.84.0",
 ]
 
 [project.urls]
