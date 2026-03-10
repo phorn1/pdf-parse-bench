@@ -49,12 +49,16 @@ class MistralParser(PDFParser):
             document={
                 "type": "document_url",
                 "document_url": f"data:application/pdf;base64,{base64_pdf}"
-            }
+            },
+            table_format="html",
         )
 
         markdown_content = ""
         for page in ocr_response.pages:
-            markdown_content += page.markdown
+            page_md = page.markdown
+            for table in page.tables or []:
+                page_md = page_md.replace(f"[{table.id}]({table.id})", table.content)
+            markdown_content += page_md
 
         self._write_output(markdown_content, output_path)
         return markdown_content
