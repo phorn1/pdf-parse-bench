@@ -61,6 +61,18 @@ console = Console()
     default=None,
     help="Maximum number of parallel workers (default: CPU count - 1)",
 )
+@click.option(
+    "--tables/--no-tables",
+    default=True,
+    show_default=True,
+    help="Include tables in generated PDFs",
+)
+@click.option(
+    "--formulas/--no-formulas",
+    default=True,
+    show_default=True,
+    help="Include formulas in generated PDFs",
+)
 def generate(
     output_dir: Path,
     num_pdfs: int,
@@ -68,6 +80,8 @@ def generate(
     save_latex: bool,
     no_timestamp: bool,
     max_workers: int | None,
+    tables: bool,
+    formulas: bool,
 ) -> None:
     """Generate synthetic benchmark PDFs with LaTeX."""
     # Generate timestamp for seed generation and directory naming
@@ -115,7 +129,7 @@ def generate(
             doc_formulas_dir = None
 
         job = PDFJob(
-            config=LaTeXConfig.random(seed=seed),
+            config=LaTeXConfig.random(seed=seed, include_tables=tables, include_formulas=formulas),
             latex_path=latex_dir / f"{doc_name}.tex" if latex_dir else None,
             pdf_path=pdf_dir / f"{doc_name}.pdf",
             gt_path=gt_dir / f"{doc_name}.json",

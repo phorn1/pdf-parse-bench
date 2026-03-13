@@ -119,13 +119,13 @@ class LaTeXConfig(BaseModel):
     include_headers: bool = True
     
     include_tables: bool = True
-    include_formulas: bool = False  # affects FormulaBlock and MixedTextBlock
+    include_formulas: bool = True
 
     # Reproducibility
     seed: int | None = None
 
     @classmethod
-    def random(cls, seed: int | None = None) -> 'LaTeXConfig':
+    def random(cls, seed: int | None = None, include_tables: bool = True, include_formulas: bool = True) -> 'LaTeXConfig':
         """Generate random LaTeX configuration."""
         rng = random.Random(seed)
 
@@ -157,5 +157,7 @@ class LaTeXConfig(BaseModel):
             two_column=rng.choice([True, False]),
             column_sep=rng.choice(column_seps),
             include_headers=rng.choice([True, False]),
+            include_tables=include_tables,
+            include_formulas=include_formulas,
             seed=seed,
         )
