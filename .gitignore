@@ -9,6 +9,10 @@ __pycache__/
 
 # Project artifacts
 artifacts/
+old/
+
+# Build artifacts
+dist/
 
 # Virtual environments
 .venv/
