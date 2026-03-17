@@ -8,7 +8,7 @@ PDF parser using [DOTS OCR](https://github.com/rednote-hilab/dots.ocr) (Rednote 
 
 **1. Start vLLM server:**
 ```bash
-vllm serve rednote-hilab/dots.ocr \
+uv run --with vllm vllm serve rednote-hilab/dots.ocr \
   --trust-remote-code \
   --async-scheduling \
   --gpu-memory-utilization 0.95

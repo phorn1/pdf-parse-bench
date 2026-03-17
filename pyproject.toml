@@ -38,6 +38,7 @@ dependencies = [
     # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
     "pillow>=10.0.0",
+    "pymupdf>=1.24.0",
     # Synthetic PDF generation - for creating test documents
     "faker>=37.11.0",
     "duckdb>=1.4.1",

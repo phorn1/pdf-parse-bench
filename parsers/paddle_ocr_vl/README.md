@@ -1,32 +1,17 @@
 # PaddleOCR-VL Parser
 
-PDF parser using [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL) (PaddlePaddle OCR Vision-Language).
+PDF parser using [PaddleOCR-VL-1.5](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5) .
 
 ## Setup
 
-**Requirements:** NVIDIA GPU with CUDA 12.6 support
+**Requirements:** NVIDIA GPU with CUDA support
 
-**1. Install PaddlePaddle (custom index):**
+**1. Install dependencies:**
 ```bash
-uv pip install paddlepaddle-gpu==3.2.1 --index-url https://www.paddlepaddle.org.cn/packages/stable/cu126/
+uv pip install transformers torch pillow pymupdf
 ```
 
-**2. Install PaddleOCR:**
-```bash
-uv pip install -U "paddleocr[doc-parser]"
-```
-
-**3. Install safetensors (required development build):**
-```bash
-uv pip install https://paddle-whl.bj.bcebos.com/nightly/cu126/safetensors/safetensors-0.6.2.dev0-cp38-abi3-linux_x86_64.whl
-```
-
-**4. Upgrade NCCL (fixes compatibility with PyTorch):**
-```bash
-uv pip install "nvidia-nccl-cu12>=2.27.5"
-```
-
-**5. Run parser:**
+**2. Run parser:**
 ```bash
 uv run -m parsers.paddle_ocr_vl
 ```
