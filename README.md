@@ -1,86 +1,117 @@
 # PDF Parse Bench
 
-This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas in the parsed text, then scoring them based on semantic similarity to the ground truth.
+This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas and tables in the parsed text, then scoring them with an LLM-as-a-Judge based on semantic similarity to the ground truth.
 
 ![Workflow Overview](assets/workflow.png)
-*Overview of the benchmarking framework: (1) Formula dataset extraction from Wikipedia, (2) Synthetic PDF generation with ground truth, (3) Two-stage evaluation pipeline with LLM-based matching and scoring.*
 
-## 🏆 Leaderboard - Latest Results (2025-q4)
+## 🏆 Leaderboard (2026-q1)
 
-| Rank | Parser | Score | Params/Cost | Inference |
-|------|--------|-------|-------------|-----------|
-| 1 | Qwen3-VL-235B-A22B-Instruct | 9.76 | 22B | GPU/API |
-| 2 | Gemini 3 Pro | 9.75 | $2.00/12.00 M tok | API |
-| 3 | PaddleOCR-VL | 9.65 | 0.9B | CPU/GPU |
-| 4 | Mathpix | 9.64 | $0.005/page | API |
-| 5 | dots.ocr | 9.43 | 1.7B | GPU |
-| 6 | PP-StructureV3 | 9.34 | <0.3B | CPU/GPU |
-| 7 | Nanonets-OCR-s | 9.31 | 4B | GPU |
-| 8 | Gemini 2.5 Pro | 9.28 | $1.25/10.00 M tok | API |
-| 9 | MonkeyOCR-pro-3B | 9.25 | 3B | GPU |
-| 10 | MinerU2.5 | 9.17 | 1.2B | CPU/GPU/API |
-| 11 | olmOCR-2-7B-1025-FP8 | 8.94 | 7B | GPU |
-| 12 | Gemini 2.5 Flash | 8.78 | $0.15/0.60 M tok | API |
-| 13 | Mistral OCR | 8.66 | $0.001/page | API |
-| 14 | DeepSeek-OCR | 8.55 | 0.6B | GPU |
-| 15 | LlamaParse | 8.14 | $0.09/page | API |
-| 16 | GPT-5 nano | 7.79 | $0.05/0.40 M tok | API |
-| 17 | PyPDF | 7.69 | —/Free | CPU |
-| 18 | GOT-OCR2.0 | 7.38 | 0.58B | CPU/GPU |
-| 19 | PyMuPDF4LLM | 6.67 | —/Free | CPU |
-| 20 | GPT-5 mini | 6.61 | $0.25/2.00 M tok | API |
-| 21 | GROBID | 5.70 | —/Free | CPU |
+Results are based on two separate benchmark datasets, each containing 100 synthetic PDFs:
+- **`2026-q1-tables-only`** — PDFs with tables of varying complexity (simple, moderate, complex)
+- **`2026-q1-formulas-only`** — PDFs with inline and display-mode mathematical formulas
+
+| Parser | Tables | Formulas | Cost/Time | Inference |
+|--------|--------|----------|-----------|-----------|
+| Gemini 3 Flash | 9.50 | 9.79 | $0.57 | API |
+| LightOnOCR-2-1B | 9.08 | 9.57 | 30 min | GPU |
+| Mistral OCR | 8.89 | 9.48 | $0.20 | API |
+| dots.ocr | 8.73 | 9.55 | 20 min | GPU |
+| Mathpix | 8.53 | 9.66 | $0.35–0.50 | API |
+| Chandra | 8.43 | 9.45 | 4 h | GPU |
+| Qwen3-VL-235B | 8.43 | 9.84 | $0.20 | API/GPU |
+| MonkeyOCR-pro-3B | 8.39 | 9.50 | 20 min | GPU |
+| GLM-4.5V | 7.98 | 9.37 | $0.60 | API |
+| GPT-5 mini | 7.14 | 5.57 | $1.00 | API |
+| Claude Sonnet 4.6 | 7.02 | 8.50 | $3.00 | API |
+| Nanonets-OCR-s | 6.92 | 9.21 | 50 min | GPU |
+| Gemini 2.5 Flash | 6.85 | — | $0.40 | API |
+| MinerU2.5 | 6.49 | 9.32 | — | API/GPU |
+| GPT-5 nano | 6.48 | 4.78 | $0.35 | API |
+| DeepSeek-OCR | 5.75 | 8.97 | 4 min | GPU |
+| PyMuPDF4LLM | 5.25 | — | 30 s | CPU |
+| GOT-OCR2.0 | 5.13 | 8.01 | 20 min | GPU |
+| olmOCR-2-7B | 4.05 | 9.35 | 25 min | GPU |
+| GROBID | 2.10 | 7.01 | 2 min | CPU |
+| PaddleOCR-VL | — | 8.47 | — | GPU |
+| Gemini 2.5 Pro | — | 7.56 | — | API |
 
 **Legend:**
-- **Score**: Average LLM-as-a-Judge score (0-10 scale) across all formulas (1411 inline + 641 display formulas from 100 PDFs)
-- **Params/Cost**: Active parameters for open-source models or API pricing for commercial services (as of December 2025)
+- **Tables**: Average LLM-as-a-Judge score (0-10) across 451 tables from `2026-q1-tables-only`
+- **Formulas**: Average LLM-as-a-Judge score (0-10) across 1413 inline + 657 display formulas from `2026-q1-formulas-only`
+- **Cost/Time**: API cost (USD) for 100 pages, or GPU wall-clock time on a single NVIDIA RTX 4090
 - **Inference**: Deployment options (CPU, GPU, API)
 
 <details>
-<summary>📊 Detailed scores (Inline/Display/CDM)</summary>
+<summary>📊 Detailed table scores (Simple/Moderate/Complex/TEDS)</summary>
+
+| Rank | Parser | Overall | Simple | Moderate | Complex | TEDS |
+|------|--------|---------|--------|----------|---------|------|
+| 1 | Gemini 3 Flash | 9.50 | 9.53 | 9.38 | 9.61 | 0.85 |
+| 2 | LightOnOCR-2-1B | 9.08 | 9.41 | 8.90 | 8.91 | 0.84 |
+| 3 | Mistral OCR | 8.89 | 8.92 | 8.69 | 9.07 | 0.88 |
+| 4 | dots.ocr | 8.73 | 9.01 | 8.43 | 8.76 | 0.81 |
+| 5 | Mathpix | 8.53 | 9.32 | 8.40 | 7.77 | 0.74 |
+| 6 | Chandra | 8.43 | 8.96 | 8.14 | 8.15 | 0.77 |
+| 7 | Qwen3-VL-235B | 8.43 | 9.23 | 8.27 | 7.67 | 0.78 |
+| 8 | MonkeyOCR-pro-3B | 8.39 | 8.60 | 8.10 | 8.47 | 0.80 |
+| 9 | GLM-4.5V | 7.98 | 9.19 | 7.59 | 7.00 | 0.78 |
+| 10 | GPT-5 mini | 7.14 | 8.03 | 6.82 | 6.48 | 0.68 |
+| 11 | Claude Sonnet 4.6 | 7.02 | 6.94 | 7.10 | 7.01 | 0.52 |
+| 12 | Nanonets-OCR-s | 6.92 | 8.27 | 6.51 | 5.82 | 0.69 |
+| 13 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 | 0.72 |
+| 14 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 | 0.78 |
+| 15 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 | 0.32 |
+| 16 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 | 0.66 |
+| 17 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 | 0.11 |
+| 18 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 | 0.58 |
+| 19 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 | 0.35 |
+| 20 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 | 0.00 |
+
+- **Overall/Simple/Moderate/Complex**: LLM-as-a-Judge score (0-10 scale) across 451 tables by complexity level
+- **TEDS**: Tree-Edit-Distance-based Similarity (0-1 scale) - structural accuracy metric
+
+</details>
+
+<details>
+<summary>📊 Detailed formula scores (Inline/Display/CDM)</summary>
 
 | Rank | Parser | Inline | Display | CDM |
 |------|--------|--------|---------|-----|
-| 1 | Qwen3-VL-235B-A22B-Instruct | 9.75 | 9.65 | 0.99 |
-| 2 | Gemini 3 Pro | 9.72 | 9.71 | 0.99 |
-| 3 | PaddleOCR-VL | 9.64 | 9.60 | 0.98 |
-| 4 | Mathpix | 9.60 | 9.62 | 0.97 |
-| 5 | dots.ocr | 9.31 | 9.55 | 0.94 |
-| 6 | PP-StructureV3 | 9.26 | 9.47 | 0.98 |
-| 7 | Nanonets-OCR-s | 9.30 | 9.26 | 0.96 |
-| 8 | Gemini 2.5 Pro | 9.16 | 9.39 | 0.97 |
-| 9 | MonkeyOCR-pro-3B | 9.26 | 9.20 | 0.98 |
-| 10 | MinerU2.5 | 9.16 | 9.17 | 0.96 |
-| 11 | olmOCR-2-7B-1025-FP8 | 8.88 | 8.94 | 0.92 |
-| 12 | Gemini 2.5 Flash | 8.63 | 8.98 | 0.96 |
-| 13 | Mistral OCR | 8.46 | 9.01 | 0.95 |
-| 14 | DeepSeek-OCR | 8.65 | 8.30 | 0.95 |
-| 15 | LlamaParse | 8.06 | 8.20 | 0.85 |
-| 16 | GPT-5 nano | 7.77 | 7.67 | 0.75 |
-| 17 | PyPDF | 7.75 | 7.52 | 0.75 |
-| 18 | GOT-OCR2.0 | 7.07 | 7.95 | 0.91 |
-| 19 | PyMuPDF4LLM | 6.70 | 6.41 | 0.58 |
-| 20 | GPT-5 mini | 6.55 | 6.56 | 0.75 |
-| 21 | GROBID | 5.97 | 5.07 | 0.71 |
+| 1 | Qwen3-VL-235B | 9.82 | 9.86 | — |
+| 2 | Gemini 3 Flash | 9.77 | 9.82 | — |
+| 3 | Mathpix | 9.64 | 9.72 | — |
+| 4 | LightOnOCR-2-1B | 9.51 | 9.70 | — |
+| 5 | dots.ocr | 9.44 | 9.77 | — |
+| 6 | MonkeyOCR-pro-3B | 9.54 | 9.42 | — |
+| 7 | Mistral OCR | 9.39 | 9.68 | — |
+| 8 | Chandra | 9.43 | 9.50 | — |
+| 9 | GLM-4.5V | 9.33 | 9.46 | — |
+| 10 | olmOCR-2-7B | 9.34 | 9.37 | — |
+| 11 | MinerU2.5 | 9.36 | 9.25 | — |
+| 12 | Nanonets-OCR-s | 9.18 | 9.26 | — |
+| 13 | DeepSeek-OCR | 8.95 | 9.02 | — |
+| 14 | Claude Sonnet 4.6 | 8.42 | 8.67 | — |
+| 15 | PaddleOCR-VL | 8.50 | 8.42 | — |
+| 16 | GOT-OCR2.0 | 7.77 | 8.53 | — |
+| 17 | Gemini 2.5 Pro | 7.42 | 7.87 | — |
+| 18 | GROBID | 7.33 | 6.33 | — |
+| 19 | GPT-5 mini | 5.87 | 4.94 | — |
+| 20 | GPT-5 nano | 4.88 | 4.57 | — |
 
-- **Inline**: LLM-as-a-Judge score for inline formulas (1411 formulas)
-- **Display**: LLM-as-a-Judge score for display-mode formulas (641 formulas)
-- **CDM**: Character Detection Metric (0-1 scale) - character-level accuracy via visual rendering comparison
+- **Inline**: LLM-as-a-Judge score for inline formulas (1413 formulas)
+- **Display**: LLM-as-a-Judge score for display-mode formulas (657 formulas)
+- **CDM**: Character Detection Metric (0-1 scale) - character-level accuracy via visual rendering comparison (TODO)
 
 </details>
 
 
-## Benchmark Dataset
+## Benchmark Datasets
 
-PDFs are generated synthetically using LaTeX with randomized parameters:
+PDFs are generated synthetically using LaTeX with randomized parameters. Layout, styling, languages, and content structure vary to test parser robustness across different scenarios. Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth as a byproduct of the generation process.
 
-- **PDF Generation:** Each document contains randomly selected formulas embedded in text passages, displayed as inline or display-mode equations. Parameters include formats, styling, languages, and content structure. Layout and structure vary to test parser robustness across different scenarios.
+- **Formula Dataset:** Each PDF contains randomly selected formulas embedded in text passages, displayed as inline or display-mode equations. Formulas are sampled from our dataset of 319,000 formulas extracted from Wikipedia, ensuring diversity in complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
 
-- **Formula Dataset:** Mathematical formulas are randomly sampled from our dataset of 319,000 formulas extracted from Wikipedia, ensuring diversity in formula complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
-
-- **Ground Truth:** Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth for each formula as a byproduct of the generation process.
-
-- **Reproducibility Artifacts:** All parsing outputs and evaluation artifacts (matching results, LLM ratings) for all 20+ evaluated parsers are available on [Zenodo](https://doi.org/10.5281/zenodo.17806191).
+- **Table Dataset:** Each PDF contains tables of varying complexity (simple, moderate, complex) with diverse content types, column layouts, and formatting. Dataset coming soon on Hugging Face.
 
 ## Evaluation Pipeline
 
