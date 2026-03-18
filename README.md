@@ -1,6 +1,6 @@
 # PDF Parse Bench
 
-This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and assess the quality of the parsed output through a two-stage evaluation pipeline: identifying formulas and tables in the parsed text, then scoring them with an LLM-as-a-Judge based on semantic similarity to the ground truth.
+This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and score the extracted content using **LLM-as-a-Judge** — a semantic evaluation approach that we show [substantially outperforms traditional metrics](#why-llm-as-a-judge) in agreement with human judgment.
 
 ![Workflow Overview](assets/workflow.png)
 
@@ -12,28 +12,28 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 
 | Parser | Tables | Formulas | Cost/Time | Inference |
 |--------|--------|----------|-----------|-----------|
-| Gemini 3 Flash | 9.50 | 9.79 | $0.57 | API |
-| LightOnOCR-2-1B | 9.08 | 9.57 | 30 min | GPU |
-| Mistral OCR | 8.89 | 9.48 | $0.20 | API |
-| dots.ocr | 8.73 | 9.55 | 20 min | GPU |
-| Mathpix | 8.53 | 9.66 | $0.35–0.50 | API |
-| Chandra | 8.43 | 9.45 | 4 h | GPU |
-| Qwen3-VL-235B | 8.43 | 9.84 | $0.20 | API/GPU |
-| MonkeyOCR-pro-3B | 8.39 | 9.50 | 20 min | GPU |
-| GLM-4.5V | 7.98 | 9.37 | $0.60 | API |
-| GPT-5 mini | 7.14 | 5.57 | $1.00 | API |
-| Claude Sonnet 4.6 | 7.02 | 8.50 | $3.00 | API |
-| Nanonets-OCR-s | 6.92 | 9.21 | 50 min | GPU |
-| Gemini 2.5 Flash | 6.85 | — | $0.40 | API |
-| MinerU2.5 | 6.49 | 9.32 | — | API/GPU |
-| GPT-5 nano | 6.48 | 4.78 | $0.35 | API |
-| DeepSeek-OCR | 5.75 | 8.97 | 4 min | GPU |
-| PyMuPDF4LLM | 5.25 | — | 30 s | CPU |
-| GOT-OCR2.0 | 5.13 | 8.01 | 20 min | GPU |
-| olmOCR-2-7B | 4.05 | 9.35 | 25 min | GPU |
-| GROBID | 2.10 | 7.01 | 2 min | CPU |
-| PaddleOCR-VL | — | 8.47 | — | GPU |
-| Gemini 2.5 Pro | — | 7.56 | — | API |
+| [Gemini 3 Flash](https://deepmind.google/models/gemini/flash/) | 9.50 | 9.79 | $0.57 | API |
+| [LightOnOCR-2-1B](https://huggingface.co/lightonai/LightOnOCR-2-1B) | 9.08 | 9.57 | 30 min | GPU |
+| [Mistral OCR](https://mistral.ai/) | 8.89 | 9.48 | $0.20 | API |
+| [dots.ocr](https://github.com/rednote-hilab/dots.ocr) | 8.73 | 9.55 | 20 min | GPU |
+| [Mathpix](https://mathpix.com/) | 8.53 | 9.66 | $0.35–0.50 | API |
+| [Chandra](https://huggingface.co/datalab-to/chandra) | 8.43 | 9.45 | 4 h | GPU |
+| [Qwen3-VL-235B](https://github.com/QwenLM/Qwen3-VL) | 8.43 | 9.84 | $0.20 | API/GPU |
+| [MonkeyOCR-pro-3B](https://github.com/Yuliang-Liu/MonkeyOCR) | 8.39 | 9.50 | 20 min | GPU |
+| [GLM-4.5V](https://github.com/zai-org/GLM-V) | 7.98 | 9.37 | $0.60 | API |
+| [GPT-5 mini](https://openai.com/) | 7.14 | 5.57 | $1.00 | API |
+| [Claude Sonnet 4.6](https://docs.anthropic.com/en/docs/about-claude/models) | 7.02 | 8.50 | $3.00 | API |
+| [Nanonets-OCR-s](https://huggingface.co/nanonets/Nanonets-OCR-s) | 6.92 | 9.21 | 50 min | GPU |
+| [PP-StructureV3](https://github.com/PaddlePaddle/PaddleOCR) | 6.86 | 9.59 | 3 min | GPU |
+| [Gemini 2.5 Flash](https://deepmind.google/models/gemini/flash/) | 6.85 | 6.51 | $0.40 | API |
+| [MinerU2.5](https://mineru.net/) | 6.49 | 9.32 | — | API/GPU |
+| [GPT-5 nano](https://openai.com/) | 6.48 | 4.78 | $0.35 | API |
+| [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR) | 5.75 | 8.97 | 4 min | GPU |
+| [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5) | 5.39 | 8.47 | 2.5 h | GPU |
+| [PyMuPDF4LLM](https://github.com/pymupdf/PyMuPDF4LLM) | 5.25 | 4.53 | 30 s | CPU |
+| [GOT-OCR2.0](https://github.com/Ucas-HaoranWei/GOT-OCR2.0) | 5.13 | 8.01 | 20 min | GPU |
+| [olmOCR-2-7B](https://github.com/allenai/olmocr) | 4.05 | 9.35 | 25 min | GPU |
+| [GROBID](https://github.com/kermitt2/grobid) | 2.10 | 7.01 | 2 min | CPU |
 
 **Legend:**
 - **Tables**: Average LLM-as-a-Judge score (0-10) across 451 tables from `2026-q1-tables-only`
@@ -58,17 +58,26 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 | 10 | GPT-5 mini | 7.14 | 8.03 | 6.82 | 6.48 | 0.68 |
 | 11 | Claude Sonnet 4.6 | 7.02 | 6.94 | 7.10 | 7.01 | 0.52 |
 | 12 | Nanonets-OCR-s | 6.92 | 8.27 | 6.51 | 5.82 | 0.69 |
-| 13 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 | 0.72 |
-| 14 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 | 0.78 |
-| 15 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 | 0.32 |
-| 16 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 | 0.66 |
-| 17 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 | 0.11 |
-| 18 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 | 0.58 |
-| 19 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 | 0.35 |
-| 20 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 | 0.00 |
+| 13 | PP-StructureV3 | 6.86 | 7.44 | 6.16 | 6.96 | — |
+| 14 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 | 0.72 |
+| 15 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 | 0.78 |
+| 16 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 | 0.32 |
+| 17 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 | 0.66 |
+| 18 | PaddleOCR-VL | 5.39 | 6.81 | 5.02 | 4.17 | — |
+| 19 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 | 0.11 |
+| 20 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 | 0.58 |
+| 21 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 | 0.35 |
+| 22 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 | 0.00 |
 
 - **Overall/Simple/Moderate/Complex**: LLM-as-a-Judge score (0-10 scale) across 451 tables by complexity level
 - **TEDS**: Tree-Edit-Distance-based Similarity (0-1 scale) - structural accuracy metric
+
+</details>
+
+<details>
+<summary>📊 Table score distributions</summary>
+
+![Table Score Distributions](assets/table_score_distributions.png)
 
 </details>
 
@@ -80,23 +89,25 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 | 1 | Qwen3-VL-235B | 9.82 | 9.86 | — |
 | 2 | Gemini 3 Flash | 9.77 | 9.82 | — |
 | 3 | Mathpix | 9.64 | 9.72 | — |
-| 4 | LightOnOCR-2-1B | 9.51 | 9.70 | — |
-| 5 | dots.ocr | 9.44 | 9.77 | — |
-| 6 | MonkeyOCR-pro-3B | 9.54 | 9.42 | — |
-| 7 | Mistral OCR | 9.39 | 9.68 | — |
-| 8 | Chandra | 9.43 | 9.50 | — |
-| 9 | GLM-4.5V | 9.33 | 9.46 | — |
-| 10 | olmOCR-2-7B | 9.34 | 9.37 | — |
-| 11 | MinerU2.5 | 9.36 | 9.25 | — |
-| 12 | Nanonets-OCR-s | 9.18 | 9.26 | — |
-| 13 | DeepSeek-OCR | 8.95 | 9.02 | — |
-| 14 | Claude Sonnet 4.6 | 8.42 | 8.67 | — |
-| 15 | PaddleOCR-VL | 8.50 | 8.42 | — |
-| 16 | GOT-OCR2.0 | 7.77 | 8.53 | — |
-| 17 | Gemini 2.5 Pro | 7.42 | 7.87 | — |
+| 4 | PP-StructureV3 | 9.49 | 9.80 | — |
+| 5 | LightOnOCR-2-1B | 9.51 | 9.70 | — |
+| 6 | dots.ocr | 9.44 | 9.77 | — |
+| 7 | MonkeyOCR-pro-3B | 9.54 | 9.42 | — |
+| 8 | Mistral OCR | 9.39 | 9.68 | — |
+| 9 | Chandra | 9.43 | 9.50 | — |
+| 10 | GLM-4.5V | 9.33 | 9.46 | — |
+| 11 | olmOCR-2-7B | 9.34 | 9.37 | — |
+| 12 | MinerU2.5 | 9.36 | 9.25 | — |
+| 13 | Nanonets-OCR-s | 9.18 | 9.26 | — |
+| 14 | DeepSeek-OCR | 8.95 | 9.02 | — |
+| 15 | Claude Sonnet 4.6 | 8.42 | 8.67 | — |
+| 16 | PaddleOCR-VL | 8.50 | 8.42 | — |
+| 17 | GOT-OCR2.0 | 7.77 | 8.53 | — |
 | 18 | GROBID | 7.33 | 6.33 | — |
-| 19 | GPT-5 mini | 5.87 | 4.94 | — |
-| 20 | GPT-5 nano | 4.88 | 4.57 | — |
+| 19 | Gemini 2.5 Flash | 6.47 | 6.58 | — |
+| 20 | GPT-5 mini | 5.87 | 4.94 | — |
+| 21 | GPT-5 nano | 4.88 | 4.57 | — |
+| 22 | PyMuPDF4LLM | 6.50 | 0.29 | — |
 
 - **Inline**: LLM-as-a-Judge score for inline formulas (1413 formulas)
 - **Display**: LLM-as-a-Judge score for display-mode formulas (657 formulas)
@@ -104,6 +115,12 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 
 </details>
 
+## Why LLM-as-a-Judge?
+
+Traditional metrics (BLEU, Levenshtein, TEDS) correlate poorly with human judgment for formula and table extraction. We validated this in two human annotation studies (Pearson r = correlation with human scores):
+
+- **[formula-metric-study](https://github.com/phorn1/formula-metric-study)** — 750 human ratings: text metrics reach r = 0.01, CDM r = 0.31, LLM judges r = 0.74–0.82
+- **[table-metric-study](https://github.com/phorn1/table-metric-study)** — 1,500+ human ratings: rule-based metrics (TEDS, GriTS) top out at r = 0.70, LLM judges reach r = 0.94
 
 ## Benchmark Datasets
 
@@ -117,17 +134,17 @@ PDFs are generated synthetically using LaTeX with randomized parameters. Layout,
 
 Parser outputs are assessed using a two-step pipeline:
 
-### Step 1: Formula Extraction
+### Step 1: Extraction
 
-Given a parser's output (the extracted text from a PDF), an LLM establishes initial formula-to-ground-truth correspondences, then fuzzy search reliably extracts exact formula strings from the parsed output. This achieves robust alignment even when parser outputs differ significantly from ground truth.
+Given a parser's output (the extracted text from a PDF), an LLM establishes initial correspondences between extracted elements and ground truth (formulas or tables), then fuzzy search reliably extracts exact strings from the parsed output. This achieves robust alignment even when parser outputs differ significantly from ground truth.
 
 ### Step 2: Scoring with LLM-as-a-Judge
 
-The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: Gemini 3 Flash via OpenRouter). For each formula pair, the LLM judge evaluates three key criteria: (1) **Correctness** - whether mathematical symbols, variables, and operations are accurately preserved, (2) **Completeness** - whether all parts are present without omissions, and (3) **Semantic equivalence** - whether the extracted formula conveys the same mathematical meaning as the ground truth. Our research demonstrates that using LLMs as judges provides a robust and meaningful metric for comparing ground truth LaTeX formulas against parsed output, focusing on semantic equivalence and mathematical correctness rather than relying solely on text similarity metrics or visual rendering comparison. For detailed metric comparison studies, see [formula-metric-study](https://github.com/phorn1/formula-metric-study) and [table-metric-study](https://github.com/phorn1/table-metric-study). Scores are computed separately for inline and display formulas.
+The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: Gemini 3 Flash via OpenRouter). For **formulas**, the judge evaluates correctness, completeness, and semantic equivalence. For **tables**, the judge evaluates content accuracy and structure preservation. Scores are computed separately for inline/display formulas and by table complexity (simple/moderate/complex). See [Why LLM-as-a-Judge?](#why-llm-as-a-judge) for our validation studies.
 
 ## Quick Start
 
-**Benchmark Datasets:** New benchmark datasets are released quarterly (e.g., 2025-q4), each containing 100 PDFs with diverse mathematical content.
+**Benchmark Datasets:** New benchmark datasets are released quarterly, each containing 100 PDFs. The current datasets are `2026-q1-tables-only` (tables) and `2026-q1-formulas-only` (formulas).
 
 There are two ways to use this benchmark, depending on your needs:
 
@@ -259,7 +276,7 @@ uv run -m parsers.my_parser
 ```
 
 The benchmark infrastructure handles everything automatically:
-- Loading test PDFs from `data/2025-q4/pdfs/`
+- Loading test PDFs from `data/<dataset>/pdfs/`
 - Parsing each PDF with your parser
 - Extracting formulas from parsed output
 - Running evaluation against ground truth
@@ -287,7 +304,7 @@ uv run -m parsers.my_parser --llm-judge-model openai/gpt-5-mini
 uv run -m parsers.my_parser --enable-cdm
 
 # Custom input/output directories
-uv run -m parsers.my_parser -i data/2025-q4 -o results/custom
+uv run -m parsers.my_parser -i data/2026-q1-tables-only -o results/custom
 ```
 
 ## Project Structure
@@ -306,9 +323,12 @@ pdf-parse-bench/
 │   ├── mathpix/
 │   └── ...                    # Add your own!
 ├── data/                      # Benchmark datasets
-│   └── 2025-q4/              # Current benchmark version
-│       ├── pdfs/             # Test PDFs
-│       └── ground_truth/     # LaTeX formulas
+│   ├── 2026-q1-tables-only/  # Table benchmark dataset
+│   │   ├── pdfs/
+│   │   └── ground_truth/
+│   └── 2026-q1-formulas-only/ # Formula benchmark dataset
+│       ├── pdfs/
+│       └── ground_truth/
 ```
 
 ## Contributing
