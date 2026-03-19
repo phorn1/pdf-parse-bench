@@ -34,7 +34,6 @@ dependencies = [
     "mistralai>=1.12.3",
     "requests>=2.32.0",
     "levenshtein>=0.27.1",
-    "nltk>=3.9.1",
     # Used for Unicode to LaTeX conversion in formula rendering
     "pylatexenc>=2.10",
     "pillow>=10.0.0",

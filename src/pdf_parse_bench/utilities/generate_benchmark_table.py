@@ -58,8 +58,8 @@ def generate_markdown_table(results: list[BenchmarkResults]) -> str:
 
     # Build table header
     lines = [
-        "| Rank | Parser | Overall | Inline | Display | CDM |",
-        "|------|--------|---------|--------|---------|-----|"
+        "| Rank | Parser | Overall | Inline | Display |",
+        "|------|--------|---------|--------|---------|"
     ]
 
     # Build table rows
@@ -67,14 +67,10 @@ def generate_markdown_table(results: list[BenchmarkResults]) -> str:
         avg_score = result.average_formula_scores.get(model, 0.0)
         inline_score = result.average_inline_formula_scores.get(model, 0.0)
         display_score = result.average_display_formula_scores.get(model, 0.0)
-        cdm_score = result.average_cdm_score if result.average_cdm_score is not None else "N/A"
-
-        # Format CDM score
-        cdm_display = f"{cdm_score:.2f}" if isinstance(cdm_score, float) else cdm_score
 
         lines.append(
             f"| {rank} | {result.parser_name} | {avg_score:.2f} "
-            f"| {inline_score:.2f} | {display_score:.2f} | {cdm_display} |"
+            f"| {inline_score:.2f} | {display_score:.2f} |"
         )
 
     return "\n".join(lines)

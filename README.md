@@ -1,6 +1,6 @@
 # PDF Parse Bench
 
-This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and score the extracted content using **LLM-as-a-Judge** — a semantic evaluation approach that we show [substantially outperforms traditional metrics](#why-llm-as-a-judge) in agreement with human judgment.
+This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and score the extracted content using **LLM-as-a-Judge**. This semantic evaluation approach [substantially outperforms traditional metrics](#why-llm-as-a-judge) in agreement with human judgment.
 
 ![Workflow Overview](assets/workflow.png)
 
@@ -26,7 +26,7 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 | [Nanonets-OCR-s](https://huggingface.co/nanonets/Nanonets-OCR-s) | 6.92 | 9.21 | 50 min | GPU |
 | [PP-StructureV3](https://github.com/PaddlePaddle/PaddleOCR) | 6.86 | 9.59 | 3 min | GPU |
 | [Gemini 2.5 Flash](https://deepmind.google/models/gemini/flash/) | 6.85 | 6.51 | $0.40 | API |
-| [MinerU2.5](https://mineru.net/) | 6.49 | 9.32 | — | API/GPU |
+| [MinerU2.5](https://mineru.net/) | 6.49 | 9.32 | varies | API/GPU |
 | [GPT-5 nano](https://openai.com/) | 6.48 | 4.78 | $0.35 | API |
 | [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR) | 5.75 | 8.97 | 4 min | GPU |
 | [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5) | 5.39 | 8.47 | 2.5 h | GPU |
@@ -42,35 +42,34 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 - **Inference**: Deployment options (CPU, GPU, API)
 
 <details>
-<summary>📊 Detailed table scores (Simple/Moderate/Complex/TEDS)</summary>
+<summary>📊 Detailed table scores (Simple/Moderate/Complex)</summary>
 
-| Rank | Parser | Overall | Simple | Moderate | Complex | TEDS |
-|------|--------|---------|--------|----------|---------|------|
-| 1 | Gemini 3 Flash | 9.50 | 9.53 | 9.38 | 9.61 | 0.85 |
-| 2 | LightOnOCR-2-1B | 9.08 | 9.41 | 8.90 | 8.91 | 0.84 |
-| 3 | Mistral OCR | 8.89 | 8.92 | 8.69 | 9.07 | 0.88 |
-| 4 | dots.ocr | 8.73 | 9.01 | 8.43 | 8.76 | 0.81 |
-| 5 | Mathpix | 8.53 | 9.32 | 8.40 | 7.77 | 0.74 |
-| 6 | Chandra | 8.43 | 8.96 | 8.14 | 8.15 | 0.77 |
-| 7 | Qwen3-VL-235B | 8.43 | 9.23 | 8.27 | 7.67 | 0.78 |
-| 8 | MonkeyOCR-pro-3B | 8.39 | 8.60 | 8.10 | 8.47 | 0.80 |
-| 9 | GLM-4.5V | 7.98 | 9.19 | 7.59 | 7.00 | 0.78 |
-| 10 | GPT-5 mini | 7.14 | 8.03 | 6.82 | 6.48 | 0.68 |
-| 11 | Claude Sonnet 4.6 | 7.02 | 6.94 | 7.10 | 7.01 | 0.52 |
-| 12 | Nanonets-OCR-s | 6.92 | 8.27 | 6.51 | 5.82 | 0.69 |
-| 13 | PP-StructureV3 | 6.86 | 7.44 | 6.16 | 6.96 | — |
-| 14 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 | 0.72 |
-| 15 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 | 0.78 |
-| 16 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 | 0.32 |
-| 17 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 | 0.66 |
-| 18 | PaddleOCR-VL | 5.39 | 6.81 | 5.02 | 4.17 | — |
-| 19 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 | 0.11 |
-| 20 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 | 0.58 |
-| 21 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 | 0.35 |
-| 22 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 | 0.00 |
+| Rank | Parser | Overall | Simple | Moderate | Complex |
+|------|--------|---------|--------|----------|---------|
+| 1 | Gemini 3 Flash | 9.50 | 9.53 | 9.38 | 9.61 |
+| 2 | LightOnOCR-2-1B | 9.08 | 9.41 | 8.90 | 8.91 |
+| 3 | Mistral OCR | 8.89 | 8.92 | 8.69 | 9.07 |
+| 4 | dots.ocr | 8.73 | 9.01 | 8.43 | 8.76 |
+| 5 | Mathpix | 8.53 | 9.32 | 8.40 | 7.77 |
+| 6 | Chandra | 8.43 | 8.96 | 8.14 | 8.15 |
+| 7 | Qwen3-VL-235B | 8.43 | 9.23 | 8.27 | 7.67 |
+| 8 | MonkeyOCR-pro-3B | 8.39 | 8.60 | 8.10 | 8.47 |
+| 9 | GLM-4.5V | 7.98 | 9.19 | 7.59 | 7.00 |
+| 10 | GPT-5 mini | 7.14 | 8.03 | 6.82 | 6.48 |
+| 11 | Claude Sonnet 4.6 | 7.02 | 6.94 | 7.10 | 7.01 |
+| 12 | Nanonets-OCR-s | 6.92 | 8.27 | 6.51 | 5.82 |
+| 13 | PP-StructureV3 | 6.86 | 7.44 | 6.16 | 6.96 |
+| 14 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 |
+| 15 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 |
+| 16 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 |
+| 17 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 |
+| 18 | PaddleOCR-VL | 5.39 | 6.81 | 5.02 | 4.17 |
+| 19 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 |
+| 20 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 |
+| 21 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 |
+| 22 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 |
 
 - **Overall/Simple/Moderate/Complex**: LLM-as-a-Judge score (0-10 scale) across 451 tables by complexity level
-- **TEDS**: Tree-Edit-Distance-based Similarity (0-1 scale) - structural accuracy metric
 
 </details>
 
@@ -82,49 +81,48 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 </details>
 
 <details>
-<summary>📊 Detailed formula scores (Inline/Display/CDM)</summary>
+<summary>📊 Detailed formula scores (Inline/Display)</summary>
 
-| Rank | Parser | Inline | Display | CDM |
-|------|--------|--------|---------|-----|
-| 1 | Qwen3-VL-235B | 9.82 | 9.86 | — |
-| 2 | Gemini 3 Flash | 9.77 | 9.82 | — |
-| 3 | Mathpix | 9.64 | 9.72 | — |
-| 4 | PP-StructureV3 | 9.49 | 9.80 | — |
-| 5 | LightOnOCR-2-1B | 9.51 | 9.70 | — |
-| 6 | dots.ocr | 9.44 | 9.77 | — |
-| 7 | MonkeyOCR-pro-3B | 9.54 | 9.42 | — |
-| 8 | Mistral OCR | 9.39 | 9.68 | — |
-| 9 | Chandra | 9.43 | 9.50 | — |
-| 10 | GLM-4.5V | 9.33 | 9.46 | — |
-| 11 | olmOCR-2-7B | 9.34 | 9.37 | — |
-| 12 | MinerU2.5 | 9.36 | 9.25 | — |
-| 13 | Nanonets-OCR-s | 9.18 | 9.26 | — |
-| 14 | DeepSeek-OCR | 8.95 | 9.02 | — |
-| 15 | Claude Sonnet 4.6 | 8.42 | 8.67 | — |
-| 16 | PaddleOCR-VL | 8.50 | 8.42 | — |
-| 17 | GOT-OCR2.0 | 7.77 | 8.53 | — |
-| 18 | GROBID | 7.33 | 6.33 | — |
-| 19 | Gemini 2.5 Flash | 6.47 | 6.58 | — |
-| 20 | GPT-5 mini | 5.87 | 4.94 | — |
-| 21 | GPT-5 nano | 4.88 | 4.57 | — |
-| 22 | PyMuPDF4LLM | 6.50 | 0.29 | — |
+| Rank | Parser | Inline | Display |
+|------|--------|--------|---------|
+| 1 | Qwen3-VL-235B | 9.82 | 9.86 |
+| 2 | Gemini 3 Flash | 9.77 | 9.82 |
+| 3 | Mathpix | 9.64 | 9.72 |
+| 4 | PP-StructureV3 | 9.49 | 9.80 |
+| 5 | LightOnOCR-2-1B | 9.51 | 9.70 |
+| 6 | dots.ocr | 9.44 | 9.77 |
+| 7 | MonkeyOCR-pro-3B | 9.54 | 9.42 |
+| 8 | Mistral OCR | 9.39 | 9.68 |
+| 9 | Chandra | 9.43 | 9.50 |
+| 10 | GLM-4.5V | 9.33 | 9.46 |
+| 11 | olmOCR-2-7B | 9.34 | 9.37 |
+| 12 | MinerU2.5 | 9.36 | 9.25 |
+| 13 | Nanonets-OCR-s | 9.18 | 9.26 |
+| 14 | DeepSeek-OCR | 8.95 | 9.02 |
+| 15 | Claude Sonnet 4.6 | 8.42 | 8.67 |
+| 16 | PaddleOCR-VL | 8.50 | 8.42 |
+| 17 | GOT-OCR2.0 | 7.77 | 8.53 |
+| 18 | GROBID | 7.33 | 6.33 |
+| 19 | Gemini 2.5 Flash | 6.47 | 6.58 |
+| 20 | GPT-5 mini | 5.87 | 4.94 |
+| 21 | GPT-5 nano | 4.88 | 4.57 |
+| 22 | PyMuPDF4LLM | 6.50 | 0.29 |
 
 - **Inline**: LLM-as-a-Judge score for inline formulas (1413 formulas)
 - **Display**: LLM-as-a-Judge score for display-mode formulas (657 formulas)
-- **CDM**: Character Detection Metric (0-1 scale) - character-level accuracy via visual rendering comparison (TODO)
 
 </details>
 
 ## Why LLM-as-a-Judge?
 
-Traditional metrics (BLEU, Levenshtein, TEDS) correlate poorly with human judgment for formula and table extraction. We validated this in two human annotation studies (Pearson r = correlation with human scores):
+Rule-based metrics correlate poorly with human judgment for formula and table extraction. We validated this in two human annotation studies (Pearson r = correlation with human scores):
 
 - **[formula-metric-study](https://github.com/phorn1/formula-metric-study)** — 750 human ratings: text metrics reach r = 0.01, CDM r = 0.31, LLM judges r = 0.74–0.82
 - **[table-metric-study](https://github.com/phorn1/table-metric-study)** — 1,500+ human ratings: rule-based metrics (TEDS, GriTS) top out at r = 0.70, LLM judges reach r = 0.94
 
 ## Benchmark Datasets
 
-PDFs are generated synthetically using LaTeX with randomized parameters. Layout, styling, languages, and content structure vary to test parser robustness across different scenarios. Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth as a byproduct of the generation process.
+PDFs are generated synthetically using LaTeX with randomized parameters (document class, fonts, margins, column layout, line spacing) to test parser robustness across different formatting scenarios. Since PDFs are generated from LaTeX source, we automatically obtain exact ground truth as a byproduct of the generation process.
 
 - **Formula Dataset:** Each PDF contains randomly selected formulas embedded in text passages, displayed as inline or display-mode equations. Formulas are sampled from our dataset of 319,000 formulas extracted from Wikipedia, ensuring diversity in complexity and real-world relevance. Dataset: [piushorn/wikipedia-latex-formulas-319k](https://huggingface.co/datasets/piushorn/wikipedia-latex-formulas-319k)
 
@@ -297,11 +295,6 @@ uv run -m parsers.my_parser --reprocess parse --reprocess extract
 
 # Use a different LLM judge for evaluation (OpenRouter model format)
 uv run -m parsers.my_parser --llm-judge-model openai/gpt-5-mini
-
-# Enable Character Detection Metrics (CDM)
-# Note: Requires CDM service installation (https://github.com/opendatalab/UniMERNet/tree/main/cdm)
-# and CDM_SERVICE_URL environment variable
-uv run -m parsers.my_parser --enable-cdm
 
 # Custom input/output directories
 uv run -m parsers.my_parser -i data/2026-q1-tables-only -o results/custom

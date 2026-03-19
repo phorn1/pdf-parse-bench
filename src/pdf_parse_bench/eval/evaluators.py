@@ -1,4 +1,3 @@
-import base64
 import json
 import os
 import re
@@ -6,21 +5,59 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from functools import wraps
 from pathlib import Path
-from typing import TypeVar
+from typing import Literal, TypeVar
 
-import Levenshtein
-import requests
 from dotenv import load_dotenv
-from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from openai import OpenAI
 from pydantic import BaseModel
 from tqdm import tqdm
 
 T = TypeVar("T", bound=BaseModel)
 
-from .results import LLMScore, CDMScore, FormulaResult, TableResult, save_results
-
 load_dotenv()
+
+
+# ========== DATA MODELS ==========
+
+class LLMScore(BaseModel):
+    judge_model: str
+    score: int
+    errors: list[str] = []
+
+
+class FormulaResult(BaseModel):
+    index: int
+    gt_formula: str
+    extracted_formula: str
+    formula_type: Literal['inline-formula', 'display-formula']
+    llm_scores: list[LLMScore] = []
+
+    @property
+    def llm_scores_by_model(self) -> dict[str, LLMScore]:
+        """Get LLM scores as dict by judge model for easier UI access."""
+        return {s.judge_model: s for s in self.llm_scores}
+
+
+class TableResult(BaseModel):
+    index: int
+    gt_table: str
+    extracted_table: str
+    complexity: Literal['simple', 'moderate', 'complex']
+    llm_scores: list[LLMScore] = []
+
+    @property
+    def llm_scores_by_model(self) -> dict[str, LLMScore]:
+        """Get LLM scores as dict by judge model for easier UI access."""
+        return {s.judge_model: s for s in self.llm_scores}
+
+
+# ========== FILE I/O ==========
+
+def save_results(file_path: Path, results: list[BaseModel]) -> None:
+    """Save results to JSON file."""
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump([r.model_dump() for r in results], f, indent=2, ensure_ascii=False)
 
 
 # ========== CONSTANTS ==========
@@ -67,105 +104,6 @@ class TableEvaluation(BaseModel):
 
 
 # ========== EVALUATION CLASSES ==========
-
-class FormulaCDMEvaluator:
-    """Evaluates formulas using CDM service."""
-
-    def __init__(self, output_dir: Path):
-        self.output_dir = output_dir
-
-        # Check CDM service URL availability at initialization
-        cdm_service_url = os.getenv("CDM_SERVICE_URL")
-        if not cdm_service_url:
-            raise ValueError("CDM_SERVICE_URL environment variable is required for CDM evaluation.\n"
-                             "Note: CDM evaluation is an experimental feature that requires a separate local service installation. "
-                             "This component is not part of the core benchmarking suite and does not work out-of-the-box.")
-        self.cdm_service_url = cdm_service_url
-
-    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[CDMScore]:
-        results = []
-        for i, (gt_formula, extracted_formula) in enumerate(tqdm(pairs, desc="Evaluating CDM")):
-            results.append(self._evaluate_single(gt_formula, extracted_formula, i))
-        return results
-
-    def _evaluate_single(self, gt_formula: str, extracted_formula: str, index: int) -> CDMScore:
-        # Call CDM service to evaluate formula similarity and get visualization
-        response = requests.post(self.cdm_service_url, json={
-            'gt_formula': gt_formula,
-            'pred_formula': extracted_formula,
-            'case_id': f"formula_{index}"
-        })
-        response.raise_for_status()
-
-        result = response.json()
-
-        # Save visualization if available
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        image_name = f"formula_{index:03}.png"
-        image_path = self.output_dir / image_name
-
-        # Check if visualization_base64 exists and is not None
-        visualization_b64 = result.get('visualization_base64')
-        if visualization_b64:
-            with open(image_path, 'wb') as f:
-                f.write(base64.b64decode(visualization_b64))
-        else:
-            image_name = None
-
-        return CDMScore(score=result['cdm_f1'], image_name=image_name)
-
-
-class FormulaNaiveEvaluator:
-    """Evaluates formulas using naive text similarity metrics (BLEU and Levenshtein)."""
-
-    @staticmethod
-    def _clean_formula(formula: str) -> str:
-        """Clean LaTeX formula by removing $$ delimiters and normalizing whitespace."""
-        cleaned = re.sub(r'\$+', '', formula)
-        cleaned = ' '.join(cleaned.split())
-        return cleaned.strip()
-
-    @staticmethod
-    def _tokenize_formula(formula: str) -> list[str]:
-        """Tokenize formula into meaningful parts for BLEU calculation."""
-        tokens = re.findall(r'\\[a-zA-Z]+|[a-zA-Z0-9]+|[{}()\[\]|_^=+\-*/\\,.<>]|\'', formula)
-        return [token for token in tokens if token.strip()]
-
-    def evaluate_batch(self, pairs: list[tuple[str, str]]) -> list[tuple[float, float]]:
-        """
-        Calculate BLEU and Levenshtein similarity for formula pairs.
-        Returns list of (bleu_score, levenshtein_similarity) tuples.
-        """
-        results = []
-        for gt_formula, extracted_formula in tqdm(pairs, desc="Evaluating naive metrics"):
-            # Clean formulas
-            gt_clean = self._clean_formula(gt_formula)
-            ext_clean = self._clean_formula(extracted_formula)
-
-            # Calculate BLEU score
-            try:
-                tokens_gt = self._tokenize_formula(gt_clean)
-                tokens_ext = self._tokenize_formula(ext_clean)
-                smoothing_function = SmoothingFunction().method1
-                bleu_score = sentence_bleu([tokens_gt], tokens_ext, smoothing_function=smoothing_function)
-                bleu_score = round(bleu_score, 4)
-            except:
-                bleu_score = 0.0
-
-            # Calculate Levenshtein similarity
-            distance = Levenshtein.distance(gt_clean, ext_clean)
-            max_length = max(len(gt_clean), len(ext_clean))
-
-            if max_length == 0:
-                levenshtein_similarity = 1.0
-            else:
-                similarity = 1 - (distance / max_length)
-                levenshtein_similarity = round(similarity, 4)
-
-            results.append((bleu_score, levenshtein_similarity))
-
-        return results
-
 
 class LLMEvaluator:
     """Evaluates formulas and tables using LLM judges via OpenRouter."""
@@ -266,13 +204,11 @@ class EvalPaths:
     """Paths for a single PDF's evaluation files."""
     formulas_path: Path
     tables_path: Path
-    cdm_output_dir: Path
 
 
 def run_batch_evaluation(
     llm_judge_models: str | list[str],
     jobs: list[EvalPaths],
-    enable_cdm: bool = False,
     skip_existing: bool = True,
     max_workers: int = 8,
 ) -> None:
@@ -280,7 +216,6 @@ def run_batch_evaluation(
     Evaluate multiple PDFs in a single batched pass.
 
     Batches all LLM calls across PDFs into shared thread pools for efficiency.
-    Naive and CDM evaluations are run per-PDF afterwards.
     """
     if isinstance(llm_judge_models, str):
         llm_judge_models = [llm_judge_models]
@@ -337,31 +272,4 @@ def run_batch_evaluation(
 
             # Save all affected groups after each model
             for save_path, results in groups:
-                save_results(save_path, results)
-
-    # ========== NAIVE FORMULA SIMILARITY (per group) ==========
-    for save_path, results in formula_groups:
-        if results and any(r.bleu_score is None or r.levenshtein_similarity is None for r in results):
-            naive_evaluator = FormulaNaiveEvaluator()
-            pairs = [(r.gt_formula, r.extracted_formula) for r in results]
-            naive_results = naive_evaluator.evaluate_batch(pairs)
-
-            for i, (bleu_score, levenshtein_similarity) in enumerate(naive_results):
-                results[i].bleu_score = bleu_score
-                results[i].levenshtein_similarity = levenshtein_similarity
-
-            save_results(save_path, results)
-
-    # ========== CDM EVALUATION (per group) ==========
-    if enable_cdm:
-        cdm_dirs = {job.formulas_path: job.cdm_output_dir for job in jobs}
-        for save_path, results in formula_groups:
-            if results and save_path in cdm_dirs:
-                cdm_evaluator = FormulaCDMEvaluator(cdm_dirs[save_path])
-                pairs = [(r.gt_formula, r.extracted_formula) for r in results]
-                cdm_results = cdm_evaluator.evaluate_batch(pairs)
-
-                for i, cdm_result in enumerate(cdm_results):
-                    results[i].cdm_score = cdm_result
-
                 save_results(save_path, results)

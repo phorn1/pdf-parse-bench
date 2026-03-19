@@ -11,7 +11,7 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, MofNCompleteColumn
 
-from ..eval.results import FormulaResult, TableResult, save_results
+from ..eval import FormulaResult, TableResult, save_results
 from ..utilities import FormulaRenderer
 
 

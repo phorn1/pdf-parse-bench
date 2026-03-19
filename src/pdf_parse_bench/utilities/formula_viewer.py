@@ -5,8 +5,7 @@ import gradio as gr
 from pydantic import BaseModel
 
 from ..pipeline import PipelinePaths, BenchmarkRunConfig
-from ..eval import FormulaResult
-from ..eval.results import LLMScore
+from ..eval import FormulaResult, LLMScore
 
 
 # ========== CONSTANTS ==========

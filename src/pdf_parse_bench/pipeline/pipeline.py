@@ -39,8 +39,6 @@ class BenchmarkResults(BaseModel):
     average_simple_table_scores: dict[str, float]
     average_moderate_table_scores: dict[str, float]
     average_complex_table_scores: dict[str, float]
-    # CDM = Character Detection Metrics
-    average_cdm_score: float | None = None
 
 
 # ========== BENCHMARK PIPELINE ==========
@@ -138,7 +136,7 @@ class Benchmark:
 
         logger.info(f"   ✅ Segment extraction completed")
 
-    def evaluate(self, enable_cdm: bool = False, skip_existing: bool = True) -> None:
+    def evaluate(self, skip_existing: bool = True) -> None:
         """Evaluate parsing results against ground truth."""
         logger.info(f"\n📈 EVALUATION")
 
@@ -155,7 +153,6 @@ class Benchmark:
                 jobs.append(EvalPaths(
                     formulas_path=formulas_path,
                     tables_path=tables_path,
-                    cdm_output_dir=result_dir / "cdm",
                 ))
 
         logger.info(f"   Processing {len(jobs)} PDFs")
@@ -163,7 +160,6 @@ class Benchmark:
         run_batch_evaluation(
             llm_judge_models=self.llm_judge_models,
             jobs=jobs,
-            enable_cdm=enable_cdm,
             skip_existing=skip_existing,
         )
 
@@ -182,7 +178,6 @@ class Benchmark:
 
         # scores[category][model] = [score1, score2, ...]
         scores: dict[str, dict[str, list[int]]] = defaultdict(lambda: defaultdict(list))
-        cdm_scores: list[float] = []
 
         for result_dir in sorted(self.parser_output_dir.iterdir()):
             if not result_dir.is_dir():
@@ -210,10 +205,6 @@ class Benchmark:
                             score = llm_score["score"]
                             scores["formula"][model].append(score)
                             scores[formula_type][model].append(score)
-
-                        cdm = formula.get("cdm_score")
-                        if cdm is not None:
-                            cdm_scores.append(cdm["score"])
 
             if tables_path.exists():
                 with open(tables_path, 'r', encoding='utf-8') as f:
@@ -248,7 +239,6 @@ class Benchmark:
             average_simple_table_scores=avg_by_model("simple"),
             average_moderate_table_scores=avg_by_model("moderate"),
             average_complex_table_scores=avg_by_model("complex"),
-            average_cdm_score=avg(cdm_scores) if cdm_scores else None,
         )
 
         results_path = self.parser_output_dir / "benchmark_results.json"

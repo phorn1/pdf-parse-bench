@@ -70,19 +70,12 @@ def run_cli(parser: PDFParser) -> None:
         default=("google/gemini-3-flash-preview",),
         show_default=True,
     )
-    @click.option(
-        "--enable-cdm/--no-enable-cdm",
-        default=False,
-        show_default=True,
-        help="Enable CDM (Character Detection Metrics) evaluation"
-    )
     def benchmark(
         input_dir: Path,
         output_dir: Path,
         steps: tuple[str, ...],
         reprocess: tuple[str, ...],
         llm_judge_models: tuple[str, ...],
-        enable_cdm: bool,
     ) -> None:
         f"""Run benchmark pipeline with {parser.display_name()}."""
 
@@ -124,7 +117,6 @@ def run_cli(parser: PDFParser) -> None:
 
         if "evaluate" in active_steps:
             bench.evaluate(
-                enable_cdm=enable_cdm,
                 skip_existing="evaluate" not in steps_to_reprocess
             )
 
