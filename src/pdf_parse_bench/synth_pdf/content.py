@@ -168,24 +168,29 @@ def load_formulas() -> list[str]:
 
 
 def load_tables() -> dict[str, list[TableBlock]]:
-    """Load all LaTeX tables from the tables jsonl files, grouped by complexity."""
-    import json
-    from pathlib import Path
-    base_path = Path(__file__).parents[3]
-    tables_files = {
-        "simple": base_path / "tables_simple.jsonl",
-        "moderate": base_path / "tables_moderate.jsonl",
-        "complex": base_path / "tables_complex.jsonl",
-    }
-    tables = {"simple": [], "moderate": [], "complex": []}
-    for complexity, tables_file in tables_files.items():
-        with open(tables_file, encoding='utf-8') as f:
-            for line in f:
-                record = json.loads(line)
-                tables[complexity].append(TableBlock(
-                    latex_table=record["tabular"],
-                    width_pt=record["width_pt"],
-                    height_pt=record["height_pt"],
-                    complexity=complexity,
-                ))
+    """Load LaTeX tables from Hugging Face dataset, grouped by complexity.
+
+    Uses DuckDB with HTTP range requests to efficiently fetch only needed columns
+    from the Parquet file without downloading the entire dataset.
+    """
+    parquet_url = (
+        "https://huggingface.co/datasets/piushorn/arxiv-latex-tables-43k/"
+        "resolve/main/data/train-00000-of-00001.parquet"
+    )
+
+    con = duckdb.connect()
+    con.execute("SET enable_progress_bar=false")
+    rows = con.execute(
+        f"SELECT tabular, width_pt, height_pt, complexity FROM read_parquet('{parquet_url}')"
+    ).fetchall()
+    con.close()
+
+    tables: dict[str, list[TableBlock]] = {"simple": [], "moderate": [], "complex": []}
+    for tabular, width_pt, height_pt, complexity in rows:
+        tables[complexity].append(TableBlock(
+            latex_table=tabular,
+            width_pt=width_pt,
+            height_pt=height_pt,
+            complexity=complexity,
+        ))
     return tables

@@ -63,7 +63,8 @@ build-backend = "hatchling.build"
 packages = ["src/pdf_parse_bench"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"data/2025-10-v1" = "pdf_parse_bench/data/2025-10-v1"
+"data/2026-q1-formulas-only" = "pdf_parse_bench/data/2026-q1-formulas-only"
+"data/2026-q1-tables-only" = "pdf_parse_bench/data/2026-q1-tables-only"
 
 [tool.hatch.build.targets.sdist]
 include = [
