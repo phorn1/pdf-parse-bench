@@ -17,5 +17,5 @@ MATHPIX_APP_KEY=your_app_key_here
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.mathpix
+uv run -m parsers.mathpix -i data/<dataset>
 ```

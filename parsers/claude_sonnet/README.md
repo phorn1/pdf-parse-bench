@@ -16,5 +16,5 @@ ANTHROPIC_API_KEY=your_api_key_here
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.claude_sonnet
+uv run -m parsers.claude_sonnet -i data/<dataset>
 ```

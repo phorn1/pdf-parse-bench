@@ -16,5 +16,5 @@ MISTRAL_API_KEY=your_api_key_here
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.mistral
+uv run -m parsers.mistral -i data/<dataset>
 ```

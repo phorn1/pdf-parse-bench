@@ -11,5 +11,5 @@ uv pip install pypdf
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.pypdf
+uv run -m parsers.pypdf -i data/<dataset>
 ```

@@ -16,5 +16,5 @@ uv run --with vllm vllm serve rednote-hilab/dots.ocr \
 
 **2. Run parser:**
 ```bash
-uv run -m parsers.dots_ocr
+uv run -m parsers.dots_ocr -i data/<dataset>
 ```

@@ -13,5 +13,5 @@ uv pip install torch>=2.0.1 torchvision>=0.15.2 transformers==4.37.2 tiktoken>=0
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.got_ocr2
+uv run -m parsers.got_ocr2 -i data/<dataset>
 ```

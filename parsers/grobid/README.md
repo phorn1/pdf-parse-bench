@@ -18,5 +18,5 @@ uv pip install requests grobid-tei-xml
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.grobid
+uv run -m parsers.grobid -i data/<dataset>
 ```

@@ -22,5 +22,5 @@ uv run vllm serve allenai/olmOCR-2-7B-1025-FP8 \
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.olmocr
+uv run -m parsers.olmocr -i data/<dataset>
 ```

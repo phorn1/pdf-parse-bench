@@ -23,5 +23,5 @@ uv pip install https://paddle-whl.bj.bcebos.com/nightly/cu126/safetensors/safete
 
 **4. Run parser:**
 ```bash
-uv run -m parsers.pp_structure_v3_3
+uv run -m parsers.pp_structure_v3_3 -i data/<dataset>
 ```

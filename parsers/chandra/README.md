@@ -13,5 +13,5 @@ uv pip install chandra-ocr
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.chandra
+uv run -m parsers.chandra -i data/<dataset>
 ```

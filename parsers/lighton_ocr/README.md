@@ -13,5 +13,5 @@ uv pip install "transformers>=5.0.0" "torch>=2.0.1" "accelerate>=0.28.0"
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.lighton_ocr
+uv run -m parsers.lighton_ocr -i data/<dataset>
 ```

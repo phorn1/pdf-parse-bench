@@ -13,5 +13,5 @@ uv pip install "torch>=2.0.1" "torchvision" "transformers>=4.49.0,<5.0.0" "accel
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.nanonets_ocr_s
+uv run -m parsers.nanonets_ocr_s -i data/<dataset>
 ```

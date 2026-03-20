@@ -16,5 +16,5 @@ LLAMACLOUD_API_KEY=your_api_key_here
 
 **3. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.llamaparse
+uv run -m parsers.llamaparse -i data/<dataset>
 ```

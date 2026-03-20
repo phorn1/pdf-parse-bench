@@ -270,7 +270,7 @@ if __name__ == "__main__":
 #### Run Your Parser
 
 ```bash
-uv run -m parsers.my_parser
+uv run -m parsers.my_parser -i data/<dataset>
 ```
 
 The benchmark infrastructure handles everything automatically:
@@ -286,18 +286,15 @@ The benchmark CLI provides several options to customize execution:
 
 ```bash
 # Run only specific steps
-uv run -m parsers.my_parser --step parse
-uv run -m parsers.my_parser --step extract --step evaluate
+uv run -m parsers.my_parser -i data/<dataset> --step parse
+uv run -m parsers.my_parser -i data/<dataset> --step extract --step evaluate
 
 # Reprocess existing results
-uv run -m parsers.my_parser --reprocess all
-uv run -m parsers.my_parser --reprocess parse --reprocess extract
+uv run -m parsers.my_parser -i data/<dataset> --reprocess all
+uv run -m parsers.my_parser -i data/<dataset> --reprocess parse --reprocess extract
 
 # Use a different LLM judge for evaluation (OpenRouter model format)
-uv run -m parsers.my_parser --llm-judge-model openai/gpt-5-mini
-
-# Custom input/output directories
-uv run -m parsers.my_parser -i data/2026-q1-tables-only -o results/custom
+uv run -m parsers.my_parser -i data/<dataset> --llm-judge-model openai/gpt-5-mini
 ```
 
 ## Project Structure

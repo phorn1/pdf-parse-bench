@@ -13,5 +13,5 @@ uv pip install transformers torch pillow pymupdf
 
 **2. Run parser:**
 ```bash
-uv run -m parsers.paddle_ocr_vl
+uv run -m parsers.paddle_ocr_vl -i data/<dataset>
 ```

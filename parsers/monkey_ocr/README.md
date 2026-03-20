@@ -13,5 +13,5 @@ docker compose up monkeyocr-api
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.monkey_ocr
+uv run -m parsers.monkey_ocr -i data/<dataset>
 ```

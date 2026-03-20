@@ -11,5 +11,5 @@ uv pip install "pymupdf4llm>=0.3.4"
 
 **2. Run parser evaluation pipeline:**
 ```bash
-uv run -m parsers.pymupdf4llm
+uv run -m parsers.pymupdf4llm -i data/<dataset>
 ```
