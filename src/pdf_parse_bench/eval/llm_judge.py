@@ -51,15 +51,6 @@ class TableResult(BaseModel):
         return {s.judge_model: s for s in self.llm_scores}
 
 
-# ========== FILE I/O ==========
-
-def save_results(file_path: Path, results: list[BaseModel]) -> None:
-    """Save results to JSON file."""
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump([r.model_dump() for r in results], f, indent=2, ensure_ascii=False)
-
-
 # ========== CONSTANTS ==========
 
 FORMULA_EVALUATION_PROMPT_TEMPLATE = """
@@ -133,7 +124,7 @@ class LLMEvaluator:
                         last_error = e
                         if attempt < max_retries - 1:
                             print(f"Attempt {attempt + 1} failed: {e}. Retrying...")
-                raise last_error
+                raise last_error  # type: ignore
             return wrapper
         return decorator
 
@@ -156,7 +147,9 @@ class LLMEvaluator:
             model=model,
             messages=[{"role": "user", "content": prompt}]
         )
-        score = LLMEvaluator._parse_score(response.choices[0].message.content)
+        content = response.choices[0].message.content
+        assert content is not None
+        score = LLMEvaluator._parse_score(content)
         return LLMScore(judge_model=model, score=score)
 
     @staticmethod
@@ -175,7 +168,9 @@ class LLMEvaluator:
                 },
             },
         )
-        return response_model.model_validate_json(response.choices[0].message.content)
+        content = response.choices[0].message.content
+        assert content is not None
+        return response_model.model_validate_json(content)
 
     @staticmethod
     @_retry_on_failure()
@@ -272,4 +267,5 @@ def run_batch_evaluation(
 
             # Save all affected groups after each model
             for save_path, results in groups:
-                save_results(save_path, results)
+                with open(save_path, 'w', encoding='utf-8') as f:
+                    json.dump([r.model_dump() for r in results], f, indent=2, ensure_ascii=False)

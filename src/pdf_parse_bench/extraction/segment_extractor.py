@@ -11,7 +11,7 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, MofNCompleteColumn
 
-from ..eval import FormulaResult, TableResult, save_results
+from ..eval import FormulaResult, TableResult
 from ..utilities import FormulaRenderer
 
 
@@ -94,7 +94,8 @@ class ParallelSegmentExtractor:
                     )
                     for i, pair in enumerate(table_extraction_result)
                 ]
-                save_results(job.output_tables_json_path, table_results)
+                with open(job.output_tables_json_path, 'w', encoding='utf-8') as f:
+                    json.dump([r.model_dump() for r in table_results], f, indent=2, ensure_ascii=False)
 
             # ========== FORMULA EXTRACTION ==========
 
@@ -148,7 +149,8 @@ class ParallelSegmentExtractor:
                     )
                     for i, pair in enumerate(formula_extraction_result)
                 ]
-                save_results(job.output_formulas_json_path, formula_results)
+                with open(job.output_formulas_json_path, 'w', encoding='utf-8') as f:
+                    json.dump([r.model_dump() for r in formula_results], f, indent=2, ensure_ascii=False)
 
             job.stripped_parsed_text_path.write_text(remaining_text)
 

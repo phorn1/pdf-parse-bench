@@ -338,10 +338,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Citation
 
-If you use this benchmark in your research or project, please cite our paper:
+If you use this benchmark in your research or project, please cite our papers:
 
 ```bibtex
-@misc{horn2025benchmarking,
+@misc{horn2025formulabench,
     title = {Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs},
     author = {Horn, Pius and Keuper, Janis},
     year = {2025},
@@ -350,9 +350,19 @@ If you use this benchmark in your research or project, please cite our paper:
     primaryClass={cs.CV},
     url = {https://arxiv.org/abs/2512.09874}
 }
+
+@misc{horn2026tablebench,
+    title = {Benchmarking PDF Parsers on Table Extraction with LLM-based Semantic Evaluation},
+    author = {Horn, Pius and Keuper, Janis},
+    year = {2026},
+    eprint={2603.18652},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url = {https://arxiv.org/abs/2603.18652}
+}
 ```
 
-📄 **Paper:** [arXiv:2512.09874](https://arxiv.org/abs/2512.09874)
+📄 **Papers:** [arXiv:2512.09874](https://arxiv.org/abs/2512.09874) (Formulas) | [arXiv:2603.18652](https://arxiv.org/abs/2603.18652) (Tables)
 
 ## Acknowledgments
 This work has been supported by the German Federal Ministry of Research, Technology and Space (BMFTR) in the program "Forschung an Fachhochschulen in Kooperation mit Unternehmen (FH-Kooperativ)" within the joint project **LLMpraxis** under grant 13FH622KX2.
