@@ -52,7 +52,7 @@ class Benchmark:
         parser_output_dir: Path,
         ground_truth_dir: Path,
         llm_judge_models: list[str],
-        parser: PDFParser,
+        parser: PDFParser | None = None,
     ):
         self.parser_output_dir = parser_output_dir
         self.ground_truth_dir = ground_truth_dir
@@ -61,6 +61,8 @@ class Benchmark:
 
     def parse(self, pdfs_dir: Path, skip_existing: bool = True) -> None:
         """Parse all PDFs in the specified directory."""
+        if self.parser is None:
+            raise ValueError("No parser provided. Pass a PDFParser instance to Benchmark() to use parse().")
         logger.info("\n🔍 PDF PARSING")
 
         pdf_files = sorted(pdfs_dir.glob("*.pdf"))
@@ -226,7 +228,7 @@ class Benchmark:
 
         results = BenchmarkResults(
             date=datetime.now().date(),
-            parser_name=self.parser.display_name(),
+            parser_name=self.parser.display_name() if self.parser else self.parser_output_dir.name,
             benchmark_name=benchmark_name,
             num_pdfs=num_pdfs,
             total_inline_formulas=total_inline_formulas,

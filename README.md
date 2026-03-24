@@ -14,7 +14,7 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 |--------|--------|----------|-----------|-----------|
 | [Gemini 3 Flash](https://deepmind.google/models/gemini/flash/) | 9.50 | 9.79 | $0.57 | API |
 | [LightOnOCR-2-1B](https://huggingface.co/lightonai/LightOnOCR-2-1B) | 9.08 | 9.57 | 30 min | GPU |
-| [Mistral OCR](https://mistral.ai/) | 8.89 | 9.48 | $0.20 | API |
+| [Mistral OCR 3](https://mistral.ai/news/mistral-ocr-3) | 8.89 | 9.48 | $0.20 | API |
 | [dots.ocr](https://github.com/rednote-hilab/dots.ocr) | 8.73 | 9.55 | 20 min | GPU |
 | [Mathpix](https://mathpix.com/) | 8.53 | 9.66 | $0.35–0.50 | API |
 | [Chandra](https://huggingface.co/datalab-to/chandra) | 8.43 | 9.45 | 4 h | GPU |
@@ -162,19 +162,18 @@ pip install pdf-parse-bench
 
 #### Step 1: Parse the Benchmark PDFs
 
-Get the benchmark PDFs and parse them with your parser:
+Get the benchmark PDFs and parse them with your parser. Choose the dataset you want to evaluate:
 
 ```python
 from pdf_parse_bench import get_benchmark_pdfs_dir
 from pathlib import Path
 
-# Get benchmark PDFs (included in the package)
-pdfs_dir = get_benchmark_pdfs_dir()
+# Available datasets: "2026-q1-tables-only", "2026-q1-formulas-only"
+pdfs_dir = get_benchmark_pdfs_dir("2026-q1-tables-only")
 
 # Parse each PDF with your parser
 output_dir = Path("results/my_parser")
 for pdf_path in pdfs_dir.glob("*.pdf"):
-    # Parse PDF with your parser
     parsed_text = your_parser.parse(pdf_path)
 
     # Save to expected format: {output_dir}/{pdf_name}/parsed.md
@@ -200,21 +199,12 @@ Run the benchmark evaluation on your parsed results:
 
 ```python
 from pathlib import Path
-from pdf_parse_bench import Benchmark, PDFParser, get_benchmark_ground_truth_dir
-
-class MyParser(PDFParser):
-    @classmethod
-    def display_name(cls) -> str:
-        return "My Parser"
-
-    def parse(self, pdf_path: Path, output_path: Path) -> str:
-        raise NotImplementedError  # Already parsed in Step 1
+from pdf_parse_bench import Benchmark, get_benchmark_ground_truth_dir
 
 bench = Benchmark(
     parser_output_dir=Path("results/my_parser"),
-    ground_truth_dir=get_benchmark_ground_truth_dir(),
+    ground_truth_dir=get_benchmark_ground_truth_dir("2026-q1-tables-only"),
     llm_judge_models=["google/gemini-3-flash-preview"],
-    parser=MyParser(),
 )
 bench.extract()
 bench.evaluate()

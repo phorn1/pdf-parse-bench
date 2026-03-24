@@ -22,18 +22,18 @@ def _get_dataset_dir(dataset_name: str) -> Path:
     return dataset_dir
 
 
-def get_benchmark_pdfs_dir(dataset_name: str = "2025-10-v1") -> Path:
+def get_benchmark_pdfs_dir(dataset_name: str) -> Path:
     """
     Get the path to the PDFs directory of a benchmark dataset.
 
     Args:
-        dataset_name: Name of the dataset (default: "2025-10-v1")
+        dataset_name: Name of the dataset (e.g., "2026-q1-tables-only", "2026-q1-formulas-only")
 
     Returns:
         Path to the pdfs directory
 
     Example:
-        >>> pdfs_dir = get_benchmark_pdfs_dir("2025-10-v1")
+        >>> pdfs_dir = get_benchmark_pdfs_dir("2026-q1-tables-only")
         >>> pdf_files = list(pdfs_dir.glob("*.pdf"))
     """
     pdfs_dir = _get_dataset_dir(dataset_name) / "pdfs"
@@ -44,18 +44,18 @@ def get_benchmark_pdfs_dir(dataset_name: str = "2025-10-v1") -> Path:
     return pdfs_dir
 
 
-def get_benchmark_ground_truth_dir(dataset_name: str = "2025-10-v1") -> Path:
+def get_benchmark_ground_truth_dir(dataset_name: str) -> Path:
     """
     Get the path to the ground truth directory of a benchmark dataset.
 
     Args:
-        dataset_name: Name of the dataset (default: "2025-10-v1")
+        dataset_name: Name of the dataset (e.g., "2026-q1-tables-only", "2026-q1-formulas-only")
 
     Returns:
         Path to the ground_truth directory
 
     Example:
-        >>> gt_dir = get_benchmark_ground_truth_dir("2025-10-v1")
+        >>> gt_dir = get_benchmark_ground_truth_dir("2026-q1-tables-only")
         >>> gt_files = list(gt_dir.glob("*.json"))
     """
     gt_dir = _get_dataset_dir(dataset_name) / "ground_truth"
