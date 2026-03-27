@@ -332,7 +332,7 @@ If you use this benchmark in your research or project, please cite our papers:
     title = {Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs},
     author = {Horn, Pius and Keuper, Janis},
     year = {2025},
-    eprint={2511.10390},
+    eprint={2512.09874},
     archivePrefix={arXiv},
     primaryClass={cs.CV},
     url = {https://arxiv.org/abs/2512.09874}
