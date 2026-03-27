@@ -1,6 +1,6 @@
 # PDF Parse Bench
 
-[![HuggingFace](https://img.shields.io/badge/HuggingFace-piushorn%2Fpdf--parse--bench-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/piushorn/pdf-parse-bench)
+[![🤗 Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-ffc107)](https://huggingface.co/datasets/piushorn/pdf-parse-bench)
 [![PyPI](https://img.shields.io/pypi/v/pdf-parse-bench)](https://pypi.org/project/pdf-parse-bench/)
 [![arXiv](https://img.shields.io/badge/arXiv-2512.09874-b31b1b?logo=arxiv)](https://arxiv.org/abs/2512.09874)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.18652-b31b1b?logo=arxiv)](https://arxiv.org/abs/2603.18652)
