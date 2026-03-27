@@ -1,5 +1,10 @@
 # PDF Parse Bench
 
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-piushorn%2Fpdf--parse--bench-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/datasets/piushorn/pdf-parse-bench)
+[![PyPI](https://img.shields.io/pypi/v/pdf-parse-bench)](https://pypi.org/project/pdf-parse-bench/)
+[![arXiv](https://img.shields.io/badge/arXiv-2512.09874-b31b1b?logo=arxiv)](https://arxiv.org/abs/2512.09874)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.18652-b31b1b?logo=arxiv)](https://arxiv.org/abs/2603.18652)
+
 This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and score the extracted content using **LLM-as-a-Judge**. This semantic evaluation approach [substantially outperforms traditional metrics](#why-llm-as-a-judge) in agreement with human judgment.
 
 ![Workflow Overview](assets/workflow.png)
