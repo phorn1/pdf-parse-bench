@@ -123,7 +123,7 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 Rule-based metrics correlate poorly with human judgment for formula and table extraction. We validated this in two human annotation studies (Pearson r = correlation with human scores):
 
 - **[formula-metric-study](https://github.com/phorn1/formula-metric-study)** — 750 human ratings: text metrics reach r = 0.01, CDM r = 0.31, LLM judges r = 0.74–0.82
-- **[table-metric-study](https://github.com/phorn1/table-metric-study)** — 1,500+ human ratings: rule-based metrics (TEDS, GriTS) top out at r = 0.70, LLM judges reach r = 0.94
+- **[table-metric-study](https://github.com/phorn1/table-metric-study)** — 1,500+ human ratings: rule-based metrics (TEDS, GriTS) top out at r = 0.70, LLM judges reach r = 0.93
 
 ## Benchmark Datasets
 
