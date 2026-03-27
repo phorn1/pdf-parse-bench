@@ -7,7 +7,7 @@
 
 This benchmark evaluates how effectively different PDF parsing solutions extract mathematical formulas and tables from documents. We generate synthetic PDFs with diverse formatting scenarios, parse them with different parsers, and score the extracted content using **LLM-as-a-Judge**. This semantic evaluation approach [substantially outperforms traditional metrics](#why-llm-as-a-judge) in agreement with human judgment.
 
-![Workflow Overview](assets/workflow.png)
+![Workflow Overview](https://raw.githubusercontent.com/phorn1/pdf-parse-bench/main/assets/workflow.png)
 
 ## 🏆 Leaderboard (2026-q1)
 
@@ -81,7 +81,7 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 <details>
 <summary>📊 Table score distributions</summary>
 
-![Table Score Distributions](assets/table_score_distributions.png)
+![Table Score Distributions](https://raw.githubusercontent.com/phorn1/pdf-parse-bench/main/assets/table_score_distributions.png)
 
 </details>
 
