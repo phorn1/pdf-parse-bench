@@ -15,30 +15,30 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 - **`2026-q1-tables-only`** — PDFs with tables of varying complexity (simple, moderate, complex)
 - **`2026-q1-formulas-only`** — PDFs with inline and display-mode mathematical formulas
 
-| Parser | Tables | Formulas | Cost/Time | Inference |
-|--------|--------|----------|-----------|-----------|
-| [Gemini 3 Flash](https://deepmind.google/models/gemini/flash/) | 9.50 | 9.79 | $0.57 | API |
-| [LightOnOCR-2-1B](https://huggingface.co/lightonai/LightOnOCR-2-1B) | 9.08 | 9.57 | 30 min | GPU |
-| [Mistral OCR 3](https://mistral.ai/news/mistral-ocr-3) | 8.89 | 9.48 | $0.20 | API |
-| [dots.ocr](https://github.com/rednote-hilab/dots.ocr) | 8.73 | 9.55 | 20 min | GPU |
-| [Mathpix](https://mathpix.com/) | 8.53 | 9.66 | $0.35–0.50 | API |
-| [Chandra](https://huggingface.co/datalab-to/chandra) | 8.43 | 9.45 | 4 h | GPU |
-| [Qwen3-VL-235B](https://github.com/QwenLM/Qwen3-VL) | 8.43 | 9.84 | $0.20 | API/GPU |
-| [MonkeyOCR-pro-3B](https://github.com/Yuliang-Liu/MonkeyOCR) | 8.39 | 9.50 | 20 min | GPU |
-| [GLM-4.5V](https://github.com/zai-org/GLM-V) | 7.98 | 9.37 | $0.60 | API |
-| [GPT-5 mini](https://openai.com/) | 7.14 | 5.57 | $1.00 | API |
-| [Claude Sonnet 4.6](https://docs.anthropic.com/en/docs/about-claude/models) | 7.02 | 8.50 | $3.00 | API |
-| [Nanonets-OCR-s](https://huggingface.co/nanonets/Nanonets-OCR-s) | 6.92 | 9.21 | 50 min | GPU |
-| [PP-StructureV3](https://github.com/PaddlePaddle/PaddleOCR) | 6.86 | 9.59 | 3 min | GPU |
-| [Gemini 2.5 Flash](https://deepmind.google/models/gemini/flash/) | 6.85 | 6.51 | $0.40 | API |
-| [MinerU2.5](https://mineru.net/) | 6.49 | 9.32 | varies | API/GPU |
-| [GPT-5 nano](https://openai.com/) | 6.48 | 4.78 | $0.35 | API |
-| [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR) | 5.75 | 8.97 | 4 min | GPU |
-| [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5) | 5.39 | 8.47 | 2.5 h | GPU |
-| [PyMuPDF4LLM](https://github.com/pymupdf/PyMuPDF4LLM) | 5.25 | 4.53 | 30 s | CPU |
-| [GOT-OCR2.0](https://github.com/Ucas-HaoranWei/GOT-OCR2.0) | 5.13 | 8.01 | 20 min | GPU |
-| [olmOCR-2-7B](https://github.com/allenai/olmocr) | 4.05 | 9.35 | 25 min | GPU |
-| [GROBID](https://github.com/kermitt2/grobid) | 2.10 | 7.01 | 2 min | CPU |
+| Parser                                                                      | Tables | Formulas | Cost/Time  | Inference |
+| --------------------------------------------------------------------------- | ------ | -------- | ---------- | --------- |
+| [Gemini 3 Flash](https://deepmind.google/models/gemini/flash/)              | 9.44   | 9.79     | $0.57      | API       |
+| [LightOnOCR-2-1B](https://huggingface.co/lightonai/LightOnOCR-2-1B)         | 8.87   | 9.57     | 30 min     | GPU       |
+| [Mistral OCR 3](https://mistral.ai/news/mistral-ocr-3)                      | 8.79   | 9.48     | $0.20      | API       |
+| [dots.ocr](https://github.com/rednote-hilab/dots.ocr)                       | 8.58   | 9.55     | 20 min     | GPU       |
+| [Mathpix](https://mathpix.com/)                                             | 8.31   | 9.66     | $0.35–0.50 | API       |
+| [MonkeyOCR-pro-3B](https://github.com/Yuliang-Liu/MonkeyOCR)                | 8.30   | 9.50     | 20 min     | GPU       |
+| [Chandra](https://huggingface.co/datalab-to/chandra)                        | 8.19   | 9.45     | 4 h        | GPU       |
+| [Qwen3-VL-235B](https://github.com/QwenLM/Qwen3-VL)                         | 8.12   | 9.84     | $0.20      | API/GPU   |
+| [GLM-4.5V](https://github.com/zai-org/GLM-V)                                | 7.48   | 9.37     | $0.60      | API       |
+| [Claude Sonnet 4.6](https://docs.anthropic.com/en/docs/about-claude/models) | 6.96   | 8.50     | $3.00      | API       |
+| [GPT-5 mini](https://openai.com/)                                           | 6.69   | 5.57     | $1.00      | API       |
+| [GPT-5 nano](https://openai.com/)                                           | 6.44   | 4.78     | $0.35      | API       |
+| [Nanonets-OCR-s](https://huggingface.co/nanonets/Nanonets-OCR-s)            | 6.44   | 9.21     | 50 min     | GPU       |
+| [PP-StructureV3](https://github.com/PaddlePaddle/PaddleOCR)                 | 6.32   | 9.59     | 3 min      | GPU       |
+| [Gemini 2.5 Flash](https://deepmind.google/models/gemini/flash/)            | 6.23   | 6.51     | $0.40      | API       |
+| [MinerU2.5](https://mineru.net/)                                            | 5.97   | 9.32     | varies     | API/GPU   |
+| [PaddleOCR-VL](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5)        | 4.97   | 8.47     | 2.5 h      | GPU       |
+| [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR)                 | 4.83   | 8.97     | 4 min      | GPU       |
+| [PyMuPDF4LLM](https://github.com/pymupdf/PyMuPDF4LLM)                       | 4.66   | 4.53     | 30 s       | CPU       |
+| [GOT-OCR2.0](https://github.com/Ucas-HaoranWei/GOT-OCR2.0)                  | 4.47   | 8.01     | 20 min     | GPU       |
+| [olmOCR-2-7B](https://github.com/allenai/olmocr)                            | 3.51   | 9.35     | 25 min     | GPU       |
+| [GROBID](https://github.com/kermitt2/grobid)                                | 1.64   | 7.01     | 2 min      | CPU       |
 
 **Legend:**
 - **Tables**: Average LLM-as-a-Judge score (0-10) across 451 tables from `2026-q1-tables-only`
@@ -51,28 +51,28 @@ Results are based on two separate benchmark datasets, each containing 100 synthe
 
 | Rank | Parser | Overall | Simple | Moderate | Complex |
 |------|--------|---------|--------|----------|---------|
-| 1 | Gemini 3 Flash | 9.50 | 9.53 | 9.38 | 9.61 |
-| 2 | LightOnOCR-2-1B | 9.08 | 9.41 | 8.90 | 8.91 |
-| 3 | Mistral OCR | 8.89 | 8.92 | 8.69 | 9.07 |
-| 4 | dots.ocr | 8.73 | 9.01 | 8.43 | 8.76 |
-| 5 | Mathpix | 8.53 | 9.32 | 8.40 | 7.77 |
-| 6 | Chandra | 8.43 | 8.96 | 8.14 | 8.15 |
-| 7 | Qwen3-VL-235B | 8.43 | 9.23 | 8.27 | 7.67 |
-| 8 | MonkeyOCR-pro-3B | 8.39 | 8.60 | 8.10 | 8.47 |
-| 9 | GLM-4.5V | 7.98 | 9.19 | 7.59 | 7.00 |
-| 10 | GPT-5 mini | 7.14 | 8.03 | 6.82 | 6.48 |
-| 11 | Claude Sonnet 4.6 | 7.02 | 6.94 | 7.10 | 7.01 |
-| 12 | Nanonets-OCR-s | 6.92 | 8.27 | 6.51 | 5.82 |
-| 13 | PP-StructureV3 | 6.86 | 7.44 | 6.16 | 6.96 |
-| 14 | Gemini 2.5 Flash | 6.85 | 7.93 | 6.52 | 5.94 |
-| 15 | MinerU2.5 | 6.49 | 7.07 | 6.03 | 6.35 |
-| 16 | GPT-5 nano | 6.48 | 7.63 | 6.18 | 5.47 |
-| 17 | DeepSeek-OCR | 5.75 | 7.45 | 5.34 | 4.20 |
-| 18 | PaddleOCR-VL | 5.39 | 6.81 | 5.02 | 4.17 |
-| 19 | PyMuPDF4LLM | 5.25 | 6.78 | 4.86 | 3.91 |
-| 20 | GOT-OCR2.0 | 5.13 | 5.89 | 4.95 | 4.45 |
-| 21 | olmOCR-2-7B | 4.05 | 4.64 | 3.78 | 3.68 |
-| 22 | GROBID | 2.10 | 2.27 | 1.94 | 2.09 |
+| 1 | Gemini 3 Flash | 9.44 | 9.64 | 9.23 | 9.45 |
+| 2 | LightOnOCR-2-1B | 8.87 | 9.42 | 8.56 | 8.58 |
+| 3 | Mistral OCR | 8.79 | 8.76 | 8.68 | 8.96 |
+| 4 | dots.ocr | 8.58 | 8.94 | 8.21 | 8.58 |
+| 5 | Mathpix | 8.31 | 9.28 | 7.94 | 7.61 |
+| 6 | MonkeyOCR-pro-3B | 8.30 | 8.64 | 7.94 | 8.33 |
+| 7 | Chandra | 8.19 | 8.92 | 7.77 | 7.80 |
+| 8 | Qwen3-VL-235B | 8.12 | 9.31 | 7.53 | 7.40 |
+| 9 | GLM-4.5V | 7.48 | 9.14 | 6.83 | 6.26 |
+| 10 | Claude Sonnet 4.6 | 6.96 | 6.85 | 7.06 | 6.99 |
+| 11 | GPT-5 mini | 6.69 | 7.74 | 6.22 | 6.00 |
+| 12 | GPT-5 nano | 6.44 | 7.54 | 6.23 | 5.41 |
+| 13 | Nanonets-OCR-s | 6.44 | 8.19 | 5.88 | 5.02 |
+| 14 | PP-StructureV3 | 6.32 | 7.11 | 5.52 | 6.31 |
+| 15 | Gemini 2.5 Flash | 6.23 | 7.71 | 5.80 | 4.94 |
+| 16 | MinerU2.5 | 5.97 | 6.82 | 5.37 | 5.64 |
+| 17 | PaddleOCR-VL | 4.97 | 6.58 | 4.47 | 3.65 |
+| 18 | DeepSeek-OCR | 4.83 | 7.18 | 4.18 | 2.83 |
+| 19 | PyMuPDF4LLM | 4.66 | 6.45 | 4.29 | 2.97 |
+| 20 | GOT-OCR2.0 | 4.47 | 5.43 | 4.25 | 3.61 |
+| 21 | olmOCR-2-7B | 3.51 | 4.35 | 3.10 | 3.00 |
+| 22 | GROBID | 1.64 | 1.79 | 1.62 | 1.50 |
 
 - **Overall/Simple/Moderate/Complex**: LLM-as-a-Judge score (0-10 scale) across 451 tables by complexity level
 
@@ -143,7 +143,7 @@ Given a parser's output (the extracted text from a PDF), an LLM establishes init
 
 ### Step 2: Scoring with LLM-as-a-Judge
 
-The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: Gemini 3 Flash via OpenRouter). For **formulas**, the judge evaluates correctness, completeness, and semantic equivalence. For **tables**, the judge evaluates content accuracy and structure preservation. Scores are computed separately for inline/display formulas and by table complexity (simple/moderate/complex). See [Why LLM-as-a-Judge?](#why-llm-as-a-judge) for our validation studies.
+The primary metric is the **LLM-as-a-Judge score** (0-10 scale, default: Gemma 4 31B IT via OpenRouter). For **formulas**, the judge evaluates correctness, completeness, and semantic equivalence. For **tables**, the judge evaluates content accuracy and structure preservation. Scores are computed separately for inline/display formulas and by table complexity (simple/moderate/complex). See [Why LLM-as-a-Judge?](#why-llm-as-a-judge) for our validation studies.
 
 ## Quick Start
 
@@ -209,7 +209,7 @@ from pdf_parse_bench import Benchmark, get_benchmark_ground_truth_dir
 bench = Benchmark(
     parser_output_dir=Path("results/my_parser"),
     ground_truth_dir=get_benchmark_ground_truth_dir("2026-q1-tables-only"),
-    llm_judge_models=["google/gemini-3-flash-preview"],
+    llm_judge_models=["google/gemma-4-31b-it"],
 )
 bench.extract()
 bench.evaluate()
