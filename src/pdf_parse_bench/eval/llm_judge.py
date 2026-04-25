@@ -85,7 +85,7 @@ Evaluate the extracted table using the following criteria:
 
 Note: Different output formats (markdown, HTML, plain text) are acceptable as long as no information is lost. Apply this key test: Could a reader who sees ONLY the extracted table — without access to the ground truth — unambiguously reconstruct every cell-to-header mapping and all content of the original table? If not, consider the parsing as failed and assign a low score.
 
-First, enumerate all errors and ambiguities found. Then assign a score from 0 to 10, where 10 is a perfect match.
+First, enumerate up to 5 of the most significant errors and ambiguities found. Then assign a score from 0 to 10, where 10 is a perfect match.\
 """
 
 
@@ -145,7 +145,12 @@ class LLMEvaluator:
         client = LLMEvaluator._get_client()
         response = client.chat.completions.create(
             model=model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            top_p=1,
+            frequency_penalty=0.3,
+            max_tokens=2000,
+            timeout=30,
         )
         content = response.choices[0].message.content
         assert content is not None
@@ -159,6 +164,11 @@ class LLMEvaluator:
         response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            top_p=1,
+            frequency_penalty=0.3,
+            max_tokens=2000,
+            timeout=30,
             response_format={
                 "type": "json_schema",
                 "json_schema": {
@@ -205,7 +215,7 @@ def run_batch_evaluation(
     llm_judge_models: str | list[str],
     jobs: list[EvalPaths],
     skip_existing: bool = True,
-    max_workers: int = 8,
+    max_workers: int = 16,
 ) -> None:
     """
     Evaluate multiple PDFs in a single batched pass.

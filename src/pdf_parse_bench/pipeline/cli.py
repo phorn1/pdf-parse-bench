@@ -66,7 +66,7 @@ def run_cli(parser: PDFParser) -> None:
     @click.option(
         "--llm-judge-model", "llm_judge_models",
         multiple=True,
-        default=("google/gemini-3-flash-preview",),
+        default=("google/gemma-4-31b-it",),
         show_default=True,
     )
     def benchmark(
